@@ -797,6 +797,20 @@ N:N)?
 379. Consistency models
 380. Failover systems
 
+### Additional Important Questions
+1. How would you design a scalable MERN-based e-commerce platform?
+2. How do you deploy a MERN app on cloud platforms (e.g., Vercel, Heroku, AWS)?
+3. What is CI/CD and how would you implement it for a MERN app?
+4. How do you manage environment configurations for different environments?
+5. What’s your approach to logging and monitoring in production?
+6. How would you implement role-based access control (RBAC)?
+7. How do you ensure your REST APIs are RESTful?
+8. What is the difference between monolithic and microservice architectures?
+9. How would you handle versioning in your APIs?
+10. How do you handle scaling a database with growing user base?
+
+
+
 ### DevOps & Infrastructure
 381. CI/CD pipeline
 382. Docker
