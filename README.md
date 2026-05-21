@@ -619,7 +619,27 @@
 308. Performance benchmarking?
 309. Security scanning?
 310. Compliance (GDPR, etc.)?
-
+### Additional Important Questions
+1. Explain middleware and the types of middleware in Express.
+2. How does request and response flow in Express?
+3. What is the use of next() in Express?
+4. How do you implement global error handling?
+5. How do you structure a scalable Express application?
+6. How do you secure an Express API (rate limiting, headers)?
+7. Explain route parameter vs. query parameter.
+8. What’s the role of CORS in Express and how to configure it?
+9. How do you handle file uploads?
+10. How would you implement logging in Express?
+11. What is the use of express-validator?
+12. How do you prevent SQL/NoSQL injection in Express?
+13. What is Helmet and how does it help with security?
+14. How do you handle role-based authorization in Express?
+15. What are virtual routes and when are they useful?
+16. Difference between synchronous and asynchronous middleware.
+17. How do you optimize performance in Express apps?
+18. What is a proxy in Express and how to set it?
+19. What is the use of app.locals and res.locals?
+20. How can you implement request tracing in Express?
 ---
 
 ## 🍃 MongoDB (311-360)
