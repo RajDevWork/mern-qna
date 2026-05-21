@@ -672,6 +672,26 @@
 18. What is a proxy in Express and how to set it?
 19. What is the use of app.locals and res.locals?
 20. How can you implement request tracing in Express?
+21. What is the event loop in Node.js and how does it work?
+22. Explain the difference between process.nextTick() and setImmediate().
+23. How does Node.js handle asynchronous I/O?
+24. What are streams and how do you use them?
+25. How does clustering work in Node.js?
+26. Explain how you’d implement a caching layer in Node.
+27. How do you handle large file uploads efficiently?
+28. What are child processes and how are they used?
+29. What is the role of buffers in Node.js?
+30. How do you monitor and debug Node.js performance?
+31. What are worker threads and when would you use them?
+32. Explain how you’d secure a Node.js application.
+33. How do you manage environment variables securely?
+34. What’s the difference between CommonJS and ES modules?
+35. How do you handle rate limiting in Node.js?
+36. How do you implement JWT authentication in Node.js?
+37. How does dependency injection work in Node?
+38. What is the role of fs/promises in Node?
+39. How can you prevent memory leaks?
+40. How would you implement logging and metrics?
 ---
 
 ## 🍃 MongoDB (311-360)
