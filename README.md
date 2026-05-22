@@ -24,10 +24,153 @@
 
 ### Basics
 1. HTML kya hai?
+
+    Hindi Explanation
+    HTML ka full form HyperText Markup Language hai.
+    Ye web pages ka basic structure banane ke liye use hota hai.
+
+    Browser ko batata hai:
+
+    heading kaha hogi
+    paragraph kaha hoga
+    image, button, form, table etc. kaha render honge
+
+    HTML programming language nahi hai, ye ek markup language hai kyunki ye content ko structure karti hai using tags.
+
+    Example:
+
+    <h1>Hello</h1>
+    <p>Welcome to website</p>
+    Interview Me English Me Kya Bolna Hai
+
+    HTML stands for HyperText Markup Language. It is the standard markup language used to create and structure web pages. HTML defines elements like headings, paragraphs, images, forms, tables, and links using tags. It is not a programming language; it is a markup language used to structure content for browsers.
+
+
 2. HTML5 kya hai?
+
+    Hindi Explanation
+    HTML5 HTML ka latest version hai.
+
+    Isme bahut naye features aaye:
+
+    Semantic tags
+    Audio and video support
+    Canvas
+    Local Storage
+    Better form validation
+    Geolocation APIs
+
+    Pehle audio/video play karne ke liye plugins lagte the jaise Flash, but HTML5 me direct support milta hai.
+
+    Semantic tags jaise:
+
+    <header>
+    <footer>
+    <article>
+    <section>
+    <nav>
+
+    Ye SEO aur readability improve karte hain.
+
+    Interview Answer (English)
+
+    HTML5 is the latest version of HTML that provides new features and improved support for modern web applications.
+
+    It introduced semantic elements like <header>, <section>, and <footer> for better readability and SEO.
+
+    HTML5 also supports multimedia elements such as <audio> and <video> without requiring external plugins.
+    Additionally, it provides APIs like Local Storage, Geolocation, Canvas, and improved form handling.
+
+
 3. Doctype kya hota hai?
+
+    Hindi Explanation
+    DOCTYPE browser ko batata hai ki document kaunsa HTML version use kar raha hai.
+
+    Ye file ke sabse top me likha jata hai.
+
+    Example:
+
+    <!DOCTYPE html>
+
+    HTML5 me sirf itna hi likhna hota hai.
+
+    Agar DOCTYPE nahi lagate to browser quirks mode me chala jata hai jahan rendering inconsistent ho sakti hai.
+
+    DOCTYPE khud HTML tag nahi hai.
+
+    Interview Answer (English)
+
+    The DOCTYPE declaration tells the browser which version of HTML the document is using.
+
+    In HTML5, the declaration is:
+
+    <!DOCTYPE html>
+
+    It helps the browser render the page in standards mode instead of quirks mode, ensuring consistent behavior across browsers.
+    DOCTYPE is not an HTML tag; it is an instruction to the browser.
+
 4. Meta tags kya hote hain?
+
+    Hindi Explanation
+    Meta tags webpage ke baare me metadata provide karte hain.
+
+    Ye <head> section ke andar likhe jate hain aur directly webpage par visible nahi hote.
+
+    Meta tags use hote hain:
+
+    SEO ke liye
+    Character encoding define karne ke liye
+    Responsive design ke liye
+    Description dene ke liye
+
+    Example:
+
+    <meta charset="UTF-8">
+    <meta name="description" content="HTML Interview Notes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    Interview Answer (English)
+
+    Meta tags provide metadata about the HTML document.
+
+    They are placed inside the <head> section and are not directly visible on the webpage.
+
+    Meta tags are commonly used for:
+
+    SEO
+    Character encoding
+    Responsive design
+    Page descriptions
+    Browser compatibility
+
+    Example:
+    <meta charset="UTF-8">
+
+
 5. Charset kya hai?
+
+    Hindi Explanation
+    Charset define karta hai ki browser text characters ko kaise interpret karega.
+
+    Mostly UTF-8 use hota hai because ye almost sabhi languages aur special characters support karta hai.
+
+    Example:
+
+    <meta charset="UTF-8">
+
+    Agar charset define nahi karenge to kuch characters incorrectly display ho sakte hain.
+
+    Interview Answer (English)
+
+    Charset defines the character encoding used in the HTML document.
+
+    The most commonly used charset is UTF-8 because it supports almost all characters and languages.
+
+    Example:
+
+    <meta charset="UTF-8">
+    It ensures that text and special characters are displayed correctly in the browser.
+
 
 ### Structure
 6. `<html>`, `<head>`, `<body>` ka role?
