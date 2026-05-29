@@ -2472,25 +2472,405 @@ Safari → JavaScriptCore
 ```
 
 101. V8 engine?
+
+`Hinglish Explanation:`
+
+V8 Google ka JavaScript Engine hai jo Chrome aur Node.js me use hota hai. Ye JavaScript ko machine code me compile karke fast execution provide karta hai.
+
+`Interview Answer:`
+
+V8 is Google's high-performance JavaScript engine used in Chrome and Node.js. It compiles JavaScript directly into machine code using Just-In-Time (JIT) compilation.
+
+Example:
+
+```text
+JavaScript
+   ↓
+V8 Engine
+   ↓
+Machine Code
+```
+
+---
+
 102. Garbage collector kaise kaam karta hai?
+
+`Hinglish Explanation:`
+
+Garbage Collector automatically memory clean karta hai by removing objects jo application se reachable nahi hote.
+
+`Interview Answer:`
+
+The Garbage Collector frees memory occupied by objects that are no longer reachable from the application.
+
+Example:
+
+```javascript
+let user = {
+  name: "Raj"
+};
+
+user = null;
+```
+
+---
+
 103. Async parallel vs sequential?
+
+`Hinglish Explanation:`
+
+Sequential execution me tasks ek ke baad ek run hote hain. Parallel execution me multiple async tasks ek saath start ho jate hain.
+
+`Interview Answer:`
+
+Sequential execution waits for each task to complete, while parallel execution runs multiple asynchronous tasks simultaneously.
+
+Example:
+
+```javascript
+await Promise.all([
+  fetchUsers(),
+  fetchPosts()
+]);
+```
+
+---
+
 104. Concurrency vs parallelism?
+
+`Hinglish Explanation:`
+
+Concurrency ka matlab multiple tasks ko manage karna hai, jabki Parallelism ka matlab multiple tasks ko same time par execute karna hai.
+
+`Interview Answer:`
+
+Concurrency is about handling multiple tasks efficiently, while parallelism is about executing multiple tasks at the same time.
+
+Example:
+
+```text
+Concurrency → 1 CPU
+
+Parallelism → Multiple CPUs
+```
+
+---
+
 105. Race condition kya hai?
+
+`Hinglish Explanation:`
+
+Race Condition tab hoti hai jab multiple operations same data ko simultaneously modify karte hain aur final result unpredictable ho jata hai.
+
+`Interview Answer:`
+
+A race condition occurs when the outcome depends on the timing or order of asynchronous operations.
+
+Example:
+
+```javascript
+count++;
+
+count++;
+```
+
+---
+
 106. Deadlock kya hai?
+
+`Hinglish Explanation:`
+
+Deadlock tab hota hai jab do ya zyada processes ek dusre ke resources ka wait karte rehte hain aur execution stop ho jati hai.
+
+`Interview Answer:`
+
+A deadlock occurs when multiple processes wait indefinitely for resources held by each other.
+
+Example:
+
+```text
+Process A → Waiting for B
+
+Process B → Waiting for A
+```
+
+---
+
 107. Event loop internals?
+
+`Hinglish Explanation:`
+
+Event Loop Call Stack, Microtask Queue aur Callback Queue ko coordinate karta hai. Pehle Microtasks execute hoti hain, phir Macrotasks.
+
+`Interview Answer:`
+
+The Event Loop continuously checks the Call Stack and prioritizes Microtasks before processing Macrotasks.
+
+Example:
+
+```javascript
+Promise.resolve().then(() => {
+  console.log("Microtask");
+});
+
+setTimeout(() => {
+  console.log("Macrotask");
+});
+```
+
+---
+
 108. Node vs browser JS?
+
+`Hinglish Explanation:`
+
+JavaScript language same hai, lekin environment alag hai. Browser DOM provide karta hai, jabki Node.js file system aur server APIs provide karta hai.
+
+`Interview Answer:`
+
+JavaScript syntax is the same, but browsers provide Web APIs while Node.js provides server-side APIs.
+
+Example:
+
+```javascript
+// Browser
+document.querySelector();
+
+// Node
+fs.readFile();
+```
+
+---
+
 109. Polyfills kya hain?
+
+`Hinglish Explanation:`
+
+Polyfills older browsers me modern JavaScript features ka support add karte hain.
+
+`Interview Answer:`
+
+A Polyfill is code that implements modern JavaScript features in environments where they are not natively supported.
+
+Example:
+
+```javascript
+if (!Array.prototype.flat) {
+  // Polyfill
+}
+```
+
+---
+
 110. Transpilation kya hai?
+
+`Hinglish Explanation:`
+
+Transpilation modern JavaScript code ko older JavaScript version me convert karti hai taaki older browsers support kar sakein.
+
+`Interview Answer:`
+
+Transpilation converts source code from one version of a language to another compatible version.
+
+Example:
+
+```javascript
+// ES6
+const add = (a, b) => a + b;
+```
+
+---
+
 111. Babel kya hai?
+
+`Hinglish Explanation:`
+
+Babel JavaScript transpiler hai jo modern JavaScript ko older browser-compatible code me convert karta hai.
+
+`Interview Answer:`
+
+Babel is a JavaScript compiler that transforms modern JavaScript syntax into backward-compatible code.
+
+Example:
+
+```bash
+npm install @babel/core
+```
+
+---
+
 112. Tree shaking kya hai?
+
+`Hinglish Explanation:`
+
+Tree Shaking unused code ko final bundle se remove karta hai jisse bundle size reduce hota hai.
+
+`Interview Answer:`
+
+Tree Shaking is a build optimization technique that removes unused exports from the final bundle.
+
+Example:
+
+```javascript
+import {
+  usedFunction
+} from "./utils";
+```
+
+---
+
 113. Bundling kya hai?
+
+`Hinglish Explanation:`
+
+Bundling multiple JavaScript files ko combine karke optimized output file create karta hai.
+
+`Interview Answer:`
+
+Bundling combines multiple source files into one or more optimized files for deployment.
+
+Example:
+
+```text
+app.js
+utils.js
+↓
+bundle.js
+```
+
+---
+
 114. Webpack kya karta hai?
+
+`Hinglish Explanation:`
+
+Webpack module bundler hai jo JavaScript, CSS aur assets ko process aur optimize karta hai.
+
+`Interview Answer:`
+
+Webpack is a module bundler that builds, optimizes, and packages application assets.
+
+Example:
+
+```javascript
+module.exports = {
+  entry: "./src/index.js"
+};
+```
+
+---
+
 115. Code splitting?
+
+`Hinglish Explanation:`
+
+Code Splitting application bundle ko chhote chunks me divide karta hai taaki initial load fast ho.
+
+`Interview Answer:`
+
+Code Splitting breaks applications into smaller bundles that are loaded only when needed.
+
+Example:
+
+```javascript
+import("./Dashboard");
+```
+
+---
+
 116. Lazy loading?
+
+`Hinglish Explanation:`
+
+Lazy Loading resources ko tab load karti hai jab unki zarurat hoti hai, initial page load ko fast banati hai.
+
+`Interview Answer:`
+
+Lazy Loading delays loading of resources until they are actually required.
+
+Example:
+
+```javascript
+const module =
+  await import("./module");
+```
+
+---
+
 117. Hot reload?
+
+`Hinglish Explanation:`
+
+Hot Reload development me changes ko browser me instantly reflect karta hai bina full page refresh ke.
+
+`Interview Answer:**
+
+Hot Reload updates application modules in real time while preserving application state.
+
+Example:
+
+```text
+Save File
+↓
+UI Updated
+```
+
+---
+
 118. Source maps kya hain?
+
+`Hinglish Explanation:`
+
+Source Maps minified ya transpiled code ko original source code se map karte hain taaki debugging easy ho.
+
+`Interview Answer:`
+
+Source Maps help developers debug transformed code by mapping it back to the original source files.
+
+Example:
+
+```javascript
+//# sourceMappingURL=app.js.map
+```
+
+---
+
 119. Security issues JS mein?
+
+`Hinglish Explanation:`
+
+Common security issues me XSS, CSRF, Injection attacks aur insecure data storage shamil hain.
+
+`Interview Answer:`
+
+Common JavaScript security risks include XSS, CSRF, code injection, and exposure of sensitive client-side data.
+
+Example:
+
+```javascript
+element.textContent =
+  userInput;
+```
+
+---
+
 120. Best practices JS coding?
+
+`Hinglish Explanation:`
+
+Meaningful variable names, modular code, error handling, immutability aur consistent formatting follow karna best practices hain.
+
+`Interview Answer:`
+
+JavaScript best practices include writing clean, modular, maintainable code, handling errors properly, and following consistent coding standards.
+
+Example:
+
+```javascript
+const getUserName = user =>
+  user.name;
+```
+
 
 ---
 
