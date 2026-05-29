@@ -72,7 +72,7 @@
 
     Ye SEO aur readability improve karte hain.
 
-    Interview Answer (English)
+    `Interview Answer` (English)
 
     HTML5 is the latest version of HTML that provides new features and improved support for modern web applications.
 
@@ -99,7 +99,7 @@
 
     DOCTYPE khud HTML tag nahi hai.
 
-    Interview Answer (English)
+    `Interview Answer` (English)
 
     The DOCTYPE declaration tells the browser which version of HTML the document is using.
 
@@ -129,7 +129,7 @@
     <meta charset="UTF-8">
     <meta name="description" content="HTML Interview Notes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    Interview Answer (English)
+    `Interview Answer` (English)
 
     Meta tags provide metadata about the HTML document.
 
@@ -160,7 +160,7 @@
 
     Agar charset define nahi karenge to kuch characters incorrectly display ho sakte hain.
 
-    Interview Answer (English)
+    `Interview Answer` (English)
 
     Charset defines the character encoding used in the HTML document.
 
@@ -573,7 +573,7 @@
 
         React ek JavaScript library hai jo UI (User Interface) banane ke liye use hoti hai. Yeh component-based architecture follow karti hai aur Virtual DOM use karke fast rendering provide karti hai.
 
-        Interview Answer:
+        `Interview Answer`:
 
         React is a JavaScript library developed by Meta for building reusable and interactive user interfaces. It uses a component-based architecture and Virtual DOM for efficient rendering.
 
@@ -590,7 +590,7 @@
 
         JSX JavaScript XML hai. Isse hum JavaScript ke andar HTML jaisa code likh sakte hain. Browser JSX ko directly nahi samajhta, Babel ise JavaScript me convert karta hai.
 
-        Interview Answer:
+        `Interview Answer`:
 
         JSX is a syntax extension for JavaScript that allows developers to write HTML-like code inside JavaScript. It gets transpiled into React.createElement calls.
 
@@ -605,7 +605,7 @@
 
         Virtual DOM React ka lightweight copy of Real DOM hota hai. Jab state ya props change hote hain, React pehle Virtual DOM update karta hai aur phir difference find karke sirf required changes Real DOM me karta hai.
 
-        Interview Answer:
+        `Interview Answer`:
 
         Virtual DOM is a lightweight JavaScript representation of the Real DOM. React compares Virtual DOM changes and updates only the necessary parts of the Real DOM.
 
@@ -625,7 +625,7 @@
         | Slow updates                      | Fast updates                        |
         | Entire DOM re-render ho sakta hai | Only changed parts update hote hain |
 
-        Interview Answer:
+        `Interview Answer`:
 
         Real DOM is the actual browser DOM, while Virtual DOM is a lightweight copy maintained by React. Virtual DOM improves performance by minimizing direct DOM manipulations.
 
@@ -640,10 +640,10 @@
 
         Components React ke reusable building blocks hote hain. Har component UI ka ek independent part represent karta hai.
 
-        Interview Answer:
+        `Interview Answer`:
 
         Components are reusable and independent pieces of UI that help build complex interfaces in a modular way.
-        
+
         Example:
             ```javascript
                 function Header() {
@@ -651,13 +651,115 @@
                 }
             ```
 
-
-
 126. Functional vs class components?
+
+        Hinglish Explanation:
+
+        Functional Component
+
+            * Simple function hota hai
+            * Hooks use kar sakta hai
+            * Modern React me preferred
+
+        Class Component
+
+            * ES6 class hoti hai
+            * Lifecycle methods use karti hai
+            * Hooks support nahi karti
+
+        `Interview Answer`:
+
+        Functional components are JavaScript functions that return JSX and support Hooks. Class components are ES6 classes that use lifecycle methods and state management.
+
+        Example:
+
+        ```javascript
+            // Functional
+            function App() {
+            return <h1>Hello</h1>;
+            }
+            // Class
+            class App extends React.Component {
+            render() {
+                return <h1>Hello</h1>;
+            }
+            }
+        ```
+
 127. Props kya hain?
+
+        Hinglish Explanation:
+
+        Props parent component se child component ko data pass karne ke liye use hote hain. Props read-only hote hain.
+
+        `Interview Answer`:
+
+        Props are read-only inputs passed from a parent component to a child component for data communication.
+
+        Example:
+
+        ```javascript
+            function User(props) {
+            return <h1>{props.name}</h1>;
+            }
+
+            <User name="Raj" />
+        ```
+
 128. State kya hai?
+
+        Hinglish Explanation:
+
+        State component ka internal data hota hai jo time ke saath change ho sakta hai. State update hone par component re-render hota hai.
+
+        `Interview Answer`:
+
+        State is a component's internal data that can change over time and triggers re-rendering when updated.
+
+        Example:
+
+        ```javascript
+            const [count, setCount] = useState(0);
+        ```
+
 129. Controlled components?
+
+        Hinglish Explanation:
+
+        Jab form input ki value React state se control hoti hai tab use Controlled Component kehte hain.
+
+        `Interview Answer`:
+
+        A controlled component is a form element whose value is controlled by React state.
+
+        Example:
+
+        ```javascript
+            const [name, setName] = useState("");
+            <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            />
+        ```
+
 130. Uncontrolled components?
+
+        Hinglish Explanation:
+
+        Jab form data React state ke bajaye DOM khud manage karta hai tab use Uncontrolled Component kehte hain.
+
+        `Interview Answer`:
+
+        An uncontrolled component stores its own state in the DOM and is usually accessed using refs.
+
+        Example:
+
+        ```javascript
+           const inputRef = useRef();
+
+            <input ref={inputRef} />
+        ```
+
 131. Keys ka use?
 132. Lists render kaise?
 133. Conditional rendering?
