@@ -942,15 +942,183 @@
         ```
 
 141. Hooks kya hain?
+
+        `Hinglish Explanation:`
+
+        Hooks functional components me state aur lifecycle features use karne ki facility dete hain.
+
+        `Interview Answer:`
+
+        Hooks are functions that allow functional components to use state and lifecycle features.
+
+        Example:
+
+        ```javascript
+           const [count, setCount] = useState(0);
+        ```
+
+
 142. useState?
+
+        `Hinglish Explanation:`
+
+        useState component me state create aur update karne ke liye use hota hai.
+
+        `Interview Answer:`
+
+        useState is a Hook used to add and manage state in functional components.
+
+        Example:
+
+        ```javascript
+           const [count, setCount] = useState(0);
+        ```
+
 143. useEffect?
+
+        `Hinglish Explanation:`
+
+        Side effects jaise API calls, subscriptions aur timers handle karne ke liye useEffect use hota hai.
+
+        `Interview Answer:`
+
+        useEffect is used to perform side effects such as API calls, subscriptions, and DOM updates.
+
+        Example:
+
+        ```javascript
+           useEffect(() => {
+            fetchData();
+            }, []);
+        ```
+
 144. useRef?
+
+        `Hinglish Explanation:`
+
+        DOM element ya mutable value ko store karne ke liye useRef use hota hai bina re-render ke.
+
+        `Interview Answer:`
+
+        useRef provides a mutable reference that persists across renders without causing re-renders.
+
+        Example:
+
+        ```javascript
+           const inputRef = useRef();
+        ```
+
 145. useMemo?
+
+        `Hinglish Explanation:`
+
+        Expensive calculation ko memoize karke unnecessary recalculation se bachata hai.
+
+        `Interview Answer:`
+
+        useMemo memoizes computed values and recalculates them only when dependencies change.
+
+        Example:
+
+        ```javascript
+           const total = useMemo(() => {
+            return calculate();
+            }, [data]);
+        ```
+
+
 146. useCallback?
+
+        `Hinglish Explanation:`
+
+        useCallback function ko memoize karta hai. Jab component re-render hota hai to function dobara create nahi hota jab tak dependencies change na ho. Ye unnecessary child re-renders avoid karne me help karta hai.
+
+        `Interview Answer:`
+
+        useCallback is a React Hook that memoizes a function and returns the same function instance between renders unless its dependencies change. It is mainly used for performance optimization.
+
+        Example:
+
+        ```javascript
+           const handleClick = useCallback(() => {
+            console.log("Clicked");
+            }, []);
+        ```
+
 147. useReducer?
+
+        `Hinglish Explanation:`
+
+        Jab state complex ho ya multiple related state updates hon, tab useReducer use karte hain. Ye Redux ke reducer concept jaisa kaam karta hai.
+
+        `Interview Answer:`
+
+        useReducer is a Hook used for managing complex state logic. It works with a reducer function and dispatch actions to update state predictably.
+
+        Example:
+
+        ```javascript
+           const [state, dispatch] = useReducer(reducer, 0);
+           dispatch({ type: "increment" });
+        ```
+
+
 148. Custom hooks?
+
+        `Hinglish Explanation:`
+
+        Custom Hook ek reusable function hota hai jo multiple components me common Hook logic share karne ke liye banaya jata hai. Iska naam hamesha use se start hona chahiye.
+
+        `Interview Answer:`
+
+        Custom Hooks are reusable JavaScript functions that encapsulate React Hook logic and allow sharing stateful behavior across components.
+
+        Example:
+
+        ```javascript
+           function useCounter() {
+            const [count, setCount] = useState(0);
+            return { count, setCount };
+            }
+        ```
+
 149. Rules of hooks?
+
+        `Hinglish Explanation:`
+
+        Hooks ko sirf React functional components ya custom hooks ke andar call karna chahiye. Hooks ko loops, conditions ya nested functions ke andar nahi likhna chahiye.
+
+        `Interview Answer:`
+
+        Hooks must be called only at the top level of React functional components or custom Hooks. They should never be called conditionally or inside loops.
+
+        Example:
+
+        ```javascript
+           // ❌ Wrong
+            if (show) {
+            useState(0);
+            }
+        ```
+
 150. Dependency array issues?
+
+        `Hinglish Explanation:`
+
+        Dependency array galat dene se stale data, unnecessary API calls ya missing updates ho sakte hain. Har used dependency ko include karna best practice hai.
+
+        `Interview Answer:`
+
+        Incorrect dependency arrays can cause stale closures, missed updates, or excessive re-executions. React recommends including all referenced dependencies.
+
+        Example:
+
+        ```javascript
+           useEffect(() => {
+            fetchData(id);
+            }, [id]);
+        ```
+
 151. Infinite loop useEffect mein?
 152. Cleanup function?
 153. React.memo?
