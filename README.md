@@ -4634,7 +4634,7 @@ channel.sendToQueue(
 );
 ```
 
-## 301. Event sourcing?
+301. Event sourcing?
 
 `Hinglish Explanation:`
 
@@ -4655,7 +4655,7 @@ Example:
 
 ---
 
-## 302. CQRS pattern?
+302. CQRS pattern?
 
 `Hinglish Explanation:`
 
@@ -4675,7 +4675,7 @@ GetOrdersQuery
 
 ---
 
-## 303. Rate limiting algorithms?
+303. Rate limiting algorithms?
 
 `Hinglish Explanation:`
 
@@ -4696,7 +4696,7 @@ Leaky Bucket
 
 ---
 
-## 304. API caching strategies?
+304. API caching strategies?
 
 `Hinglish Explanation:`
 
@@ -4715,7 +4715,7 @@ const cached =
 
 ---
 
-## 305. Background job monitoring?
+305. Background job monitoring?
 
 `Hinglish Explanation:`
 
@@ -4735,7 +4735,7 @@ job.on("failed", () => {
 
 ---
 
-## 306. Log aggregation?
+306. Log aggregation?
 
 `Hinglish Explanation:`
 
@@ -4757,7 +4757,7 @@ App Servers
 
 ---
 
-## 307. Distributed tracing?
+307. Distributed tracing?
 
 `Hinglish Explanation:`
 
@@ -4778,7 +4778,7 @@ Request
 
 ---
 
-## 308. Performance benchmarking?
+308. Performance benchmarking?
 
 `Hinglish Explanation:`
 
@@ -4797,7 +4797,7 @@ http://localhost:3000
 
 ---
 
-## 309. Security scanning?
+309. Security scanning?
 
 `Hinglish Explanation:`
 
@@ -4815,7 +4815,7 @@ npm audit
 
 ---
 
-## 310. Compliance (GDPR, etc.)?
+310. Compliance (GDPR, etc.)?
 
 `Hinglish Explanation:`
 
@@ -4835,26 +4835,405 @@ Right to Delete Data
 
 
 ### Additional Important Questions
+
 1. Explain middleware and the types of middleware in Express.
+
+`Hinglish Explanation:`
+
+Middleware functions request aur response ke beech execute hote hain. Ye request ko modify kar sakte hain, validation kar sakte hain ya next middleware ko control transfer kar sakte hain.
+
+Types: Application Middleware, Router Middleware, Error Middleware, Third-party Middleware.
+
+`Interview Answer:`
+
+Middleware functions have access to the request, response, and next function. They are used for tasks such as logging, authentication, validation, and error handling.
+
+Example:
+
+```javascript
+app.use((req, res, next) => {
+  console.log(req.url);
+  next();
+});
+```
+
+---
+
 2. How does request and response flow in Express?
+
+`Hinglish Explanation:`
+
+Client request server par aati hai, middleware chain se pass hoti hai, route handler execute hota hai aur finally response client ko return kiya jata hai.
+
+`Interview Answer:`
+
+A request flows through middleware functions, reaches the appropriate route handler, and then a response is sent back to the client.
+
+Example:
+
+```text
+Request
+→ Middleware
+→ Route Handler
+→ Response
+```
+
+---
+
 3. What is the use of next() in Express?
+
+`Hinglish Explanation:`
+
+`next()` current middleware se control next middleware ya route handler ko transfer karta hai. Agar next call nahi hua to request hang ho sakti hai.
+
+`Interview Answer:`
+
+The `next()` function passes control to the next middleware in the stack. It is essential for continuing request processing.
+
+Example:
+
+```javascript
+app.use((req, res, next) => {
+  next();
+});
+```
+
+---
+
 4. How do you implement global error handling?
+
+`Hinglish Explanation:`
+
+Global error handler application ke sabhi errors ko ek centralized place par handle karta hai. Isse consistent error responses milte hain.
+
+`Interview Answer:`
+
+Global error handling is implemented using a middleware with four parameters: error, request, response, and next.
+
+Example:
+
+```javascript
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    message: err.message
+  });
+});
+```
+
+---
+
 5. How do you structure a scalable Express application?
+
+`Hinglish Explanation:`
+
+Scalable applications me routes, controllers, services, models aur middleware ko separate folders me organize kiya jata hai.
+
+`Interview Answer:`
+
+A scalable Express application follows separation of concerns by organizing code into routes, controllers, services, models, and middleware.
+
+Example:
+
+```text
+src/
+├─ routes/
+├─ controllers/
+├─ services/
+├─ models/
+```
+
+---
+
 6. How do you secure an Express API (rate limiting, headers)?
+
+`Hinglish Explanation:`
+
+API security ke liye Helmet, Rate Limiting, Input Validation, HTTPS aur Authentication implement ki jati hai.
+
+`Interview Answer:`
+
+Express APIs are secured using rate limiting, HTTP security headers, input validation, authentication, and HTTPS.
+
+Example:
+
+```javascript
+app.use(helmet());
+app.use(rateLimit());
+```
+
+---
+
 7. Explain route parameter vs. query parameter.
+
+`Hinglish Explanation:`
+
+Route parameters resource identify karte hain, jabki query parameters filtering, sorting ya pagination ke liye use hote hain.
+
+`Interview Answer:`
+
+Route parameters are part of the URL path, while query parameters provide optional data for filtering or customization.
+
+Example:
+
+```javascript
+/users/10
+
+/users?page=1
+```
+
+---
+
 8. What’s the role of CORS in Express and how to configure it?
+
+`Hinglish Explanation:`
+
+CORS browser ko control karta hai ki kaunse domains API access kar sakte hain. Ye cross-origin requests allow ya block karta hai.
+
+`Interview Answer:`
+
+CORS is a browser security mechanism that controls access to resources from different origins.
+
+Example:
+
+```javascript
+app.use(cors({
+  origin: "https://example.com"
+}));
+```
+
+---
+
 9. How do you handle file uploads?
+
+`Hinglish Explanation:`
+
+File uploads ke liye Multer middleware commonly use hota hai. Files local storage ya cloud storage me save ki ja sakti hain.
+
+`Interview Answer:`
+
+File uploads are typically handled using Multer, which processes multipart/form-data requests.
+
+Example:
+
+```javascript
+const upload = multer({
+  dest: "uploads/"
+});
+```
+
+---
+
 10. How would you implement logging in Express?
+
+`Hinglish Explanation:`
+
+Logging requests, errors aur application events ko track karne ke liye use hoti hai. Morgan aur Winston commonly use hote hain.
+
+`Interview Answer:`
+
+Logging helps monitor application behavior and diagnose issues using tools such as Morgan and Winston.
+
+Example:
+
+```javascript
+app.use(morgan("combined"));
+```
+
+---
+
 11. What is the use of express-validator?
+
+`Hinglish Explanation:`
+
+express-validator incoming request data validate aur sanitize karne ke liye use hota hai. Ye invalid data ko application tak pahunchne se rokta hai.
+
+`Interview Answer:`
+
+express-validator provides middleware for validating and sanitizing request data before processing.
+
+Example:
+
+```javascript
+body("email")
+  .isEmail();
+```
+
+---
+
 12. How do you prevent SQL/NoSQL injection in Express?
+
+`Hinglish Explanation:`
+
+Input validation, parameterized queries aur ORM tools use karke injection attacks prevent kiye jate hain.
+
+`Interview Answer:`
+
+SQL and NoSQL injections are prevented using input validation, parameterized queries, and ORM/ODM libraries.
+
+Example:
+
+```javascript
+User.findOne({
+  email: req.body.email
+});
+```
+
+---
+
 13. What is Helmet and how does it help with security?
+
+`Hinglish Explanation:`
+
+Helmet Express middleware hai jo security-related HTTP headers automatically set karta hai aur common attacks se protection provide karta hai.
+
+`Interview Answer:`
+
+Helmet enhances application security by setting HTTP headers that help mitigate common web vulnerabilities.
+
+Example:
+
+```javascript
+app.use(helmet());
+```
+
+---
+
 14. How do you handle role-based authorization in Express?
+
+`Hinglish Explanation:`
+
+Role-based authorization me user roles check kiye jate hain aur permissions ke basis par access allow ya deny kiya jata hai.
+
+`Interview Answer:`
+
+Role-based authorization restricts access based on user roles and permissions after successful authentication.
+
+Example:
+
+```javascript
+if (user.role !== "admin") {
+  return res.status(403);
+}
+```
+
+---
+
 15. What are virtual routes and when are they useful?
+
+`Hinglish Explanation:`
+
+Virtual routes actual database fields ke bina computed ya derived values expose karte hain. Mongoose virtuals iska common example hain.
+
+`Interview Answer:`
+
+Virtual routes expose computed properties without storing them in the database, improving flexibility and readability.
+
+Example:
+
+```javascript
+userSchema.virtual("fullName");
+```
+
+---
+
 16. Difference between synchronous and asynchronous middleware.
+
+`Hinglish Explanation:`
+
+Synchronous middleware immediately execute hoti hai, jabki asynchronous middleware promises ya async operations complete hone ka wait karti hai.
+
+`Interview Answer:`
+
+Synchronous middleware executes immediately, while asynchronous middleware handles operations such as database calls or API requests.
+
+Example:
+
+```javascript
+app.use(async (req, res, next) => {
+  await fetchData();
+  next();
+});
+```
+
+---
+
 17. How do you optimize performance in Express apps?
+
+`Hinglish Explanation:`
+
+Caching, compression, database optimization aur unnecessary middleware removal se performance improve ki ja sakti hai.
+
+`Interview Answer:`
+
+Express performance can be optimized using caching, compression, efficient database queries, and minimizing middleware overhead.
+
+Example:
+
+```javascript
+app.use(compression());
+```
+
+---
+
 18. What is a proxy in Express and how to set it?
+
+`Hinglish Explanation:`
+
+Proxy client aur server ke beech intermediary layer hoti hai. Express me reverse proxy ke piche deploy karte waqt trust proxy enable karna padta hai.
+
+`Interview Answer:`
+
+A proxy forwards client requests to backend servers. Express supports proxy-aware configurations through trust proxy settings.
+
+Example:
+
+```javascript
+app.set(
+  "trust proxy",
+  true
+);
+```
+
+---
+
 19. What is the use of app.locals and res.locals?
+
+`Hinglish Explanation:`
+
+app.locals application-wide data store karta hai, jabki res.locals sirf current request lifecycle ke liye data store karta hai.
+
+`Interview Answer:`
+
+app.locals stores global application data, while res.locals stores request-specific data accessible during a single request.
+
+Example:
+
+```javascript
+app.locals.appName = "MyApp";
+
+res.locals.user = user;
+```
+
+---
+
 20. How can you implement request tracing in Express?
+
+`Hinglish Explanation:`
+
+Request tracing me har request ko unique ID assign ki jati hai taaki distributed systems me request flow track kiya ja sake.
+
+`Interview Answer:`
+
+Request tracing assigns unique identifiers to requests, making debugging and monitoring easier across services.
+
+Example:
+
+```javascript
+req.id = uuid();
+
+logger.info(req.id);
+```
+
 21. What is the event loop in Node.js and how does it work?
 22. Explain the difference between process.nextTick() and setImmediate().
 23. How does Node.js handle asynchronous I/O?
