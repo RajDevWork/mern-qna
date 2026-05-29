@@ -1120,25 +1120,401 @@
         ```
 
 151. Infinite loop useEffect mein?
+
+`Hinglish Explanation:`
+
+Agar useEffect ke andar state update ho aur dependency array me wahi state ho, to effect baar-baar run hota rahega aur infinite loop create ho jayega.
+
+`Interview Answer:`
+
+An infinite loop occurs when an effect updates a state value that is also present in its dependency array, causing the effect to run repeatedly.
+
+Example:
+
+```javascript
+useEffect(() => {
+  setCount(count + 1);
+}, [count]);
+```
+
+---
+
 152. Cleanup function?
+
+`Hinglish Explanation:`
+
+Cleanup function component unmount hone ya effect dobara run hone se pehle execute hota hai. Ye memory leaks aur unwanted subscriptions ko remove karne ke liye use hota hai.
+
+`Interview Answer:`
+
+A cleanup function is returned from useEffect and is used to clean up resources such as timers, event listeners, or subscriptions.
+
+Example:
+
+```javascript
+useEffect(() => {
+  const timer = setInterval(() => {}, 1000);
+
+  return () => clearInterval(timer);
+}, []);
+```
+
+---
+
 153. React.memo?
+
+`Hinglish Explanation:`
+
+React.memo component ko memoize karta hai. Agar props change nahi hote to component dobara render nahi hota.
+
+`Interview Answer:`
+
+React.memo is a higher-order component that prevents unnecessary re-renders by memoizing the component output based on props.
+
+Example:
+
+```javascript
+export default React.memo(User);
+```
+
+---
+
 154. Re-render kaise hota hai?
+
+`Hinglish Explanation:`
+
+Component re-render tab hota hai jab state change ho, props change ho ya parent component re-render ho.
+
+`Interview Answer:`
+
+A React component re-renders when its state changes, props change, or its parent triggers a render cycle.
+
+Example:
+
+```javascript
+setCount(count + 1);
+```
+
+---
+
 155. Re-render kaise avoid kare?
+
+`Hinglish Explanation:`
+
+Unnecessary re-renders ko React.memo, useMemo, useCallback aur proper state management se reduce kiya ja sakta hai.
+
+`Interview Answer:`
+
+Unnecessary re-renders can be avoided using memoization techniques like React.memo, useMemo, and useCallback.
+
+Example:
+
+```javascript
+const total = useMemo(() => calculate(), [data]);
+```
+
+---
+
 156. Context API?
+
+`Hinglish Explanation:`
+
+Context API global data share karne ke liye use hoti hai bina props drilling ke. Ye theme, authentication aur language settings ke liye useful hai.
+
+`Interview Answer:`
+
+Context API provides a way to share data across components without manually passing props through every level.
+
+Example:
+
+```javascript
+const ThemeContext = createContext();
+```
+
+---
+
 157. Redux kya hai?
+
+`Hinglish Explanation:`
+
+Redux ek centralized state management library hai jo application state ko single store me maintain karti hai.
+
+`Interview Answer:`
+
+Redux is a predictable state management library that stores application state in a centralized store and updates it through actions and reducers.
+
+Example:
+
+```javascript
+dispatch({ type: "ADD_TODO" });
+```
+
+---
+
 158. Redux vs Context?
+
+`Hinglish Explanation:`
+
+Context simple global state ke liye suitable hai, jabki Redux complex state management aur middleware support provide karta hai.
+
+`Interview Answer:`
+
+Context API is best for lightweight global state, whereas Redux is suitable for complex state management with middleware and debugging tools.
+
+Example:
+
+```javascript
+// Context → Theme
+// Redux → Shopping Cart
+```
+
+---
+
 159. Middleware Redux mein?
+
+`Hinglish Explanation:`
+
+Middleware action aur reducer ke beech execute hota hai aur async operations ya logging handle karta hai.
+
+`Interview Answer:`
+
+Middleware intercepts actions before they reach reducers and is commonly used for logging, API calls, and asynchronous logic.
+
+Example:
+
+```javascript
+const logger = store => next => action => {
+  console.log(action);
+  next(action);
+};
+```
+
+---
+
 160. Thunk vs Saga?
+
+`Hinglish Explanation:`
+
+Thunk simple async operations ke liye use hota hai, jabki Saga complex side effects aur workflows ko manage karta hai.
+
+`Interview Answer:`
+
+Redux Thunk uses functions for asynchronous logic, while Redux Saga uses generator functions to handle complex side effects.
+
+Example:
+
+```javascript
+// Thunk
+dispatch(fetchUsers());
+
+// Saga
+yield call(fetchUsers);
+```
+
+---
+
 161. Zustand kya hai?
+
+`Hinglish Explanation:`
+
+Zustand ek lightweight state management library hai jisme Redux ke comparison me bahut kam boilerplate hota hai.
+
+`Interview Answer:`
+
+Zustand is a minimal state management library that provides global state management with a simple API and less boilerplate.
+
+Example:
+
+```javascript
+const useStore = create(set => ({
+  count: 0
+}));
+```
+
+---
+
 162. Recoil kya hai?
+
+`Hinglish Explanation:`
+
+Recoil React ke liye state management library hai jo atoms aur selectors ka use karti hai.
+
+`Interview Answer:`
+
+Recoil is a React state management library that manages shared state using atoms and derived state using selectors.
+
+Example:
+
+```javascript
+const countAtom = atom({
+  key: "count",
+  default: 0
+});
+```
+
+---
+
 163. Code splitting?
+
+`Hinglish Explanation:`
+
+Code splitting bundle ko chhote chunks me divide karta hai jisse initial loading fast ho jati hai.
+
+`Interview Answer:`
+
+Code splitting breaks an application bundle into smaller chunks that can be loaded on demand, improving performance.
+
+Example:
+
+```javascript
+const Home = React.lazy(() =>
+  import("./Home")
+);
+```
+
+---
+
 164. Lazy loading?
+
+`Hinglish Explanation:`
+
+Lazy loading resources ya components ko tab load karta hai jab unki zarurat padti hai.
+
+`Interview Answer:`
+
+Lazy loading delays loading of components until they are actually required, reducing initial load time.
+
+Example:
+
+```javascript
+const About = React.lazy(() =>
+  import("./About")
+);
+```
+
+---
+
 165. Suspense?
+
+`Hinglish Explanation:`
+
+Suspense lazy loaded component ke load hone tak fallback UI show karta hai.
+
+`Interview Answer:`
+
+Suspense displays a fallback UI while React waits for lazy-loaded components or asynchronous operations to complete.
+
+Example:
+
+```javascript
+<Suspense fallback={<p>Loading...</p>}>
+  <About />
+</Suspense>
+```
+
+---
+
 166. Error boundaries?
+
+`Hinglish Explanation:`
+
+Error Boundary component tree me JavaScript errors catch karta hai aur fallback UI display karta hai.
+
+`Interview Answer:`
+
+Error Boundaries catch runtime errors in React components and display a fallback UI instead of crashing the application.
+
+Example:
+
+```javascript
+componentDidCatch(error) {
+  console.log(error);
+}
+```
+
+---
+
 167. Portals kya hain?
+
+`Hinglish Explanation:`
+
+Portals component ko parent DOM hierarchy ke bahar render karne ki facility dete hain. Ye mostly modals, tooltips aur popups ke liye use hote hain.
+
+`Interview Answer:`
+
+Portals allow rendering components outside the parent DOM hierarchy while maintaining the React component tree.
+
+Example:
+
+```javascript
+ReactDOM.createPortal(
+  <Modal />,
+  document.body
+);
+```
+
+---
+
 168. Fragments kya hain?
+
+`Hinglish Explanation:`
+
+Fragments extra DOM node create kiye bina multiple elements return karne dete hain. Isse DOM clean rehta hai.
+
+`Interview Answer:`
+
+Fragments allow grouping multiple elements without adding extra nodes to the DOM.
+
+Example:
+
+```javascript
+<>
+  <h1>Hello</h1>
+  <p>World</p>
+</>
+```
+
+---
+
 169. StrictMode kya hai?
+
+`Hinglish Explanation:`
+
+StrictMode development mode me potential problems aur unsafe practices identify karta hai. Production build me iska koi impact nahi hota.
+
+`Interview Answer:`
+
+StrictMode is a development tool that highlights potential issues and deprecated practices in React applications.
+
+Example:
+
+```javascript
+<React.StrictMode>
+  <App />
+</React.StrictMode>
+```
+
+---
+
 170. DevTools ka use?
+
+`Hinglish Explanation:`
+
+React DevTools se components, props, state, hooks aur performance inspect kiye ja sakte hain. Debugging ke liye ye bahut useful tool hai.
+
+`Interview Answer:`
+
+React DevTools is a browser extension used for inspecting component trees, state, props, hooks, and performance.
+
+Example:
+
+```javascript
+Inspect Component
+→ View State
+→ View Props
+→ Profile Performance
+```
+
 171. SSR kya hai?
 172. CSR kya hai?
 173. Hydration kya hai?
