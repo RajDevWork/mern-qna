@@ -568,11 +568,15 @@
 ## ⚛️ React (121-220)
 
 121. React kya hai?
+
         Hinglish Explanation:
+
         React ek JavaScript library hai jo UI (User Interface) banane ke liye use hoti hai. Yeh component-based architecture follow karti hai aur Virtual DOM use karke fast rendering provide karti hai.
 
         Interview Answer:
+
         React is a JavaScript library developed by Meta for building reusable and interactive user interfaces. It uses a component-based architecture and Virtual DOM for efficient rendering.
+
         Example:
             ```javascript
                 function App() {
@@ -581,22 +585,30 @@
             ```
 
 122. JSX kya hai?
+
         Hinglish Explanation:
+
         JSX JavaScript XML hai. Isse hum JavaScript ke andar HTML jaisa code likh sakte hain. Browser JSX ko directly nahi samajhta, Babel ise JavaScript me convert karta hai.
 
         Interview Answer:
+
         JSX is a syntax extension for JavaScript that allows developers to write HTML-like code inside JavaScript. It gets transpiled into React.createElement calls.
+
         Example:
             ```javascript
                 const element = <h1>Hello</h1>;
             ```
 
 123. Virtual DOM?
+
         Hinglish Explanation:
+
         Virtual DOM React ka lightweight copy of Real DOM hota hai. Jab state ya props change hote hain, React pehle Virtual DOM update karta hai aur phir difference find karke sirf required changes Real DOM me karta hai.
 
         Interview Answer:
+
         Virtual DOM is a lightweight JavaScript representation of the Real DOM. React compares Virtual DOM changes and updates only the necessary parts of the Real DOM.
+
         Example:
             ```javascript
                 setCount(count + 1);
@@ -604,7 +616,9 @@
 
 
 124. Real DOM vs Virtual DOM?
+
         Hinglish Explanation:
+
         | Real DOM                          | Virtual DOM                         |
         | --------------------------------- | ----------------------------------- |
         | Browser ka actual DOM             | Memory me virtual copy              |
@@ -612,18 +626,24 @@
         | Entire DOM re-render ho sakta hai | Only changed parts update hote hain |
 
         Interview Answer:
+
         Real DOM is the actual browser DOM, while Virtual DOM is a lightweight copy maintained by React. Virtual DOM improves performance by minimizing direct DOM manipulations.
+
         Example:
             ```javascript
                 setName("Raj");
             ```
 
 125. Components kya hote hain?
+
         Hinglish Explanation:
+
         Components React ke reusable building blocks hote hain. Har component UI ka ek independent part represent karta hai.
 
         Interview Answer:
+
         Components are reusable and independent pieces of UI that help build complex interfaces in a modular way.
+        
         Example:
             ```javascript
                 function Header() {
