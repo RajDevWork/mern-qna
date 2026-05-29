@@ -5235,25 +5235,400 @@ logger.info(req.id);
 ```
 
 21. What is the event loop in Node.js and how does it work?
+
+`Hinglish Explanation:`
+
+Event Loop Node.js ka core mechanism hai jo asynchronous operations ko manage karta hai. Jab call stack empty hota hai, Event Loop callback queue se tasks uthakar execute karta hai.
+
+`Interview Answer:`
+
+The Event Loop enables Node.js to perform non-blocking operations by processing callbacks and asynchronous tasks when the call stack becomes empty.
+
+Example:
+
+```javascript
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Timer");
+}, 0);
+
+console.log("End");
+```
+
+---
+
 22. Explain the difference between process.nextTick() and setImmediate().
+
+`Hinglish Explanation:`
+
+`process.nextTick()` current operation complete hote hi execute hota hai, jabki `setImmediate()` next Event Loop iteration me run hota hai.
+
+`Interview Answer:`
+
+`process.nextTick()` has higher priority and executes before the Event Loop continues, whereas `setImmediate()` runs during the next iteration.
+
+Example:
+
+```javascript
+process.nextTick(() => {
+  console.log("nextTick");
+});
+
+setImmediate(() => {
+  console.log("setImmediate");
+});
+```
+
+---
+
 23. How does Node.js handle asynchronous I/O?
+
+`Hinglish Explanation:`
+
+Node.js asynchronous operations ko background threads me delegate karta hai aur completion ke baad callback ya promise execute karta hai.
+
+`Interview Answer:`
+
+Node.js uses the Event Loop and libuv thread pool to handle asynchronous I/O without blocking the main thread.
+
+Example:
+
+```javascript
+fs.readFile("file.txt", (err, data) => {
+  console.log(data);
+});
+```
+
+---
+
 24. What are streams and how do you use them?
+
+`Hinglish Explanation:`
+
+Streams data ko chunks me process karte hain instead of loading everything into memory. Ye large files aur real-time data ke liye useful hain.
+
+`Interview Answer:`
+
+Streams allow efficient processing of large amounts of data by reading or writing it in chunks.
+
+Example:
+
+```javascript
+const stream =
+  fs.createReadStream("file.txt");
+```
+
+---
+
 25. How does clustering work in Node.js?
+
+`Hinglish Explanation:`
+
+Clustering multiple Node.js processes create karta hai jo available CPU cores ka use karte hain. Isse application throughput increase hota hai.
+
+`Interview Answer:`
+
+Clustering allows Node.js applications to utilize multiple CPU cores by spawning worker processes.
+
+Example:
+
+```javascript
+cluster.fork();
+```
+
+---
+
 26. Explain how you’d implement a caching layer in Node.
+
+`Hinglish Explanation:`
+
+Frequently accessed data ko Redis jaise cache me store kiya jata hai. Agar cache me data available ho to database call avoid ki jati hai.
+
+`Interview Answer:`
+
+A caching layer stores frequently used data in memory, reducing database load and improving response times.
+
+Example:
+
+```javascript
+const data =
+  await redis.get("users");
+```
+
+---
+
 27. How do you handle large file uploads efficiently?
+
+`Hinglish Explanation:`
+
+Large files ko streams ke through process karna chahiye taaki poori file memory me load na ho aur memory usage control me rahe.
+
+`Interview Answer:`
+
+Large file uploads should be processed using streams and chunked uploads to minimize memory consumption.
+
+Example:
+
+```javascript
+req.pipe(
+  fs.createWriteStream("file.txt")
+);
+```
+
+---
+
 28. What are child processes and how are they used?
+
+`Hinglish Explanation:`
+
+Child Processes separate processes run karne ki facility dete hain. Ye shell commands execute karne ya CPU-intensive tasks isolate karne ke liye use hote hain.
+
+`Interview Answer:`
+
+Child processes allow Node.js to execute external commands or separate workloads outside the main process.
+
+Example:
+
+```javascript
+const { exec } =
+  require("child_process");
+```
+
+---
+
 29. What is the role of buffers in Node.js?
+
+`Hinglish Explanation:`
+
+Buffers binary data ko temporarily memory me store karte hain. Files, streams aur network communication me inka use hota hai.
+
+`Interview Answer:`
+
+Buffers provide a way to work directly with binary data in memory.
+
+Example:
+
+```javascript
+const buffer =
+  Buffer.from("Hello");
+```
+
+---
+
 30. How do you monitor and debug Node.js performance?
+
+`Hinglish Explanation:`
+
+Performance monitor karne ke liye profiling tools, logs, metrics aur APM solutions use kiye jate hain. Bottlenecks identify karke optimize kiya jata hai.
+
+`Interview Answer:`
+
+Node.js performance can be monitored using profiling tools, metrics, logs, and application performance monitoring solutions.
+
+Example:
+
+```javascript
+console.time("task");
+
+console.timeEnd("task");
+```
+
+---
+
 31. What are worker threads and when would you use them?
+
+`Hinglish Explanation:`
+
+Worker Threads CPU-intensive tasks ko separate threads me run karte hain taaki Event Loop block na ho.
+
+`Interview Answer:`
+
+Worker Threads provide parallel execution for CPU-heavy tasks without blocking the main Node.js thread.
+
+Example:
+
+```javascript
+const worker =
+  new Worker("./worker.js");
+```
+
+---
+
 32. Explain how you’d secure a Node.js application.
+
+`Hinglish Explanation:`
+
+Security ke liye authentication, authorization, HTTPS, input validation aur dependency scanning implement karna zaruri hai.
+
+`Interview Answer:`
+
+Node.js applications are secured using authentication, authorization, HTTPS, input validation, and secure dependency management.
+
+Example:
+
+```javascript
+app.use(helmet());
+```
+
+---
+
 33. How do you manage environment variables securely?
+
+`Hinglish Explanation:`
+
+Sensitive information jaise API keys aur database credentials environment variables me store karni chahiye, codebase me nahi.
+
+`Interview Answer:`
+
+Environment variables separate configuration from code and help protect sensitive information.
+
+Example:
+
+```javascript
+process.env.DB_URL;
+```
+
+---
+
 34. What’s the difference between CommonJS and ES modules?
+
+`Hinglish Explanation:`
+
+CommonJS `require` aur `module.exports` use karta hai, jabki ES Modules `import` aur `export` syntax use karte hain.
+
+`Interview Answer:`
+
+CommonJS is the traditional Node.js module system, while ES Modules are the modern JavaScript standard.
+
+Example:
+
+```javascript
+const fs = require("fs");
+
+// OR
+
+import fs from "fs";
+```
+
+---
+
 35. How do you handle rate limiting in Node.js?
+
+`Hinglish Explanation:`
+
+Rate limiting API abuse aur excessive requests ko control karti hai. Express-rate-limit jaise middleware commonly use kiye jate hain.
+
+`Interview Answer:`
+
+Rate limiting restricts request frequency to protect applications from abuse and denial-of-service attacks.
+
+Example:
+
+```javascript
+app.use(rateLimit({
+  max: 100
+}));
+```
+
+---
+
 36. How do you implement JWT authentication in Node.js?
+
+`Hinglish Explanation:`
+
+Login ke baad JWT generate kiya jata hai aur client ko return kiya jata hai. Protected routes par token verify kiya jata hai.
+
+`Interview Answer:`
+
+JWT authentication uses signed tokens to verify user identity without storing session data on the server.
+
+Example:
+
+```javascript
+const token = jwt.sign(
+  { id: user.id },
+  SECRET
+);
+```
+
+---
+
 37. How does dependency injection work in Node?
+
+`Hinglish Explanation:`
+
+Dependency Injection me dependencies ko class ya function ke andar directly create karne ke bajay outside se provide kiya jata hai.
+
+`Interview Answer:`
+
+Dependency Injection improves modularity and testability by providing dependencies from outside rather than creating them internally.
+
+Example:
+
+```javascript
+function UserService(repo) {
+  this.repo = repo;
+}
+```
+
+---
+
 38. What is the role of fs/promises in Node?
+
+`Hinglish Explanation:`
+
+`fs/promises` file operations ko Promise-based API ke through perform karne deta hai, jisse async/await use karna easy ho jata hai.
+
+`Interview Answer:`
+
+The `fs/promises` module provides Promise-based filesystem operations for cleaner asynchronous code.
+
+Example:
+
+```javascript
+const data =
+  await fs.readFile("file.txt");
+```
+
+---
+
 39. How can you prevent memory leaks?
+
+`Hinglish Explanation:`
+
+Unused references remove karna, timers clear karna aur event listeners cleanup karna memory leaks prevent karne ke important steps hain.
+
+`Interview Answer:`
+
+Memory leaks can be prevented by releasing unused resources, cleaning up listeners, and monitoring memory usage.
+
+Example:
+
+```javascript
+clearInterval(timer);
+```
+
+---
+
 40. How would you implement logging and metrics?
+
+`Hinglish Explanation:`
+
+Logging application events aur errors record karti hai, jabki metrics performance indicators jaise response time aur memory usage measure karte hain.
+
+`Interview Answer:`
+
+Logging captures application events, while metrics track performance and operational health for monitoring and alerting.
+
+Example:
+
+```javascript
+logger.info("Server started");
+
+metrics.increment("requests");
+```
+
 ---
 
 ## 🍃 MongoDB (311-360)
