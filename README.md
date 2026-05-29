@@ -4252,25 +4252,388 @@ New Relic
 ```
 
 281. High traffic handle kaise?
+
+`Hinglish Explanation:`
+
+High traffic handle karne ke liye load balancing, caching, database optimization aur horizontal scaling use ki jati hai. Bottlenecks identify karke system ko distribute karna important hota hai.
+
+`Interview Answer:`
+
+High traffic is handled using load balancing, caching, horizontal scaling, and efficient database design to distribute workload across multiple resources.
+
+Example:
+
+```text
+Load Balancer
+   ↓
+App1  App2  App3
+```
+
+---
+
 282. Memory leak detect?
+
+`Hinglish Explanation:`
+
+Memory leak tab hoti hai jab unused memory release nahi hoti. Heap snapshots, Chrome DevTools aur monitoring tools use karke leaks identify kiye ja sakte hain.
+
+`Interview Answer:`
+
+Memory leaks can be detected using heap dumps, profiling tools, and monitoring memory usage trends over time.
+
+Example:
+
+```bash
+node --inspect app.js
+```
+
+---
+
 283. API slow ho toh?
+
+`Hinglish Explanation:`
+
+Slow API ke liye database queries, external services aur code bottlenecks analyze karne chahiye. Caching aur query optimization commonly use ki jati hai.
+
+`Interview Answer:`
+
+When an API is slow, profiling, query optimization, caching, and reducing external dependencies are common solutions.
+
+Example:
+
+```javascript
+console.time("API");
+console.timeEnd("API");
+```
+
+---
+
 284. DB bottleneck?
+
+`Hinglish Explanation:`
+
+Database bottlenecks inefficient queries, missing indexes ya excessive connections ki wajah se aate hain. Query optimization aur indexing important solutions hain.
+
+`Interview Answer:`
+
+Database bottlenecks are addressed through indexing, query optimization, caching, and proper connection management.
+
+Example:
+
+```sql
+CREATE INDEX idx_email
+ON users(email);
+```
+
+---
+
 285. Logging strategy?
+
+`Hinglish Explanation:`
+
+Logging strategy me structured logs, error logs aur audit logs maintain kiye jate hain. Logs centralized system me store karna best practice hai.
+
+`Interview Answer:`
+
+A good logging strategy includes structured logging, centralized storage, log levels, and correlation IDs for traceability.
+
+Example:
+
+```javascript
+logger.error(
+  "Database connection failed"
+);
+```
+
+---
+
 286. Retry mechanism?
+
+`Hinglish Explanation:`
+
+Retry mechanism temporary failures ke case me operation ko dubara execute karta hai. Exponential backoff commonly use kiya jata hai.
+
+`Interview Answer:`
+
+A retry mechanism automatically re-attempts failed operations, often using exponential backoff to avoid overwhelming services.
+
+Example:
+
+```javascript
+for (let i = 0; i < 3; i++) {
+  await retry();
+}
+```
+
+---
+
 287. Circuit breaker?
+
+`Hinglish Explanation:`
+
+Circuit Breaker failing services ko repeatedly call karne se rokta hai. Ye system stability aur fault tolerance improve karta hai.
+
+`Interview Answer:`
+
+The Circuit Breaker pattern prevents repeated calls to failing services and allows systems to recover gracefully.
+
+Example:
+
+```javascript
+breaker.fire(request);
+```
+
+---
+
 288. Graceful shutdown?
+
+`Hinglish Explanation:`
+
+Graceful shutdown server ko existing requests complete karne ka time deta hai before process terminate hota hai.
+
+`Interview Answer:`
+
+Graceful shutdown ensures ongoing requests are completed and resources are released before the application exits.
+
+Example:
+
+```javascript
+process.on("SIGTERM", () => {
+  server.close();
+});
+```
+
+---
+
 289. Zero downtime deploy?
+
+`Hinglish Explanation:`
+
+Zero downtime deployment me new version deploy hota hai bina users ko service interruption diye. Blue-Green aur Rolling deployments common approaches hain.
+
+`Interview Answer:`
+
+Zero downtime deployment ensures application updates occur without interrupting active users or requests.
+
+Example:
+
+```text
+Blue → Current
+Green → New Version
+```
+
+---
+
 290. Load testing kaise karte ho?
-291. Clustering vs worker threads?
+
+`Hinglish Explanation:`
+
+Load testing application ki performance evaluate karti hai under expected ya high traffic conditions. JMeter aur K6 popular tools hain.
+
+`Interview Answer:`
+
+Load testing measures application performance under varying levels of traffic to identify bottlenecks and capacity limits.
+
+Example:
+
+```bash
+k6 run load-test.js
+```
+
+---
+
+291. Clustering vs Worker Threads?
+
+`Hinglish Explanation:`
+
+Clustering multiple processes create karta hai, jabki Worker Threads same process ke andar multiple threads run karte hain. CPU-intensive tasks ke liye Worker Threads better hain.
+
+`Interview Answer:`
+
+Clustering scales applications across CPU cores using processes, while Worker Threads enable parallel execution within a single process.
+
+Example:
+
+```javascript
+cluster.fork();
+
+// Worker
+new Worker("./worker.js");
+```
+
+---
+
 292. PM2 kya hai?
+
+`Hinglish Explanation:`
+
+PM2 Node.js process manager hai jo monitoring, clustering aur automatic restarts provide karta hai.
+
+`Interview Answer:`
+
+PM2 is a production process manager for Node.js applications that offers monitoring, clustering, and process recovery.
+
+Example:
+
+```bash
+pm2 start app.js
+```
+
+---
+
 293. Error monitoring tools?
+
+`Hinglish Explanation:`
+
+Error monitoring tools production issues automatically track aur report karte hain. Sentry aur Rollbar commonly use hote hain.
+
+`Interview Answer:`
+
+Error monitoring tools collect exceptions, stack traces, and diagnostics to help developers identify and resolve production issues.
+
+Example:
+
+```javascript
+Sentry.captureException(error);
+```
+
+---
+
 294. Health checks?
+
+`Hinglish Explanation:`
+
+Health check endpoints application status verify karte hain. Load balancers aur orchestration systems inka use service availability monitor karne ke liye karte hain.
+
+`Interview Answer:`
+
+Health checks provide endpoints that indicate whether an application is running and ready to serve requests.
+
+Example:
+
+```javascript
+app.get("/health", (req, res) => {
+  res.send("OK");
+});
+```
+
+---
+
 295. API documentation?
+
+`Hinglish Explanation:`
+
+API documentation endpoints, request formats aur responses explain karti hai. Swagger/OpenAPI widely used standards hain.
+
+`Interview Answer:`
+
+API documentation describes endpoints, request formats, responses, and authentication requirements for developers.
+
+Example:
+
+```yaml
+GET /users
+POST /users
+```
+
+---
+
 296. GraphQL subscriptions?
+
+`Hinglish Explanation:`
+
+GraphQL Subscriptions real-time updates provide karti hain jab server-side data change hota hai. Ye WebSockets par based hoti hain.
+
+`Interview Answer:`
+
+GraphQL Subscriptions enable real-time communication by pushing updates from the server to connected clients.
+
+Example:
+
+```graphql
+subscription {
+  newMessage
+}
+```
+
+---
+
 297. Database connection pooling?
+
+`Hinglish Explanation:`
+
+Connection pooling database connections ko reuse karta hai taaki har request ke liye nayi connection create na karni pade.
+
+`Interview Answer:`
+
+Connection pooling improves performance by maintaining and reusing a pool of database connections.
+
+Example:
+
+```javascript
+const pool =
+  mysql.createPool(config);
+```
+
+---
+
 298. Environment configuration?
+
+`Hinglish Explanation:`
+
+Environment-specific settings jaise database URLs aur secrets ko environment variables me store kiya jata hai.
+
+`Interview Answer:`
+
+Environment configuration separates application settings from code and allows different values for development, testing, and production.
+
+Example:
+
+```javascript
+process.env.DB_URL;
+```
+
+---
+
 299. API gateway?
+
+`Hinglish Explanation:`
+
+API Gateway client requests ko route karta hai aur authentication, rate limiting aur monitoring handle karta hai.
+
+`Interview Answer:`
+
+An API Gateway acts as a single entry point for clients and manages routing, security, and request aggregation.
+
+Example:
+
+```text
+Client
+ → API Gateway
+ → Services
+```
+
+---
+
 300. Message queue (RabbitMQ/Kafka)?
+
+`Hinglish Explanation:`
+
+Message queues asynchronous communication enable karti hain. RabbitMQ task queues ke liye aur Kafka high-throughput event streaming ke liye popular hai.
+
+`Interview Answer:`
+
+Message queues decouple services and enable reliable asynchronous communication between distributed systems.
+
+Example:
+
+```javascript
+channel.sendToQueue(
+  "orders",
+  Buffer.from(data)
+);
+```
+
 301. Event sourcing?
 302. CQRS pattern?
 303. Rate limiting algorithms?
