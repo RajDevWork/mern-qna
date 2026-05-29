@@ -443,25 +443,410 @@
 ## 🧠 JavaScript (1-120)
 
 1. JavaScript kya hai?
+
+`Hinglish Explanation:`
+
+JavaScript ek high-level programming language hai jo web pages ko interactive banati hai. Aaj JavaScript frontend, backend (Node.js), mobile aur desktop applications me bhi use hoti hai.
+
+`Interview Answer:`
+
+JavaScript is a high-level, dynamically typed programming language used to build interactive web applications. It supports event-driven, asynchronous, and object-oriented programming paradigms.
+
+Example:
+
+```javascript
+console.log("Hello JavaScript");
+```
+
+---
+
 2. JS dynamically typed kaise hai?
+
+`Hinglish Explanation:`
+
+JavaScript me variable ka type declare nahi karna padta. Ek hi variable runtime par different types ki values hold kar sakta hai.
+
+`Interview Answer:`
+
+JavaScript is dynamically typed because variable types are determined at runtime rather than during compilation. A variable can hold values of different types over its lifetime.
+
+Example:
+
+```javascript
+let data = "Raj";
+data = 25;
+```
+
+---
+
 3. var vs let vs const?
+
+`Hinglish Explanation:`
+
+`var` function-scoped hota hai aur redeclare ho sakta hai. `let` block-scoped hota hai aur reassign ho sakta hai. `const` block-scoped hota hai aur reassign nahi ho sakta.
+
+`Interview Answer:`
+
+`var` is function-scoped and can be redeclared. `let` is block-scoped and reassignable, while `const` is block-scoped and cannot be reassigned.
+
+Example:
+
+```javascript
+let age = 25;
+const PI = 3.14;
+```
+
+---
+
 4. Hoisting kya hai?
+
+`Hinglish Explanation:`
+
+Hoisting JavaScript ka behavior hai jisme declarations execution se pehle memory me move ho jati hain. Variables aur functions hoist hote hain, lekin initialization nahi.
+
+`Interview Answer:`
+
+Hoisting is JavaScript's behavior of moving declarations to the top of their scope during the creation phase of execution.
+
+Example:
+
+```javascript
+console.log(a);
+
+var a = 10;
+```
+
+---
+
 5. Temporal Dead Zone kya hai?
+
+`Hinglish Explanation:`
+
+TDZ wo area hai jahan `let` aur `const` variables declare to ho jate hain lekin initialization se pehle access nahi kiye ja sakte.
+
+`Interview Answer:`
+
+The Temporal Dead Zone is the period between variable declaration and initialization where accessing a `let` or `const` variable throws an error.
+
+Example:
+
+```javascript
+console.log(name);
+
+let name = "Raj";
+```
+
+---
+
 6. Scope kya hota hai?
+
+`Hinglish Explanation:`
+
+Scope define karta hai ki variable program ke kis part se access kiya ja sakta hai.
+
+`Interview Answer:`
+
+Scope determines the accessibility and visibility of variables within different parts of a program.
+
+Example:
+
+```javascript
+function test() {
+  let x = 10;
+}
+```
+
+---
+
 7. Scope types?
+
+`Hinglish Explanation:`
+
+JavaScript me mainly Global Scope, Function Scope aur Block Scope hote hain. Variable ki visibility scope ke according decide hoti hai.
+
+`Interview Answer:`
+
+The main scope types in JavaScript are Global Scope, Function Scope, and Block Scope.
+
+Example:
+
+```javascript
+let globalVar = 1;
+
+function demo() {
+  let localVar = 2;
+}
+```
+
+---
+
 8. Lexical scope kya hai?
+
+`Hinglish Explanation:`
+
+Lexical Scope ka matlab hai ki function apne surrounding scope ke variables access kar sakta hai, jahan wo define hua tha.
+
+`Interview Answer:`
+
+Lexical Scope means a function can access variables from its parent scope based on where it was defined in the code.
+
+Example:
+
+```javascript
+function outer() {
+  let name = "Raj";
+
+  function inner() {
+    console.log(name);
+  }
+}
+```
+
+---
+
 9. Closure kya hai?
+
+`Hinglish Explanation:`
+
+Closure tab banta hai jab ek inner function apne outer function ke variables ko outer function execute hone ke baad bhi access kar sakta hai.
+
+`Interview Answer:`
+
+A closure is created when a function remembers and accesses variables from its lexical scope even after the outer function has finished executing.
+
+Example:
+
+```javascript
+function outer() {
+  let count = 0;
+
+  return function () {
+    count++;
+  };
+}
+```
+
+---
+
 10. Closure ka real use case?
+
+`Hinglish Explanation:`
+
+Closures private variables create karne, data hiding aur function factories banane ke liye use hote hain.
+
+`Interview Answer:`
+
+Closures are commonly used for data encapsulation, private state management, and creating reusable function factories.
+
+Example:
+
+```javascript
+function counter() {
+  let count = 0;
+
+  return () => ++count;
+}
+```
+
+---
+
 11. Execution context kya hai?
+
+`Hinglish Explanation:`
+
+Execution Context environment hota hai jahan JavaScript code execute hota hai. Isme variables, functions aur `this` ki information store hoti hai.
+
+`Interview Answer:`
+
+An Execution Context is the environment in which JavaScript code is evaluated and executed.
+
+Example:
+
+```javascript
+function greet() {
+  console.log("Hello");
+}
+```
+
+---
+
 12. Call stack kya hai?
+
+`Hinglish Explanation:`
+
+Call Stack ek data structure hai jo function calls ko track karta hai. Functions Last-In-First-Out order me execute hote hain.
+
+`Interview Answer:`
+
+The Call Stack is a stack data structure that keeps track of function execution order in JavaScript.
+
+Example:
+
+```javascript
+function a() {
+  b();
+}
+
+function b() {}
+```
+
+---
+
 13. Event loop kya hai?
+
+`Hinglish Explanation:`
+
+Event Loop asynchronous tasks ko manage karta hai. Jab Call Stack empty hota hai tab callback queue se tasks uthakar execute karta hai.
+
+`Interview Answer:`
+
+The Event Loop continuously checks the Call Stack and processes queued asynchronous callbacks when the stack becomes empty.
+
+Example:
+
+```javascript
+setTimeout(() => {
+  console.log("Done");
+}, 0);
+```
+
+---
+
 14. Callback queue kya hai?
+
+`Hinglish Explanation:`
+
+Callback Queue me asynchronous callbacks wait karte hain jab tak Call Stack empty na ho jaye.
+
+`Interview Answer:`
+
+The Callback Queue stores completed asynchronous callbacks waiting to be executed by the Event Loop.
+
+Example:
+
+```javascript
+setTimeout(() => {
+  console.log("Queue");
+}, 1000);
+```
+
+---
+
 15. Microtask queue kya hai?
+
+`Hinglish Explanation:`
+
+Microtask Queue high-priority queue hoti hai jisme Promise callbacks aur Mutation Observers store hote hain.
+
+`Interview Answer:`
+
+The Microtask Queue contains tasks such as Promise callbacks and is processed before the Callback Queue.
+
+Example:
+
+```javascript
+Promise.resolve().then(() => {
+  console.log("Microtask");
+});
+```
+
+---
+
 16. Macrotask kya hai?
+
+`Hinglish Explanation:`
+
+Macrotasks asynchronous operations hote hain jaise `setTimeout`, `setInterval` aur DOM events.
+
+`Interview Answer:`
+
+Macrotasks are tasks placed in the Callback Queue, such as timers, DOM events, and network callbacks.
+
+Example:
+
+```javascript
+setTimeout(() => {
+  console.log("Macrotask");
+}, 0);
+```
+
+---
+
 17. Promises kya hain?
+
+`Hinglish Explanation:`
+
+Promise asynchronous operation ka future result represent karta hai. Ye callback hell ko reduce karta hai aur code readable banata hai.
+
+`Interview Answer:`
+
+A Promise is an object representing the eventual completion or failure of an asynchronous operation.
+
+Example:
+
+```javascript
+const promise =
+  fetch("/users");
+```
+
+---
+
 18. Promise states?
+
+`Hinglish Explanation:`
+
+Promise ki 3 states hoti hain: Pending, Fulfilled aur Rejected. Ek baar state change ho jaye to dobara change nahi hoti.
+
+`Interview Answer:`
+
+A Promise can be in one of three states: Pending, Fulfilled, or Rejected.
+
+Example:
+
+```javascript
+Promise.resolve("Success");
+```
+
+---
+
 19. Async/await kya hai?
+
+`Hinglish Explanation:`
+
+Async/Await Promises ke upar built syntax hai jo asynchronous code ko synchronous jaisa readable banata hai.
+
+`Interview Answer:`
+
+Async/Await provides a cleaner way to work with Promises by allowing asynchronous code to be written in a synchronous style.
+
+Example:
+
+```javascript
+async function getData() {
+  const data = await fetch("/api");
+}
+```
+
+---
+
 20. Promise chaining?
+
+`Hinglish Explanation:`
+
+Promise Chaining multiple asynchronous operations ko sequentially execute karne ke liye `.then()` methods ko chain karti hai.
+
+`Interview Answer:`
+
+Promise chaining allows sequential execution of asynchronous operations by returning values or Promises from `.then()` callbacks.
+
+Example:
+
+```javascript
+fetch("/users")
+  .then(res => res.json())
+  .then(data => console.log(data));
+```
+
 21. Callback hell kya hai?
 22. Error handling async mein kaise?
 23. this keyword kya hai?
