@@ -6044,58 +6044,1021 @@ db.users.find(
 ```
 
 331. Index tuning?
+
+`Hinglish Explanation:`
+
+Index tuning ka purpose unnecessary indexes remove karna aur queries ke according optimal indexes create karna hai. Excessive indexes writes ko slow kar sakte hain.
+
+`Interview Answer:`
+
+Index tuning involves analyzing query patterns and creating efficient indexes while avoiding unnecessary index overhead.
+
+Example:
+
+```javascript
+db.users.getIndexes();
+```
+
+---
+
 332. Write concern?
+
+`Hinglish Explanation:`
+
+Write Concern define karta hai ki write operation successful tab mana jayega jab kitne nodes us write ko acknowledge karenge.
+
+`Interview Answer:`
+
+Write Concern specifies the level of acknowledgment required from MongoDB nodes before considering a write operation successful.
+
+Example:
+
+```javascript
+db.users.insertOne(
+  { name: "Raj" },
+  { writeConcern: { w: "majority" } }
+);
+```
+
+---
+
 333. Read preference?
+
+`Hinglish Explanation:`
+
+Read Preference decide karta hai ki reads primary node se aayengi ya secondary nodes se. Isse performance aur consistency balance ki ja sakti hai.
+
+`Interview Answer:`
+
+Read Preference determines which replica set members handle read operations, balancing consistency and performance.
+
+Example:
+
+```javascript
+db.collection.find().readPref(
+  "secondary"
+);
+```
+
+---
+
 334. Backup & restore?
+
+`Hinglish Explanation:`
+
+Backup data protection ke liye use hota hai aur restore failure ya disaster ke baad data recover karne ke liye.
+
+`Interview Answer:`
+
+Backup and restore strategies ensure data recovery in case of accidental deletion, corruption, or infrastructure failure.
+
+Example:
+
+```bash
+mongodump
+mongorestore
+```
+
+---
+
 335. Atlas kya hai?
+
+`Hinglish Explanation:`
+
+MongoDB Atlas MongoDB ka fully managed cloud database platform hai. Ye deployment, scaling aur monitoring ko simplify karta hai.
+
+`Interview Answer:`
+
+MongoDB Atlas is a managed cloud database service that provides hosting, scaling, monitoring, and security features.
+
+Example:
+
+```text
+Atlas Cluster
+↓
+Application
+```
+
+---
+
 336. Scaling MongoDB?
+
+`Hinglish Explanation:`
+
+MongoDB ko vertical scaling aur horizontal scaling dono approaches se scale kiya ja sakta hai. Horizontal scaling ke liye sharding use hoti hai.
+
+`Interview Answer:`
+
+MongoDB scales vertically by increasing resources and horizontally by distributing data across shards.
+
+Example:
+
+```text
+Shard1
+Shard2
+Shard3
+```
+
+---
+
 337. Performance issues fix?
+
+`Hinglish Explanation:`
+
+Performance issues fix karne ke liye indexing, query optimization, schema redesign aur caching use ki jati hai.
+
+`Interview Answer:`
+
+Performance issues are typically resolved through indexing, query optimization, efficient schema design, and caching strategies.
+
+Example:
+
+```javascript
+db.users.find().explain();
+```
+
+---
+
 338. Change streams?
+
+`Hinglish Explanation:`
+
+Change Streams real-time database changes ko monitor karne ki facility dete hain bina polling ke.
+
+`Interview Answer:`
+
+Change Streams allow applications to listen for real-time changes in collections, databases, or deployments.
+
+Example:
+
+```javascript
+const stream =
+  collection.watch();
+```
+
+---
+
 339. MongoDB vs SQL?
+
+`Hinglish Explanation:`
+
+MongoDB document-based NoSQL database hai, jabki SQL databases table-based relational structure use karti hain.
+
+`Interview Answer:`
+
+MongoDB offers flexible schemas and horizontal scalability, while SQL databases provide strong relational modeling and structured schemas.
+
+Example:
+
+```text
+MongoDB → Documents
+SQL     → Tables
+```
+
+---
+
 340. Aggregation pipeline optimization?
+
+`Hinglish Explanation:`
+
+Aggregation optimize karne ke liye early filtering, proper indexes aur unnecessary stages avoid karni chahiye.
+
+`Interview Answer:`
+
+Aggregation pipelines should minimize processed data using early filtering and leverage indexes whenever possible.
+
+Example:
+
+```javascript
+[
+  { $match: { status: "active" } }
+]
+```
+
+---
+
 341. Data modeling patterns?
+
+`Hinglish Explanation:`
+
+MongoDB me common patterns include embedding, referencing, bucket pattern aur subset pattern. Choice application requirements par depend karti hai.
+
+`Interview Answer:`
+
+Data modeling patterns help structure data efficiently based on access patterns, scalability, and performance requirements.
+
+Example:
+
+```javascript
+{
+  userId: 1,
+  orders: []
+}
+```
+
+---
+
 342. Time series data?
+
+`Hinglish Explanation:`
+
+Time series data timestamp-based information hoti hai jaise sensor readings aur application metrics. MongoDB dedicated time-series collections support karta hai.
+
+`Interview Answer:`
+
+Time-series collections are optimized for storing and querying time-based data such as logs, metrics, and IoT readings.
+
+Example:
+
+```javascript
+{
+  timestamp: new Date(),
+  value: 100
+}
+```
+
+---
+
 343. Geospatial queries?
+
+`Hinglish Explanation:`
+
+Geospatial queries location-based searches perform karti hain jaise nearby stores ya delivery radius calculations.
+
+`Interview Answer:`
+
+Geospatial queries allow searching and analyzing data based on geographic coordinates and distances.
+
+Example:
+
+```javascript
+db.places.createIndex({
+  location: "2dsphere"
+});
+```
+
+---
+
 344. Text search?
+
+`Hinglish Explanation:`
+
+Text search documents me keywords search karne ke liye use hoti hai. Iske liye text indexes create karne padte hain.
+
+`Interview Answer:`
+
+MongoDB text search enables keyword-based searching across indexed text fields.
+
+Example:
+
+```javascript
+db.posts.find({
+  $text: {
+    $search: "mongodb"
+  }
+});
+```
+
+---
+
 345. GridFS?
+
+`Hinglish Explanation:`
+
+GridFS large files ko chunks me divide karke MongoDB me store karta hai. Ye large media files ke liye useful hai.
+
+`Interview Answer:`
+
+GridFS is a specification for storing and retrieving large files that exceed MongoDB's document size limit.
+
+Example:
+
+```javascript
+bucket.openUploadStream(
+  "video.mp4"
+);
+```
+
+---
+
 346. Realm kya hai?
+
+`Hinglish Explanation:`
+
+MongoDB Realm mobile aur web applications ke liye backend services provide karta hai jaise authentication aur synchronization.
+
+`Interview Answer:`
+
+MongoDB Realm is a backend platform that provides authentication, synchronization, and serverless functions.
+
+Example:
+
+```javascript
+app.logIn(credentials);
+```
+
+---
+
 347. Compass tool?
+
+`Hinglish Explanation:`
+
+MongoDB Compass ek GUI tool hai jo databases ko visualize aur manage karne ke liye use hota hai.
+
+`Interview Answer:`
+
+MongoDB Compass is a graphical interface for exploring data, analyzing queries, and managing MongoDB databases.
+
+Example:
+
+```text
+Compass
+→ Collections
+→ Documents
+```
+
+---
+
 348. Monitoring tools?
+
+`Hinglish Explanation:`
+
+Monitoring tools database health, queries aur resource usage track karte hain. Atlas Monitoring aur Prometheus commonly use hote hain.
+
+`Interview Answer:`
+
+Monitoring tools help track performance metrics, query execution, resource usage, and operational health.
+
+Example:
+
+```text
+Atlas Monitoring
+Prometheus
+Grafana
+```
+
+---
+
 349. Security best practices?
+
+`Hinglish Explanation:`
+
+Authentication, authorization, encryption aur network restrictions MongoDB security ke important components hain.
+
+`Interview Answer:`
+
+MongoDB security best practices include enabling authentication, restricting network access, using encryption, and following least privilege principles.
+
+Example:
+
+```javascript
+db.createUser({
+  user: "admin"
+});
+```
+
+---
+
 350. Encryption?
+
+`Hinglish Explanation:`
+
+Encryption data ko unauthorized access se protect karti hai. MongoDB encryption at rest aur encryption in transit support karta hai.
+
+`Interview Answer:`
+
+Encryption protects sensitive data both while stored and while transmitted across networks.
+
+Example:
+
+```text
+TLS
+AES Encryption
+```
+
 351. Audit logging?
+
+`Hinglish Explanation:`
+
+Audit logging system activities ko track karti hai jaise login attempts, data modifications aur administrative actions. Ye security aur compliance requirements ke liye important hai.
+
+`Interview Answer:`
+
+Audit logging records important database activities and user actions for security, compliance, and troubleshooting purposes.
+
+Example:
+
+```javascript id="7v6vys"
+{
+  user: "admin",
+  action: "DELETE_USER",
+  timestamp: new Date()
+}
+```
+
+---
+
 352. Data validation?
+
+`Hinglish Explanation:`
+
+Data validation ensure karti hai ki documents expected format aur business rules follow karein. Isse invalid data database me store nahi hota.
+
+`Interview Answer:`
+
+Data validation enforces rules on document structure and field values before data is stored.
+
+Example:
+
+```javascript id="4vlu7r"
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      required: ["email"]
+    }
+  }
+});
+```
+
+---
+
 353. Schema versioning?
+
+`Hinglish Explanation:`
+
+Schema versioning different document structures ko manage karne ke liye use hoti hai jab application evolve hoti hai. Har document me version field maintain ki ja sakti hai.
+
+`Interview Answer:`
+
+Schema versioning helps manage changes in document structure while maintaining backward compatibility.
+
+Example:
+
+```javascript id="g16zb3"
+{
+  version: 2,
+  name: "Raj"
+}
+```
+
+---
+
 354. Migration strategies?
+
+`Hinglish Explanation:`
+
+Migrations old data ko new schema me convert karne ke liye use hoti hain. Ye incremental ya batch updates ke through perform ki ja sakti hain.
+
+`Interview Answer:`
+
+Migration strategies help move data and schema changes safely while minimizing downtime and data inconsistencies.
+
+Example:
+
+```javascript id="2qhxyi"
+db.users.updateMany(
+  {},
+  { $set: { version: 2 } }
+);
+```
+
+---
+
 355. Bulk operations?
+
+`Hinglish Explanation:`
+
+Bulk operations multiple insert, update ya delete requests ko ek batch me execute karti hain. Isse performance improve hoti hai aur network overhead reduce hota hai.
+
+`Interview Answer:`
+
+Bulk operations execute multiple database actions in a single request, improving efficiency and reducing round trips.
+
+Example:
+
+```javascript id="rjepm3"
+db.users.bulkWrite([
+  {
+    insertOne: {
+      document: { name: "Raj" }
+    }
+  }
+]);
+```
+
+---
+
 356. Cursor handling?
+
+`Hinglish Explanation:`
+
+Cursor query results ko batch-by-batch process karta hai. Large datasets ke liye cursor use karna memory-efficient approach hai.
+
+`Interview Answer:`
+
+Cursors allow applications to iterate through query results efficiently without loading all documents into memory.
+
+Example:
+
+```javascript id="vdl9yo"
+const cursor =
+  db.users.find();
+
+while (cursor.hasNext()) {
+  print(cursor.next());
+}
+```
+
+---
+
 357. Transaction best practices?
+
+`Hinglish Explanation:`
+
+Transactions ko short rakhna chahiye aur sirf required operations include karni chahiye. Long-running transactions performance impact kar sakti hain.
+
+`Interview Answer:`
+
+Transactions should be kept short, focused, and used only when multiple operations require atomicity.
+
+Example:
+
+```javascript id="5m8rj0"
+session.startTransaction();
+
+session.commitTransaction();
+```
+
+---
+
 358. Error handling?
+
+`Hinglish Explanation:`
+
+Database errors ko properly catch aur log karna chahiye. User ko meaningful error messages dene chahiye without exposing internal details.
+
+`Interview Answer:`
+
+Proper error handling involves catching exceptions, logging failures, and returning meaningful responses to clients.
+
+Example:
+
+```javascript id="eqbdq8"
+try {
+  await User.find();
+} catch (error) {
+  console.error(error);
+}
+```
+
+---
+
 359. Connection pooling?
+
+`Hinglish Explanation:`
+
+Connection pooling database connections ko reuse karti hai taaki har request ke liye nayi connection create na karni pade. Isse performance improve hoti hai.
+
+`Interview Answer:`
+
+Connection pooling maintains reusable database connections, reducing connection overhead and improving scalability.
+
+Example:
+
+```javascript id="v0d3qo"
+mongoose.connect(uri, {
+  maxPoolSize: 20
+});
+```
+
+---
+
 360. Performance monitoring?
 
+`Hinglish Explanation:`
+
+Performance monitoring query execution time, resource usage aur database health track karti hai. Isse bottlenecks identify aur resolve karne me help milti hai.
+
+`Interview Answer:`
+
+Performance monitoring helps track database metrics, identify bottlenecks, and maintain system reliability.
+
+Example:
+
+```javascript id="6l8l9m"
+db.currentOp();
+
+db.serverStatus();
+```
+
+
 ### Additional Important Questions
+
 1. Explain the aggregation pipeline and its stages.
+
+`Hinglish Explanation:`
+
+Aggregation Pipeline MongoDB ka powerful framework hai jo data ko multiple stages me process karta hai. Common stages hain `$match`, `$group`, `$project`, `$sort`, `$lookup` aur `$limit`.
+
+`Interview Answer:`
+
+The Aggregation Pipeline processes documents through multiple stages, allowing filtering, transformation, grouping, sorting, and joining of data efficiently.
+
+Example:
+
+```javascript
+db.orders.aggregate([
+  { $match: { status: "completed" } },
+  { $group: { _id: "$userId", total: { $sum: "$amount" } } }
+]);
+```
+
+---
+
 2. How does indexing work in MongoDB, and what are compound indexes?
+
+`Hinglish Explanation:`
+
+Indexes MongoDB ko documents quickly locate karne me help karte hain bina poori collection scan kiye. Compound Index multiple fields par create hota hai aur multi-condition queries optimize karta hai.
+
+`Interview Answer:`
+
+Indexes improve query performance by reducing collection scans. Compound indexes store multiple fields and are useful for queries involving more than one field.
+
+Example:
+
+```javascript
+db.users.createIndex({
+  name: 1,
+  age: 1
+});
+```
+
+---
+
 3. What’s the difference between find(), findOne(), and aggregate()?
+
+`Hinglish Explanation:`
+
+`find()` multiple documents return karta hai, `findOne()` sirf first matching document return karta hai aur `aggregate()` complex data transformations perform karta hai.
+
+`Interview Answer:`
+
+`find()` retrieves multiple documents, `findOne()` returns a single document, and `aggregate()` processes data through transformation pipelines.
+
+Example:
+
+```javascript
+db.users.find();
+db.users.findOne();
+db.users.aggregate([]);
+```
+
+---
+
 4. How do you optimize MongoDB queries for performance?
-5. What is schema design and how do you model relationships in MongoDB (1:1, 1:N,
-N:N)?
+
+`Hinglish Explanation:`
+
+Query optimization ke liye proper indexes, projections, efficient schema design aur explain plans use kiye jate hain.
+
+`Interview Answer:`
+
+MongoDB queries are optimized using indexes, limiting returned fields, analyzing execution plans, and designing efficient schemas.
+
+Example:
+
+```javascript
+db.users.find(
+  { email: "test@test.com" },
+  { name: 1 }
+);
+```
+
+---
+
+5. What is schema design and how do you model relationships in MongoDB (1:1, 1:N, N:N)?
+
+`Hinglish Explanation:`
+
+Schema design data ko application access patterns ke according structure karti hai. Relationships embedding ya referencing ke through implement kiye jate hain.
+
+`Interview Answer:`
+
+Schema design determines how data is organized. Relationships can be modeled using embedded documents or references depending on access patterns.
+
+Example:
+
+```javascript
+{
+  userId: 1,
+  orders: [101, 102]
+}
+```
+
+---
+
 6. Explain data validation and how to enforce it in MongoDB.
+
+`Hinglish Explanation:`
+
+Data validation ensure karti hai ki documents expected structure aur rules follow karein. MongoDB JSON Schema validation support karta hai.
+
+`Interview Answer:`
+
+MongoDB enforces data validation using schema validation rules that verify document structure and field values.
+
+Example:
+
+```javascript
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      required: ["email"]
+    }
+  }
+});
+```
+
+---
+
 7. What are transactions in MongoDB and when would you use them?
+
+`Hinglish Explanation:`
+
+Transactions multiple operations ko ek atomic unit ke roop me execute karti hain. Banking ya inventory systems me ye especially useful hoti hain.
+
+`Interview Answer:`
+
+Transactions ensure multiple operations either succeed together or roll back together, maintaining data consistency.
+
+Example:
+
+```javascript
+session.startTransaction();
+```
+
+---
+
 8. What is a capped collection?
+
+`Hinglish Explanation:`
+
+Capped Collection fixed-size collection hoti hai jo insertion order maintain karti hai. Size limit cross hone par old documents automatically remove ho jate hain.
+
+`Interview Answer:`
+
+A capped collection is a fixed-size collection that automatically overwrites the oldest documents when space is exhausted.
+
+Example:
+
+```javascript
+db.createCollection("logs", {
+  capped: true,
+  size: 100000
+});
+```
+
+---
+
 9. How does MongoDB handle concurrency?
+
+`Hinglish Explanation:`
+
+MongoDB document-level locking use karta hai jisse multiple operations simultaneously execute ho sakti hain without blocking the entire database.
+
+`Interview Answer:`
+
+MongoDB uses document-level concurrency control, allowing multiple operations to run concurrently while maintaining consistency.
+
+Example:
+
+```javascript
+db.users.updateOne(
+  { _id: 1 },
+  { $set: { age: 25 } }
+);
+```
+
+---
+
 10. Explain change streams in MongoDB.
+
+`Hinglish Explanation:`
+
+Change Streams database changes ko real-time me monitor karne ki facility dete hain. Ye polling ki need ko eliminate kar dete hain.
+
+`Interview Answer:`
+
+Change Streams provide real-time notifications whenever data changes occur in collections or databases.
+
+Example:
+
+```javascript
+const stream =
+  collection.watch();
+```
+
+---
+
 11. What’s the difference between populate() and $lookup?
+
+`Hinglish Explanation:`
+
+`populate()` Mongoose level par join perform karta hai, jabki `$lookup` MongoDB Aggregation Pipeline ke andar database level join karta hai.
+
+`Interview Answer:`
+
+`populate()` is a Mongoose feature, whereas `$lookup` is a MongoDB aggregation stage used for joining collections.
+
+Example:
+
+```javascript
+User.find().populate("posts");
+```
+
+---
+
 12. How do you perform pagination in MongoDB efficiently?
+
+`Hinglish Explanation:`
+
+Small datasets ke liye skip-limit use kar sakte hain, lekin large datasets ke liye cursor-based pagination better hoti hai.
+
+`Interview Answer:`
+
+Efficient pagination uses indexed fields and cursor-based approaches instead of large skip values.
+
+Example:
+
+```javascript
+db.users.find()
+  .limit(10);
+```
+
+---
+
 13. What is the use of the $facet stage?
+
+`Hinglish Explanation:`
+
+`$facet` ek hi aggregation pipeline me multiple parallel aggregations execute karne deta hai.
+
+`Interview Answer:`
+
+`$facet` allows multiple aggregation pipelines to run simultaneously on the same dataset.
+
+Example:
+
+```javascript
+{
+  $facet: {
+    users: [],
+    stats: []
+  }
+}
+```
+
+---
+
 14. How does MongoDB handle horizontal scaling?
+
+`Hinglish Explanation:`
+
+MongoDB horizontal scaling ke liye sharding use karta hai jisme data multiple shards me distribute kiya jata hai.
+
+`Interview Answer:`
+
+MongoDB scales horizontally through sharding, distributing data across multiple servers.
+
+Example:
+
+```text
+Shard1
+Shard2
+Shard3
+```
+
+---
+
 15. Difference between embedded documents vs. referenced documents.
+
+`Hinglish Explanation:`
+
+Embedded documents related data ko same document me store karte hain, jabki referenced documents IDs ke through relationships maintain karte hain.
+
+`Interview Answer:`
+
+Embedded documents improve read performance, while referenced documents reduce duplication and support normalization.
+
+Example:
+
+```javascript
+{
+  user: {},
+  address: {}
+}
+```
+
+---
+
 16. How do you back up and restore a MongoDB database?
+
+`Hinglish Explanation:`
+
+MongoDB backup ke liye `mongodump` aur restore ke liye `mongorestore` tools provide karta hai.
+
+`Interview Answer:`
+
+MongoDB databases can be backed up using `mongodump` and restored using `mongorestore`.
+
+Example:
+
+```bash
+mongodump
+mongorestore
+```
+
+---
+
 17. How can you enforce uniqueness on a field?
+
+`Hinglish Explanation:`
+
+Unique Index create karke kisi field par duplicate values ko prevent kiya ja sakta hai.
+
+`Interview Answer:`
+
+Uniqueness is enforced by creating a unique index on the desired field.
+
+Example:
+
+```javascript
+db.users.createIndex(
+  { email: 1 },
+  { unique: true }
+);
+```
+
+---
+
 18. What are MongoDB Atlas Triggers?
+
+`Hinglish Explanation:`
+
+Atlas Triggers database events ke response me automatically functions execute karte hain. Ye serverless automation provide karte hain.
+
+`Interview Answer:`
+
+Atlas Triggers automatically execute functions when specific database events occur.
+
+Example:
+
+```text
+Insert Document
+↓
+Trigger Function
+```
+
+---
+
 19. What is TTL indexing and when would you use it?
+
+`Hinglish Explanation:`
+
+TTL (Time To Live) Index documents ko automatically expire aur delete karta hai. Sessions, OTPs aur temporary data ke liye useful hai.
+
+`Interview Answer:`
+
+TTL indexes automatically remove expired documents after a specified duration.
+
+Example:
+
+```javascript
+db.sessions.createIndex(
+  { createdAt: 1 },
+  { expireAfterSeconds: 3600 }
+);
+```
+
+---
+
 20. How do you monitor and profile MongoDB queries?
+
+`Hinglish Explanation:`
+
+MongoDB queries ko monitor karne ke liye `explain()`, profiler, Atlas Monitoring aur Compass use kiye jate hain.
+
+`Interview Answer:`
+
+Query monitoring uses execution plans, profiling tools, and monitoring dashboards to identify slow queries and bottlenecks.
+
+Example:
+
+```javascript
+db.users.find().explain();
+```
+
 
 
 ---
