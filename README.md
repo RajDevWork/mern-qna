@@ -3658,21 +3658,308 @@ app.com
  api.other.com
 ```
 
+
 76. CORS error kaise fix karte ho?
+
+`Hinglish Explanation:`
+
+CORS error frontend se fix nahi hota. Backend ko proper `Access-Control-Allow-Origin` aur related headers send karne hote hain.
+
+`Interview Answer:`
+
+CORS errors are resolved by configuring the server to allow requests from trusted origins using appropriate CORS headers.
+
+Example:
+
+```http
+Access-Control-Allow-Origin:
+https://myapp.com
+```
+
+---
+
 77. Secure headers kaunse hote hain?
+
+`Hinglish Explanation:`
+
+Secure headers browser ko additional security rules enforce karne me help karte hain aur attacks jaise XSS, Clickjacking ko reduce karte hain.
+
+`Interview Answer:`
+
+Common security headers include CSP, HSTS, X-Frame-Options, X-Content-Type-Options, and Referrer-Policy.
+
+Example:
+
+```http
+Content-Security-Policy
+X-Frame-Options
+Strict-Transport-Security
+```
+
+---
+
 78. HSTS kya hota hai?
+
+`Hinglish Explanation:`
+
+HSTS browser ko force karta hai ki website hamesha HTTPS ke through hi access ho.
+
+`Interview Answer:`
+
+HTTP Strict Transport Security (HSTS) forces browsers to use HTTPS instead of insecure HTTP connections.
+
+Example:
+
+```http
+Strict-Transport-Security:
+max-age=31536000
+```
+
+---
+
 79. Subresource Integrity kya hota hai?
+
+`Hinglish Explanation:`
+
+SRI ensure karta hai ki CDN ya external source se load hua file tampered na ho.
+
+`Interview Answer:`
+
+Subresource Integrity verifies that externally loaded resources have not been modified or compromised.
+
+Example:
+
+```html
+<script
+  src="app.js"
+  integrity="sha384-xyz"
+></script>
+```
+
+---
+
 80. API keys ko secure kaise karte ho?
+
+`Hinglish Explanation:`
+
+API keys ko frontend me hardcode nahi karna chahiye. Sensitive keys backend ya environment variables me store karni chahiye.
+
+`Interview Answer:`
+
+API keys should be stored securely on the server side or in protected environment variables, never exposed in client code.
+
+Example:
+
+```env
+API_KEY=secret-key
+```
+
+---
+
 81. Sensitive data frontend mein kyun store nahi karna chahiye?
+
+`Hinglish Explanation:`
+
+Frontend code aur storage user ke control me hote hain. Koi bhi DevTools se data dekh sakta hai.
+
+`Interview Answer:`
+
+Sensitive data should not be stored on the frontend because users can inspect, modify, or extract it.
+
+Example:
+
+```javascript
+// Avoid
+localStorage.setItem(
+  "password",
+  "123456"
+);
+```
+
+---
+
 82. DevTools se data leak kaise hota hai?
+
+`Hinglish Explanation:`
+
+Users Network tab, Storage tab aur Source files inspect karke hidden data, tokens ya API responses dekh sakte hain.
+
+`Interview Answer:`
+
+DevTools can expose client-side code, API responses, tokens, and storage data if sensitive information is improperly handled.
+
+Example:
+
+```text
+DevTools
+ ↓
+Network Tab
+ ↓
+API Response Visible
+```
+
+---
+
 83. Third-party scripts risk kya hota hai?
+
+`Hinglish Explanation:`
+
+Third-party scripts compromised ho sakti hain aur malicious code inject kar sakti hain jo users ka data access kar sakta hai.
+
+`Interview Answer:`
+
+Third-party scripts introduce supply-chain risks because they execute with the same permissions as the application.
+
+Example:
+
+```html
+<script src="cdn.js"></script>
+```
+
+---
+
 84. iframe security kaise handle karte ho?
+
+`Hinglish Explanation:`
+
+Sandboxing, CSP aur X-Frame-Options use karke iframe-based risks reduce kiye ja sakte hain.
+
+`Interview Answer:`
+
+Iframe security can be improved using sandbox attributes, CSP policies, and frame restrictions.
+
+Example:
+
+```html
+<iframe
+  sandbox=""
+  src="page.html"
+></iframe>
+```
+
+---
+
 85. Phishing attack kya hota hai?
+
+`Hinglish Explanation:`
+
+Phishing attack me attacker fake websites ya emails use karke users se credentials ya sensitive information collect karta hai.
+
+`Interview Answer:`
+
+Phishing is a social engineering attack that tricks users into revealing sensitive information through fake websites or messages.
+
+Example:
+
+```text
+Fake Login Page
+ ↓
+User Credentials Stolen
+```
+
+---
+
 86. Dependency vulnerabilities kya hoti hain?
+
+`Hinglish Explanation:`
+
+Project me use hone wali third-party packages me security flaws ho sakte hain jo application ko vulnerable bana dete hain.
+
+`Interview Answer:`
+
+Dependency vulnerabilities are security issues present in third-party libraries used by an application.
+
+Example:
+
+```bash
+npm audit
+```
+
+---
+
 87. npm audit kya karta hai?
+
+`Hinglish Explanation:`
+
+`npm audit` installed packages ko scan karta hai aur known security vulnerabilities identify karta hai.
+
+`Interview Answer:`
+
+npm audit analyzes project dependencies and reports known security vulnerabilities.
+
+Example:
+
+```bash
+npm audit
+
+npm audit fix
+```
+
+---
+
 88. OWASP kya hai?
+
+`Hinglish Explanation:`
+
+OWASP (Open Web Application Security Project) ek organization hai jo web application security awareness aur best practices provide karti hai.
+
+`Interview Answer:`
+
+OWASP is a nonprofit organization focused on improving software security through standards and educational resources.
+
+Example:
+
+```text
+OWASP
+ ↓
+Security Guidelines
+```
+
+---
+
 89. OWASP Top 10 kya hai?
+
+`Hinglish Explanation:`
+
+OWASP Top 10 web applications ke sabse common aur critical security risks ki list hai.
+
+`Interview Answer:`
+
+OWASP Top 10 is a widely recognized list of the most critical web application security risks.
+
+Example:
+
+```text
+Broken Access Control
+XSS
+Injection
+CSRF
+```
+
+---
+
 90. Frontend app ko secure kaise banate ho?
+
+`Hinglish Explanation:`
+
+Input validation, output escaping, HTTPS, CSP, secure authentication aur dependency scanning follow karna chahiye.
+
+`Interview Answer:`
+
+A secure frontend application uses HTTPS, secure headers, proper authentication, input validation, dependency auditing, and secure storage practices.
+
+Example:
+
+```text
+HTTPS
+ +
+CSP
+ +
+HttpOnly Cookies
+ +
+Input Validation
+```
+
 
 ---
 
