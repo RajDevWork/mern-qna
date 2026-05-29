@@ -579,11 +579,11 @@
 
         Example:
 
-            ```javascript
-                function App() {
-                    return <h1>Hello React</h1>;
-                }
-            ```
+        ```javascript
+           function App() {
+            return <h1>Hello React</h1>;
+            }
+        ```
 
 122. JSX kya hai?
 
@@ -597,9 +597,9 @@
 
         Example:
 
-            ```javascript
-                const element = <h1>Hello</h1>;
-            ```
+        ```javascript
+           const element = <h1>Hello</h1>;
+        ```
 
 123. Virtual DOM?
 
@@ -613,9 +613,9 @@
 
         Example:
 
-            ```javascript
-                setCount(count + 1);
-            ```
+        ```javascript
+           setCount(count + 1);
+        ```
 
 
 124. Real DOM vs Virtual DOM?
@@ -634,9 +634,9 @@
 
         Example:
 
-            ```javascript
-                setName("Raj");
-            ```
+        ```javascript
+           setName("Raj");
+        ```
 
 125. Components kya hote hain?
 
@@ -650,11 +650,11 @@
 
         Example:
 
-            ```javascript
-                function Header() {
-                    return <h1>Header</h1>;
-                }
-            ```
+        ```javascript
+           function Header() {
+                return <h1>Header</h1>;
+            }
+        ```
 
 126. Functional vs class components?
 
