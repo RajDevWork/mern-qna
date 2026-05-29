@@ -848,25 +848,400 @@ fetch("/users")
 ```
 
 21. Callback hell kya hai?
+
+`Hinglish Explanation:`
+
+Jab multiple asynchronous callbacks ek dusre ke andar nested ho jate hain to code difficult to read aur maintain ho jata hai. Is problem ko Callback Hell ya Pyramid of Doom kehte hain.
+
+`Interview Answer:`
+
+Callback Hell occurs when multiple nested callbacks make code difficult to read, debug, and maintain. It is commonly solved using Promises or Async/Await.
+
+Example:
+
+```javascript
+getUser(function(user) {
+  getOrders(user.id, function(orders) {
+    getPayment(orders, function(payment) {
+      console.log(payment);
+    });
+  });
+});
+```
+
+---
+
 22. Error handling async mein kaise?
+
+`Hinglish Explanation:`
+
+Promises me `.catch()` aur Async/Await me `try...catch` use karke asynchronous errors handle kiye jate hain.
+
+`Interview Answer:`
+
+Asynchronous errors can be handled using `.catch()` with Promises or `try...catch` blocks with Async/Await.
+
+Example:
+
+```javascript
+try {
+  const data = await fetchData();
+} catch (error) {
+  console.error(error);
+}
+```
+
+---
+
 23. this keyword kya hai?
+
+`Hinglish Explanation:`
+
+`this` current execution context ke object ko refer karta hai. Iski value function call karne ke tareeke par depend karti hai.
+
+`Interview Answer:`
+
+The `this` keyword refers to the object that is currently executing the function. Its value depends on how the function is invoked.
+
+Example:
+
+```javascript
+const user = {
+  name: "Raj",
+  greet() {
+    console.log(this.name);
+  }
+};
+```
+
+---
+
 24. Arrow vs normal function?
+
+`Hinglish Explanation:`
+
+Arrow functions apna `this` create nahi karti, wo parent scope se inherit karti hain. Normal functions ka apna `this` hota hai.
+
+`Interview Answer:`
+
+Arrow functions have lexical `this` binding, while regular functions have dynamic `this` based on invocation context.
+
+Example:
+
+```javascript
+const add = (a, b) => a + b;
+
+function sum(a, b) {
+  return a + b;
+}
+```
+
+---
+
 25. Bind kya karta hai?
+
+`Hinglish Explanation:`
+
+`bind()` ek naya function return karta hai jiska `this` permanently specified object se bind hota hai.
+
+`Interview Answer:`
+
+The `bind()` method creates a new function with a fixed `this` context and optionally predefined arguments.
+
+Example:
+
+```javascript
+const boundFn =
+  greet.bind(user);
+```
+
+---
+
 26. Call vs apply?
+
+`Hinglish Explanation:`
+
+Dono function ko immediately invoke karte hain aur `this` set karte hain. Difference sirf arguments pass karne ka hai.
+
+`Interview Answer:`
+
+`call()` accepts arguments individually, whereas `apply()` accepts arguments as an array.
+
+Example:
+
+```javascript
+fn.call(user, 1, 2);
+
+fn.apply(user, [1, 2]);
+```
+
+---
+
 27. Prototype kya hai?
+
+`Hinglish Explanation:`
+
+JavaScript me har object ek prototype se linked hota hai. Prototype inheritance aur shared methods provide karta hai.
+
+`Interview Answer:`
+
+A prototype is an object from which other objects inherit properties and methods.
+
+Example:
+
+```javascript
+Person.prototype.greet =
+  function() {};
+```
+
+---
+
 28. Prototypal inheritance?
+
+`Hinglish Explanation:`
+
+JavaScript objects dusre objects se properties aur methods inherit kar sakte hain using prototype chain.
+
+`Interview Answer:`
+
+Prototypal inheritance allows objects to inherit behavior directly from other objects through the prototype chain.
+
+Example:
+
+```javascript
+child.__proto__ = parent;
+```
+
+---
+
 29. Object.create kya karta hai?
+
+`Hinglish Explanation:`
+
+`Object.create()` specified prototype ke saath naya object create karta hai.
+
+`Interview Answer:`
+
+`Object.create()` creates a new object and sets its prototype to the provided object.
+
+Example:
+
+```javascript
+const user =
+  Object.create(person);
+```
+
+---
+
 30. Deep vs shallow copy?
+
+`Hinglish Explanation:`
+
+Shallow copy sirf top-level properties copy karti hai, nested objects reference share karte hain. Deep copy poora object structure clone karti hai.
+
+`Interview Answer:`
+
+A shallow copy copies references for nested objects, while a deep copy creates completely independent copies.
+
+Example:
+
+```javascript
+const copy =
+  structuredClone(obj);
+```
+
+---
+
 31. JSON kya hai?
+
+`Hinglish Explanation:`
+
+JSON (JavaScript Object Notation) lightweight data exchange format hai jo APIs aur applications ke beech data transfer ke liye use hota hai.
+
+`Interview Answer:`
+
+JSON is a text-based data format used for storing and exchanging structured data.
+
+Example:
+
+```javascript
+const json =
+  JSON.stringify(user);
+```
+
+---
+
 32. Map vs Object?
+
+`Hinglish Explanation:`
+
+Map kisi bhi type ki keys support karta hai aur insertion order maintain karta hai. Object mainly string aur symbol keys ke liye use hota hai.
+
+`Interview Answer:`
+
+Map provides better support for dynamic key-value storage, while Object is primarily used for structured data representation.
+
+Example:
+
+```javascript
+const map = new Map();
+
+map.set("name", "Raj");
+```
+
+---
+
 33. Set vs Array?
+
+`Hinglish Explanation:`
+
+Set unique values store karta hai aur duplicates allow nahi karta. Array ordered collection hai jisme duplicate values ho sakti hain.
+
+`Interview Answer:`
+
+A Set stores unique values only, while an Array allows duplicate values and supports indexing.
+
+Example:
+
+```javascript
+const set =
+  new Set([1, 2, 2]);
+```
+
+---
+
 34. WeakMap kya hai?
+
+`Hinglish Explanation:`
+
+WeakMap me keys sirf objects ho sakti hain aur garbage collection automatically unused keys ko remove kar sakta hai.
+
+`Interview Answer:`
+
+WeakMap is a collection of key-value pairs where keys are objects and can be garbage collected.
+
+Example:
+
+```javascript
+const wm =
+  new WeakMap();
+```
+
+---
+
 35. Symbol kya hai?
+
+`Hinglish Explanation:`
+
+Symbol unique aur immutable primitive value hoti hai jo unique object properties create karne ke liye use hoti hai.
+
+`Interview Answer:`
+
+A Symbol is a unique primitive value commonly used as object property keys to avoid naming collisions.
+
+Example:
+
+```javascript
+const id =
+  Symbol("id");
+```
+
+---
+
 36. Destructuring kya hai?
+
+`Hinglish Explanation:`
+
+Destructuring object ya array se values extract karne ka concise syntax provide karti hai.
+
+`Interview Answer:`
+
+Destructuring allows extracting values from arrays or properties from objects into variables.
+
+Example:
+
+```javascript
+const { name } = user;
+```
+
+---
+
 37. Spread operator?
+
+`Hinglish Explanation:`
+
+Spread operator (`...`) array ya object ke elements ko expand karta hai. Copy aur merge operations me commonly use hota hai.
+
+`Interview Answer:`
+
+The spread operator expands iterable values into individual elements and is useful for copying and merging data.
+
+Example:
+
+```javascript
+const arr2 =
+  [...arr1];
+```
+
+---
+
 38. Rest operator?
+
+`Hinglish Explanation:`
+
+Rest operator multiple values ko collect karke ek array me store karta hai.
+
+`Interview Answer:`
+
+The rest operator collects multiple values into a single array parameter or variable.
+
+Example:
+
+```javascript
+function sum(...nums) {
+  return nums;
+}
+```
+
+---
+
 39. Template literals?
+
+`Hinglish Explanation:`
+
+Template literals string interpolation aur multiline strings provide karti hain using backticks.
+
+`Interview Answer:`
+
+Template literals allow embedding expressions inside strings and support multiline formatting.
+
+Example:
+
+```javascript
+const msg =
+  `Hello ${name}`;
+```
+
+---
+
 40. Default parameters?
+
+`Hinglish Explanation:`
+
+Default parameters function arguments ke liye fallback values define karne ki facility dete hain.
+
+`Interview Answer:`
+
+Default parameters provide predefined values when function arguments are not supplied.
+
+Example:
+
+```javascript
+function greet(name = "Guest") {
+  return name;
+}
+```
+
 41. Debounce kya hai?
 42. Throttle kya hai?
 43. Memoization?
