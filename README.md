@@ -3863,25 +3863,394 @@ GET /users?role=admin&sort=name
 ```
 
 261. Redis integration?
+
+`Hinglish Explanation:`
+
+Redis ek in-memory data store hai jo caching, sessions aur pub/sub systems ke liye use hota hai. Ye database load reduce karta hai aur application performance improve karta hai.
+
+`Interview Answer:`
+
+Redis is an in-memory data store commonly used for caching, session management, and real-time messaging to improve application performance.
+
+Example:
+
+```javascript
+const redis = new Redis();
+
+await redis.set("user", "Raj");
+```
+
+---
+
 262. Caching strategies?
+
+`Hinglish Explanation:`
+
+Caching frequently used data ko temporary store karti hai taaki repeated database calls avoid ho sakein. Common strategies Cache-Aside, Write-Through aur Write-Back hain.
+
+`Interview Answer:`
+
+Caching strategies reduce latency and database load by storing frequently accessed data closer to the application.
+
+Example:
+
+```javascript
+const data =
+  await redis.get("users");
+```
+
+---
+
 263. Queue system?
+
+`Hinglish Explanation:`
+
+Queue system asynchronous tasks ko process karne ke liye use hota hai. Heavy operations ko background me execute karke application responsiveness improve ki jati hai.
+
+`Interview Answer:`
+
+A queue system manages asynchronous tasks by processing jobs in the background instead of handling them immediately.
+
+Example:
+
+```javascript
+await queue.add("send-email", {
+  userId: 1
+});
+```
+
+---
+
 264. Background jobs?
+
+`Hinglish Explanation:`
+
+Background jobs long-running tasks jaise emails, reports ya notifications ko main request cycle se alag process karti hain.
+
+`Interview Answer:`
+
+Background jobs execute time-consuming tasks asynchronously, improving API response times and user experience.
+
+Example:
+
+```javascript
+queue.process(async (job) => {
+  sendEmail(job.data);
+});
+```
+
+---
+
 265. Cron jobs?
+
+`Hinglish Explanation:`
+
+Cron jobs scheduled tasks ko predefined intervals par automatically execute karti hain. Jaise daily reports ya database cleanup.
+
+`Interview Answer:`
+
+Cron jobs are scheduled tasks that run automatically at specific times or intervals.
+
+Example:
+
+```javascript
+cron.schedule("0 0 * * *", () => {
+  cleanup();
+});
+```
+
+---
+
 266. Email service?
+
+`Hinglish Explanation:`
+
+Node.js me emails send karne ke liye Nodemailer, SendGrid ya AWS SES use kiye jate hain. Production me transactional email services preferred hoti hain.
+
+`Interview Answer:`
+
+Email services allow applications to send notifications, verification emails, and transactional messages.
+
+Example:
+
+```javascript
+await transporter.sendMail({
+  to: "user@test.com"
+});
+```
+
+---
+
 267. File storage (S3)?
+
+`Hinglish Explanation:`
+
+Amazon S3 cloud object storage service hai jo files, images aur backups store karne ke liye use hoti hai. Ye scalable aur highly available hai.
+
+`Interview Answer:`
+
+Amazon S3 is a cloud storage service used to store and retrieve files securely and at scale.
+
+Example:
+
+```javascript
+await s3.upload({
+  Bucket: "uploads"
+});
+```
+
+---
+
 268. WebSockets?
+
+`Hinglish Explanation:`
+
+WebSockets client aur server ke beech persistent two-way communication provide karte hain. Ye real-time applications ke liye useful hain.
+
+`Interview Answer:`
+
+WebSockets establish a persistent connection between client and server, enabling real-time communication.
+
+Example:
+
+```javascript
+ws.send("Hello");
+```
+
+---
+
 269. Socket.io?
+
+`Hinglish Explanation:`
+
+Socket.io WebSockets ke upar built library hai jo real-time communication aur automatic reconnection features provide karti hai.
+
+`Interview Answer:`
+
+Socket.io is a real-time communication library that simplifies WebSocket implementation and provides fallback mechanisms.
+
+Example:
+
+```javascript
+io.on("connection", socket => {
+  console.log("Connected");
+});
+```
+
+---
+
 270. Real-time apps?
+
+`Hinglish Explanation:`
+
+Real-time applications instantly updates deliver karti hain bina page refresh ke. Chat apps, live dashboards aur multiplayer games common examples hain.
+
+`Interview Answer:`
+
+Real-time applications provide instant updates to users using technologies like WebSockets and Socket.io.
+
+Example:
+
+```javascript
+socket.emit("message", data);
+```
+
+---
+
 271. Security best practices?
+
+`Hinglish Explanation:`
+
+Input validation, authentication, HTTPS, rate limiting aur secure headers implement karna important security practices hain.
+
+`Interview Answer:`
+
+Security best practices include validating input, using HTTPS, implementing authentication, and protecting against common attacks.
+
+Example:
+
+```javascript
+app.use(helmet());
+```
+
+---
+
 272. CORS handle kaise?
+
+`Hinglish Explanation:`
+
+CORS browser security policy ko manage karta hai aur different domains ke beech requests allow ya restrict karta hai.
+
+`Interview Answer:`
+
+CORS controls which domains can access server resources and is commonly configured using middleware.
+
+Example:
+
+```javascript
+app.use(cors({
+  origin: "*"
+}));
+```
+
+---
+
 273. Input sanitization?
+
+`Hinglish Explanation:`
+
+Input sanitization malicious user input ko clean karti hai taaki XSS aur injection attacks prevent ho sakein.
+
+`Interview Answer:`
+
+Input sanitization removes or escapes unsafe content from user input to improve application security.
+
+Example:
+
+```javascript
+const clean =
+  validator.escape(input);
+```
+
+---
+
 274. SQL/NoSQL injection prevent?
+
+`Hinglish Explanation:`
+
+Parameterized queries, ORM tools aur input validation use karke injection attacks prevent kiye jate hain.
+
+`Interview Answer:`
+
+Injection attacks can be prevented using parameterized queries, input validation, and ORM libraries.
+
+Example:
+
+```javascript
+User.findOne({
+  email: req.body.email
+});
+```
+
+---
+
 275. HTTPS setup?
+
+`Hinglish Explanation:`
+
+HTTPS SSL/TLS certificates ke through secure communication provide karta hai. Production applications me HTTPS mandatory hona chahiye.
+
+`Interview Answer:`
+
+HTTPS encrypts communication between clients and servers using SSL/TLS certificates.
+
+Example:
+
+```javascript
+https.createServer(
+  options,
+  app
+);
+```
+
+---
+
 276. Reverse proxy?
+
+`Hinglish Explanation:`
+
+Reverse proxy client requests ko backend servers tak forward karta hai aur load balancing, SSL termination provide karta hai.
+
+`Interview Answer:`
+
+A reverse proxy sits between clients and servers, forwarding requests while improving security and scalability.
+
+Example:
+
+```text
+Client
+→ Nginx
+→ Node.js
+```
+
+---
+
 277. Nginx integration?
+
+`Hinglish Explanation:`
+
+Nginx commonly reverse proxy aur load balancer ke roop me Node.js applications ke saath use hota hai.
+
+`Interview Answer:`
+
+Nginx is often used in front of Node.js applications to handle traffic, SSL termination, and load balancing.
+
+Example:
+
+```nginx
+proxy_pass
+http://localhost:3000;
+```
+
+---
+
 278. Docker Node app?
+
+`Hinglish Explanation:`
+
+Docker application aur dependencies ko container me package karta hai jisse deployment consistent aur portable ban jata hai.
+
+`Interview Answer:`
+
+Docker containers package Node.js applications with their dependencies, ensuring consistent deployment across environments.
+
+Example:
+
+```dockerfile
+FROM node:20
+
+WORKDIR /app
+```
+
+---
+
 279. Deployment strategies?
+
+`Hinglish Explanation:`
+
+Common deployment strategies me Blue-Green, Rolling aur Canary deployments shamil hain. Ye downtime aur deployment risk reduce karte hain.
+
+`Interview Answer:`
+
+Deployment strategies define how new application versions are released while minimizing downtime and risk.
+
+Example:
+
+```text
+Blue → Old Version
+Green → New Version
+```
+
+---
+
 280. Monitoring tools?
+
+`Hinglish Explanation:`
+
+Monitoring tools application performance, logs aur system health track karte hain. Prometheus, Grafana aur New Relic popular options hain.
+
+`Interview Answer:`
+
+Monitoring tools help track application health, performance metrics, and operational issues in production.
+
+Example:
+
+```text
+Prometheus
+Grafana
+New Relic
+```
+
 281. High traffic handle kaise?
 282. Memory leak detect?
 283. API slow ho toh?
