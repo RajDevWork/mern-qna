@@ -72,7 +72,7 @@
 
     Ye SEO aur readability improve karte hain.
 
-    `Interview Answer` (English)
+    `Interview Answer `(English)
 
     HTML5 is the latest version of HTML that provides new features and improved support for modern web applications.
 
@@ -99,7 +99,7 @@
 
     DOCTYPE khud HTML tag nahi hai.
 
-    `Interview Answer` (English)
+    `Interview Answer `(English)
 
     The DOCTYPE declaration tells the browser which version of HTML the document is using.
 
@@ -129,7 +129,7 @@
     <meta charset="UTF-8">
     <meta name="description" content="HTML Interview Notes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    `Interview Answer` (English)
+    `Interview Answer `(English)
 
     Meta tags provide metadata about the HTML document.
 
@@ -160,7 +160,7 @@
 
     Agar charset define nahi karenge to kuch characters incorrectly display ho sakte hain.
 
-    `Interview Answer` (English)
+    `Interview Answer `(English)
 
     Charset defines the character encoding used in the HTML document.
 
@@ -569,15 +569,16 @@
 
 121. React kya hai?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         React ek JavaScript library hai jo UI (User Interface) banane ke liye use hoti hai. Yeh component-based architecture follow karti hai aur Virtual DOM use karke fast rendering provide karti hai.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         React is a JavaScript library developed by Meta for building reusable and interactive user interfaces. It uses a component-based architecture and Virtual DOM for efficient rendering.
 
         Example:
+
             ```javascript
                 function App() {
                     return <h1>Hello React</h1>;
@@ -586,30 +587,32 @@
 
 122. JSX kya hai?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         JSX JavaScript XML hai. Isse hum JavaScript ke andar HTML jaisa code likh sakte hain. Browser JSX ko directly nahi samajhta, Babel ise JavaScript me convert karta hai.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         JSX is a syntax extension for JavaScript that allows developers to write HTML-like code inside JavaScript. It gets transpiled into React.createElement calls.
 
         Example:
+
             ```javascript
                 const element = <h1>Hello</h1>;
             ```
 
 123. Virtual DOM?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         Virtual DOM React ka lightweight copy of Real DOM hota hai. Jab state ya props change hote hain, React pehle Virtual DOM update karta hai aur phir difference find karke sirf required changes Real DOM me karta hai.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         Virtual DOM is a lightweight JavaScript representation of the Real DOM. React compares Virtual DOM changes and updates only the necessary parts of the Real DOM.
 
         Example:
+
             ```javascript
                 setCount(count + 1);
             ```
@@ -617,7 +620,7 @@
 
 124. Real DOM vs Virtual DOM?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         | Real DOM                          | Virtual DOM                         |
         | --------------------------------- | ----------------------------------- |
@@ -625,26 +628,28 @@
         | Slow updates                      | Fast updates                        |
         | Entire DOM re-render ho sakta hai | Only changed parts update hote hain |
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         Real DOM is the actual browser DOM, while Virtual DOM is a lightweight copy maintained by React. Virtual DOM improves performance by minimizing direct DOM manipulations.
 
         Example:
+
             ```javascript
                 setName("Raj");
             ```
 
 125. Components kya hote hain?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         Components React ke reusable building blocks hote hain. Har component UI ka ek independent part represent karta hai.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         Components are reusable and independent pieces of UI that help build complex interfaces in a modular way.
 
         Example:
+
             ```javascript
                 function Header() {
                     return <h1>Header</h1>;
@@ -653,7 +658,7 @@
 
 126. Functional vs class components?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         Functional Component
 
@@ -667,7 +672,7 @@
             * Lifecycle methods use karti hai
             * Hooks support nahi karti
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         Functional components are JavaScript functions that return JSX and support Hooks. Class components are ES6 classes that use lifecycle methods and state management.
 
@@ -688,11 +693,11 @@
 
 127. Props kya hain?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         Props parent component se child component ko data pass karne ke liye use hote hain. Props read-only hote hain.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         Props are read-only inputs passed from a parent component to a child component for data communication.
 
@@ -708,11 +713,11 @@
 
 128. State kya hai?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         State component ka internal data hota hai jo time ke saath change ho sakta hai. State update hone par component re-render hota hai.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         State is a component's internal data that can change over time and triggers re-rendering when updated.
 
@@ -724,11 +729,11 @@
 
 129. Controlled components?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         Jab form input ki value React state se control hoti hai tab use Controlled Component kehte hain.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         A controlled component is a form element whose value is controlled by React state.
 
@@ -744,11 +749,11 @@
 
 130. Uncontrolled components?
 
-        Hinglish Explanation:
+        `Hinglish Explanation:`
 
         Jab form data React state ke bajaye DOM khud manage karta hai tab use Uncontrolled Component kehte hain.
 
-        `Interview Answer`:
+        `Interview Answer:`
 
         An uncontrolled component stores its own state in the DOM and is usually accessed using refs.
 
@@ -761,15 +766,181 @@
         ```
 
 131. Keys ka use?
+
+        `Hinglish Explanation:`
+
+        Keys React ko identify karne me help karti hain ki list me kaunsa item add, remove ya update hua hai.
+
+        `Interview Answer:`
+
+        Keys help React identify list items uniquely and optimize rendering during updates.
+
+        Example:
+
+        ```javascript
+           items.map(item =>
+                <li key={item.id}>{item.name}</li>
+            )
+        ```
+
+
 132. Lists render kaise?
+
+        `Hinglish Explanation:`
+
+        React me array ko map() function ki help se render kiya jata hai.
+
+        `Interview Answer:`
+
+        Lists are rendered by iterating over arrays using the map() method and returning JSX elements.
+
+        Example:
+
+        ```javascript
+           users.map(user =>
+                <p key={user.id}>{user.name}</p>
+            )
+        ```
+
 133. Conditional rendering?
+
+        `Hinglish Explanation:`
+
+        Condition ke basis par different UI show karna conditional rendering kehlata hai.
+
+        `Interview Answer`:
+
+        Conditional rendering allows components to render different UI based on conditions.
+
+        Example:
+
+        ```javascript
+           {isLoggedIn ? <Home /> : <Login />}
+        ```
+
+
 134. Forms handle kaise?
+
+        `Hinglish Explanation:`
+
+        Forms ko generally state aur onChange event ke through handle kiya jata hai.
+
+        `Interview Answer:`
+
+        Forms are commonly handled using controlled components with state and event handlers.
+
+        Example:
+
+        ```javascript
+           const [email, setEmail] = useState("");
+        ```
+
 135. Events React mein?
+
+        `Hinglish Explanation:`
+
+        React browser events ko handle karne ke liye event handlers provide karta hai jaise onClick, onChange, onSubmit.
+
+        `Interview Answer:`
+
+        React handles user interactions through event handlers such as onClick, onChange, and onSubmit.
+
+        Example:
+
+        ```javascript
+           <button onClick={handleClick}>
+                Click
+            </button>
+        ```
+
 136. Synthetic events kya hain?
+
+        `Hinglish Explanation:`
+
+        Synthetic Event React ka wrapper hota hai jo browser events ko cross-browser compatible banata hai.
+
+        `Interview Answer`
+
+        Synthetic Events are React's cross-browser wrappers around native browser events.
+
+        Example:
+
+        ```javascript
+           function handleClick(event) {
+                console.log(event.target);
+            }
+        ```
+
 137. Lifecycle methods?
+
+        `Hinglish Explanation:`
+
+        Lifecycle methods component ke different stages (mount, update, unmount) par execute hote hain.
+
+        `Interview Answer:`
+
+        Lifecycle methods allow developers to execute code during different phases of a component's lifecycle.
+
+        Example:
+
+        ```javascript
+           componentDidMount() {
+                console.log("Mounted");
+            }
+        ```
+
 138. Mounting kya hai?
+
+        `Hinglish Explanation:`
+
+        Jab component first time DOM me add hota hai use Mounting kehte hain.
+
+        `Interview Answer:`
+
+        Mounting is the process when a component is created and inserted into the DOM.
+
+        Example:
+
+        ```javascript
+           useEffect(() => {
+            console.log("Mounted");
+            }, []);
+        ```
+
 139. Updating kya hai?
+
+        `Hinglish Explanation:`
+
+        State ya props change hone par component re-render hota hai, ise Updating kehte hain.
+
+        `Interview Answer:`
+
+        Updating occurs when a component re-renders due to changes in state or props.
+
+        Example:
+
+        ```javascript
+           setCount(count + 1);
+        ```
+
 140. Unmounting kya hai?
+
+        `Hinglish Explanation:`
+
+        Jab component DOM se remove hota hai use Unmounting kehte hain.
+
+        `Interview Answer:`
+
+        Unmounting is the process of removing a component from the DOM.
+
+        Example:
+
+        ```javascript
+           useEffect(() => {
+            return () => console.log("Unmount");
+            }, []);
+        ```
+
 141. Hooks kya hain?
 142. useState?
 143. useEffect?
