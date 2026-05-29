@@ -1242,26 +1242,425 @@ function greet(name = "Guest") {
 }
 ```
 
+
 41. Debounce kya hai?
+
+`Hinglish Explanation:`
+
+Debounce function ko tab execute karta hai jab specified delay tak koi naya event trigger na ho. Search input aur resize events me commonly use hota hai.
+
+`Interview Answer:`
+
+Debouncing limits function execution until a specified delay has passed since the last event, reducing unnecessary calls.
+
+Example:
+
+```javascript
+function debounce(fn, delay) {
+  let timer;
+
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(
+      () => fn(...args),
+      delay
+    );
+  };
+}
+```
+
+---
+
 42. Throttle kya hai?
+
+`Hinglish Explanation:`
+
+Throttle function execution ko fixed interval tak limit karta hai. Chahe event kitni baar trigger ho, function specified time me ek hi baar chalega.
+
+`Interview Answer:`
+
+Throttling ensures a function executes at most once within a specified time interval.
+
+Example:
+
+```javascript
+function throttle(fn, delay) {
+  let flag = true;
+
+  return () => {
+    if (!flag) return;
+
+    fn();
+    flag = false;
+
+    setTimeout(() => {
+      flag = true;
+    }, delay);
+  };
+}
+```
+
+---
+
 43. Memoization?
+
+`Hinglish Explanation:`
+
+Memoization expensive function results ko cache karta hai taaki same input par computation dobara na karni pade.
+
+`Interview Answer:`
+
+Memoization is an optimization technique that stores function results and returns cached values for repeated inputs.
+
+Example:
+
+```javascript
+const cache = {};
+
+function square(n) {
+  if (cache[n]) return cache[n];
+
+  return cache[n] = n * n;
+}
+```
+
+---
+
 44. Pure functions?
+
+`Hinglish Explanation:`
+
+Pure Function same input par hamesha same output deti hai aur external state ko modify nahi karti.
+
+`Interview Answer:`
+
+A pure function always returns the same output for the same input and has no side effects.
+
+Example:
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+```
+
+---
+
 45. Side effects kya hai?
+
+`Hinglish Explanation:`
+
+Jab function external state modify kare ya external resources access kare to use side effect kehte hain.
+
+`Interview Answer:`
+
+A side effect is any operation that modifies external state or interacts with systems outside the function.
+
+Example:
+
+```javascript
+let count = 0;
+
+function increment() {
+  count++;
+}
+```
+
+---
+
 46. Functional programming kya hai?
+
+`Hinglish Explanation:`
+
+Functional Programming immutable data, pure functions aur function composition par focus karti hai.
+
+`Interview Answer:`
+
+Functional Programming is a paradigm that emphasizes pure functions, immutability, and declarative code.
+
+Example:
+
+```javascript
+const result =
+  [1, 2, 3].map(x => x * 2);
+```
+
+---
+
 47. Event delegation?
+
+`Hinglish Explanation:`
+
+Event Delegation me parent element par event listener lagaya jata hai aur child events bubbling ke through handle kiye jate hain.
+
+`Interview Answer:`
+
+Event Delegation uses event bubbling to handle events from multiple child elements through a single parent listener.
+
+Example:
+
+```javascript
+ul.addEventListener("click", e => {
+  console.log(e.target);
+});
+```
+
+---
+
 48. Garbage collection?
+
+`Hinglish Explanation:`
+
+Garbage Collection automatically unused memory ko free karti hai taaki memory efficiently use ho sake.
+
+`Interview Answer:`
+
+Garbage Collection automatically removes objects that are no longer reachable from the application.
+
+Example:
+
+```javascript
+let obj = {
+  name: "Raj"
+};
+
+obj = null;
+```
+
+---
+
 49. Memory leak kya hai?
+
+`Hinglish Explanation:`
+
+Memory Leak tab hota hai jab unused memory release nahi hoti aur application unnecessary memory consume karti rehti hai.
+
+`Interview Answer:`
+
+A memory leak occurs when allocated memory remains referenced and cannot be garbage collected.
+
+Example:
+
+```javascript
+let cache = [];
+```
+
+---
+
 50. Closures se leak kaise hota hai?
+
+`Hinglish Explanation:`
+
+Closure outer scope variables ko memory me hold rakhta hai. Agar unnecessary references maintain rahein to memory leak ho sakta hai.
+
+`Interview Answer:`
+
+Closures can cause memory leaks by retaining references to variables that are no longer needed.
+
+Example:
+
+```javascript
+function outer() {
+  let largeData = [];
+
+  return function () {
+    return largeData;
+  };
+}
+```
+
+---
+
 51. Proxy kya hai?
+
+`Hinglish Explanation:`
+
+Proxy object ke operations ko intercept aur customize karne ki facility deta hai jaise get, set aur delete.
+
+`Interview Answer:`
+
+A Proxy wraps an object and intercepts operations such as property access, assignment, and deletion.
+
+Example:
+
+```javascript
+const proxy = new Proxy({}, {});
+```
+
+---
+
 52. Reflect API kya hai?
+
+`Hinglish Explanation:`
+
+Reflect API object operations perform karne ke liye standard methods provide karti hai aur Proxy ke saath commonly use hoti hai.
+
+`Interview Answer:`
+
+The Reflect API provides methods for performing object operations in a consistent and functional way.
+
+Example:
+
+```javascript
+Reflect.get(user, "name");
+```
+
+---
+
 53. Generators kya hain?
+
+`Hinglish Explanation:`
+
+Generators special functions hote hain jo execution ko pause aur resume kar sakte hain using `yield`.
+
+`Interview Answer:`
+
+Generators are functions that can pause execution and produce multiple values over time using `yield`.
+
+Example:
+
+```javascript
+function* gen() {
+  yield 1;
+  yield 2;
+}
+```
+
+---
+
 54. Iterators kya hain?
+
+`Hinglish Explanation:`
+
+Iterator ek object hota hai jo sequence ke values ko one-by-one return karta hai.
+
+`Interview Answer:`
+
+An Iterator is an object that provides a `next()` method to traverse a collection sequentially.
+
+Example:
+
+```javascript
+const it =
+  [1, 2][Symbol.iterator]();
+```
+
+---
+
 55. for...in vs for...of?
+
+`Hinglish Explanation:`
+
+`for...in` object keys iterate karta hai, jabki `for...of` iterable values iterate karta hai.
+
+`Interview Answer:`
+
+`for...in` iterates over property names, while `for...of` iterates over values of iterable objects.
+
+Example:
+
+```javascript
+for (let key in obj) {}
+
+for (let value of arr) {}
+```
+
+---
+
 56. Module system kya hai?
+
+`Hinglish Explanation:`
+
+Module System code ko reusable aur maintainable parts me divide karne ki facility deta hai.
+
+`Interview Answer:`
+
+A module system allows code organization into reusable and independent files.
+
+Example:
+
+```javascript
+export default add;
+```
+
+---
+
 57. ES modules vs CommonJS?
+
+`Hinglish Explanation:`
+
+ES Modules modern JavaScript standard hai, jabki CommonJS Node.js ka traditional module system hai.
+
+`Interview Answer:`
+
+ES Modules use `import/export`, while CommonJS uses `require/module.exports`.
+
+Example:
+
+```javascript
+import app from "./app.js";
+
+// CommonJS
+const app =
+  require("./app");
+```
+
+---
+
 58. Strict mode kya hai?
+
+`Hinglish Explanation:`
+
+Strict Mode JavaScript ke unsafe behaviors ko restrict karta hai aur coding mistakes detect karne me help karta hai.
+
+`Interview Answer:`
+
+Strict Mode enables stricter parsing and error handling, helping developers write safer code.
+
+Example:
+
+```javascript
+"use strict";
+```
+
+---
+
 59. Type coercion kya hai?
+
+`Hinglish Explanation:`
+
+Type Coercion automatic type conversion process hai jo JavaScript different types ke values compare ya operate karte waqt karti hai.
+
+`Interview Answer:`
+
+Type Coercion is the automatic conversion of values from one data type to another by JavaScript.
+
+Example:
+
+```javascript
+"5" + 1; // "51"
+```
+
+---
+
 60. == vs ===?
+
+`Hinglish Explanation:`
+
+`==` value compare karta hai aur type conversion allow karta hai. `===` value aur type dono compare karta hai.
+
+`Interview Answer:`
+
+`==` performs loose equality with type coercion, whereas `===` performs strict equality without type conversion.
+
+Example:
+
+```javascript
+5 == "5";   // true
+
+5 === "5";  // false
+```
+
 61. NaN kya hai?
 62. undefined vs null?
 63. typeof operator?
