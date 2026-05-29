@@ -4634,16 +4634,205 @@ channel.sendToQueue(
 );
 ```
 
-301. Event sourcing?
-302. CQRS pattern?
-303. Rate limiting algorithms?
-304. API caching strategies?
-305. Background job monitoring?
-306. Log aggregation?
-307. Distributed tracing?
-308. Performance benchmarking?
-309. Security scanning?
-310. Compliance (GDPR, etc.)?
+## 301. Event sourcing?
+
+`Hinglish Explanation:`
+
+Event Sourcing me application current state store karne ke bajay state changes ko events ke form me store karti hai. System ki complete history preserve rehti hai aur state ko events replay karke reconstruct kiya ja sakta hai.
+
+`Interview Answer:`
+
+Event Sourcing is a pattern where all state changes are stored as immutable events. The current state can be rebuilt by replaying those events.
+
+Example:
+
+```javascript
+[
+  { type: "ACCOUNT_CREATED" },
+  { type: "MONEY_DEPOSITED", amount: 1000 }
+]
+```
+
+---
+
+## 302. CQRS pattern?
+
+`Hinglish Explanation:`
+
+CQRS (Command Query Responsibility Segregation) me read aur write operations ko separate kar diya jata hai. Isse scalability aur performance improve hoti hai.
+
+`Interview Answer:`
+
+CQRS separates read operations (queries) from write operations (commands), allowing independent optimization of each side.
+
+Example:
+
+```javascript
+CreateOrderCommand
+
+GetOrdersQuery
+```
+
+---
+
+## 303. Rate limiting algorithms?
+
+`Hinglish Explanation:`
+
+Rate limiting algorithms requests ko control karte hain taaki abuse aur DDoS attacks prevent ho sakein. Common algorithms Fixed Window, Sliding Window aur Token Bucket hain.
+
+`Interview Answer:`
+
+Rate limiting algorithms restrict request frequency and protect systems from abuse, excessive traffic, and denial-of-service attacks.
+
+Example:
+
+```text
+Fixed Window
+Sliding Window
+Token Bucket
+Leaky Bucket
+```
+
+---
+
+## 304. API caching strategies?
+
+`Hinglish Explanation:`
+
+API caching frequently requested responses ko temporarily store karti hai. Isse response time improve hota hai aur database load reduce hota hai.
+
+`Interview Answer:`
+
+API caching stores frequently accessed responses to reduce latency, database load, and overall system resource consumption.
+
+Example:
+
+```javascript
+const cached =
+  await redis.get("users");
+```
+
+---
+
+## 305. Background job monitoring?
+
+`Hinglish Explanation:`
+
+Background jobs ko monitor karna important hai taaki failed jobs, retries aur processing delays track kiye ja sakein. Bull Board aur Agenda dashboards commonly use hote hain.
+
+`Interview Answer:`
+
+Background job monitoring tracks job execution, failures, retries, and processing metrics to ensure reliability.
+
+Example:
+
+```javascript
+job.on("failed", () => {
+  logger.error("Job Failed");
+});
+```
+
+---
+
+## 306. Log aggregation?
+
+`Hinglish Explanation:`
+
+Log aggregation multiple servers aur services ke logs ko ek centralized platform me collect karti hai. Troubleshooting aur monitoring easier ho jati hai.
+
+`Interview Answer:`
+
+Log aggregation centralizes logs from multiple systems, making analysis, monitoring, and debugging more efficient.
+
+Example:
+
+```text
+App Servers
+    ↓
+ Elasticsearch
+    ↓
+   Kibana
+```
+
+---
+
+## 307. Distributed tracing?
+
+`Hinglish Explanation:`
+
+Distributed tracing request ka complete journey track karti hai jab wo multiple microservices se pass hoti hai. Isse bottlenecks aur failures identify karna easy hota hai.
+
+`Interview Answer:`
+
+Distributed tracing follows requests across multiple services and helps identify latency issues and failures in distributed systems.
+
+Example:
+
+```text
+Request
+ → Service A
+ → Service B
+ → Database
+```
+
+---
+
+## 308. Performance benchmarking?
+
+`Hinglish Explanation:`
+
+Benchmarking application ki performance measure karti hai under specific workloads. Isse throughput, latency aur resource usage evaluate ki jati hai.
+
+`Interview Answer:`
+
+Performance benchmarking measures how an application performs under load by analyzing metrics such as response time and throughput.
+
+Example:
+
+```bash
+autocannon \
+http://localhost:3000
+```
+
+---
+
+## 309. Security scanning?
+
+`Hinglish Explanation:`
+
+Security scanning vulnerabilities aur insecure dependencies detect karne ke liye use hoti hai. Automated scans development lifecycle ka important part hain.
+
+`Interview Answer:`
+
+Security scanning identifies vulnerabilities, insecure configurations, and dependency risks before they reach production.
+
+Example:
+
+```bash
+npm audit
+```
+
+---
+
+## 310. Compliance (GDPR, etc.)?
+
+`Hinglish Explanation:`
+
+Compliance regulations jaise GDPR ensure karti hain ki user data securely handle aur process kiya jaye. Privacy, consent aur data protection requirements follow karna mandatory hota hai.
+
+`Interview Answer:`
+
+Compliance standards such as GDPR require organizations to protect user data, maintain privacy, and implement proper data handling practices.
+
+Example:
+
+```text
+User Consent
+Data Encryption
+Right to Delete Data
+```
+
 
 ### Additional Important Questions
 1. Explain middleware and the types of middleware in Express.
