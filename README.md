@@ -1515,31 +1515,490 @@ Inspect Component
 → Profile Performance
 ```
 
+
 171. SSR kya hai?
+
+`Hinglish Explanation:`
+
+SSR (Server-Side Rendering) me HTML server par generate hota hai aur browser ko ready-made page milta hai. Isse SEO aur initial page load improve hota hai.
+
+`Interview Answer:`
+
+Server-Side Rendering (SSR) generates HTML on the server and sends it to the client. It improves SEO and initial page load performance.
+
+Example:
+
+```javascript
+export async function getServerSideProps() {
+  return { props: {} };
+}
+```
+
+---
+
 172. CSR kya hai?
+
+`Hinglish Explanation:`
+
+CSR (Client-Side Rendering) me browser JavaScript download karta hai aur UI render karta hai. React applications by default CSR use karti hain.
+
+`Interview Answer:`
+
+Client-Side Rendering (CSR) renders content in the browser using JavaScript after the initial page load.
+
+Example:
+
+```javascript
+ReactDOM.createRoot(root).render(<App />);
+```
+
+---
+
 173. Hydration kya hai?
+
+`Hinglish Explanation:`
+
+Hydration process me React server-rendered HTML ko interactive banata hai aur event handlers attach karta hai.
+
+`Interview Answer:`
+
+Hydration is the process where React attaches event listeners and makes server-rendered HTML interactive.
+
+Example:
+
+```javascript
+hydrateRoot(document.getElementById("root"), <App />);
+```
+
+---
+
 174. Next.js kya hai?
+
+`Hinglish Explanation:`
+
+Next.js React framework hai jo SSR, SSG, API routes, routing aur performance optimizations provide karta hai.
+
+`Interview Answer:`
+
+Next.js is a React framework that provides SSR, SSG, routing, API routes, and built-in performance optimizations.
+
+Example:
+
+```javascript
+export default function Home() {
+  return <h1>Home Page</h1>;
+}
+```
+
+---
+
 175. Routing kaise hoti hai?
+
+`Hinglish Explanation:`
+
+React me routing React Router ya Next.js file-based routing ke through hoti hai.
+
+`Interview Answer:`
+
+Routing allows navigation between pages or views without reloading the browser.
+
+Example:
+
+```javascript
+<Route path="/about" element={<About />} />
+```
+
+---
+
 176. Dynamic routing?
+
+`Hinglish Explanation:`
+
+Dynamic routing me URL parameters use karke dynamic pages create kiye jate hain.
+
+`Interview Answer:`
+
+Dynamic routing allows routes to be generated using dynamic parameters from the URL.
+
+Example:
+
+```javascript
+<Route path="/user/:id" element={<User />} />
+```
+
+---
+
 177. SEO React mein?
+
+`Hinglish Explanation:`
+
+SEO improve karne ke liye SSR, meta tags, structured data aur proper headings use karte hain.
+
+`Interview Answer:`
+
+SEO in React can be improved using SSR, meta tags, structured data, and semantic HTML.
+
+Example:
+
+```javascript
+<Helmet>
+  <title>Home Page</title>
+</Helmet>
+```
+
+---
+
 178. Accessibility?
+
+`Hinglish Explanation:`
+
+Accessibility ka purpose application ko sab users ke liye usable banana hai, including users with disabilities.
+
+`Interview Answer:`
+
+Accessibility ensures that web applications can be used by people with disabilities through semantic HTML and ARIA attributes.
+
+Example:
+
+```javascript
+<button aria-label="Close">
+  X
+</button>
+```
+
+---
+
 179. Testing React?
+
+`Hinglish Explanation:`
+
+React testing ka use components, user interactions aur business logic verify karne ke liye hota hai.
+
+`Interview Answer:`
+
+React testing ensures components behave correctly by validating rendering, interactions, and application logic.
+
+Example:
+
+```javascript
+render(<App />);
+```
+
+---
+
 180. Jest kya hai?
+
+`Hinglish Explanation:`
+
+Jest ek JavaScript testing framework hai jo unit testing aur mocking provide karta hai.
+
+`Interview Answer:`
+
+Jest is a JavaScript testing framework used for unit testing, mocking, and assertions.
+
+Example:
+
+```javascript
+test("sum", () => {
+  expect(1 + 1).toBe(2);
+});
+```
+
+---
+
 181. React Testing Library?
+
+`Hinglish Explanation:`
+
+React Testing Library user perspective se components test karne ke liye use hoti hai.
+
+`Interview Answer:`
+
+React Testing Library focuses on testing components the way users interact with them.
+
+Example:
+
+```javascript
+render(<Button />);
+screen.getByText("Submit");
+```
+
+---
+
 182. Snapshot testing?
+
+`Hinglish Explanation:`
+
+Snapshot testing component ke rendered output ka snapshot save karta hai aur future changes compare karta hai.
+
+`Interview Answer:`
+
+Snapshot testing compares the current rendered output against a previously stored snapshot.
+
+Example:
+
+```javascript
+expect(tree).toMatchSnapshot();
+```
+
+---
+
 183. Mocking?
+
+`Hinglish Explanation:`
+
+Mocking external dependencies jaise APIs ya functions ko replace karta hai taaki tests isolated rahein.
+
+`Interview Answer:`
+
+Mocking replaces real implementations with fake ones to isolate and test specific functionality.
+
+Example:
+
+```javascript
+jest.mock("./api");
+```
+
+---
+
 184. Performance optimization?
+
+`Hinglish Explanation:`
+
+Performance optimize karne ke liye memoization, lazy loading, code splitting aur virtualization use karte hain.
+
+`Interview Answer:`
+
+Performance optimization involves reducing unnecessary renders, minimizing bundle size, and improving loading speed.
+
+Example:
+
+```javascript
+const value = useMemo(() => calc(), []);
+```
+
+---
+
 185. Bundle size reduce kaise?
+
+`Hinglish Explanation:`
+
+Bundle size code splitting, tree shaking aur lazy loading se reduce ki ja sakti hai.
+
+`Interview Answer:`
+
+Bundle size can be reduced using code splitting, tree shaking, lazy loading, and removing unused dependencies.
+
+Example:
+
+```javascript
+const Page = React.lazy(() =>
+  import("./Page")
+);
+```
+
+---
+
 186. Memoization React mein?
+
+`Hinglish Explanation:`
+
+Memoization expensive calculations ya functions ko cache karke unnecessary recalculations avoid karta hai.
+
+`Interview Answer:`
+
+Memoization stores computed results and reuses them until dependencies change.
+
+Example:
+
+```javascript
+const result = useMemo(() => {
+  return compute();
+}, [data]);
+```
+
+---
+
 187. Virtualization kya hai?
+
+`Hinglish Explanation:`
+
+Virtualization large lists me sirf visible items render karti hai jisse performance improve hoti hai.
+
+`Interview Answer:`
+
+Virtualization improves performance by rendering only visible items instead of the entire list.
+
+Example:
+
+```javascript
+<FixedSizeList
+  height={500}
+  itemCount={10000}
+/>
+```
+
+---
+
 188. Large list rendering?
+
+`Hinglish Explanation:`
+
+Large lists render karte waqt pagination, infinite scroll ya virtualization use karni chahiye.
+
+`Interview Answer:`
+
+Large lists should be optimized using pagination, infinite scrolling, or virtualization techniques.
+
+Example:
+
+```javascript
+users.map(user => (
+  <User key={user.id} />
+));
+```
+
+---
+
 189. Lazy components?
+
+`Hinglish Explanation:`
+
+Lazy components tab load hote hain jab unki zarurat padti hai, initial bundle me nahi.
+
+`Interview Answer:`
+
+Lazy components are loaded only when required, reducing the initial application bundle size.
+
+Example:
+
+```javascript
+const Dashboard = React.lazy(() =>
+  import("./Dashboard")
+);
+```
+
+---
+
 190. Image optimization?
+
+`Hinglish Explanation:`
+
+Image optimization me resizing, compression aur lazy loading use ki jati hai taaki page fast load ho.
+
+`Interview Answer:`
+
+Image optimization improves performance by reducing image size and loading images only when needed.
+
+Example:
+
+```javascript
+<img
+  loading="lazy"
+  src="image.jpg"
+/>
+```
+
+---
+
 191. Folder structure kaise?
+
+`Hinglish Explanation:`
+
+Folder structure scalable aur feature-based honi chahiye jisse maintenance easy rahe.
+
+`Interview Answer:`
+
+A good folder structure separates components, pages, hooks, services, and utilities for better scalability.
+
+Example:
+
+```text
+src/
+ ├─ components/
+ ├─ pages/
+ ├─ hooks/
+ ├─ services/
+```
+
+---
+
 192. Scalable architecture?
+
+`Hinglish Explanation:`
+
+Scalable architecture modular design, reusable components aur clear separation of concerns follow karti hai.
+
+`Interview Answer:`
+
+Scalable architecture focuses on modularity, maintainability, and separation of concerns.
+
+Example:
+
+```text
+features/
+shared/
+services/
+```
+
+---
+
 193. Design patterns React mein?
+
+`Hinglish Explanation:`
+
+React me commonly Container-Presentational, Custom Hooks, HOC aur Render Props patterns use hote hain.
+
+`Interview Answer:`
+
+Design patterns provide reusable solutions for organizing code and improving maintainability.
+
+Example:
+
+```javascript
+function UserList() {
+  return <Users />;
+}
+```
+
+---
+
 194. HOC kya hai?
+
+`Hinglish Explanation:`
+
+HOC (Higher Order Component) ek function hai jo component ko input leta hai aur enhanced component return karta hai.
+
+`Interview Answer:`
+
+A Higher-Order Component is a function that takes a component and returns a new component with additional functionality.
+
+Example:
+
+```javascript
+const Enhanced = withAuth(Dashboard);
+```
+
+---
+
 195. Render props?
+
+`Hinglish Explanation:`
+
+Render Props pattern me component ek function prop receive karta hai aur us function ke through UI render karta hai.
+
+`Interview Answer:`
+
+Render Props is a pattern where a component shares logic by passing a function as a prop that returns UI.
+
+Example:
+
+```javascript
+<DataProvider
+  render={(data) => <User data={data} />}
+/>
+```
+
 196. Hooks vs HOC?
 197. Micro frontends?
 198. Monorepo kya hai?
