@@ -1999,31 +1999,489 @@ Example:
 />
 ```
 
+# React Interview Questions (196-220)
+
 196. Hooks vs HOC?
-197. Micro frontends?
+
+`Hinglish Explanation:`
+
+Hooks aur HOC dono reusable logic share karne ke liye use hote hain. Modern React me Hooks preferred hain kyunki code readable aur maintainable hota hai.
+
+`Interview Answer:`
+
+Hooks provide a cleaner and more intuitive way to reuse stateful logic compared to Higher-Order Components, which can lead to wrapper nesting.
+
+Example:
+
+```javascript
+function useAuth() {
+  return true;
+}
+```
+
+---
+
+197. Micro Frontends?
+
+`Hinglish Explanation:`
+
+Micro Frontends me large frontend application ko multiple independent applications me divide kiya jata hai jo alag teams maintain kar sakti hain.
+
+`Interview Answer:`
+
+Micro Frontends extend the microservices concept to frontend development by splitting a large application into independently deployable frontend modules.
+
+Example:
+
+```text
+Shell App
+├── Auth App
+├── Dashboard App
+└── Profile App
+```
+
+---
+
 198. Monorepo kya hai?
+
+`Hinglish Explanation:`
+
+Monorepo ek single repository hoti hai jisme multiple applications aur shared packages maintain kiye jate hain.
+
+`Interview Answer:`
+
+A Monorepo is a single repository that contains multiple projects, applications, or packages managed together.
+
+Example:
+
+```text
+apps/
+packages/
+shared/
+```
+
+---
+
 199. Deployment React app?
+
+`Hinglish Explanation:`
+
+React application ko build karke Vercel, Netlify, AWS ya any hosting platform par deploy kiya jata hai.
+
+`Interview Answer:`
+
+React applications are typically deployed by generating a production build and hosting the static assets on a web server or cloud platform.
+
+Example:
+
+```bash
+npm run build
+```
+
+---
+
 200. Env variables React mein?
+
+`Hinglish Explanation:`
+
+Environment variables sensitive configurations aur environment-specific values store karne ke liye use hoti hain.
+
+`Interview Answer:`
+
+Environment variables allow configuration values such as API URLs and feature flags to be managed outside the source code.
+
+Example:
+
+```javascript
+const api = process.env.REACT_APP_API_URL;
+```
+
+---
+
 201. Build process?
+
+`Hinglish Explanation:`
+
+Build process source code ko optimized production-ready bundle me convert karta hai.
+
+`Interview Answer:`
+
+The build process transpiles, bundles, minifies, and optimizes application code for production deployment.
+
+Example:
+
+```bash
+npm run build
+```
+
+---
+
 202. CI/CD React?
+
+`Hinglish Explanation:`
+
+CI/CD automatically code build, test aur deploy karta hai jisse releases fast aur reliable bante hain.
+
+`Interview Answer:`
+
+CI/CD automates the process of integrating, testing, and deploying code changes to improve delivery speed and reliability.
+
+Example:
+
+```yaml
+build:
+test:
+deploy:
+```
+
+---
+
 203. Security React?
+
+`Hinglish Explanation:`
+
+React applications me XSS prevention, authentication, authorization aur secure API communication important hote hain.
+
+`Interview Answer:`
+
+React security involves preventing XSS attacks, securing authentication flows, validating input, and protecting sensitive data.
+
+Example:
+
+```javascript
+const name = userInput;
+```
+
+---
+
 204. XSS prevent kaise?
+
+`Hinglish Explanation:`
+
+React by default content escape karta hai. `dangerouslySetInnerHTML` ka use carefully karna chahiye aur input sanitize karna chahiye.
+
+`Interview Answer:`
+
+XSS can be prevented by sanitizing user input and avoiding unsafe HTML rendering with dangerouslySetInnerHTML.
+
+Example:
+
+```javascript
+<div>{userInput}</div>
+```
+
+---
+
 205. Form validation?
+
+`Hinglish Explanation:`
+
+Form validation user input ko verify karti hai taaki invalid ya incomplete data submit na ho.
+
+`Interview Answer:`
+
+Form validation ensures that user input meets business and data integrity requirements before submission.
+
+Example:
+
+```javascript
+if (!email) {
+  setError("Required");
+}
+```
+
+---
+
 206. State normalization?
+
+`Hinglish Explanation:`
+
+State normalization me nested data ko flat structure me store kiya jata hai taaki updates aur lookups efficient ho sakein.
+
+`Interview Answer:`
+
+State normalization organizes data into flat structures to reduce duplication and simplify updates.
+
+Example:
+
+```javascript
+{
+  users: {
+    1: { id: 1, name: "Raj" }
+  }
+}
+```
+
+---
+
 207. API calls best practices?
+
+`Hinglish Explanation:`
+
+API calls ko services me rakhna, loading/error states handle karna aur unnecessary requests avoid karna best practice hai.
+
+`Interview Answer:`
+
+API calls should be centralized, include proper error handling, and manage loading and caching efficiently.
+
+Example:
+
+```javascript
+const data = await fetch("/api/users");
+```
+
+---
+
 208. Error handling?
+
+`Hinglish Explanation:`
+
+Application me API errors, validation errors aur unexpected exceptions ko gracefully handle karna chahiye.
+
+`Interview Answer:`
+
+Error handling improves user experience by catching failures and displaying meaningful feedback.
+
+Example:
+
+```javascript
+try {
+  await fetchData();
+} catch (error) {
+  console.error(error);
+}
+```
+
+---
+
 209. Loading states?
+
+`Hinglish Explanation:`
+
+Loading state user ko batati hai ki data fetch ya operation process me hai.
+
+`Interview Answer:`
+
+Loading states provide visual feedback while asynchronous operations are in progress.
+
+Example:
+
+```javascript
+if (loading) {
+  return <Spinner />;
+}
+```
+
+---
+
 210. Skeleton UI?
+
+`Hinglish Explanation:`
+
+Skeleton UI actual content ke load hone tak placeholder layout show karti hai.
+
+`Interview Answer:`
+
+Skeleton screens improve perceived performance by displaying content placeholders during loading.
+
+Example:
+
+```javascript
+<Skeleton height={50} />
+```
+
+---
+
 211. Offline support?
+
+`Hinglish Explanation:`
+
+Offline support application ko internet unavailable hone par bhi kuch functionality provide karne deti hai.
+
+`Interview Answer:`
+
+Offline support enables users to access cached content and functionality without an internet connection.
+
+Example:
+
+```javascript
+navigator.onLine;
+```
+
+---
+
 212. PWA kya hai?
+
+`Hinglish Explanation:`
+
+PWA (Progressive Web App) web application ko app-like experience provide karti hai including offline support and installability.
+
+`Interview Answer:`
+
+A Progressive Web App combines web technologies with native app features such as offline access and home-screen installation.
+
+Example:
+
+```json
+{
+  "name": "My App"
+}
+```
+
+---
+
 213. Service worker React?
+
+`Hinglish Explanation:`
+
+Service Worker background me run hota hai aur caching, offline support aur push notifications provide karta hai.
+
+`Interview Answer:`
+
+A Service Worker is a background script that enables caching, offline capabilities, and background tasks.
+
+Example:
+
+```javascript
+navigator.serviceWorker.register("/sw.js");
+```
+
+---
+
 214. Caching strategies?
+
+`Hinglish Explanation:`
+
+Caching strategies application performance improve karti hain by reducing repeated network requests.
+
+`Interview Answer:`
+
+Caching strategies determine how and when resources are stored and retrieved to improve performance and reliability.
+
+Example:
+
+```text
+Cache First
+Network First
+Stale While Revalidate
+```
+
+---
+
 215. Feature flags?
+
+`Hinglish Explanation:`
+
+Feature flags new features ko deploy karne aur selectively enable/disable karne ke liye use hote hain.
+
+`Interview Answer:`
+
+Feature flags allow features to be enabled or disabled without redeploying the application.
+
+Example:
+
+```javascript
+if (featureEnabled) {
+  showNewUI();
+}
+```
+
+---
+
 216. A/B testing?
+
+`Hinglish Explanation:`
+
+A/B testing me users ko different versions dikhakar performance compare ki jati hai.
+
+`Interview Answer:`
+
+A/B testing compares multiple variations of a feature or UI to determine which performs better.
+
+Example:
+
+```javascript
+variant === "A"
+  ? <OldUI />
+  : <NewUI />;
+```
+
+---
+
 217. Internationalization?
+
+`Hinglish Explanation:`
+
+Internationalization (i18n) application ko multiple languages aur regions support karne layak banata hai.
+
+`Interview Answer:`
+
+Internationalization enables applications to support multiple languages and regional formats.
+
+Example:
+
+```javascript
+t("welcome");
+```
+
+---
+
 218. Dark mode implementation?
+
+`Hinglish Explanation:`
+
+Dark mode theme switching aur CSS classes ke through implement kiya jata hai.
+
+`Interview Answer:`
+
+Dark mode is typically implemented by toggling themes and applying different styles based on user preference.
+
+Example:
+
+```javascript
+document.body.classList.toggle("dark");
+```
+
+---
+
 219. Theming?
+
+`Hinglish Explanation:`
+
+Theming application ke colors, typography aur styling ko centrally manage karne ka approach hai.
+
+`Interview Answer:`
+
+Theming provides a centralized way to manage and switch application styles consistently.
+
+Example:
+
+```javascript
+<ThemeProvider theme={theme}>
+  <App />
+</ThemeProvider>
+```
+
+---
+
 220. Best practices React?
+
+`Hinglish Explanation:`
+
+Reusable components, proper state management, lazy loading, error handling aur clean folder structure React ki important best practices hain.
+
+`Interview Answer:`
+
+React best practices include component reusability, clean architecture, proper state management, performance optimization, and effective testing.
+
+Example:
+
+```javascript
+// Keep components small
+// Reuse logic with hooks
+// Avoid unnecessary re-renders
+```
+
 
 ### Additional Important Questions
 1. Explain the React reconciliation algorithm.
