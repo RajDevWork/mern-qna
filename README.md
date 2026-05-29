@@ -1661,26 +1661,415 @@ Example:
 5 === "5";  // false
 ```
 
+
 61. NaN kya hai?
+
+`Hinglish Explanation:`
+
+NaN ka matlab "Not a Number" hai. Jab koi invalid mathematical operation hoti hai ya number conversion fail hota hai tab NaN return hota hai.
+
+`Interview Answer:`
+
+NaN is a special numeric value representing an invalid or undefined mathematical result. It is of type `number`.
+
+Example:
+
+```javascript
+Number("abc"); // NaN
+
+Number.isNaN(NaN); // true
+```
+
+---
+
 62. undefined vs null?
+
+`Hinglish Explanation:`
+
+`undefined` ka matlab variable declare hua hai par value assign nahi hui. `null` intentionally assigned empty value ko represent karta hai.
+
+`Interview Answer:`
+
+`undefined` indicates a variable has not been assigned a value, while `null` represents an intentional absence of value.
+
+Example:
+
+```javascript
+let a;
+
+let b = null;
+```
+
+---
+
 63. typeof operator?
+
+`Hinglish Explanation:`
+
+`typeof` kisi variable ya value ka data type check karne ke liye use hota hai.
+
+`Interview Answer:`
+
+The `typeof` operator returns the data type of a given operand as a string.
+
+Example:
+
+```javascript
+typeof "Raj"; // string
+
+typeof 10; // number
+```
+
+---
+
 64. instanceof?
+
+`Hinglish Explanation:`
+
+`instanceof` check karta hai ki object kisi specific constructor ya class se create hua hai ya nahi.
+
+`Interview Answer:`
+
+The `instanceof` operator checks whether an object exists in a constructor's prototype chain.
+
+Example:
+
+```javascript
+arr instanceof Array; // true
+```
+
+---
+
 65. Array methods (map/filter/reduce)?
+
+`Hinglish Explanation:`
+
+`map()` data transform karta hai, `filter()` conditions ke basis par data select karta hai aur `reduce()` values ko single result me combine karta hai.
+
+`Interview Answer:`
+
+`map()` transforms elements, `filter()` selects matching elements, and `reduce()` accumulates values into a single result.
+
+Example:
+
+```javascript
+arr.map(x => x * 2);
+
+arr.filter(x => x > 5);
+
+arr.reduce((a, b) => a + b);
+```
+
+---
+
 66. Reduce ka use?
+
+`Hinglish Explanation:`
+
+Reduce array ke saare elements ko process karke ek final value return karta hai jaise sum, average ya object creation.
+
+`Interview Answer:`
+
+`reduce()` is used to accumulate array values into a single output such as totals, objects, or grouped data.
+
+Example:
+
+```javascript
+const sum =
+  [1, 2, 3].reduce(
+    (acc, curr) => acc + curr,
+    0
+  );
+```
+
+---
+
 67. Flatten array kaise?
+
+`Hinglish Explanation:`
+
+Nested arrays ko single-level array me convert karne ko flattening kehte hain.
+
+`Interview Answer:`
+
+Arrays can be flattened using the `flat()` method or recursion for deeply nested structures.
+
+Example:
+
+```javascript
+const arr =
+  [1, [2, [3]]];
+
+arr.flat(Infinity);
+```
+
+---
+
 68. Deep clone kaise?
+
+`Hinglish Explanation:`
+
+Deep clone nested objects aur arrays ki completely independent copy create karta hai.
+
+`Interview Answer:`
+
+Deep cloning creates a new copy of an object including all nested references.
+
+Example:
+
+```javascript
+const clone =
+  structuredClone(obj);
+```
+
+---
+
 69. Object comparison?
+
+`Hinglish Explanation:`
+
+JavaScript objects reference ke basis par compare hote hain, values ke basis par nahi.
+
+`Interview Answer:`
+
+Objects are compared by reference, so two objects with identical values are not equal unless they reference the same memory location.
+
+Example:
+
+```javascript
+{} === {}; // false
+```
+
+---
+
 70. Immutable data kya hai?
+
+`Hinglish Explanation:`
+
+Immutable data create hone ke baad modify nahi hota. Changes ke liye nayi copy create ki jati hai.
+
+`Interview Answer:`
+
+Immutable data cannot be modified after creation, improving predictability and state management.
+
+Example:
+
+```javascript
+const user = {
+  ...oldUser,
+  age: 25
+};
+```
+
+---
+
 71. Currying kya hai?
+
+`Hinglish Explanation:`
+
+Currying ek function ko multiple single-argument functions me convert karne ki technique hai.
+
+`Interview Answer:`
+
+Currying transforms a function with multiple arguments into a sequence of functions that each take one argument.
+
+Example:
+
+```javascript
+const add =
+  a => b => a + b;
+```
+
+---
+
 72. Partial application?
+
+`Hinglish Explanation:`
+
+Partial Application me function ke kuch arguments pehle se fix kar diye jate hain aur remaining baad me pass kiye jate hain.
+
+`Interview Answer:`
+
+Partial application creates a new function by pre-filling some arguments of an existing function.
+
+Example:
+
+```javascript
+const add =
+  (a, b) => a + b;
+
+const addFive =
+  add.bind(null, 5);
+```
+
+---
+
 73. Compose function?
+
+`Hinglish Explanation:`
+
+Compose multiple functions ko right-to-left order me execute karta hai.
+
+`Interview Answer:`
+
+Function composition combines multiple functions where the output of one becomes the input of the next.
+
+Example:
+
+```javascript
+const compose =
+  (f, g) => x => f(g(x));
+```
+
+---
+
 74. Pipe kya hai?
+
+`Hinglish Explanation:`
+
+Pipe compose jaisa hi hai, lekin functions left-to-right order me execute hote hain.
+
+`Interview Answer:`
+
+Pipe executes functions from left to right, making data flow easier to read.
+
+Example:
+
+```javascript
+const pipe =
+  (f, g) => x => g(f(x));
+```
+
+---
+
 75. Promise.all?
+
+`Hinglish Explanation:`
+
+`Promise.all()` multiple promises ko parallel execute karta hai aur sab successful hone par result return karta hai.
+
+`Interview Answer:`
+
+`Promise.all()` resolves when all promises succeed and rejects immediately if any promise fails.
+
+Example:
+
+```javascript
+Promise.all([
+  fetch("/users"),
+  fetch("/posts")
+]);
+```
+
+---
+
 76. Promise.race?
+
+`Hinglish Explanation:`
+
+`Promise.race()` sabse pehle complete hone wale promise ka result return karta hai.
+
+`Interview Answer:`
+
+`Promise.race()` settles as soon as the first promise resolves or rejects.
+
+Example:
+
+```javascript
+Promise.race([
+  p1,
+  p2
+]);
+```
+
+---
+
 77. Promise.any?
+
+`Hinglish Explanation:`
+
+`Promise.any()` pehle successful promise ka result return karta hai aur failures ignore karta hai.
+
+`Interview Answer:`
+
+`Promise.any()` resolves with the first fulfilled promise and rejects only if all promises fail.
+
+Example:
+
+```javascript
+Promise.any([
+  p1,
+  p2
+]);
+```
+
+---
+
 78. Promise.allSettled?
+
+`Hinglish Explanation:`
+
+`Promise.allSettled()` sabhi promises ke complete hone ka wait karta hai, chahe success ho ya fail.
+
+`Interview Answer:`
+
+`Promise.allSettled()` returns the status and result of all promises without failing early.
+
+Example:
+
+```javascript
+Promise.allSettled([
+  p1,
+  p2
+]);
+```
+
+---
+
 79. Retry mechanism kaise likho?
+
+`Hinglish Explanation:`
+
+Retry mechanism failed operation ko specified attempts tak dobara execute karta hai. Temporary network failures ke liye useful hai.
+
+`Interview Answer:`
+
+A retry mechanism automatically re-executes failed operations, often with delays between attempts.
+
+Example:
+
+```javascript
+async function retry(fn, times) {
+  for (let i = 0; i < times; i++) {
+    try {
+      return await fn();
+    } catch {}
+  }
+}
+```
+
+---
+
 80. Rate limiter function?
+
+`Hinglish Explanation:`
+
+Rate Limiter requests ya function calls ki frequency control karta hai taaki abuse aur excessive load prevent ho sake.
+
+`Interview Answer:`
+
+A rate limiter restricts how often a function or API can be executed within a given time period.
+
+Example:
+
+```javascript
+let calls = 0;
+
+if (calls > 100) {
+  throw Error("Limit Exceeded");
+}
+```
+
 81. Event bubbling kya hai?
 82. Event capturing?
 83. stopPropagation?
