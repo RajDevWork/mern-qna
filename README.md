@@ -1999,8 +1999,6 @@ Example:
 />
 ```
 
-# React Interview Questions (196-220)
-
 196. Hooks vs HOC?
 
 `Hinglish Explanation:`
@@ -2775,7 +2773,6 @@ const store = configureStore({
 });
 ```
 
-
 16. How does hydration work in React with SSR?
 
 `Hinglish Explanation:`
@@ -3088,25 +3085,401 @@ const Input = React.forwardRef(
 ## 🌐 Node + Express (221-310)
 
 221. Node.js kya hai?
+
+`Hinglish Explanation:`
+
+Node.js Chrome V8 engine par based JavaScript runtime hai jo JavaScript ko browser ke bahar run karne deta hai. Ye event-driven aur non-blocking architecture use karta hai, isliye scalable backend applications ke liye suitable hai.
+
+`Interview Answer:`
+
+Node.js is a JavaScript runtime built on Chrome's V8 engine. It uses an event-driven, non-blocking I/O model, making it efficient for building scalable server-side applications.
+
+Example:
+
+```javascript
+console.log("Hello Node.js");
+```
+
+---
+
 222. Event loop Node mein?
+
+`Hinglish Explanation:`
+
+Event Loop Node.js ka core mechanism hai jo asynchronous operations ko handle karta hai. Ye callback queue se tasks uthakar execute karta hai jab call stack empty hota hai.
+
+`Interview Answer:`
+
+The Event Loop is responsible for handling asynchronous operations in Node.js. It continuously checks the call stack and executes queued callbacks when the stack is empty.
+
+Example:
+
+```javascript
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Timer");
+}, 0);
+
+console.log("End");
+```
+
+---
+
 223. Non-blocking I/O?
+
+`Hinglish Explanation:`
+
+Non-blocking I/O me application kisi operation ke complete hone ka wait nahi karti. Request process hoti rehti hai aur result aane par callback execute hota hai.
+
+`Interview Answer:`
+
+Non-blocking I/O allows Node.js to continue executing other tasks while waiting for I/O operations such as file reads or database queries to complete.
+
+Example:
+
+```javascript
+fs.readFile("file.txt", (err, data) => {
+  console.log(data);
+});
+```
+
+---
+
 224. Streams kya hain?
+
+`Hinglish Explanation:`
+
+Streams data ko chunks me process karte hain instead of loading the entire data into memory. Ye large files aur real-time data processing ke liye useful hote hain.
+
+`Interview Answer:`
+
+Streams are objects that allow reading or writing data in chunks, improving memory efficiency and performance.
+
+Example:
+
+```javascript
+const stream = fs.createReadStream("file.txt");
+```
+
+---
+
 225. Buffers kya hain?
+
+`Hinglish Explanation:`
+
+Buffer raw binary data ko temporarily memory me store karta hai. Streams aur file operations me Buffer ka use hota hai.
+
+`Interview Answer:`
+
+A Buffer is a temporary memory area used to store binary data before processing or transmission.
+
+Example:
+
+```javascript
+const buffer = Buffer.from("Hello");
+```
+
+---
+
 226. Modules system?
+
+`Hinglish Explanation:`
+
+Modules code ko reusable aur maintainable banate hain. Node.js CommonJS aur ES Modules dono support karta hai.
+
+`Interview Answer:`
+
+The module system allows code organization into reusable files. Node.js supports both CommonJS and ES Modules.
+
+Example:
+
+```javascript
+module.exports = add;
+```
+
+---
+
 227. require vs import?
+
+`Hinglish Explanation:`
+
+`require()` CommonJS module system ka part hai, jabki `import` ES Modules ka. Modern applications me mostly import/export use hota hai.
+
+`Interview Answer:`
+
+`require` is used in CommonJS modules, whereas `import` is used in ES Modules and supports static analysis.
+
+Example:
+
+```javascript
+const express = require("express");
+
+// OR
+
+import express from "express";
+```
+
+---
+
 228. npm kya hai?
+
+`Hinglish Explanation:`
+
+npm (Node Package Manager) packages install, update aur manage karne ke liye use hota hai. Ye Node.js ke saath by default aata hai.
+
+`Interview Answer:`
+
+npm is the default package manager for Node.js used to install, manage, and publish JavaScript packages.
+
+Example:
+
+```bash
+npm install express
+```
+
+---
+
 229. package.json kya hai?
+
+`Hinglish Explanation:`
+
+package.json project metadata, dependencies, scripts aur configuration store karta hai. Ye Node.js project ka main configuration file hota hai.
+
+`Interview Answer:`
+
+package.json is a configuration file that contains project information, dependencies, scripts, and package metadata.
+
+Example:
+
+```json
+{
+  "name": "my-app",
+  "version": "1.0.0"
+}
+```
+
+---
+
 230. process object?
+
+`Hinglish Explanation:`
+
+Process object current Node.js process ki information aur control provide karta hai. Isse environment variables aur process events access kiye ja sakte hain.
+
+`Interview Answer:`
+
+The process object provides information and control over the current Node.js process, including environment variables and runtime details.
+
+Example:
+
+```javascript
+console.log(process.env.NODE_ENV);
+```
+
+---
+
 231. Middleware kya hai?
+
+`Hinglish Explanation:`
+
+Middleware request aur response ke beech execute hone wala function hota hai. Ye logging, validation aur authentication ke liye use hota hai.
+
+`Interview Answer:`
+
+Middleware functions have access to the request, response, and next function, allowing them to process requests before reaching route handlers.
+
+Example:
+
+```javascript
+app.use((req, res, next) => {
+  next();
+});
+```
+
+---
+
 232. Express kya hai?
+
+`Hinglish Explanation:`
+
+Express Node.js ka popular web framework hai jo routing, middleware aur API development ko simple banata hai.
+
+`Interview Answer:`
+
+Express is a lightweight web framework for Node.js that simplifies routing, middleware handling, and API development.
+
+Example:
+
+```javascript
+const express = require("express");
+const app = express();
+```
+
+---
+
 233. Routing kaise hoti hai?
+
+`Hinglish Explanation:`
+
+Routing URL aur HTTP method ke basis par request ko specific handler tak pahunchati hai.
+
+`Interview Answer:`
+
+Routing maps incoming requests to specific controller functions based on URL patterns and HTTP methods.
+
+Example:
+
+```javascript
+app.get("/users", (req, res) => {
+  res.send("Users");
+});
+```
+
+---
+
 234. Error handling middleware?
+
+`Hinglish Explanation:`
+
+Express me error handling middleware application errors ko centrally manage karta hai. Iska signature 4 parameters wala hota hai.
+
+`Interview Answer:`
+
+Error-handling middleware catches application errors and returns standardized error responses.
+
+Example:
+
+```javascript
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    message: err.message
+  });
+});
+```
+
+---
+
 235. Custom middleware?
+
+`Hinglish Explanation:`
+
+Custom middleware application-specific logic implement karne ke liye banaya jata hai, jaise authentication ya request logging.
+
+`Interview Answer:`
+
+Custom middleware contains reusable request-processing logic that can be applied across routes.
+
+Example:
+
+```javascript
+function logger(req, res, next) {
+  console.log(req.url);
+  next();
+}
+```
+
+---
+
 236. Request lifecycle?
+
+`Hinglish Explanation:`
+
+Request client se server tak aati hai, middleware se pass hoti hai, route handler execute hota hai aur finally response return hota hai.
+
+`Interview Answer:`
+
+A request passes through middleware, reaches the route handler, generates a response, and is then sent back to the client.
+
+Example:
+
+```text
+Request
+→ Middleware
+→ Route
+→ Response
+```
+
+---
+
 237. REST API kya hai?
+
+`Hinglish Explanation:`
+
+REST API HTTP methods aur resources ke basis par client-server communication ka standard architecture hai.
+
+`Interview Answer:`
+
+REST is an architectural style that uses HTTP methods and resource-based URLs to perform operations on data.
+
+Example:
+
+```http
+GET /users
+POST /users
+```
+
+---
+
 238. CRUD API kaise banate ho?
+
+`Hinglish Explanation:`
+
+CRUD API me Create, Read, Update aur Delete operations implement kiye jate hain using HTTP methods.
+
+`Interview Answer:`
+
+CRUD APIs expose endpoints for creating, retrieving, updating, and deleting resources using standard HTTP methods.
+
+Example:
+
+```javascript
+POST   /users
+GET    /users
+PUT    /users/:id
+DELETE /users/:id
+```
+
+---
+
 239. Validation kaise karte ho?
+
+`Hinglish Explanation:`
+
+Validation ensure karti hai ki incoming request data expected format aur rules follow kare. Express-validator ya Joi commonly use hote hain.
+
+`Interview Answer:`
+
+Validation verifies incoming data before processing it to ensure correctness, security, and data integrity.
+
+Example:
+
+```javascript
+if (!email) {
+  return res.status(400).send();
+}
+```
+
+---
+
 240. File upload?
+
+`Hinglish Explanation:`
+
+Node.js me file upload ke liye commonly Multer middleware use kiya jata hai. Uploaded files ko local storage ya cloud storage me save kiya ja sakta hai.
+
+`Interview Answer:`
+
+File uploads are typically handled using middleware such as Multer, which processes multipart/form-data requests.
+
+Example:
+
+```javascript
+const upload = multer({
+  dest: "uploads/"
+});
+```
+
 241. Authentication?
 242. Authorization?
 243. JWT kaise kaam karta hai?
