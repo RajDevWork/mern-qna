@@ -2071,25 +2071,406 @@ if (calls > 100) {
 ```
 
 81. Event bubbling kya hai?
+
+`Hinglish Explanation:`
+
+Event Bubbling me event sabse inner element se start hota hai aur parent elements ki taraf propagate karta hai. Ye browser ka default event flow hai.
+
+`Interview Answer:`
+
+Event Bubbling is the process where an event propagates from the target element up through its ancestor elements.
+
+Example:
+
+```javascript
+child.addEventListener("click", () => {
+  console.log("Child");
+});
+
+parent.addEventListener("click", () => {
+  console.log("Parent");
+});
+```
+
+---
+
 82. Event capturing?
+
+`Hinglish Explanation:`
+
+Event Capturing bubbling ka opposite hai. Event outermost parent se start hota hai aur target element tak pahunchta hai.
+
+`Interview Answer:`
+
+Event Capturing is the phase where events travel from the root element down to the target element.
+
+Example:
+
+```javascript
+parent.addEventListener(
+  "click",
+  () => console.log("Parent"),
+  true
+);
+```
+
+---
+
 83. stopPropagation?
+
+`Hinglish Explanation:`
+
+`stopPropagation()` event ko parent elements tak jane se rokta hai. Isse bubbling ya capturing ko stop kiya ja sakta hai.
+
+`Interview Answer:`
+
+`stopPropagation()` prevents an event from propagating further through the DOM hierarchy.
+
+Example:
+
+```javascript
+button.addEventListener("click", e => {
+  e.stopPropagation();
+});
+```
+
+---
+
 84. preventDefault?
+
+`Hinglish Explanation:`
+
+`preventDefault()` browser ke default behavior ko stop karta hai, jaise form submit ya link navigation.
+
+`Interview Answer:`
+
+`preventDefault()` prevents the browser's default action associated with an event.
+
+Example:
+
+```javascript
+form.addEventListener("submit", e => {
+  e.preventDefault();
+});
+```
+
+---
+
 85. DOM manipulation basics?
+
+`Hinglish Explanation:`
+
+DOM Manipulation se HTML elements ko select, modify, create aur remove kiya ja sakta hai JavaScript ke through.
+
+`Interview Answer:`
+
+DOM manipulation allows dynamic modification of webpage content, structure, and styles using JavaScript.
+
+Example:
+
+```javascript
+document
+  .getElementById("title")
+  .textContent = "Hello";
+```
+
+---
+
 86. Virtual DOM kya hai?
+
+`Hinglish Explanation:`
+
+Virtual DOM Real DOM ki lightweight JavaScript copy hoti hai. Frameworks jaise React changes compare karke sirf required updates Real DOM me apply karte hain.
+
+`Interview Answer:`
+
+The Virtual DOM is an in-memory representation of the Real DOM used to optimize UI updates.
+
+Example:
+
+```javascript
+setState({
+  name: "Raj"
+});
+```
+
+---
+
 87. Browser rendering flow?
+
+`Hinglish Explanation:`
+
+Browser HTML parse karta hai, DOM aur CSSOM banata hai, render tree create karta hai aur phir layout aur paint perform karta hai.
+
+`Interview Answer:`
+
+The browser rendering flow consists of parsing, DOM/CSSOM creation, render tree generation, layout calculation, and painting.
+
+Example:
+
+```text
+HTML
+ ↓
+DOM + CSSOM
+ ↓
+Render Tree
+ ↓
+Layout
+ ↓
+Paint
+```
+
+---
+
 88. Reflow vs repaint?
+
+`Hinglish Explanation:`
+
+Reflow layout calculations ko trigger karta hai, jabki Repaint sirf visual appearance update karta hai. Reflow generally expensive operation hota hai.
+
+`Interview Answer:`
+
+Reflow recalculates layout and element positions, while Repaint updates visual styles without affecting layout.
+
+Example:
+
+```javascript
+element.style.width = "200px";
+```
+
+---
+
 89. Web APIs kya hain?
+
+`Hinglish Explanation:`
+
+Web APIs browser dwara provide kiye gaye features hote hain jaise DOM, Fetch API, LocalStorage aur Geolocation.
+
+`Interview Answer:`
+
+Web APIs are browser-provided interfaces that enable features such as networking, storage, and DOM manipulation.
+
+Example:
+
+```javascript
+fetch("/api/users");
+```
+
+---
+
 90. Fetch vs Axios?
+
+`Hinglish Explanation:`
+
+Fetch browser built-in API hai, jabki Axios third-party library hai jo automatic JSON parsing aur interceptors provide karti hai.
+
+`Interview Answer:`
+
+Fetch is a native browser API, while Axios is a feature-rich HTTP client with built-in request and response handling.
+
+Example:
+
+```javascript
+fetch("/users");
+
+axios.get("/users");
+```
+
+---
+
 91. LocalStorage vs SessionStorage?
+
+`Hinglish Explanation:`
+
+LocalStorage browser close hone ke baad bhi data preserve rakhta hai. SessionStorage tab close hone tak data store karta hai.
+
+`Interview Answer:`
+
+LocalStorage persists data indefinitely, while SessionStorage stores data only for the duration of the browser session.
+
+Example:
+
+```javascript
+localStorage.setItem(
+  "theme",
+  "dark"
+);
+```
+
+---
+
 92. Cookies kya hain?
+
+`Hinglish Explanation:`
+
+Cookies small data pieces hote hain jo browser me store hote hain aur server requests ke saath automatically send hote hain.
+
+`Interview Answer:`
+
+Cookies are small data files stored in the browser and commonly used for authentication and session management.
+
+Example:
+
+```javascript
+document.cookie =
+  "theme=dark";
+```
+
+---
+
 93. CORS kya hai?
+
+`Hinglish Explanation:`
+
+CORS browser security mechanism hai jo different origins ke beech resource sharing control karta hai.
+
+`Interview Answer:`
+
+Cross-Origin Resource Sharing (CORS) allows or restricts requests between different domains.
+
+Example:
+
+```http
+Access-Control-Allow-Origin: *
+```
+
+---
+
 94. Same-origin policy?
+
+`Hinglish Explanation:`
+
+Same-Origin Policy browser security feature hai jo different domains ke resources ko directly access karne se restrict karta hai.
+
+`Interview Answer:`
+
+The Same-Origin Policy prevents scripts from accessing resources from different origins without explicit permission.
+
+Example:
+
+```text
+example.com
+≠
+api.test.com
+```
+
+---
+
 95. Web workers?
+
+`Hinglish Explanation:`
+
+Web Workers JavaScript code ko background thread me run karne ki facility dete hain taaki UI block na ho.
+
+`Interview Answer:`
+
+Web Workers enable background processing in separate threads without blocking the main UI thread.
+
+Example:
+
+```javascript
+const worker =
+  new Worker("worker.js");
+```
+
+---
+
 96. Service workers?
+
+`Hinglish Explanation:`
+
+Service Workers browser background scripts hote hain jo caching, offline support aur push notifications handle karte hain.
+
+`Interview Answer:`
+
+Service Workers run independently from web pages and provide offline capabilities, caching, and background tasks.
+
+Example:
+
+```javascript
+navigator.serviceWorker.register(
+  "/sw.js"
+);
+```
+
+---
+
 97. IndexedDB kya hai?
+
+`Hinglish Explanation:`
+
+IndexedDB browser ka client-side NoSQL database hai jo large structured data store kar sakta hai.
+
+`Interview Answer:`
+
+IndexedDB is a browser-based database used for storing large amounts of structured data locally.
+
+Example:
+
+```javascript
+indexedDB.open(
+  "MyDatabase"
+);
+```
+
+---
+
 98. Memory profiling?
+
+`Hinglish Explanation:`
+
+Memory Profiling application ki memory usage analyze karti hai aur memory leaks identify karne me help karti hai.
+
+`Interview Answer:`
+
+Memory profiling helps track memory allocation, usage patterns, and potential memory leaks.
+
+Example:
+
+```text
+Chrome DevTools
+→ Memory Tab
+```
+
+---
+
 99. Performance profiling?
+
+`Hinglish Explanation:`
+
+Performance Profiling slow functions, rendering bottlenecks aur expensive operations identify karne ke liye use hoti hai.
+
+`Interview Answer:`
+
+Performance profiling measures execution time and identifies bottlenecks affecting application performance.
+
+Example:
+
+```javascript
+console.time("task");
+console.timeEnd("task");
+```
+
+---
+
 100. JS engine kya hai?
+
+`Hinglish Explanation:`
+
+JavaScript Engine JavaScript code ko parse, compile aur execute karta hai. Har browser apna JS engine use karta hai.
+
+`Interview Answer:`
+
+A JavaScript Engine is a program that parses, compiles, and executes JavaScript code.
+
+Example:
+
+```text
+Chrome → V8
+Firefox → SpiderMonkey
+Safari → JavaScriptCore
+```
+
 101. V8 engine?
 102. Garbage collector kaise kaam karta hai?
 103. Async parallel vs sequential?
