@@ -568,6 +568,12 @@
 ## ⚛️ React (121-220)
 
 121. React kya hai?
+        React is a JavaScript library developed by Meta for building reusable and interactive user interfaces. It uses a component-based architecture and Virtual DOM for efficient rendering.
+        Example:
+            `function App() {
+                return <h1>Hello React</h1>;
+            }`
+
 122. JSX kya hai?
 123. Virtual DOM?
 124. Real DOM vs Virtual DOM?
