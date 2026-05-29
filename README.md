@@ -5634,25 +5634,415 @@ metrics.increment("requests");
 ## 🍃 MongoDB (311-360)
 
 311. MongoDB kya hai?
+
+`Hinglish Explanation:`
+
+MongoDB ek NoSQL document database hai jo data ko JSON-like BSON documents ke form me store karti hai. Ye flexible schema provide karti hai aur large-scale applications ke liye suitable hai.
+
+`Interview Answer:`
+
+MongoDB is a NoSQL document-oriented database that stores data in BSON format. It provides flexible schemas, high scalability, and high performance.
+
+Example:
+
+```javascript
+db.users.find();
+```
+
+---
+
 312. NoSQL kya hai?
+
+`Hinglish Explanation:`
+
+NoSQL databases traditional table-based structure follow nahi karti. Ye documents, key-value, graph ya column-based data models support karti hain.
+
+`Interview Answer:`
+
+NoSQL databases provide flexible schemas and are designed to handle large-scale, distributed, and unstructured data efficiently.
+
+Example:
+
+```javascript
+{
+  name: "Raj",
+  skills: ["JS", "MongoDB"]
+}
+```
+
+---
+
 313. Document model?
+
+`Hinglish Explanation:`
+
+MongoDB me data documents ke form me store hota hai. Har document ek JSON-like object hota hai jisme fields aur nested data ho sakta hai.
+
+`Interview Answer:`
+
+The document model stores data as BSON documents, allowing nested structures and flexible schemas.
+
+Example:
+
+```javascript
+{
+  _id: 1,
+  name: "Raj"
+}
+```
+
+---
+
 314. CRUD operations?
+
+`Hinglish Explanation:`
+
+CRUD ka matlab Create, Read, Update aur Delete operations hai. Ye database ke basic operations hote hain.
+
+`Interview Answer:`
+
+CRUD operations represent the fundamental actions performed on database records: Create, Read, Update, and Delete.
+
+Example:
+
+```javascript
+db.users.insertOne({});
+db.users.find({});
+db.users.updateOne({});
+db.users.deleteOne({});
+```
+
+---
+
 315. Index kya hai?
+
+`Hinglish Explanation:`
+
+Index database queries ko fast banata hai by creating a searchable structure on specific fields. Lekin indexes extra storage consume karte hain.
+
+`Interview Answer:`
+
+An index improves query performance by allowing MongoDB to locate data without scanning the entire collection.
+
+Example:
+
+```javascript
+db.users.createIndex({
+  email: 1
+});
+```
+
+---
+
 316. Compound index?
+
+`Hinglish Explanation:`
+
+Compound index multiple fields par create hota hai. Ye queries optimize karta hai jo ek se zyada fields use karti hain.
+
+`Interview Answer:`
+
+A compound index is an index on multiple fields and improves performance for queries involving those fields.
+
+Example:
+
+```javascript
+db.users.createIndex({
+  name: 1,
+  age: -1
+});
+```
+
+---
+
 317. Text index?
+
+`Hinglish Explanation:`
+
+Text index text search operations ke liye use hota hai. Isse documents me keywords search karna easy ho jata hai.
+
+`Interview Answer:`
+
+A text index enables full-text search capabilities on string fields within a collection.
+
+Example:
+
+```javascript
+db.posts.createIndex({
+  title: "text"
+});
+```
+
+---
+
 318. Aggregation pipeline?
+
+`Hinglish Explanation:`
+
+Aggregation Pipeline multiple stages ka sequence hota hai jo data ko transform aur process karta hai. Ye complex reporting aur analytics ke liye use hota hai.
+
+`Interview Answer:`
+
+The Aggregation Pipeline processes documents through multiple stages to perform filtering, grouping, sorting, and transformations.
+
+Example:
+
+```javascript
+db.users.aggregate([
+  { $match: { age: 25 } }
+]);
+```
+
+---
+
 319. $match kya hai?
+
+`Hinglish Explanation:`
+
+`$match` aggregation pipeline me documents filter karne ke liye use hota hai. Ye SQL ke WHERE clause jaisa kaam karta hai.
+
+`Interview Answer:`
+
+`$match` filters documents in an aggregation pipeline and reduces the dataset passed to later stages.
+
+Example:
+
+```javascript
+{
+  $match: {
+    status: "active"
+  }
+}
+```
+
+---
+
 320. $group kya hai?
+
+`Hinglish Explanation:`
+
+`$group` documents ko group karta hai aur aggregate calculations jaise count, sum aur average perform karta hai.
+
+`Interview Answer:`
+
+`$group` groups documents by a specified field and performs aggregation operations on each group.
+
+Example:
+
+```javascript
+{
+  $group: {
+    _id: "$role",
+    count: { $sum: 1 }
+  }
+}
+```
+
+---
+
 321. $lookup kya hai?
+
+`Hinglish Explanation:`
+
+`$lookup` MongoDB collections ko join karne ke liye use hota hai. Ye SQL JOIN jaisa behavior provide karta hai.
+
+`Interview Answer:`
+
+`$lookup` performs a left outer join between collections and combines related documents.
+
+Example:
+
+```javascript
+{
+  $lookup: {
+    from: "orders",
+    localField: "_id",
+    foreignField: "userId",
+    as: "orders"
+  }
+}
+```
+
+---
+
 322. Sharding kya hai?
+
+`Hinglish Explanation:`
+
+Sharding data ko multiple servers me distribute karta hai. Ye very large datasets aur high traffic workloads handle karne ke liye use hota hai.
+
+`Interview Answer:`
+
+Sharding is a horizontal scaling technique that distributes data across multiple servers called shards.
+
+Example:
+
+```text
+Shard1
+Shard2
+Shard3
+```
+
+---
+
 323. Replication kya hai?
+
+`Hinglish Explanation:`
+
+Replication data ki multiple copies maintain karti hai taaki high availability aur fault tolerance achieve ki ja sake.
+
+`Interview Answer:`
+
+Replication creates multiple copies of data across servers to improve availability and disaster recovery.
+
+Example:
+
+```text
+Primary
+ ↓
+Secondary
+Secondary
+```
+
+---
+
 324. CAP theorem?
+
+`Hinglish Explanation:`
+
+CAP Theorem ke according distributed system ek time par Consistency, Availability aur Partition Tolerance me se sirf do guarantees fully provide kar sakta hai.
+
+`Interview Answer:`
+
+The CAP Theorem states that a distributed system can guarantee only two of Consistency, Availability, and Partition Tolerance at the same time.
+
+Example:
+
+```text
+C + P
+OR
+A + P
+```
+
+---
+
 325. ACID properties?
+
+`Hinglish Explanation:`
+
+ACID properties transactions ko reliable banati hain. Isme Atomicity, Consistency, Isolation aur Durability shamil hain.
+
+`Interview Answer:`
+
+ACID properties ensure reliable transactions by guaranteeing Atomicity, Consistency, Isolation, and Durability.
+
+Example:
+
+```text
+Transfer Money
+→ Complete or Rollback
+```
+
+---
+
 326. Transactions?
+
+`Hinglish Explanation:`
+
+Transactions multiple operations ko ek unit ke roop me execute karti hain. Agar koi operation fail ho jaye to sab rollback ho jata hai.
+
+`Interview Answer:`
+
+Transactions ensure multiple database operations either succeed together or fail together.
+
+Example:
+
+```javascript
+session.startTransaction();
+```
+
+---
+
 327. Schema design?
+
+`Hinglish Explanation:`
+
+Schema design application access patterns aur query requirements ke according ki jati hai. Good schema performance aur scalability improve karti hai.
+
+`Interview Answer:`
+
+Schema design defines how data is structured and stored to balance performance, scalability, and maintainability.
+
+Example:
+
+```javascript
+{
+  userId: 1,
+  orders: []
+}
+```
+
+---
+
 328. Embedding vs referencing?
+
+`Hinglish Explanation:`
+
+Embedding related data ko same document me store karta hai, jabki referencing related documents ke IDs store karta hai.
+
+`Interview Answer:`
+
+Embedding stores related data together, while referencing links documents using identifiers for better normalization.
+
+Example:
+
+```javascript
+// Embedded
+{
+  user: {},
+  address: {}
+}
+```
+
+---
+
 329. Data consistency?
+
+`Hinglish Explanation:`
+
+Data consistency ensure karti hai ki data accurate aur valid state me rahe. Replication aur distributed systems me consistency important concern hoti hai.
+
+`Interview Answer:`
+
+Data consistency ensures that all users and systems see valid and synchronized data across operations.
+
+Example:
+
+```text
+Same Data
+Across Replicas
+```
+
+---
+
 330. Query optimization?
+
+`Hinglish Explanation:`
+
+Query optimization indexing, projection aur efficient filtering use karke query performance improve karti hai.
+
+`Interview Answer:`
+
+Query optimization improves performance by reducing unnecessary scans and using indexes effectively.
+
+Example:
+
+```javascript
+db.users.find(
+  { email: "test@test.com" }
+).explain();
+```
+
 331. Index tuning?
 332. Write concern?
 333. Read preference?
