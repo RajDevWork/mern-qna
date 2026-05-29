@@ -2951,25 +2951,405 @@ indexedDB.open(
 ## 🔐 Frontend Security (41-90)
 
 41. Frontend security kya hoti hai?
+
+`Hinglish Explanation:`
+
+Frontend Security ka goal client-side application ko attacks se protect karna hai. Isme XSS, CSRF, data leakage aur insecure storage jaise threats ko prevent kiya jata hai.
+
+`Interview Answer:`
+
+Frontend security focuses on protecting client-side applications from attacks such as XSS, CSRF, data leaks, and insecure resource access.
+
+Example:
+
+```text
+Input Validation
++
+Secure Headers
++
+HTTPS
+```
+
+---
+
 42. XSS kya hota hai?
+
+`Hinglish Explanation:`
+
+XSS (Cross-Site Scripting) attack me attacker malicious JavaScript inject karta hai jo victim ke browser me execute ho jata hai.
+
+`Interview Answer:`
+
+XSS is a security vulnerability where attackers inject malicious scripts that execute in a user's browser.
+
+Example:
+
+```html
+<script>
+  alert("Hacked");
+</script>
+```
+
+---
+
 43. XSS ke types kya hain?
+
+`Hinglish Explanation:`
+
+XSS ke 3 major types hote hain: Stored XSS, Reflected XSS aur DOM-Based XSS.
+
+`Interview Answer:`
+
+The main types of XSS are Stored XSS, Reflected XSS, and DOM-Based XSS.
+
+Example:
+
+```text
+Stored
+Reflected
+DOM-Based
+```
+
+---
+
 44. Stored XSS kya hota hai?
+
+`Hinglish Explanation:`
+
+Stored XSS me malicious script database me save ho jati hai aur har user ko serve hoti hai jo affected page visit karta hai.
+
+`Interview Answer:`
+
+Stored XSS occurs when malicious code is permanently stored on the server and delivered to users.
+
+Example:
+
+```text
+Comment Saved
+ ↓
+Script Stored
+ ↓
+Executed for Users
+```
+
+---
+
 45. Reflected XSS kya hota hai?
+
+`Hinglish Explanation:`
+
+Reflected XSS me malicious code URL ya request ke through aata hai aur immediately response me reflect ho jata hai.
+
+`Interview Answer:`
+
+Reflected XSS occurs when malicious input is immediately returned in the server response without proper sanitization.
+
+Example:
+
+```text
+URL
+ ↓
+Server Response
+ ↓
+Script Executes
+```
+
+---
+
 46. DOM-based XSS kya hota hai?
+
+`Hinglish Explanation:`
+
+DOM-based XSS browser ke andar JavaScript ke through hota hai jab unsafe data directly DOM me inject ki jati hai.
+
+`Interview Answer:`
+
+DOM-Based XSS occurs when client-side JavaScript modifies the DOM using untrusted input.
+
+Example:
+
+```javascript
+element.innerHTML =
+  location.hash;
+```
+
+---
+
 47. XSS ka real-world example kya hai?
+
+`Hinglish Explanation:`
+
+Agar comment box me malicious script save ho jaye aur baad me users ke browser me execute ho, to wo Stored XSS ka real example hai.
+
+`Interview Answer:`
+
+A common example is injecting a script into a comment field that executes whenever other users view the comment.
+
+Example:
+
+```html
+<script>
+  stealCookies();
+</script>
+```
+
+---
+
 48. XSS prevent kaise karte ho?
+
+`Hinglish Explanation:`
+
+Input sanitize karo, output escape karo, CSP use karo aur unsafe HTML rendering avoid karo.
+
+`Interview Answer:`
+
+XSS can be prevented through input sanitization, output encoding, Content Security Policy, and avoiding unsafe DOM manipulation.
+
+Example:
+
+```javascript
+element.textContent =
+  userInput;
+```
+
+---
+
 49. Input sanitization kya hota hai?
+
+`Hinglish Explanation:`
+
+Input Sanitization malicious ya unwanted content ko remove ya clean karne ki process hai.
+
+`Interview Answer:`
+
+Input sanitization removes or filters potentially dangerous content before processing or storing it.
+
+Example:
+
+```javascript
+DOMPurify.sanitize(
+  userInput
+);
+```
+
+---
+
 50. Output escaping kya hota hai?
+
+`Hinglish Explanation:`
+
+Output Escaping special characters ko safe format me convert karta hai taaki browser unhe code ke roop me execute na kare.
+
+`Interview Answer:`
+
+Output escaping converts special characters into safe representations before rendering them.
+
+Example:
+
+```html
+&lt;script&gt;
+```
+
+---
+
 51. Content Security Policy kya hai?
+
+`Hinglish Explanation:`
+
+CSP browser ko batata hai ki scripts, styles aur resources kin trusted sources se load ho sakte hain.
+
+`Interview Answer:`
+
+Content Security Policy is a security mechanism that restricts which resources can be loaded and executed.
+
+Example:
+
+```http
+Content-Security-Policy:
+default-src 'self'
+```
+
+---
+
 52. CSP kaise implement karte ho?
+
+`Hinglish Explanation:`
+
+CSP HTTP response headers ya meta tags ke through configure ki jati hai.
+
+`Interview Answer:`
+
+CSP is typically implemented using HTTP response headers that define trusted resource sources.
+
+Example:
+
+```http
+Content-Security-Policy:
+script-src 'self'
+```
+
+---
+
 53. CSRF kya hota hai?
+
+`Hinglish Explanation:`
+
+CSRF (Cross-Site Request Forgery) attack me attacker authenticated user ki taraf se unauthorized requests perform karwata hai.
+
+`Interview Answer:`
+
+CSRF tricks authenticated users into performing unintended actions on a trusted website.
+
+Example:
+
+```text
+Logged-in User
+ ↓
+Malicious Request
+ ↓
+Action Performed
+```
+
+---
+
 54. CSRF attack kaise hota hai?
+
+`Hinglish Explanation:`
+
+User login hota hai aur attacker malicious page visit karwata hai jo hidden request send kar deta hai.
+
+`Interview Answer:`
+
+A CSRF attack exploits a user's active session to execute unauthorized actions without their consent.
+
+Example:
+
+```html
+<img
+  src="/transfer-money"
+/>
+```
+
+---
+
 55. CSRF prevent kaise karte ho?
+
+`Hinglish Explanation:`
+
+CSRF Tokens, SameSite cookies aur origin validation use karke CSRF attacks prevent kiye jate hain.
+
+`Interview Answer:`
+
+CSRF can be prevented using CSRF tokens, SameSite cookies, and request origin validation.
+
+Example:
+
+```javascript
+csrfToken =
+  "abc123";
+```
+
+---
+
 56. CSRF token kya hota hai?
+
+`Hinglish Explanation:`
+
+CSRF Token ek unique random value hoti hai jo har request ke saath validate ki jati hai.
+
+`Interview Answer:`
+
+A CSRF token is a unique value used to verify that requests originate from trusted users.
+
+Example:
+
+```html
+<input
+  type="hidden"
+  value="csrf-token"
+/>
+```
+
+---
+
 57. SameSite cookie kya hoti hai?
+
+`Hinglish Explanation:`
+
+SameSite cookie cross-site requests me cookie sharing ko control karti hai aur CSRF attacks reduce karti hai.
+
+`Interview Answer:`
+
+SameSite cookies restrict when cookies are sent with cross-site requests, helping prevent CSRF attacks.
+
+Example:
+
+```http
+Set-Cookie:
+session=123;
+SameSite=Strict
+```
+
+---
+
 58. Clickjacking kya hota hai?
+
+`Hinglish Explanation:`
+
+Clickjacking me attacker hidden iframe ya UI tricks use karke user ko unintended actions perform karwata hai.
+
+`Interview Answer:`
+
+Clickjacking tricks users into clicking hidden or disguised elements on a webpage.
+
+Example:
+
+```text
+Invisible Button
+ ↓
+User Click
+ ↓
+Unauthorized Action
+```
+
+---
+
 59. Clickjacking prevent kaise karte ho?
+
+`Hinglish Explanation:`
+
+X-Frame-Options aur CSP frame-ancestors directives use karke clickjacking attacks prevent kiye jate hain.
+
+`Interview Answer:`
+
+Clickjacking is prevented using X-Frame-Options and CSP frame restrictions.
+
+Example:
+
+```http
+X-Frame-Options:
+DENY
+```
+
+---
+
 60. X-Frame-Options kya hai?
+
+`Hinglish Explanation:`
+
+Ye HTTP header decide karta hai ki webpage iframe ke andar load ho sakta hai ya nahi.
+
+`Interview Answer:`
+
+X-Frame-Options is a security header that protects websites from being embedded in frames.
+
+Example:
+
+```http
+X-Frame-Options:
+SAMEORIGIN
+```
+
 61. Cookies kya hoti hain?
 62. HttpOnly cookie kya hoti hai?
 63. Secure cookie kya hoti hai?
