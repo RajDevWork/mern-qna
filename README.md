@@ -3481,25 +3481,387 @@ const upload = multer({
 ```
 
 241. Authentication?
+
+`Hinglish Explanation:`
+
+Authentication user ki identity verify karne ka process hai. Commonly username-password, JWT, OAuth ya social login use karke authentication implement ki jati hai.
+
+`Interview Answer:`
+
+Authentication is the process of verifying a user's identity before granting access to an application or resource.
+
+Example:
+
+```javascript
+const user = await User.findOne({ email });
+
+if (user && isValidPassword) {
+  // Authenticated
+}
+```
+
+---
+
 242. Authorization?
+
+`Hinglish Explanation:`
+
+Authorization determine karta hai ki authenticated user kya actions perform kar sakta hai. Ye roles aur permissions ke basis par decide hota hai.
+
+`Interview Answer:`
+
+Authorization determines what resources or actions an authenticated user is allowed to access.
+
+Example:
+
+```javascript
+if (user.role !== "admin") {
+  return res.status(403).send();
+}
+```
+
+---
+
 243. JWT kaise kaam karta hai?
+
+`Hinglish Explanation:`
+
+JWT me server login ke baad signed token generate karta hai. Client token ko store karta hai aur har request me bhejta hai verification ke liye.
+
+`Interview Answer:`
+
+JWT (JSON Web Token) is a signed token used to securely transmit user information and authenticate requests without maintaining server-side sessions.
+
+Example:
+
+```javascript
+const token = jwt.sign(
+  { id: user.id },
+  SECRET
+);
+```
+
+---
+
 244. OAuth kya hai?
-245. Sessions vs tokens?
+
+`Hinglish Explanation:`
+
+OAuth ek authorization framework hai jo users ko third-party applications ko limited access dene ki permission deta hai bina password share kiye.
+
+`Interview Answer:`
+
+OAuth is an authorization protocol that allows applications to access user resources on behalf of a user without exposing credentials.
+
+Example:
+
+```javascript
+passport.authenticate("google");
+```
+
+---
+
+245. Sessions vs Tokens?
+
+`Hinglish Explanation:`
+
+Session-based auth me data server par store hota hai, jabki token-based auth me information token ke andar hoti hai. JWT stateless authentication ka example hai.
+
+`Interview Answer:`
+
+Sessions store user state on the server, while tokens store authentication data on the client and are validated on each request.
+
+Example:
+
+```javascript
+req.session.user = user;
+```
+
+---
+
 246. Cookies handling?
+
+`Hinglish Explanation:`
+
+Cookies client browser me small data store karti hain. Authentication, preferences aur session management ke liye use hoti hain.
+
+`Interview Answer:`
+
+Cookies are small pieces of data stored in the browser and commonly used for session tracking and authentication.
+
+Example:
+
+```javascript
+res.cookie("token", jwtToken);
+```
+
+---
+
 247. Rate limiting?
+
+`Hinglish Explanation:`
+
+Rate limiting API abuse aur DDoS attacks prevent karne ke liye requests ki limit define karta hai.
+
+`Interview Answer:`
+
+Rate limiting restricts the number of requests a client can make within a specified time window.
+
+Example:
+
+```javascript
+app.use(rateLimit({
+  max: 100
+}));
+```
+
+---
+
 248. Helmet kya hai?
+
+`Hinglish Explanation:`
+
+Helmet Express middleware hai jo security-related HTTP headers set karta hai aur common vulnerabilities se protection provide karta hai.
+
+`Interview Answer:`
+
+Helmet is an Express middleware that improves application security by setting various HTTP security headers.
+
+Example:
+
+```javascript
+app.use(helmet());
+```
+
+---
+
 249. Logging kaise karte ho?
+
+`Hinglish Explanation:`
+
+Logging application activities, requests aur errors track karne ke liye use hoti hai. Winston aur Pino popular logging libraries hain.
+
+`Interview Answer:`
+
+Logging helps monitor application behavior, track errors, and troubleshoot issues in production environments.
+
+Example:
+
+```javascript
+logger.info("Server started");
+```
+
+---
+
 250. Morgan kya hai?
+
+`Hinglish Explanation:`
+
+Morgan Express middleware hai jo HTTP requests ko automatically log karta hai.
+
+`Interview Answer:`
+
+Morgan is an HTTP request logger middleware for Express that records incoming requests and responses.
+
+Example:
+
+```javascript
+app.use(morgan("combined"));
+```
+
+---
+
 251. Clustering kya hai?
+
+`Hinglish Explanation:`
+
+Clustering multiple Node.js processes create karta hai jo CPU cores ka better utilization karte hain aur application throughput improve karte hain.
+
+`Interview Answer:`
+
+Clustering allows Node.js applications to spawn multiple worker processes to utilize multi-core CPUs efficiently.
+
+Example:
+
+```javascript
+cluster.fork();
+```
+
+---
+
 252. Worker threads?
+
+`Hinglish Explanation:`
+
+Worker Threads CPU-intensive tasks ko separate threads me execute karte hain taaki main event loop block na ho.
+
+`Interview Answer:`
+
+Worker Threads enable parallel execution of CPU-heavy tasks without blocking the main Node.js event loop.
+
+Example:
+
+```javascript
+const worker =
+  new Worker("./worker.js");
+```
+
+---
+
 253. Load balancing?
+
+`Hinglish Explanation:`
+
+Load balancing incoming traffic ko multiple application instances me distribute karta hai jisse performance aur availability improve hoti hai.
+
+`Interview Answer:`
+
+Load balancing distributes incoming requests across multiple servers or instances to improve scalability and reliability.
+
+Example:
+
+```text
+Client
+→ Load Balancer
+→ App Servers
+```
+
+---
+
 254. Scaling Node app?
+
+`Hinglish Explanation:`
+
+Node.js applications ko horizontal scaling, clustering, caching aur load balancing ke through scale kiya ja sakta hai.
+
+`Interview Answer:`
+
+Node.js applications can be scaled horizontally by running multiple instances behind a load balancer.
+
+Example:
+
+```text
+App1
+App2
+App3
+```
+
+---
+
 255. Microservices Node mein?
+
+`Hinglish Explanation:`
+
+Microservices architecture me application ko multiple independent services me divide kiya jata hai jo independently deploy aur scale ki ja sakti hain.
+
+`Interview Answer:`
+
+Microservices are independently deployable services that communicate over APIs or messaging systems.
+
+Example:
+
+```text
+User Service
+Order Service
+Payment Service
+```
+
+---
+
 256. GraphQL kya hai?
+
+`Hinglish Explanation:`
+
+GraphQL API query language hai jo client ko required fields specify karne deta hai. Isse over-fetching aur under-fetching reduce hoti hai.
+
+`Interview Answer:`
+
+GraphQL is a query language for APIs that allows clients to request exactly the data they need.
+
+Example:
+
+```graphql
+{
+  user {
+    name
+  }
+}
+```
+
+---
+
 257. REST vs GraphQL?
+
+`Hinglish Explanation:`
+
+REST multiple endpoints use karta hai, jabki GraphQL generally single endpoint use karta hai aur client-specific data fetch karta hai.
+
+`Interview Answer:`
+
+REST exposes multiple resource-based endpoints, whereas GraphQL provides a single endpoint with flexible querying capabilities.
+
+Example:
+
+```text
+REST     → /users
+GraphQL  → /graphql
+```
+
+---
+
 258. API versioning?
+
+`Hinglish Explanation:`
+
+API versioning backward compatibility maintain karne ke liye use hoti hai jab APIs me breaking changes introduce kiye jate hain.
+
+`Interview Answer:`
+
+API versioning allows changes to APIs without breaking existing clients by maintaining multiple API versions.
+
+Example:
+
+```http
+/api/v1/users
+/api/v2/users
+```
+
+---
+
 259. Pagination?
+
+`Hinglish Explanation:`
+
+Pagination large datasets ko smaller chunks me divide karti hai taaki response size aur database load reduce ho.
+
+`Interview Answer:`
+
+Pagination limits the amount of data returned per request, improving performance and user experience.
+
+Example:
+
+```javascript
+GET /users?page=1&limit=10
+```
+
+---
+
 260. Filtering & sorting?
+
+`Hinglish Explanation:`
+
+Filtering required records select karti hai aur sorting results ko specific order me arrange karti hai.
+
+`Interview Answer:`
+
+Filtering narrows down results based on conditions, while sorting arranges records in a specified order.
+
+Example:
+
+```javascript
+GET /users?role=admin&sort=name
+```
+
 261. Redis integration?
 262. Caching strategies?
 263. Queue system?
