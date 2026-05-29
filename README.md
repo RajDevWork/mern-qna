@@ -3351,20 +3351,313 @@ SAMEORIGIN
 ```
 
 61. Cookies kya hoti hain?
+
+`Hinglish Explanation:`
+
+Cookies browser me store hone wale small data files hote hain. Ye authentication, session management aur user preferences store karne ke liye use kiye jate hain.
+
+`Interview Answer:`
+
+Cookies are small pieces of data stored in the browser and commonly used for session management, authentication, and personalization.
+
+Example:
+
+```javascript
+document.cookie =
+  "theme=dark";
+```
+
+---
+
 62. HttpOnly cookie kya hoti hai?
+
+`Hinglish Explanation:`
+
+HttpOnly cookie JavaScript se access nahi ki ja sakti. Isse XSS attacks ke through cookie theft ka risk kam ho jata hai.
+
+`Interview Answer:`
+
+An HttpOnly cookie cannot be accessed by JavaScript, helping protect sensitive session data from XSS attacks.
+
+Example:
+
+```http
+Set-Cookie:
+session=abc123;
+HttpOnly
+```
+
+---
+
 63. Secure cookie kya hoti hai?
+
+`Hinglish Explanation:`
+
+Secure cookie sirf HTTPS connection ke through transmit hoti hai. HTTP requests ke saath ye send nahi hoti.
+
+`Interview Answer:`
+
+A Secure cookie is transmitted only over HTTPS connections, reducing the risk of interception.
+
+Example:
+
+```http
+Set-Cookie:
+session=abc123;
+Secure
+```
+
+---
+
 64. LocalStorage vs cookies security?
+
+`Hinglish Explanation:`
+
+LocalStorage JavaScript se directly accessible hota hai, isliye XSS attacks ka risk zyada hota hai. HttpOnly cookies sensitive tokens store karne ke liye safer option mani jati hain.
+
+`Interview Answer:`
+
+LocalStorage is vulnerable to XSS because JavaScript can access it, whereas HttpOnly cookies provide better protection for sensitive data.
+
+Example:
+
+```javascript
+localStorage.setItem(
+  "token",
+  "abc"
+);
+```
+
+---
+
 65. JWT kya hota hai?
+
+`Hinglish Explanation:`
+
+JWT (JSON Web Token) ek compact token format hai jo user identity aur claims securely store karta hai.
+
+`Interview Answer:`
+
+JWT is a signed token format used to securely transmit authentication and authorization information.
+
+Example:
+
+```text
+Header.Payload.Signature
+```
+
+---
+
 66. JWT ko securely kaise store karte ho?
+
+`Hinglish Explanation:`
+
+Production applications me JWT ko HttpOnly Secure Cookies me store karna best practice mana jata hai.
+
+`Interview Answer:`
+
+JWTs should ideally be stored in HttpOnly Secure Cookies to reduce exposure to XSS attacks.
+
+Example:
+
+```http
+Set-Cookie:
+token=jwt-token;
+HttpOnly;
+Secure
+```
+
+---
+
 67. Token expiration kya hota hai?
+
+`Hinglish Explanation:`
+
+Token expiration ek predefined expiry time hoti hai jiske baad token invalid ho jata hai aur dobara login ya refresh ki zarurat padti hai.
+
+`Interview Answer:`
+
+Token expiration limits the validity period of a token, reducing the impact of token theft.
+
+Example:
+
+```json
+{
+  "exp": 1750000000
+}
+```
+
+---
+
 68. Refresh token kya hota hai?
+
+`Hinglish Explanation:`
+
+Refresh Token long-lived token hota hai jo expired access token ko regenerate karne ke liye use hota hai.
+
+`Interview Answer:`
+
+A Refresh Token is used to obtain new access tokens without requiring the user to log in again.
+
+Example:
+
+```text
+Access Token Expired
+ ↓
+Refresh Token
+ ↓
+New Access Token
+```
+
+---
+
 69. Session fixation attack kya hai?
+
+`Hinglish Explanation:`
+
+Session Fixation me attacker victim ko predefined session ID use karne ke liye force karta hai aur baad me us session ka misuse karta hai.
+
+`Interview Answer:`
+
+Session Fixation is an attack where an attacker forces a user to use a known session identifier.
+
+Example:
+
+```text
+Attacker Session ID
+ ↓
+Victim Login
+ ↓
+Session Hijack
+```
+
+---
+
 70. Authentication vs authorization difference?
+
+`Hinglish Explanation:`
+
+Authentication verify karta hai ki user kaun hai, jabki Authorization decide karta hai ki user kya access kar sakta hai.
+
+`Interview Answer:`
+
+Authentication verifies identity, while Authorization determines permissions and access rights.
+
+Example:
+
+```text
+Login
+ ↓
+Authentication
+
+Admin Access
+ ↓
+Authorization
+```
+
+---
+
 71. HTTPS kyun important hai?
+
+`Hinglish Explanation:`
+
+HTTPS client aur server ke beech data encrypt karta hai, jisse passwords aur sensitive information secure rehti hai.
+
+`Interview Answer:`
+
+HTTPS secures communication by encrypting data exchanged between clients and servers.
+
+Example:
+
+```text
+HTTP  → Not Secure
+
+HTTPS → Encrypted
+```
+
+---
+
 72. SSL/TLS kya hota hai?
+
+`Hinglish Explanation:`
+
+TLS (aur purana SSL) encryption protocols hain jo secure communication establish karte hain.
+
+`Interview Answer:`
+
+SSL/TLS are cryptographic protocols that provide secure and encrypted communication over networks.
+
+Example:
+
+```text
+Browser
+ ↓
+TLS Handshake
+ ↓
+Encrypted Connection
+```
+
+---
+
 73. Man-in-the-middle attack kya hota hai?
+
+`Hinglish Explanation:`
+
+MITM attack me attacker client aur server ke beech communication intercept karta hai aur data dekh ya modify kar sakta hai.
+
+`Interview Answer:`
+
+A Man-in-the-Middle attack occurs when an attacker intercepts communication between two parties.
+
+Example:
+
+```text
+Client
+ ↓
+Attacker
+ ↓
+Server
+```
+
+---
+
 74. CORS kya hota hai?
+
+`Hinglish Explanation:`
+
+CORS (Cross-Origin Resource Sharing) browser security mechanism hai jo different origins ke beech requests ko control karta hai.
+
+`Interview Answer:`
+
+CORS is a browser security feature that controls cross-origin HTTP requests.
+
+Example:
+
+```http
+Access-Control-Allow-Origin:
+https://example.com
+```
+
+---
+
 75. Same-origin policy kya hoti hai?
+
+`Hinglish Explanation:`
+
+Same-Origin Policy browser ka security rule hai jo ek origin ko dusre origin ke resources directly access karne se restrict karta hai.
+
+`Interview Answer:`
+
+The Same-Origin Policy prevents scripts from accessing resources from different origins unless explicitly allowed.
+
+Example:
+
+```text
+app.com
+ ≠
+ api.other.com
+```
+
 76. CORS error kaise fix karte ho?
 77. Secure headers kaunse hote hain?
 78. HSTS kya hota hai?
