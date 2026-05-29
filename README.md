@@ -2484,36 +2484,605 @@ Example:
 
 
 ### Additional Important Questions
+
 1. Explain the React reconciliation algorithm.
+
+`Hinglish Explanation:`
+
+Reconciliation React ka process hai jo old Virtual DOM aur new Virtual DOM ko compare karta hai. React differences find karke sirf changed parts ko Real DOM me update karta hai, jisse performance improve hoti hai.
+
+`Interview Answer:`
+
+The reconciliation algorithm is React's diffing process that compares the previous Virtual DOM with the updated Virtual DOM. It identifies changes and updates only the necessary parts of the Real DOM for efficient rendering.
+
+Example:
+
+```javascript
+setCount(count + 1);
+```
+
+---
+
 2. What are controlled vs. uncontrolled components?
+
+`Hinglish Explanation:`
+
+Controlled components me form data React state ke through manage hota hai, jabki uncontrolled components me data DOM khud maintain karta hai. Controlled approach validation aur state management ke liye preferred hai.
+
+`Interview Answer:`
+
+Controlled components manage form data through React state, while uncontrolled components store data in the DOM and are accessed using refs. Controlled components provide better control and predictability.
+
+Example:
+
+```javascript
+<input
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+/>
+```
+
+---
+
 3. How does React handle context and why use it?
+
+`Hinglish Explanation:`
+
+Context API parent se deeply nested child components tak data share karne deti hai bina props drilling ke. Ye theme, authentication aur language settings ke liye commonly use hoti hai.
+
+`Interview Answer:`
+
+React Context provides a way to share data across the component tree without manually passing props through every level. It is commonly used for global application state.
+
+Example:
+
+```javascript
+const UserContext = createContext();
+```
+
+---
+
 4. What are the common performance optimization techniques in React?
+
+`Hinglish Explanation:`
+
+Performance improve karne ke liye React.memo, useMemo, useCallback, lazy loading, code splitting aur virtualization use kiye jate hain. Unnecessary re-renders avoid karna bhi important hai.
+
+`Interview Answer:`
+
+Common optimization techniques include memoization, code splitting, lazy loading, virtualization, and preventing unnecessary re-renders using React.memo and Hooks.
+
+Example:
+
+```javascript
+const value = useMemo(() => calculate(), [data]);
+```
+
+---
+
 5. How does memoization work in React (React.memo, useMemo)?
+
+`Hinglish Explanation:`
+
+Memoization expensive calculations ya component renders ko cache karti hai. Jab dependencies change nahi hoti to React previous result reuse karta hai.
+
+`Interview Answer:`
+
+Memoization stores previously computed values or rendered output and reuses them until dependencies change, improving performance.
+
+Example:
+
+```javascript
+const total = useMemo(() => {
+  return calculateTotal();
+}, [items]);
+```
+
+---
+
 6. How does React handle batching of state updates?
+
+`Hinglish Explanation:`
+
+React multiple state updates ko ek hi render cycle me combine karta hai. Is process ko batching kehte hain aur ye unnecessary re-renders reduce karta hai.
+
+`Interview Answer:`
+
+React batches multiple state updates together and performs a single re-render, improving application performance and efficiency.
+
+Example:
+
+```javascript
+setCount(c => c + 1);
+setLoading(true);
+```
+
+---
+
 7. What are custom hooks and when would you use them?
+
+`Hinglish Explanation:`
+
+Custom Hooks reusable logic ko multiple components me share karne ke liye use hote hain. Jab same stateful logic baar-baar repeat ho rahi ho tab custom hook banana chahiye.
+
+`Interview Answer:`
+
+Custom Hooks are reusable functions that encapsulate stateful logic and allow sharing behavior across multiple components.
+
+Example:
+
+```javascript
+function useCounter() {
+  const [count, setCount] = useState(0);
+}
+```
+
+---
+
 8. Explain lazy loading and code splitting in React.
+
+`Hinglish Explanation:`
+
+Code splitting application bundle ko multiple chunks me divide karta hai, aur lazy loading un chunks ko demand par load karti hai. Isse initial page load fast hota hai.
+
+`Interview Answer:`
+
+Code splitting divides the application into smaller bundles, while lazy loading loads those bundles only when needed, improving performance.
+
+Example:
+
+```javascript
+const Dashboard = React.lazy(
+  () => import("./Dashboard")
+);
+```
+
+---
+
 9. What’s the difference between useEffect and useLayoutEffect?
+
+`Hinglish Explanation:`
+
+useEffect browser paint ke baad run hota hai, jabki useLayoutEffect DOM update ke turant baad aur paint se pehle run hota hai. DOM measurements ke liye useLayoutEffect use kiya jata hai.
+
+`Interview Answer:`
+
+useEffect runs asynchronously after rendering, whereas useLayoutEffect runs synchronously after DOM updates but before the browser paints.
+
+Example:
+
+```javascript
+useLayoutEffect(() => {
+  console.log("Before paint");
+}, []);
+```
+
+---
+
 10. How does React’s concurrent mode work?
+
+`Hinglish Explanation:`
+
+Concurrent features React ko rendering ko interrupt aur prioritize karne ki capability deti hain. Isse UI responsive rehti hai even during heavy updates.
+
+`Interview Answer:`
+
+Concurrent rendering allows React to work on multiple rendering tasks, prioritize important updates, and keep the UI responsive.
+
+Example:
+
+```javascript
+startTransition(() => {
+  setSearch(query);
+});
+```
+
+---
+
 11. What is the virtual DOM and how does React use it?
+
+`Hinglish Explanation:`
+
+Virtual DOM Real DOM ki lightweight JavaScript representation hoti hai. React changes pehle Virtual DOM me karta hai aur phir differences Real DOM me apply karta hai.
+
+`Interview Answer:`
+
+The Virtual DOM is an in-memory representation of the Real DOM. React uses it to efficiently calculate and apply only the required DOM updates.
+
+Example:
+
+```javascript
+setUser("Raj");
+```
+
+---
+
 12. How do you implement SSR (Server-Side Rendering) with React?
+
+`Hinglish Explanation:`
+
+SSR me React components server par render hote hain aur browser ko ready HTML milta hai. Next.js React me SSR implement karne ka popular framework hai.
+
+`Interview Answer:`
+
+SSR renders React components on the server and sends HTML to the client, improving SEO and initial load performance.
+
+Example:
+
+```javascript
+export async function getServerSideProps() {
+  return { props: {} };
+}
+```
+
+---
+
 13. Difference between lifting state and prop drilling.
-14. What is suspense in React?
+
+`Hinglish Explanation:`
+
+Lifting state ka matlab shared state ko common parent me move karna hai. Prop drilling me data ko multiple intermediate components ke through pass karna padta hai.
+
+`Interview Answer:`
+
+Lifting state centralizes shared state in a common parent, whereas prop drilling refers to passing props through multiple levels of components.
+
+Example:
+
+```javascript
+<Parent>
+  <Child user={user} />
+</Parent>
+```
+
+---
+
+14. What is Suspense in React?
+
+`Hinglish Explanation:`
+
+Suspense asynchronous resources ya lazy-loaded components ke load hone tak fallback UI show karta hai. Ye loading experience improve karta hai.
+
+`Interview Answer:`
+
+Suspense allows React to display a fallback UI while waiting for lazy-loaded components or asynchronous resources to finish loading.
+
+Example:
+
+```javascript
+<Suspense fallback={<Loader />}>
+  <Dashboard />
+</Suspense>
+```
+
+---
+
 15. How do you manage state in large applications (Redux, Context, Zustand)?
+
+`Hinglish Explanation:`
+
+Large applications me state complexity ke according Redux, Context API ya Zustand choose kiya jata hai. Redux complex apps ke liye, Context simple global state ke liye aur Zustand lightweight alternative hai.
+
+`Interview Answer:`
+
+Large-scale applications use state management solutions like Redux, Context API, or Zustand depending on complexity, scalability, and performance requirements.
+
+Example:
+
+```javascript
+const store = configureStore({
+  reducer
+});
+```
+
+
 16. How does hydration work in React with SSR?
+
+`Hinglish Explanation:`
+
+SSR me server HTML generate karta hai aur browser ko send karta hai. Hydration process me React us HTML par event handlers attach karta hai aur page ko interactive banata hai bina poora re-render kiye.
+
+`Interview Answer:`
+
+Hydration is the process where React attaches event listeners and restores interactivity to server-rendered HTML on the client side.
+
+Example:
+
+```javascript
+hydrateRoot(
+  document.getElementById("root"),
+  <App />
+);
+```
+
+---
+
 17. How do you secure a React frontend?
-18. Explain error boundaries in React
+
+`Hinglish Explanation:`
+
+Frontend security ke liye XSS prevention, input validation, secure authentication, HTTPS aur sensitive data ko client side par avoid karna important hai.
+
+`Interview Answer:`
+
+React frontend security involves preventing XSS attacks, validating user input, securing authentication flows, and avoiding exposure of sensitive data.
+
+Example:
+
+```javascript
+<div>{userInput}</div>
+```
+
+---
+
+18. Explain error boundaries in React.
+
+`Hinglish Explanation:`
+
+Error Boundaries component tree me runtime JavaScript errors catch karti hain aur fallback UI show karti hain. Ye application ko completely crash hone se bachati hain.
+
+`Interview Answer:`
+
+Error Boundaries are React components that catch JavaScript errors in their child component tree and display a fallback UI instead of crashing the application.
+
+Example:
+
+```javascript
+componentDidCatch(error) {
+  console.error(error);
+}
+```
+
+---
+
 19. How does React Router handle dynamic routes?
+
+`Hinglish Explanation:`
+
+Dynamic routes URL parameters ke through different resources ya pages ko handle karte hain. Route parameters ko useParams Hook se access kiya ja sakta hai.
+
+`Interview Answer:`
+
+React Router supports dynamic routes using URL parameters, allowing pages to render based on route-specific values.
+
+Example:
+
+```javascript
+<Route
+  path="/users/:id"
+  element={<User />}
+/>
+```
+
+---
+
 20. How do you handle access control (auth-guard) in React?
+
+`Hinglish Explanation:`
+
+Protected routes create karke authentication check ki jati hai. Agar user authenticated nahi hai to login page par redirect kar diya jata hai.
+
+`Interview Answer:`
+
+Access control is typically implemented using protected routes that verify authentication and authorization before rendering components.
+
+Example:
+
+```javascript
+return isLoggedIn
+  ? <Dashboard />
+  : <Navigate to="/login" />;
+```
+
+---
+
 21. How do you use useReducer and what is it best for?
+
+`Hinglish Explanation:`
+
+useReducer complex state logic aur multiple state transitions handle karne ke liye use hota hai. Ye Redux ke reducer pattern jaisa kaam karta hai.
+
+`Interview Answer:`
+
+useReducer is ideal for managing complex state logic where multiple actions affect the same state in a predictable way.
+
+Example:
+
+```javascript
+const [state, dispatch] =
+  useReducer(reducer, initialState);
+```
+
+---
+
 22. How do you handle WebSocket or real-time data in React?
+
+`Hinglish Explanation:`
+
+WebSocket connection ko useEffect me create kiya jata hai aur cleanup function me close kiya jata hai. Real-time updates state me store kiye jate hain.
+
+`Interview Answer:`
+
+Real-time data can be handled using WebSockets by establishing connections, listening for events, and updating component state accordingly.
+
+Example:
+
+```javascript
+useEffect(() => {
+  const socket = new WebSocket(url);
+
+  return () => socket.close();
+}, []);
+```
+
+---
+
 23. What is the role of key in React lists?
+
+`Hinglish Explanation:`
+
+Key React ko identify karne me help karti hai ki list me kaunsa item add, update ya remove hua hai. Stable aur unique key use karna important hai.
+
+`Interview Answer:`
+
+Keys help React efficiently identify list items and optimize updates during reconciliation.
+
+Example:
+
+```javascript
+users.map(user => (
+  <li key={user.id}>
+    {user.name}
+  </li>
+));
+```
+
+---
+
 24. Explain compound components pattern.
+
+`Hinglish Explanation:`
+
+Compound Components pattern me multiple related components milkar ek shared state aur behavior use karte hain. Ye flexible aur reusable APIs create karne me help karta hai.
+
+`Interview Answer:`
+
+The Compound Components pattern allows related components to share state and behavior while giving consumers flexible control over rendering.
+
+Example:
+
+```javascript
+<Tabs>
+  <Tabs.List />
+  <Tabs.Panel />
+</Tabs>
+```
+
+---
+
 25. How does React DevTools work under the hood?
-26. What is the StrictMode in React and why use it?
+
+`Hinglish Explanation:`
+
+React DevTools React Fiber tree se connect hota hai aur components, props, state aur hooks ki information read karta hai debugging ke liye.
+
+`Interview Answer:`
+
+React DevTools integrates with React's Fiber architecture to inspect component trees, state, props, and rendering behavior.
+
+Example:
+
+```text
+Component Tree
+→ Props
+→ State
+→ Hooks
+```
+
+---
+
+26. What is StrictMode in React and why use it?
+
+`Hinglish Explanation:`
+
+StrictMode development mode me unsafe lifecycle methods aur side effects identify karne me help karta hai. Production build me iska effect nahi hota.
+
+`Interview Answer:`
+
+StrictMode is a development-only tool that helps identify potential issues, deprecated APIs, and unexpected side effects.
+
+Example:
+
+```javascript
+<React.StrictMode>
+  <App />
+</React.StrictMode>
+```
+
+---
+
 27. How would you implement theme switching in React?
+
+`Hinglish Explanation:`
+
+Theme switching generally Context API ya state management ke through implement ki jati hai. User preference ke basis par CSS classes ya theme objects change kiye jate hain.
+
+`Interview Answer:`
+
+Theme switching is commonly implemented using Context API and dynamic styles that update based on the selected theme.
+
+Example:
+
+```javascript
+setTheme(
+  theme === "light"
+    ? "dark"
+    : "light"
+);
+```
+
+---
+
 28. How do you test React components (Jest, RTL)?
+
+`Hinglish Explanation:`
+
+Jest testing framework provide karta hai aur React Testing Library user perspective se components test karne me help karti hai.
+
+`Interview Answer:`
+
+React components are commonly tested using Jest for assertions and React Testing Library for simulating user interactions.
+
+Example:
+
+```javascript
+render(<Button />);
+
+screen.getByText("Submit");
+```
+
+---
+
 29. How do you implement HOC (Higher-Order Components)?
+
+`Hinglish Explanation:`
+
+HOC ek function hota hai jo component receive karta hai aur additional functionality ke saath enhanced component return karta hai.
+
+`Interview Answer:`
+
+A Higher-Order Component is a function that takes a component as input and returns a new component with extended behavior.
+
+Example:
+
+```javascript
+const withAuth = (Component) =>
+  (props) =>
+    <Component {...props} />;
+```
+
+---
+
 30. What is the role of forwardRef in React?
+
+`Hinglish Explanation:`
+
+forwardRef parent component ko child component ke DOM element ya ref tak direct access dene ke liye use hota hai.
+
+`Interview Answer:`
+
+forwardRef allows a parent component to pass a ref through a child component and access the underlying DOM element.
+
+Example:
+
+```javascript
+const Input = React.forwardRef(
+  (props, ref) => (
+    <input ref={ref} />
+  )
+);
+```
+
 ---
 
 ## 🌐 Node + Express (221-310)
