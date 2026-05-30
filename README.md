@@ -7449,16 +7449,51 @@ const getUserName = user =>
 
         `Hinglish Explanation:`
 
-        DOM element ya mutable value ko store karne ke liye useRef use hota hai bina re-render ke.
+        useRef ek React Hook hai jo value ko store karta hai bina component ko re-render kiye. Iska use mostly DOM elements ko access karne ya aisi values store karne ke liye hota hai jo UI me show nahi hoti.
 
         `Interview Answer:`
 
-        useRef provides a mutable reference that persists across renders without causing re-renders.
+        useRef is a React Hook used to store mutable values and access DOM elements. Unlike useState, updating a ref does not cause a component re-render. It is commonly used for DOM manipulation, storing previous values, timers, and keeping data between renders
 
         Example:
 
         ```javascript
-           const inputRef = useRef();
+           //DOM Element Access
+          import { useRef } from "react";
+
+          function App() {
+            const inputRef = useRef();
+
+            const focusInput = () => {
+              inputRef.current.focus();
+            };
+
+            return (
+              <>
+                <input ref={inputRef} />
+                <button onClick={focusInput}>
+                  Focus
+                </button>
+              </>
+            );
+          }
+          //Store Value Without Re-render
+          import { useRef } from "react";
+
+          function App() {
+            const countRef = useRef(0);
+
+            const handleClick = () => {
+              countRef.current++;
+              console.log(countRef.current);
+            };
+
+            return (
+              <button onClick={handleClick}>
+                Click
+              </button>
+            );
+          }
         ```
 
 145. useMemo?
