@@ -7332,7 +7332,7 @@ const getUserName = user =>
 
         `Interview Answer:`
 
-        Lifecycle methods allow developers to execute code during different phases of a component's lifecycle.
+        React Lifecycle Methods are special methods in Class Components that execute during Mounting, Updating, and Unmounting phases. Common methods include componentDidMount for API calls, componentDidUpdate for handling updates, and componentWillUnmount for cleanup. In modern React, lifecycle behavior is typically handled using the useEffect hook in Functional Components.
 
         Example:
 
