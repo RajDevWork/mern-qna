@@ -9047,59 +9047,530 @@ setCount((prev) => prev + 1);
 
 ---
 
-2. What are controlled vs. uncontrolled components?
+2. # What are controlled vs. uncontrolled components?
 
 `Hinglish Explanation:`
 
-Controlled components me form data React state ke through manage hota hai, jabki uncontrolled components me data DOM khud maintain karta hai. Controlled approach validation aur state management ke liye preferred hai.
+## Kya hain?
+
+  React me forms ko handle karne ke do common approaches hoti hain:
+
+  **Controlled Components** aur **Uncontrolled Components**.
+
+  Controlled Component me form field ki value React State control karti hai. Matlab input ka single source of truth React State hota hai.
+
+  Uncontrolled Component me form field ki value DOM khud manage karta hai aur React value ko direct track nahi karta. Value access karne ke liye generally `ref` use kiya jata hai.
+
+## Kaun se problem par based hain?
+
+  Forms user input lete hain aur application ko us input ke basis par validation, formatting, conditional rendering aur API calls perform karni hoti hain.
+
+  Question ye tha ki input data ko kaun manage kare?
+
+  - React State?
+  - Ya Browser DOM?
+
+  Isi problem ko solve karne ke liye Controlled aur Uncontrolled approaches use ki jaati hain.
+
+  Controlled Example:
+
+  ```jsx
+  const [name, setName] = useState("");
+
+  <input
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+  />
+  ```
+
+  Uncontrolled Example:
+
+  ```jsx
+  const inputRef = useRef();
+
+  <input ref={inputRef} />
+  ```
+
+## Kaise work karta hain?
+
+  *Controlled Component**
+
+  User input type karta hai.
+
+  ```text
+  User Input
+       ↓
+  onChange Event
+       ↓
+  React State Update
+       ↓
+  Component Re-render
+       ↓
+  Updated Value Render
+  ```
+
+  React input ki value ko completely control karta hai.
+
+  Benefits:
+
+  - Real-time validation
+  - Dynamic formatting
+  - Conditional UI updates
+  - Easy state management
+  - Predictable behavior
+
+  **Uncontrolled Component**
+
+  User input type karta hai.
+
+  ```text
+  User Input
+       ↓
+  DOM Stores Value
+       ↓
+  React Accesses via Ref
+  ```
+
+  React input value ko continuously track nahi karta.
+
+  Value tab read ki jaati hai jab explicitly required ho.
+
+## Real world Projects me kaise implement hota hain?
+
+  Enterprise React applications me mostly Controlled Components use kiye jaate hain kyunki forms me validation, error handling, API integration aur business rules apply karne hote hain.
+
+  Example:
+
+  ```jsx
+  const [email, setEmail] = useState("");
+
+  <input
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+  />
+  ```
+
+  Is approach se:
+
+  - Email validation
+  - Disable submit button
+  - Auto formatting
+  - Error messages
+
+  easily implement kiye ja sakte hain.
+
+  Uncontrolled Components generally tab use hote hain jab:
+
+  - Simple forms ho
+  - File uploads ho
+  - Third-party libraries integrate karni ho
+  - Performance-sensitive large forms ho
+
+  Example:
+
+  ```jsx
+  const fileRef = useRef();
+
+  <input
+    type="file"
+    ref={fileRef}
+  />
+  ```
+
+  File inputs practically uncontrolled hi hote hain because browser security restrictions ke karan React directly file value control nahi kar sakta.
 
 `Interview Answer:`
 
-Controlled components manage form data through React state, while uncontrolled components store data in the DOM and are accessed using refs. Controlled components provide better control and predictability.
+Controlled Components are form elements whose values are managed by React state. The input value is synchronized with state through the `value` prop and `onChange` handler, making React the single source of truth. This approach is preferred for validation, dynamic UI updates, and predictable state management.
+
+Uncontrolled Components store their state within the DOM itself. React accesses the value using refs when needed rather than managing it continuously. They are useful for simple forms, file inputs, and certain third-party integrations.
+
+In production applications, controlled components are generally preferred because they provide better control, validation capabilities, and maintainability.
 
 Example:
 
-```javascript
+```jsx
+const [name, setName] = useState("");
+
 <input
   value={name}
   onChange={(e) => setName(e.target.value)}
 />
 ```
 
----
+Uncontrolled Example:
 
-3. How does React handle context and why use it?
+```jsx
+const inputRef = useRef();
 
-`Hinglish Explanation:`
-
-Context API parent se deeply nested child components tak data share karne deti hai bina props drilling ke. Ye theme, authentication aur language settings ke liye commonly use hoti hai.
-
-`Interview Answer:`
-
-React Context provides a way to share data across the component tree without manually passing props through every level. It is commonly used for global application state.
-
-Example:
-
-```javascript
-const UserContext = createContext();
+<input ref={inputRef} />
 ```
 
 ---
 
-4. What are the common performance optimization techniques in React?
+3. # How does React handle context and why use it?
 
 `Hinglish Explanation:`
 
-Performance improve karne ke liye React.memo, useMemo, useCallback, lazy loading, code splitting aur virtualization use kiye jate hain. Unnecessary re-renders avoid karna bhi important hai.
+## Kya hain?
+
+  React Context ek built-in state-sharing mechanism hai jo data ko component tree ke multiple levels tak pass karne ki facility deta hai bina props manually har level par pass kiye.
+
+  Normally React me parent se child ko data props ke through bheja jata hai. Lekin jab data bahut deeply nested components tak pahunchana ho, to har intermediate component ko unnecessary props pass karne padte hain. Is problem ko **Prop Drilling** kehte hain.
+
+  Context React ko allow karta hai ki data directly required components tak pahunch sake bina intermediate components ko involve kiye.
+
+## Kaun se problem par based hain?
+
+  Maan lo application me logged-in user information top-level component me available hai aur usko Navbar, Sidebar, Dashboard aur Profile components me use karna hai.
+
+  Without Context:
+
+  ```text
+  App
+   ↓
+  Layout
+   ↓
+  Dashboard
+   ↓
+  Sidebar
+   ↓
+  UserProfile
+  ```
+
+  Har level par props pass karne padenge:
+
+  ```jsx
+  <Layout user={user} />
+  ```
+
+  ```jsx
+  <Dashboard user={user} />
+  ```
+
+  ```jsx
+  <Sidebar user={user} />
+  ```
+
+  ```jsx
+  <UserProfile user={user} />
+  ```
+
+  Isse code difficult to maintain ho jata hai.
+
+  Context is problem ko solve karta hai by providing a shared data layer.
+
+## Kaise work karta hain?
+
+  Context ke teen major parts hote hain:
+
+  **1. Create Context**
+
+  ```jsx
+  const UserContext = createContext();
+  ```
+
+  **2. Provide Data**
+
+  Provider component ke through data expose kiya jata hai.
+
+  ```jsx
+  <UserContext.Provider value={user}>
+    <App />
+  </UserContext.Provider>
+  ```
+
+  **3. Consume Data**
+
+  Kisi bhi nested component me data access kiya ja sakta hai.
+
+  ```jsx
+  const user = useContext(UserContext);
+  ```
+
+  Flow:
+
+  ```text
+  Context Provider
+          ↓
+      Shared Value
+          ↓
+  Any Nested Component
+  ```
+
+  Jab Provider ki value change hoti hai to React automatically consuming components ko re-render karta hai.
+
+## Real world Projects me kaise implement hota hain?
+
+  Context commonly use hota hai:
+
+  - Authentication
+  - Theme Management
+  - Language/Localization
+  - User Preferences
+  - Global Configuration
+  - Feature Flags
+
+  Authentication Example:
+
+  ```jsx
+  const AuthContext = createContext();
+
+  <AuthContext.Provider value={{ user }}>
+    <App />
+  </AuthContext.Provider>
+  ```
+
+  Navbar:
+
+  ```jsx
+  const { user } = useContext(AuthContext);
+
+  return <h3>{user.name}</h3>;
+  ```
+
+  Sidebar:
+
+  ```jsx
+  const { user } = useContext(AuthContext);
+
+  return <p>{user.role}</p>;
+  ```
+
+  Production applications me Context ko generally global state ke liye use kiya jata hai. Lekin frequently changing large state ke liye Redux, Zustand ya similar state management solutions prefer kiye jaate hain kyunki Context updates unnecessary re-renders trigger kar sakte hain.
 
 `Interview Answer:`
 
-Common optimization techniques include memoization, code splitting, lazy loading, virtualization, and preventing unnecessary re-renders using React.memo and Hooks.
+React Context is a built-in feature that allows data to be shared across a component tree without manually passing props through every level. It helps solve the prop drilling problem by enabling components to access shared data directly from a central provider.
+
+Context works using three main parts: `createContext`, `Provider`, and `useContext`. A Provider exposes a value, and any nested component can consume that value without receiving it as a prop. When the provider value changes, React re-renders the consuming components with the updated data.
+
+Context is commonly used for authentication, themes, localization, user preferences, and application-wide configuration. While it is excellent for sharing global data, it is not always the best choice for highly dynamic application state because frequent updates can trigger unnecessary re-renders.
 
 Example:
 
-```javascript
-const value = useMemo(() => calculate(), [data]);
+```jsx
+const UserContext = createContext();
+
+function App() {
+  return (
+    <UserContext.Provider value={{ name: "Raj" }}>
+      <Dashboard />
+    </UserContext.Provider>
+  );
+}
+
+function Dashboard() {
+  const user = useContext(UserContext);
+
+  return <h1>{user.name}</h1>;
+}
+```
+
+---
+
+4. # What are the common performance optimization techniques in React?
+
+`Hinglish Explanation:`
+
+## Kya hain?
+
+  React Performance Optimization techniques ka purpose unnecessary re-renders, expensive calculations, large DOM updates aur unnecessary API calls ko reduce karna hota hai. Small applications me performance issues usually visible nahi hote, lekin enterprise applications me thousands of components, large datasets aur complex UI interactions performance bottlenecks create kar sakte hain.
+
+  Performance optimization ka goal React ko kam work karwana aur browser ko minimum DOM updates karwana hota hai.
+
+## Kaun se problem par based hain?
+
+  By default React state ya props change hone par component aur uske child components ko re-render kar sakta hai.
+
+  Maan lo ek dashboard me 1000 rows hain aur sirf ek row update hui hai.
+
+  ```text
+  State Update
+       ↓
+  Parent Re-render
+       ↓
+  1000 Child Re-renders
+  ```
+
+  Yaha unnecessary rendering performance impact karegi.
+
+  Isi tarah expensive calculations bhi har render par execute ho sakti hain.
+
+  Example:
+
+  ```jsx
+  const sortedUsers = users.sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+  ```
+
+  Agar users ki list badi hai to har render par sorting expensive ho sakti hai.
+
+## Kaise work karta hain?
+
+  React me common optimization techniques:
+
+  **1. React.memo**
+
+  Functional component ko memoize karta hai aur same props hone par re-render prevent karta hai.
+
+  ```jsx
+  const UserCard = React.memo(({ user }) => {
+    return <h1>{user.name}</h1>;
+  });
+  ```
+
+  **2. useMemo**
+
+  Expensive calculations ko cache karta hai.
+
+  ```jsx
+  const sortedUsers = useMemo(() => {
+    return users.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }, [users]);
+  ```
+
+  **3. useCallback**
+
+  Function references ko memoize karta hai.
+
+  ```jsx
+  const handleDelete = useCallback((id) => {
+    deleteUser(id);
+  }, []);
+  ```
+
+  Useful when passing callbacks to memoized child components.
+
+  **4. Code Splitting**
+
+  Entire application ko initial load par download karne ke bajaye required modules lazy load kiye jaate hain.
+
+  ```jsx
+  const Dashboard = React.lazy(() =>
+    import("./Dashboard")
+  );
+  ```
+
+  **5. Virtualization**
+
+  Large lists ke case me sirf visible items render kiye jaate hain.
+
+  ```text
+  Total Rows: 10000
+  Visible Rows: 20
+  Rendered Rows: 20
+  ```
+
+  Libraries:
+
+  - react-window
+  - react-virtualized
+
+  **6. Proper Keys**
+
+  Stable keys reconciliation ko efficient banati hain.
+
+  ```jsx
+  key={user.id}
+  ```
+
+  Instead of:
+
+  ```jsx
+  key={index}
+  ```
+
+  **7. Debouncing & Throttling**
+
+  Frequent API calls ko reduce karte hain.
+
+  Search Example:
+
+  ```text
+  R
+  Ra
+  Raj
+  ```
+
+  Instead of 3 API calls:
+
+  ```text
+  Wait 500ms
+       ↓
+  Single API Call
+  ```
+
+## Real world Projects me kaise implement hota hain?
+
+  Ek CRM dashboard me 5000+ customer records display ho rahe the.
+
+  Initial Issues:
+
+  - Slow scrolling
+  - Frequent re-renders
+  - Search lag
+  - Large bundle size
+
+  Optimizations:
+
+  ```jsx
+  React.memo(CustomerRow);
+  ```
+
+  ```jsx
+  const filteredUsers = useMemo(...);
+  ```
+
+  ```jsx
+  const handleSearch = useCallback(...);
+  ```
+
+  ```jsx
+  const Reports = React.lazy(...);
+  ```
+
+  ```jsx
+  key={customer.id}
+  ```
+
+  Aur large tables ke liye virtualization implement kiya gaya.
+
+  Result:
+
+  - Faster rendering
+  - Reduced memory usage
+  - Better scrolling performance
+  - Faster page load times
+  - Improved user experience
+
+`Interview Answer:`
+
+Common React performance optimization techniques focus on reducing unnecessary rendering, minimizing expensive computations, and optimizing bundle size.
+
+Some of the most commonly used techniques include React.memo for preventing unnecessary component re-renders, useMemo for caching expensive calculations, and useCallback for maintaining stable function references. Code splitting with React.lazy and Suspense helps reduce the initial bundle size, while list virtualization improves performance when rendering large datasets.
+
+Additionally, using stable keys, implementing debouncing for search inputs, optimizing state management, and avoiding unnecessary component updates significantly improve application performance.
+
+In large-scale applications, performance optimization is typically achieved through a combination of memoization, efficient rendering strategies, lazy loading, and proper component architecture.
+
+Example:
+
+```jsx
+const UserList = React.memo(({ users }) => {
+  return users.map((user) => (
+    <div key={user.id}>{user.name}</div>
+  ));
+});
+
+const filteredUsers = useMemo(() => {
+  return users.filter((user) =>
+    user.active
+  );
+}, [users]);
 ```
 
 ---
