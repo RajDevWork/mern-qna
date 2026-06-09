@@ -8971,7 +8971,7 @@ Example:
 
 ### Additional Important Questions
 
-1. Explain the React reconciliation algorithm.
+1. ## Explain the React reconciliation algorithm.
 
 `Hinglish Explanation:`
 
