@@ -8971,15 +8971,15 @@ Example:
 
 ### Additional Important Questions
 
-1. ## Explain the React reconciliation algorithm.
+1. # Explain the React reconciliation algorithm.
 
 `Hinglish Explanation:`
 
-# Kya hain?
+## Kya hain?
 
   React Reconciliation React ka internal process hai jo state ya props change hone par old Virtual DOM aur new Virtual DOM ko compare karta hai. React directly Real DOM ko manipulate nahi karta kyunki DOM operations expensive hote hain. Reconciliation ka purpose minimum DOM updates find karna hota hai taaki UI efficiently update ho sake.
 
-# Kaun se problem par based hain?
+## Kaun se problem par based hain?
 
   Agar application me thousands of DOM elements ho aur sirf ek element change ho, to pura DOM recreate karna expensive hoga. Browser rendering, layout calculation aur repaint operations performance ko impact kar sakte hain.
 
@@ -8999,7 +8999,7 @@ Example:
 
   Yaha React sirf text node update karega, pura DOM recreate nahi karega.
 
-# Kaise work karta hain?
+## Kaise work karta hain?
 
   Jab state ya props change hote hain, React naya Virtual DOM create karta hai aur usko previous Virtual DOM se compare karta hai.
 
@@ -9012,7 +9012,7 @@ Example:
 
   React 16 ke baad ye process Fiber Architecture ke through execute hota hai jo rendering ko pause, resume aur prioritize kar sakta hai.
 
-# Real world Projects me kaise implement hota hain?
+## Real world Projects me kaise implement hota hain?
 
   Large CRM, ERP ya Dashboard applications me tables, grids aur forms frequently update hote rehte hain.
 
