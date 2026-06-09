@@ -9575,122 +9575,1338 @@ const filteredUsers = useMemo(() => {
 
 ---
 
-5. How does memoization work in React (React.memo, useMemo)?
+5. # How does memoization work in React (React.memo, useMemo)?
 
 `Hinglish Explanation:`
 
-Memoization expensive calculations ya component renders ko cache karti hai. Jab dependencies change nahi hoti to React previous result reuse karta hai.
+## Kya hain?
+
+  Memoization ek performance optimization technique hai jisme previously computed result ko cache kiya jata hai taaki same input ke liye computation ya rendering dobara na karni pade.
+
+  React me memoization primarily 3 tools ke through implement hoti hai:
+
+  - React.memo
+  - useMemo
+  - useCallback
+
+  Inka goal unnecessary re-renders aur expensive calculations ko avoid karna hota hai.
+
+## Kaun se problem par based hain?
+
+  React me parent component re-render hone par child components bhi re-render ho sakte hain, chahe actual data change na hua ho.
+
+  Example:
+
+  ```jsx
+  <Dashboard>
+    <UserList />
+  </Dashboard>
+  ```
+
+  Dashboard re-render hua:
+
+  ```text
+  Dashboard Re-render
+         ↓
+  UserList Re-render
+  ```
+
+  Isi tarah expensive calculations bhi har render par dobara execute ho sakti hain.
+
+  ```jsx
+  const sortedUsers = users.sort(...);
+  ```
+
+  Large datasets me ye performance bottleneck ban sakta hai.
+
+## Kaise work karta hain?
+
+  **React.memo**
+
+  Component ko memoize karta hai.
+
+  React previous props aur current props ka shallow comparison karta hai.
+
+  ```jsx
+  const UserCard = React.memo(({ user }) => {
+    return <h1>{user.name}</h1>;
+  });
+  ```
+
+  Agar props same hain to component re-render nahi hoga.
+
+  **useMemo**
+
+  Expensive calculations ke result ko cache karta hai.
+
+  ```jsx
+  const sortedUsers = useMemo(() => {
+    return users.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }, [users]);
+  ```
+
+  Dependency change hone par hi calculation dobara execute hogi.
+
+  **useCallback**
+
+  Function reference ko memoize karta hai.
+
+  React me function har render par naya create hota hai.
+
+  ```jsx
+  const handleDelete = useCallback((id) => {
+    deleteUser(id);
+  }, []);
+  ```
+
+  Isse same function reference maintain rehta hai aur memoized child components unnecessary re-render nahi karte.
+
+  Summary:
+
+  ```text
+  React.memo
+      ↓
+  Memoize Component
+
+  useMemo
+      ↓
+  Memoize Value
+
+  useCallback
+      ↓
+  Memoize Function
+  ```
+
+## Real world Projects me kaise implement hota hain?
+
+  CRM dashboard me 5000+ customers ki table thi.
+
+  Table rows:
+
+  ```jsx
+  const CustomerRow = React.memo(
+    ({ customer, onDelete }) => {
+      ...
+    }
+  );
+  ```
+
+  Filtering aur sorting:
+
+  ```jsx
+  const filteredCustomers = useMemo(() => {
+    return customers.filter(...);
+  }, [customers]);
+  ```
+
+  Event handlers:
+
+  ```jsx
+  const handleDelete = useCallback((id) => {
+    deleteCustomer(id);
+  }, []);
+  ```
+
+  Result:
+
+  - Reduced re-renders
+  - Faster table rendering
+  - Better scrolling performance
+  - Lower CPU usage
+
+  Production applications me React.memo, useMemo aur useCallback generally together use kiye jaate hain.
 
 `Interview Answer:`
 
-Memoization stores previously computed values or rendered output and reuses them until dependencies change, improving performance.
+Memoization in React is a performance optimization technique used to avoid unnecessary computations and component re-renders by caching previously generated results.
+
+React provides three primary memoization mechanisms. `React.memo` memoizes a component and prevents re-rendering when its props remain unchanged. `useMemo` memoizes the result of an expensive computation and recalculates it only when its dependencies change. `useCallback` memoizes function references, which helps prevent unnecessary re-renders in memoized child components.
+
+In large-scale applications, these techniques are commonly used together to optimize rendering performance, reduce CPU-intensive operations, and improve responsiveness when working with large datasets or complex component trees.
 
 Example:
 
-```javascript
-const total = useMemo(() => {
-  return calculateTotal();
-}, [items]);
-```
+```jsx
+const UserCard = React.memo(({ user }) => {
+  return <h2>{user.name}</h2>;
+});
 
----
+const filteredUsers = useMemo(() => {
+  return users.filter((user) => user.active);
+}, [users]);
 
-6. How does React handle batching of state updates?
-
-`Hinglish Explanation:`
-
-React multiple state updates ko ek hi render cycle me combine karta hai. Is process ko batching kehte hain aur ye unnecessary re-renders reduce karta hai.
-
-`Interview Answer:`
-
-React batches multiple state updates together and performs a single re-render, improving application performance and efficiency.
-
-Example:
-
-```javascript
-setCount(c => c + 1);
-setLoading(true);
-```
-
----
-
-7. What are custom hooks and when would you use them?
-
-`Hinglish Explanation:`
-
-Custom Hooks reusable logic ko multiple components me share karne ke liye use hote hain. Jab same stateful logic baar-baar repeat ho rahi ho tab custom hook banana chahiye.
-
-`Interview Answer:`
-
-Custom Hooks are reusable functions that encapsulate stateful logic and allow sharing behavior across multiple components.
-
-Example:
-
-```javascript
-function useCounter() {
-  const [count, setCount] = useState(0);
-}
-```
-
----
-
-8. Explain lazy loading and code splitting in React.
-
-`Hinglish Explanation:`
-
-Code splitting application bundle ko multiple chunks me divide karta hai, aur lazy loading un chunks ko demand par load karti hai. Isse initial page load fast hota hai.
-
-`Interview Answer:`
-
-Code splitting divides the application into smaller bundles, while lazy loading loads those bundles only when needed, improving performance.
-
-Example:
-
-```javascript
-const Dashboard = React.lazy(
-  () => import("./Dashboard")
-);
-```
-
----
-
-9. What’s the difference between useEffect and useLayoutEffect?
-
-`Hinglish Explanation:`
-
-useEffect browser paint ke baad run hota hai, jabki useLayoutEffect DOM update ke turant baad aur paint se pehle run hota hai. DOM measurements ke liye useLayoutEffect use kiya jata hai.
-
-`Interview Answer:`
-
-useEffect runs asynchronously after rendering, whereas useLayoutEffect runs synchronously after DOM updates but before the browser paints.
-
-Example:
-
-```javascript
-useLayoutEffect(() => {
-  console.log("Before paint");
+const handleDelete = useCallback((id) => {
+  deleteUser(id);
 }, []);
 ```
 
 ---
 
-10. How does React’s concurrent mode work?
+6. # How does React handle batching of state updates?
 
 `Hinglish Explanation:`
 
-Concurrent features React ko rendering ko interrupt aur prioritize karne ki capability deti hain. Isse UI responsive rehti hai even during heavy updates.
+## Kya hain?
+
+  Batching React ka optimization mechanism hai jisme multiple state updates ko combine karke ek hi re-render me process kiya jata hai. Iska purpose unnecessary renders ko reduce karna aur application performance improve karna hota hai.
+
+  Agar React har `setState` ya state updater call ke baad immediately render kare, to large applications me bahut unnecessary rendering hogi. Batching is problem ko solve karta hai.
+
+## Kaun se problem par based hain?
+
+  Maan lo ek event handler me multiple state updates ho rahi hain:
+
+  ```jsx
+  setCount((prev) => prev + 1);
+  setLoading(true);
+  setUser(userData);
+  ```
+
+  Agar batching na ho:
+
+  ```text
+  State Update 1
+        ↓
+    Render 1
+
+  State Update 2
+        ↓
+    Render 2
+
+  State Update 3
+        ↓
+    Render 3
+  ```
+
+  Yani 3 updates ke liye 3 renders.
+
+  Ye expensive ho sakta hai especially jab component tree large ho.
+
+  React batching use karke:
+
+  ```text
+  State Update 1
+  State Update 2
+  State Update 3
+        ↓
+    Single Render
+  ```
+
+  perform karta hai.
+
+## Kaise work karta hain?
+
+  React updates ko queue me collect karta hai aur unhe ek batch ke roop me process karta hai.
+
+  Example:
+
+  ```jsx
+  const handleClick = () => {
+    setCount((prev) => prev + 1);
+    setLoading(true);
+    setUser(userData);
+  };
+  ```
+
+  React pehle teeno updates queue karega.
+
+  ```text
+  Update Queue
+
+  + count update
+  + loading update
+  + user update
+  ```
+
+  Fir ek hi reconciliation cycle me process karega.
+
+  ```text
+  Process Updates
+        ↓
+  New State Calculate
+        ↓
+  Single Re-render
+  ```
+
+  **React 17 vs React 18**
+
+  React 17 tak batching mainly React Event Handlers ke andar hoti thi.
+
+  Example:
+
+  ```jsx
+  const handleClick = () => {
+    setCount((prev) => prev + 1);
+    setLoading(true);
+  };
+  ```
+
+  Yaha batching hoti thi.
+
+  Lekin asynchronous operations me batching nahi hoti thi:
+
+  ```jsx
+  setTimeout(() => {
+    setCount((prev) => prev + 1);
+    setLoading(true);
+  }, 1000);
+  ```
+
+  Result:
+
+  ```text
+  Render 1
+  Render 2
+  ```
+
+  React 18 me Automatic Batching introduce hui.
+
+  Ab batching work karti hai:
+
+  - Event Handlers
+  - Promises
+  - setTimeout
+  - Async/Await
+  - Native Events
+
+  Example:
+
+  ```jsx
+  setTimeout(() => {
+    setCount((prev) => prev + 1);
+    setLoading(true);
+  }, 1000);
+  ```
+
+  React 18:
+
+  ```text
+  Single Render
+  ```
+
+  Ye React 18 ka important interview topic hai.
+
+## Real world Projects me kaise implement hota hain?
+
+  Maan lo CRM dashboard me customer data load ho raha hai.
+
+  ```jsx
+  const fetchCustomers = async () => {
+    const data = await api.getCustomers();
+
+    setCustomers(data);
+    setLoading(false);
+    setLastUpdated(new Date());
+  };
+  ```
+
+  React 18 me ye updates automatically batch ho jayengi.
+
+  ```text
+  API Response
+       ↓
+  Multiple State Updates
+       ↓
+  Single Re-render
+  ```
+
+  Isse:
+
+  - Better performance
+  - Fewer renders
+  - Faster UI updates
+  - Reduced reconciliation cost
+
+  milta hai.
+
+  Kabhi-kabhi hume immediate update force karni hoti hai. Us case me React `flushSync` provide karta hai.
+
+  Example:
+
+  ```jsx
+  import { flushSync } from "react-dom";
+
+  flushSync(() => {
+    setCount((prev) => prev + 1);
+  });
+  ```
+
+  Ye batching ko bypass karke immediate render trigger karta hai.
 
 `Interview Answer:`
 
-Concurrent rendering allows React to work on multiple rendering tasks, prioritize important updates, and keep the UI responsive.
+Batching is a React optimization technique where multiple state updates are grouped together and processed in a single render cycle. Instead of re-rendering the component after every state update, React collects updates, calculates the final state, and performs a single reconciliation and render operation.
+
+This significantly reduces unnecessary rendering and improves application performance, especially in large component trees.
+
+Starting with React 18, automatic batching was extended beyond event handlers to include asynchronous operations such as promises, async/await, timeouts, and native event handlers. This results in fewer renders and more efficient UI updates.
+
+In production applications, batching helps reduce reconciliation overhead and improves responsiveness when multiple state updates occur together.
 
 Example:
 
-```javascript
-startTransition(() => {
-  setSearch(query);
-});
+```jsx
+const handleClick = () => {
+  setCount((prev) => prev + 1);
+  setLoading(true);
+  setUser(userData);
+};
 ```
+
+All three updates are batched and processed in a single render cycle.
+
+---
+
+7. # What are custom hooks and when would you use them?
+
+`Hinglish Explanation:`
+
+## Kya hain?
+
+  Custom Hooks React me reusable stateful logic ko extract karne ka mechanism hain. Jab multiple components me same logic repeat ho rahi ho, to us logic ko ek custom hook me move karke reuse kiya ja sakta hai.
+
+  Important baat ye hai ki Custom Hook component reuse nahi karta, balki logic reuse karta hai.
+
+  React ke built-in hooks jaise:
+
+  ```jsx
+  useState()
+  useEffect()
+  useContext()
+  useMemo()
+  ```
+
+  ki tarah hum apne hooks bhi create kar sakte hain.
+
+  Convention ke according custom hook ka naam hamesha `use` se start hona chahiye.
+
+  Example:
+
+  ```jsx
+  useAuth()
+  useDebounce()
+  useFetch()
+  useLocalStorage()
+  ```
+
+## Kaun se problem par based hain?
+
+  Maan lo application me multiple pages API call kar rahi hain.
+
+  Without Custom Hook:
+
+  ```jsx
+  // Users Page
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  ```
+
+  ```jsx
+  // Products Page
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+  ```
+
+  ```jsx
+  // Orders Page
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+  ```
+
+  Har component me:
+
+  - Loading state
+  - Error handling
+  - API request logic
+  - Cleanup logic
+
+  repeat ho sakti hai.
+
+  Isse:
+
+  - Code duplication
+  - Difficult maintenance
+  - Inconsistent behavior
+
+  jaisi problems create hoti hain.
+
+  Custom Hooks ka main purpose reusable business logic create karna hai.
+
+## Kaise work karta hain?
+
+  Custom Hook internally React hooks use karta hai aur reusable functionality expose karta hai.
+
+  Example:
+
+  ```jsx
+  function useCounter(initialValue = 0) {
+    const [count, setCount] = useState(initialValue);
+
+    const increment = () =>
+      setCount((prev) => prev + 1);
+
+    const decrement = () =>
+      setCount((prev) => prev - 1);
+
+    return {
+      count,
+      increment,
+      decrement,
+    };
+  }
+  ```
+
+  Component:
+
+  ```jsx
+  function Counter() {
+    const {
+      count,
+      increment,
+      decrement,
+    } = useCounter();
+
+    return (
+      <>
+        <h1>{count}</h1>
+      </>
+    );
+  }
+  ```
+
+  Flow:
+
+  ```text
+  Reusable Logic
+        ↓
+   Custom Hook
+        ↓
+  Multiple Components
+  ```
+
+  Har component ko custom hook ki apni isolated state milti hai.
+
+  State share nahi hoti.
+
+  Example:
+
+  ```jsx
+  const counter1 = useCounter();
+  const counter2 = useCounter();
+  ```
+
+  Dono ki state independent hogi.
+
+## Real world Projects me kaise implement hota hain?
+
+  Enterprise applications me Custom Hooks extensively use hote hain.
+
+  Common Examples:
+
+  - Authentication
+  - API Requests
+  - Form Handling
+  - Debouncing
+  - Permissions
+  - Local Storage
+  - WebSocket Connections
+  - Feature Flags
+
+  Authentication Hook:
+
+  ```jsx
+  function useAuth() {
+    const [user, setUser] = useState(null);
+
+    const login = async (credentials) => {
+      // login logic
+    };
+
+    const logout = () => {
+      setUser(null);
+    };
+
+    return {
+      user,
+      login,
+      logout,
+    };
+  }
+  ```
+
+  Usage:
+
+  ```jsx
+  const { user, logout } = useAuth();
+  ```
+
+  API Hook:
+
+  ```jsx
+  const {
+    data,
+    loading,
+    error,
+  } = useFetch("/api/customers");
+  ```
+
+  Large-scale applications me Custom Hooks business logic ko UI se separate rakhte hain, jisse code modular, testable aur maintainable banta hai.
+
+  Ye React architecture ka important best practice mana jata hai.
+
+`Interview Answer:`
+
+Custom Hooks are reusable JavaScript functions that encapsulate React stateful logic using built-in hooks such as useState, useEffect, and useContext. They allow developers to extract common functionality from components and reuse it across the application without duplicating code.
+
+Custom Hooks help separate business logic from presentation logic, making components cleaner, more maintainable, and easier to test. They are commonly used for authentication, API requests, form management, debouncing, local storage handling, permissions, and other reusable behaviors.
+
+A Custom Hook follows the same rules as React hooks and must start with the word `use`. Each component that uses a custom hook gets its own isolated state, ensuring predictable behavior.
+
+Example:
+
+```jsx
+function useCounter(initialValue = 0) {
+  const [count, setCount] = useState(initialValue);
+
+  const increment = () =>
+    setCount((prev) => prev + 1);
+
+  return {
+    count,
+    increment,
+  };
+}
+
+function Counter() {
+  const { count, increment } = useCounter();
+
+  return (
+    <button onClick={increment}>
+      {count}
+    </button>
+  );
+}
+```
+
+---
+
+8. # Explain lazy loading and code splitting in React.
+
+`Hinglish Explanation:`
+
+## Kya hain?
+
+  Lazy Loading aur Code Splitting React applications ki performance optimize karne ki techniques hain.
+
+  Normally jab React application load hoti hai, to poora JavaScript bundle browser download karta hai. Agar application badi hai to initial bundle size bahut large ho sakta hai, jisse first page load slow ho jata hai.
+
+  Code Splitting application ko multiple smaller chunks me divide karta hai, aur Lazy Loading un chunks ko tab load karta hai jab unki actual need hoti hai.
+
+  Simple words me:
+
+  ```text
+  Without Code Splitting
+
+  App Bundle
+      ↓
+  5 MB Download
+      ↓
+  User Opens Home Page
+  ```
+
+  ```text
+  With Code Splitting
+
+  Home Bundle
+      ↓
+  Download Only Home Page Code
+      ↓
+  User Opens Reports Page
+      ↓
+  Reports Bundle Download
+  ```
+
+## Kaun se problem par based hain?
+
+  Maan lo ek CRM application hai jisme:
+
+  - Dashboard
+  - Reports
+  - Analytics
+  - User Management
+  - Settings
+
+  pages hain.
+
+  Without Code Splitting:
+
+  ```text
+  User Opens Login Page
+         ↓
+  Entire Application Download
+         ↓
+  Dashboard Code
+  Reports Code
+  Analytics Code
+  Settings Code
+  ```
+
+  Problem:
+
+  - Large bundle size
+  - Slow initial load
+  - Poor Lighthouse score
+  - More memory consumption
+  - Bad user experience on slow networks
+
+  User sirf Login page dekh raha hai lekin Reports aur Analytics ka code bhi download ho raha hai.
+
+## Kaise work karta hain?
+
+  React `React.lazy()` aur `Suspense` provide karta hai lazy loading implement karne ke liye.
+
+  Example:
+
+  ```jsx
+  import React, { lazy, Suspense } from "react";
+
+  const Dashboard = lazy(() =>
+    import("./Dashboard")
+  );
+  ```
+
+  Usage:
+
+  ```jsx
+  <Suspense fallback={<Loader />}>
+    <Dashboard />
+  </Suspense>
+  ```
+
+  Flow:
+
+  ```text
+  Initial Render
+        ↓
+  Dashboard Required?
+        ↓
+       Yes
+        ↓
+  Download Dashboard Chunk
+        ↓
+  Render Dashboard
+  ```
+
+  Jab tak chunk load nahi hota:
+
+  ```jsx
+  fallback={<Loader />}
+  ```
+
+  render hota hai.
+
+  React internally dynamic imports use karta hai:
+
+  ```jsx
+  import("./Dashboard");
+  ```
+
+  Bundlers jaise Webpack, Vite ya Rollup is code ko alag chunk me split kar dete hain.
+
+  ```text
+  main.js
+  dashboard.chunk.js
+  reports.chunk.js
+  analytics.chunk.js
+  ```
+
+## Real world Projects me kaise implement hota hain?
+
+  Enterprise CRM application me kuch pages bahut heavy the:
+
+  - Analytics
+  - Reports
+  - Charts
+  - Export Modules
+
+  Initially:
+
+  ```text
+  Initial Bundle Size
+      ↓
+  4.8 MB
+  ```
+
+  Optimization:
+
+  ```jsx
+  const Reports = lazy(() =>
+    import("./pages/Reports")
+  );
+
+  const Analytics = lazy(() =>
+    import("./pages/Analytics")
+  );
+  ```
+
+  Route-level lazy loading:
+
+  ```jsx
+  <Route
+    path="/reports"
+    element={<Reports />}
+  />
+  ```
+
+  Result:
+
+  ```text
+  Initial Bundle
+      ↓
+  1.2 MB
+  ```
+
+  Benefits:
+
+  - Faster first load
+  - Better Lighthouse score
+  - Reduced bandwidth usage
+  - Better mobile performance
+  - Improved Time To Interactive (TTI)
+
+  Large-scale applications me route-level code splitting almost standard practice hai.
+
+`Interview Answer:`
+
+Lazy Loading is a technique where components or modules are loaded only when they are needed, instead of being included in the initial application bundle. Code Splitting is the process of dividing a large JavaScript bundle into smaller chunks that can be loaded on demand.
+
+React provides `React.lazy()` and `Suspense` to implement lazy loading. When a lazily loaded component is requested, React dynamically downloads the corresponding chunk and renders it once available.
+
+These techniques significantly reduce the initial bundle size, improve page load performance, decrease bandwidth consumption, and enhance the user experience, especially in large-scale applications.
+
+In production applications, route-level code splitting is commonly used so that users download only the code required for the current page rather than the entire application.
+
+Example:
+
+```jsx
+import React, { lazy, Suspense } from "react";
+
+const Reports = lazy(() =>
+  import("./Reports")
+);
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Reports />
+    </Suspense>
+  );
+}
+```
+
+---
+
+9. # What’s the difference between useEffect and useLayoutEffect?
+
+`Hinglish Explanation:`
+
+## Kya hain?
+
+  `useEffect` aur `useLayoutEffect` dono React hooks hain jo side effects handle karne ke liye use kiye jaate hain. Dono ka API almost same hai, lekin unke execution timing me difference hota hai.
+
+  ```jsx
+  useEffect(() => {
+    // side effect
+  }, []);
+
+  useLayoutEffect(() => {
+    // side effect
+  }, []);
+  ```
+
+  Major difference:
+
+  ```text
+  useEffect
+      ↓
+  Browser Paint
+      ↓
+  Effect Execute
+  ```
+
+  ```text
+  useLayoutEffect
+      ↓
+  Effect Execute
+      ↓
+  Browser Paint
+  ```
+
+## Kaun se problem par based hain?
+
+  React rendering process generally:
+
+  ```text
+  State Change
+       ↓
+  Virtual DOM Update
+       ↓
+  Real DOM Update
+       ↓
+  Browser Paint
+       ↓
+  User Sees UI
+  ```
+
+  Kabhi-kabhi hume DOM render hone ke immediately baad uska size, position ya layout calculate karna hota hai.
+
+  Example:
+
+  ```jsx
+  const width = element.offsetWidth;
+  ```
+
+  Agar ye calculation browser paint ke baad ho:
+
+  ```text
+  UI Render
+      ↓
+  User Sees UI
+      ↓
+  Layout Calculation
+      ↓
+  UI Changes Again
+  ```
+
+  To screen flicker ya layout jump dikh sakta hai.
+
+  Isi problem ko solve karne ke liye `useLayoutEffect` introduce kiya gaya.
+
+## Kaise work karta hain?
+
+  **useEffect**
+
+  React component render karta hai.
+
+  ```text
+  Render
+      ↓
+  DOM Update
+      ↓
+  Browser Paint
+      ↓
+  useEffect Run
+  ```
+
+  Example:
+
+  ```jsx
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  ```
+
+  Common Use Cases:
+
+  - API calls
+  - Event listeners
+  - Analytics
+  - Logging
+  - WebSocket connections
+  - Timers
+
+  Kyunki ye browser paint ko block nahi karta, isliye preferred hook mana jata hai.
+
+  **useLayoutEffect**
+
+  Flow:
+
+  ```text
+  Render
+      ↓
+  DOM Update
+      ↓
+  useLayoutEffect Run
+      ↓
+  Browser Paint
+  ```
+
+  Browser tab tak paint nahi karega jab tak `useLayoutEffect` complete na ho.
+
+  Example:
+
+  ```jsx
+  useLayoutEffect(() => {
+    const width =
+      elementRef.current.offsetWidth;
+
+    setWidth(width);
+  }, []);
+  ```
+
+  Common Use Cases:
+
+  - DOM measurements
+  - Element positioning
+  - Animations
+  - Scroll synchronization
+  - Preventing UI flicker
+
+  Important:
+
+  ```text
+  useLayoutEffect blocks paint
+  useEffect does not
+  ```
+
+  Isliye unnecessary useLayoutEffect performance ko impact kar sakta hai.
+
+## Real world Projects me kaise implement hota hain?
+
+  Maan lo ek analytics dashboard me dynamic charts render ho rahe hain.
+
+  Chart library ko exact container width chahiye.
+
+  Example:
+
+  ```jsx
+  useLayoutEffect(() => {
+    const width =
+      chartRef.current.offsetWidth;
+
+    initializeChart(width);
+  }, []);
+  ```
+
+  Yaha useEffect use karne par:
+
+  ```text
+  Initial Render
+      ↓
+  Wrong Chart Size
+      ↓
+  Recalculate
+      ↓
+  Resize Again
+  ```
+
+  User ko flicker dikh sakta hai.
+
+  Isliye DOM measurements ke liye useLayoutEffect better choice hai.
+
+  Lekin API requests ke liye:
+
+  ```jsx
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+  ```
+
+  useLayoutEffect use karna unnecessary hoga kyunki ye browser paint ko block karega aur page ko slow bana sakta hai.
+
+  Enterprise applications me general rule:
+
+  ```text
+  Default → useEffect
+
+  DOM Measurement /
+  Layout Manipulation →
+  useLayoutEffect
+  ```
+
+`Interview Answer:`
+
+Both `useEffect` and `useLayoutEffect` are React hooks used for handling side effects, but they differ in execution timing.
+
+`useEffect` runs asynchronously after the browser has painted the updated UI. It is commonly used for API calls, subscriptions, logging, timers, and other non-visual side effects. Since it does not block rendering, it is the preferred choice in most scenarios.
+
+`useLayoutEffect` runs synchronously after the DOM has been updated but before the browser paints the screen. It is primarily used for DOM measurements, layout calculations, animations, and situations where visual inconsistencies or flickering must be prevented.
+
+In production applications, `useEffect` should be the default choice, while `useLayoutEffect` should only be used when direct interaction with the DOM layout is required.
+
+Example:
+
+```jsx
+useEffect(() => {
+  fetchUsers();
+}, []);
+
+useLayoutEffect(() => {
+  const width =
+    containerRef.current.offsetWidth;
+
+  setWidth(width);
+}, []);
+```
+
+---
+
+10. # How does React’s concurrent mode work?
+
+`Hinglish Explanation:`
+
+## Kya hain?
+
+  Concurrent Mode (React 18 me Concurrent Features ke form me available) React ki ek advanced rendering capability hai jo rendering work ko interrupt, pause, resume aur prioritize karne ki ability deti hai.
+
+  Traditional React rendering synchronous thi.
+
+  ```text
+  Start Render
+       ↓
+  Complete Entire Render
+       ↓
+  User Interaction Handle
+  ```
+
+  Agar render process heavy ho to UI temporarily freeze ho sakti thi.
+
+  Concurrent Rendering ka goal UI ko responsive rakhna hai even jab background me expensive rendering chal rahi ho.
+
+  Simple words me:
+
+  ```text
+  High Priority Work
+      ↓
+  User Typing
+  User Click
+  User Input
+
+  Low Priority Work
+      ↓
+  Large Lists
+  Charts
+  Filters
+  Reports
+  ```
+
+  React pehle important work process karta hai aur less important work ko delay ya interrupt kar sakta hai.
+
+## Kaun se problem par based hain?
+
+  Maan lo ek dashboard me 10,000 records filter ho rahe hain.
+
+  User search box me type kar raha hai.
+
+  Without Concurrent Rendering:
+
+  ```text
+  User Types
+       ↓
+  Heavy Filtering Starts
+       ↓
+  UI Blocked
+       ↓
+  User Experiences Lag
+  ```
+
+  User ko lag sakta hai application hang ho gayi.
+
+  Large enterprise applications me:
+
+  - Large tables
+  - Analytics dashboards
+  - Complex charts
+  - Heavy filtering
+
+  rendering bottlenecks create kar sakte hain.
+
+  Concurrent Rendering is problem ko solve karti hai.
+
+## Kaise work karta hain?
+
+  React Fiber architecture Concurrent Rendering ka foundation hai.
+
+  Fiber rendering work ko small units me divide karta hai.
+
+  ```text
+  Large Rendering Task
+          ↓
+      Small Units
+          ↓
+  Process Incrementally
+  ```
+
+  React execution ke beech me decide kar sakta hai:
+
+  ```text
+  Continue Rendering
+       OR
+  Pause Rendering
+       OR
+  Prioritize User Input
+  ```
+
+  Example:
+
+  ```text
+  Render Task
+       ↓
+  User Clicks Button
+       ↓
+  Pause Low Priority Work
+       ↓
+  Process Click Immediately
+       ↓
+  Resume Rendering
+  ```
+
+  React 18 me Concurrent Features primarily:
+
+  **startTransition**
+
+  Low-priority updates mark karne ke liye.
+
+  ```jsx
+  import { startTransition } from "react";
+
+  const handleSearch = (value) => {
+    setInput(value);
+
+    startTransition(() => {
+      setFilteredUsers(
+        filterUsers(value)
+      );
+    });
+  };
+  ```
+
+  Yaha:
+
+  ```text
+  setInput()
+      ↓
+  High Priority
+
+  filterUsers()
+      ↓
+  Low Priority
+  ```
+
+  User typing smooth rahegi.
+
+  **useTransition**
+
+  Transition state track karne ke liye.
+
+  ```jsx
+  const [isPending, startTransition] =
+    useTransition();
+  ```
+
+  Example:
+
+  ```jsx
+  startTransition(() => {
+    setProducts(filteredProducts);
+  });
+  ```
+
+  React background me rendering perform karega.
+
+  **useDeferredValue**
+
+  Expensive updates ko defer karne ke liye.
+
+  ```jsx
+  const deferredSearch =
+    useDeferredValue(searchTerm);
+  ```
+
+  Useful for:
+
+  - Search UIs
+  - Large lists
+  - Expensive filtering
+
+## Real world Projects me kaise implement hota hain?
+
+  Ek CRM application me customer search feature tha jisme 20,000+ records client-side filter ho rahe the.
+
+  Initial implementation:
+
+  ```jsx
+  setSearch(term);
+  setFilteredUsers(
+    filterUsers(term)
+  );
+  ```
+
+  Problem:
+
+  ```text
+  Typing Lag
+  UI Freeze
+  Poor UX
+  ```
+
+  Optimization:
+
+  ```jsx
+  setSearch(term);
+
+  startTransition(() => {
+    setFilteredUsers(
+      filterUsers(term)
+    );
+  });
+  ```
+
+  Result:
+
+  ```text
+  Smooth Typing
+  Responsive UI
+  Faster User Experience
+  ```
+
+  Similar approach analytics dashboards, reporting modules aur large data grids me frequently use hoti hai.
+
+  Important point:
+
+  ```text
+  Concurrent Rendering
+      ≠
+  Parallel Rendering
+  ```
+
+  React multiple threads me rendering nahi karta.
+
+  Ye rendering work ko schedule aur prioritize karta hai.
+
+`Interview Answer:`
+
+Concurrent Mode, introduced through React 18's Concurrent Features, is a rendering mechanism that allows React to interrupt, pause, resume, and prioritize rendering work. Instead of treating all updates with the same priority, React can process urgent updates such as user interactions first while deferring less critical rendering tasks.
+
+This capability is built on top of the Fiber architecture, which breaks rendering work into smaller units that can be scheduled intelligently. Features such as `startTransition`, `useTransition`, and `useDeferredValue` enable developers to mark non-urgent updates and improve application responsiveness.
+
+Concurrent Rendering is particularly valuable in large-scale applications with complex UIs, large datasets, and expensive rendering operations because it helps maintain a smooth user experience without blocking the main thread.
+
+Example:
+
+```jsx
+import { startTransition } from "react";
+
+function handleSearch(value) {
+  setSearch(value);
+
+  startTransition(() => {
+    setFilteredUsers(
+      filterUsers(value)
+    );
+  });
+}
+```
+
+In this example, updating the search input remains high priority, while filtering a large dataset is treated as a lower-priority background update.
 
 ---
 
