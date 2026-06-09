@@ -8975,16 +8975,74 @@ Example:
 
 `Hinglish Explanation:`
 
-Reconciliation React ka process hai jo old Virtual DOM aur new Virtual DOM ko compare karta hai. React differences find karke sirf changed parts ko Real DOM me update karta hai, jisse performance improve hoti hai.
+* Kya hain?
+
+  React Reconciliation React ka internal process hai jo state ya props change hone par old Virtual DOM aur new Virtual DOM ko compare karta hai. React directly Real DOM ko manipulate nahi karta kyunki DOM operations expensive hote hain. Reconciliation ka purpose minimum DOM updates find karna hota hai taaki UI efficiently update ho sake.
+
+* Kaun se problem par based hain?
+
+  Agar application me thousands of DOM elements ho aur sirf ek element change ho, to pura DOM recreate karna expensive hoga. Browser rendering, layout calculation aur repaint operations performance ko impact kar sakte hain.
+
+  React ne is problem ko solve karne ke liye Virtual DOM aur Reconciliation introduce kiya.
+
+  Example:
+
+  ```jsx
+  <h1>Hello</h1>
+  ```
+
+  Updated:
+
+  ```jsx
+  <h1>Hello Raj</h1>
+  ```
+
+  Yaha React sirf text node update karega, pura DOM recreate nahi karega.
+
+* Kaise work karta hain?
+
+  Jab state ya props change hote hain, React naya Virtual DOM create karta hai aur usko previous Virtual DOM se compare karta hai.
+
+  React Diffing Algorithm use karta hai jo kuch assumptions par based hota hai:
+
+  - Different element types ⇒ subtree recreate
+  - Same element types ⇒ existing DOM reuse
+  - Lists me keys ke basis par matching
+  - Approximate comparison complexity O(n)
+
+  React 16 ke baad ye process Fiber Architecture ke through execute hota hai jo rendering ko pause, resume aur prioritize kar sakta hai.
+
+* Real world Projects me kaise implement hota hain?
+
+  Large CRM, ERP ya Dashboard applications me tables, grids aur forms frequently update hote rehte hain.
+
+  Agar proper keys use na ki jaye to unnecessary re-renders aur state mismatch issues aate hain.
+
+  Example:
+
+  ```jsx
+  customers.map((customer) => (
+    <CustomerRow
+      key={customer.id}
+      customer={customer}
+    />
+  ))
+  ```
+
+  Iske saath React.memo use karne par React sirf changed rows ko re-render karta hai aur baaki components reuse karta hai. Isse reconciliation cost significantly reduce hoti hai.
 
 `Interview Answer:`
 
-The reconciliation algorithm is React's diffing process that compares the previous Virtual DOM with the updated Virtual DOM. It identifies changes and updates only the necessary parts of the Real DOM for efficient rendering.
+React Reconciliation is the process React uses to efficiently update the UI when state or props change. React creates a new Virtual DOM tree and compares it with the previous one using its diffing algorithm. Based on the differences, it updates only the necessary parts of the Real DOM instead of re-rendering the entire page.
+
+The algorithm relies on heuristics such as element type comparison and key-based list reconciliation to achieve efficient updates. Since React 16, reconciliation is powered by the Fiber architecture, which supports incremental rendering and update prioritization for better performance.
 
 Example:
 
-```javascript
-setCount(count + 1);
+```jsx
+const [count, setCount] = useState(0);
+
+setCount((prev) => prev + 1);
 ```
 
 ---
