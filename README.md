@@ -13992,22 +13992,282 @@ This ensures that only authenticated users can access the dashboard route, while
 
 ---
 
-21. How do you use useReducer and what is it best for?
+21. # How do you use useReducer and what is it best for?
 
 `Hinglish Explanation:`
 
-useReducer complex state logic aur multiple state transitions handle karne ke liye use hota hai. Ye Redux ke reducer pattern jaisa kaam karta hai.
+* Kya hain?
+
+  `useReducer` React ka built-in hook hai jo complex state management ke liye use hota hai. Ye Redux ke same pattern par based hai jahan state directly update nahi hoti, balki actions dispatch kiye jaate hain aur reducer function decide karta hai ki state kaise update hogi.
+
+  `useState` simple state ke liye bahut accha hai, lekin jab state me multiple fields, complex transitions ya interconnected updates ho, tab `useReducer` zyada maintainable solution provide karta hai.
+
+  Flow:
+
+  ```text
+  Action Dispatch
+        ↓
+     Reducer
+        ↓
+  New State Return
+        ↓
+     Re-render
+  ```
+
+* Kaun se problem par based hain?
+
+  Maan lo ek form hai:
+
+  ```jsx
+  {
+    loading: false,
+    data: null,
+    error: null
+  }
+  ```
+
+  `useState` approach:
+
+  ```jsx
+  setLoading(true);
+  setData(response);
+  setError(null);
+  ```
+
+  Jaise-jaise application grow hoti hai:
+
+  ```text
+  More State Variables
+          ↓
+  More setState Calls
+          ↓
+  Difficult State Management
+  ```
+
+  Example:
+
+  ```text
+  Loading State
+  Success State
+  Error State
+  Retry State
+  ```
+
+  Multiple state updates ko manage karna difficult ho sakta hai.
+
+  Isi problem ko `useReducer` solve karta hai.
+
+* Kaise work karta hain?
+
+  Reducer Function:
+
+  ```jsx
+  function reducer(state, action) {
+    switch (action.type) {
+      case "INCREMENT":
+        return {
+          ...state,
+          count: state.count + 1,
+        };
+
+      case "DECREMENT":
+        return {
+          ...state,
+          count: state.count - 1,
+        };
+
+      default:
+        return state;
+    }
+  }
+  ```
+
+  Hook:
+
+  ```jsx
+  const [state, dispatch] =
+    useReducer(reducer, {
+      count: 0,
+    });
+  ```
+
+  Action Dispatch:
+
+  ```jsx
+  dispatch({
+    type: "INCREMENT",
+  });
+  ```
+
+  Flow:
+
+  ```text
+  dispatch()
+      ↓
+  Reducer Executes
+      ↓
+  New State Created
+      ↓
+  Component Re-render
+  ```
+
+  Async Request Example:
+
+  ```text
+  FETCH_START
+       ↓
+  loading = true
+
+  FETCH_SUCCESS
+       ↓
+  data update
+
+  FETCH_ERROR
+       ↓
+  error update
+  ```
+
+  Is tarah state transitions predictable aur centralized ho jaate hain.
+
+* Real world Projects me kaise implement hota hain?
+
+  Enterprise applications me `useReducer` commonly use hota hai:
+
+  - Complex Forms
+  - Multi-step Wizards
+  - Shopping Cart
+  - API State Management
+  - Dashboard Filters
+  - Workflow Engines
+
+  Example:
+
+  ```jsx
+  const initialState = {
+    loading: false,
+    data: [],
+    error: null,
+  };
+  ```
+
+  Reducer:
+
+  ```jsx
+  function reducer(state, action) {
+    switch (action.type) {
+      case "FETCH_START":
+        return {
+          ...state,
+          loading: true,
+        };
+
+      case "FETCH_SUCCESS":
+        return {
+          loading: false,
+          data: action.payload,
+          error: null,
+        };
+
+      case "FETCH_ERROR":
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+
+      default:
+        return state;
+    }
+  }
+  ```
+
+  Dispatch:
+
+  ```jsx
+  dispatch({
+    type: "FETCH_START",
+  });
+  ```
+
+  Benefits:
+
+  - Predictable State Updates
+  - Easier Debugging
+  - Centralized Logic
+  - Better Scalability
+  - Redux-like Architecture
+
+  Large applications me `useReducer + Context API` ka combination frequently use hota hai lightweight global state management ke liye.
+
+* Real World Example
+
+  Ek CRM application me customer filter panel tha.
+
+  State:
+
+  ```text
+  Search
+  Status
+  Date Range
+  Sort
+  Pagination
+  ```
+
+  Initially multiple `useState` hooks use ho rahe the.
+
+  Baad me:
+
+  ```jsx
+  useReducer()
+  ```
+
+  implement kiya gaya.
+
+  Result:
+
+  ```text
+  Cleaner Logic
+  Better Maintainability
+  Easier Debugging
+  ```
+
+  kyunki saare state transitions reducer me centralized ho gaye.
 
 `Interview Answer:`
 
-useReducer is ideal for managing complex state logic where multiple actions affect the same state in a predictable way.
+`useReducer` is a React hook used for managing complex state logic through a reducer function and dispatched actions. Instead of directly updating state, components dispatch actions, and the reducer determines how the state should change.
+
+It is particularly useful when state contains multiple related values, when state transitions are complex, or when the next state depends heavily on the previous state. The pattern is similar to Redux and provides predictable, centralized state management.
+
+In production applications, `useReducer` is commonly used for forms, API request states, workflows, filters, and other scenarios where multiple state updates need to be coordinated consistently.
 
 Example:
 
-```javascript
+```jsx
+function reducer(state, action) {
+  switch (action.type) {
+    case "INCREMENT":
+      return {
+        ...state,
+        count: state.count + 1,
+      };
+
+    default:
+      return state;
+  }
+}
+
 const [state, dispatch] =
-  useReducer(reducer, initialState);
+  useReducer(reducer, {
+    count: 0,
+  });
+
+dispatch({
+  type: "INCREMENT",
+});
 ```
+
+This approach keeps state transitions predictable and easier to maintain as application complexity grows.
 
 ---
 
