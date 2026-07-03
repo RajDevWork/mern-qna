@@ -18033,6 +18033,150 @@ db.serverStatus();
 
 ### Additional Important Questions
 
+0. What is Data Modeling in MongoDB?
+
+MongoDB data modeling means deciding how documents should be structured inside collections. Depending on the relationship and access pattern, we either embed related data inside a document or store it in separate collections using references. Embedding improves read performance, while referencing reduces duplication and is suitable for large or shared data.
+
+
+What is an Index?
+
+An index is a special data structure that helps MongoDB locate documents quickly without scanning the entire collection. It significantly improves read performance but slightly increases write time because indexes also need to be updated.
+
+db.users.createIndex({
+ email:1
+})
+
+Follow-up
+
+Any disadvantage?
+
+Answer
+
+More storage
+Slightly slower inserts and updates
+
+
+Index Types
+
+Single
+
+Compound
+
+Unique
+
+TTL
+
+Text
+
+Multikey
+
+Sparse
+
+Partial
+
+Har type ki ek line yaad rakho.
+
+
+Covered Query: A Covered Query is a query where MongoDB can satisfy both the filter and the returned fields using only the index, without reading the actual document from the collection.
+
+Example 1 (Covered Query) ✅
+
+Index
+
+{
+    email: 1,
+    name: 1
+}
+
+Query
+
+db.users.find(
+    { email: "raj@gmail.com" },
+    { email: 1, name: 1, _id: 0 }
+)
+
+MongoDB:
+
+Index
+   ↓
+Answer
+
+Collection touch hi nahi hui.
+
+
+Example 2 (Not Covered) ❌
+
+Same index
+
+{
+    email: 1,
+    name: 1
+}
+
+Query
+
+db.users.find(
+    { email: "raj@gmail.com" },
+    { email: 1, city: 1, _id: 0 }
+)
+
+Ab city index me nahi hai.
+
+To process:
+
+Index
+   ↓
+Document
+   ↓
+City read
+   ↓
+Answer
+
+Yani collection hit hui.
+
+Covered Query nahi rahi.
+
+
+
+IXSCAN means MongoDB is using an index to locate matching documents instead of performing a full collection scan.
+
+totalDocsExamined: MongoDB had to examine only one document from the collection to satisfy the query.
+totalKeysExamined: MongoDB examined one index entry (key) while searching for the result.
+
+
+
+| Stage      | Purpose                          |
+| ---------- | -------------------------------- |
+| `$match`   | Filter                           |
+| `$group`   | Grouping / Calculation           |
+| `$project` | Fields ko select ya modify karna |
+| `$sort`    | Order karna                      |
+| `$limit`   | Top N records                    |
+| `$skip`    | Pagination                       |
+| `$lookup`  | Join                             |
+
+
+| Question me word        | Stage     |
+| ----------------------- | --------- |
+| Only Raj                | `$match`  |
+| Every / Each / Per      | `$group`  |
+| Total                   | `$sum`    |
+| Highest / Lowest        | `$sort`   |
+| Top 10                  | `$limit`  |
+| Page 2                  | `$skip`   |
+| Join another collection | `$lookup` |
+| Array ko todna          | `$unwind` |
+
+
+| Replication       | Sharding            |
+| ----------------- | ------------------- |
+| Data Copy         | Data Split          |
+| High Availability | Horizontal Scaling  |
+| Fault Tolerance   | Large Data Handling |
+| Same Data         | Different Data      |
+
+---
+
 1. Explain the aggregation pipeline and its stages.
 
 `Hinglish Explanation:`
