@@ -18879,6 +18879,108 @@ db.users.find().explain();
 1. PHP 5.6 → 7 → 8 differences (real impact)
 2. PHP ka request lifecycle kaise kaam karta hai?
 3. `include` vs `require` vs `include_once` vs `require_once`
+
+## `include`
+
+### Hinglish Explanation:
+
+`include` kisi dusri PHP file ko current file me add karta hai. Agar
+file nahi milti, to warning aati hai lekin script execute hoti rehti
+hai.
+
+### Interview Answer:
+
+`include` is used to include a file. If the file is missing, PHP
+generates a warning and continues executing the script.
+
+**Example:**
+
+``` php
+include 'header.php';
+
+echo "Welcome!";
+```
+
+------------------------------------------------------------------------
+
+## `require`
+
+### Hinglish Explanation:
+
+`require` bhi file include karta hai, lekin agar file nahi milti to
+fatal error aata hai aur script wahi stop ho jati hai.
+
+### Interview Answer:
+
+`require` is used for mandatory files. If the file is not found, PHP
+throws a fatal error and stops script execution.
+
+**Example:**
+
+``` php
+require 'config.php';
+
+echo "Application Started";
+```
+
+------------------------------------------------------------------------
+
+## `include_once`
+
+### Hinglish Explanation:
+
+`include_once` file ko sirf ek hi baar include karta hai. Agar same file
+dobara include karoge, to PHP usse ignore kar dega. Agar file missing
+hai to warning aayegi aur script continue karegi.
+
+### Interview Answer:
+
+`include_once` includes a file only once. It prevents duplicate
+inclusions while allowing the script to continue if the file is missing.
+
+**Example:**
+
+``` php
+include_once 'helper.php';
+include_once 'helper.php';
+```
+
+------------------------------------------------------------------------
+
+## `require_once`
+
+### Hinglish Explanation:
+
+`require_once` file ko sirf ek baar include karta hai aur agar file nahi
+milti to fatal error dekar script ko stop kar deta hai. Yeh important
+files ke liye sabse zyada use hota hai.
+
+### Interview Answer:
+
+`require_once` includes a required file only once. It prevents duplicate
+inclusion and terminates the script if the file is missing.
+
+**Example:**
+
+``` php
+require_once 'config.php';
+require_once 'config.php';
+```
+
+------------------------------------------------------------------------
+
+## Difference Summary
+
+  Statement        File Missing   Duplicate Include   Script Execution
+  ---------------- -------------- ------------------- ------------------
+  `include`        Warning        Allowed             Continues
+  `require`        Fatal Error    Allowed             Stops
+  `include_once`   Warning        Prevented           Continues
+  `require_once`   Fatal Error    Prevented           Stops
+
+
+
+
 4. `isset()` vs `empty()` vs `array_key_exists()`
 5. PHP me data types aur type juggling kaise kaam karta hai?
 
