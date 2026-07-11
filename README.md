@@ -18982,6 +18982,87 @@ require_once 'config.php';
 
 
 4. `isset()` vs `empty()` vs `array_key_exists()`
+
+## `isset()`
+
+### Hinglish Explanation:
+
+`isset()` check karta hai ki variable ya array key exist karti hai aur
+uski value `null` nahi hai.
+
+### Interview Answer:
+
+`isset()` checks whether a variable or array key exists and is not
+`null`.
+
+**Example:**
+
+``` php
+$data = ['name'=>'Aman'];
+isset($data['name']); // true
+isset($data['age']); // false
+```
+
+------------------------------------------------------------------------
+
+## `empty()`
+
+### Hinglish Explanation:
+
+`empty()` check karta hai ki value empty hai ya nahi. Ye `""`, `0`,
+`"0"`, `false`, `null`, `[]` aur non-existing variable ko empty maanta
+hai.
+
+### Interview Answer:
+
+`empty()` checks whether a variable is empty. It returns `true` for
+empty values and undefined variables.
+
+**Example:**
+
+``` php
+$name = "";
+empty($name); // true
+
+$count = 0;
+empty($count); // true
+```
+
+------------------------------------------------------------------------
+
+## `array_key_exists()`
+
+### Hinglish Explanation:
+
+`array_key_exists()` sirf ye check karta hai ki array me key exist karti
+hai ya nahi. Agar value `null` bhi ho tab bhi ye `true` return karta
+hai.
+
+### Interview Answer:
+
+`array_key_exists()` checks whether a specified key exists in an array,
+regardless of its value.
+
+**Example:**
+
+``` php
+$data = ['name' => null];
+
+array_key_exists('name', $data); // true
+isset($data['name']); // false
+```
+
+------------------------------------------------------------------------
+
+## Difference Summary
+
+  Function               Checks Existence   `null` Allowed   Empty Values
+  ---------------------- ------------------ ---------------- -------------------------------
+  `isset()`              ✅ Yes             ❌ No            Returns true if not null
+  `empty()`              ❌ No              ✅ Yes           Returns true for empty values
+  `array_key_exists()`   ✅ Yes             ✅ Yes           Doesn't check emptiness
+
+
 5. PHP me data types aur type juggling kaise kaam karta hai?
 
 #### OOP + Design
