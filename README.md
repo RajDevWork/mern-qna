@@ -19064,6 +19064,89 @@ isset($data['name']); // false
 
 
 5. PHP me data types aur type juggling kaise kaam karta hai?
+## PHP Data Types
+
+### Hinglish Explanation:
+
+PHP ek loosely typed language hai. Isme variable ka data type
+automatically uski value ke according decide hota hai. Common data types
+hain: `int`, `float`, `string`, `bool`, `array`, `object`, `null`,
+`resource`.
+
+### Interview Answer:
+
+PHP is a loosely typed language where variable types are determined
+automatically based on assigned values. Common data types include
+integer, float, string, boolean, array, object, null, and resource.
+
+**Example:**
+
+``` php
+$age = 25;
+$price = 99.99;
+$name = "Rahul";
+$isActive = true;
+$colors = ["Red", "Blue"];
+```
+
+------------------------------------------------------------------------
+
+## Type Juggling
+
+### Hinglish Explanation:
+
+Type juggling ka matlab hai ki PHP zarurat padne par automatically ek
+data type ko dusre data type me convert kar deta hai. Ye arithmetic
+operations, comparisons aur string concatenation ke time hota hai.
+
+### Interview Answer:
+
+Type juggling is PHP's automatic conversion of one data type to another
+whenever an operation requires it.
+
+**Example:**
+
+``` php
+$a = "10";
+$b = 5;
+
+echo $a + $b; // 15
+```
+
+Another example:
+
+``` php
+$value = "20abc";
+
+echo $value + 5; // 25
+```
+
+------------------------------------------------------------------------
+
+## Difference Summary
+
+  -----------------------------------------------------------------------
+  Topic                    Description
+  ------------------------ ----------------------------------------------
+  Data Types               Define the kind of value stored in a variable.
+
+  Type Juggling            Automatically converts data types when
+                           required by an operation.
+
+  Explicit Type Casting    Manually converts data using `(int)`,
+                           `(string)`, `(float)`, etc.
+  -----------------------------------------------------------------------
+
+### Explicit Type Casting Example
+
+``` php
+$number = "100";
+$intNumber = (int) $number;
+
+echo $intNumber;
+```
+
+
 
 #### OOP + Design
 6. OOP principles PHP me kaise apply karte ho?
