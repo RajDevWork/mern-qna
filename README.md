@@ -19152,6 +19152,59 @@ echo $intNumber;
 6. OOP principles PHP me kaise apply karte ho?
 7. SOLID principles kya hain? real example ke saath
 8. Interface vs Abstract class
+
+### `Hinglish Explanation:`
+
+`Interface` ek **pure contract** hota hai. Ye sirf define karta hai ki class ko **kya implement karna hai**, implementation nahi deta (traditional concept; modern languages jaise Java me default methods aur TypeScript me sirf type contract hota hai).
+
+`Abstract Class` bhi ek contract hoti hai, lekin isme **implementation bhi ho sakti hai**. Isme common code, properties, constructor aur abstract methods dono rakh sakte ho. Jab multiple classes me kuch common logic share karna ho tab abstract class use karte hain.
+
+---
+
+### `Interview Answer:`
+
+An **Interface** defines a contract that implementing classes must follow, while an **Abstract Class** provides a partial implementation along with abstract methods. Use an interface when unrelated classes need the same behavior, and an abstract class when multiple classes share common state or functionality.
+
+---
+
+### `Example:`
+
+```typescript
+interface PaymentService {
+  pay(amount: number): void;
+}
+
+abstract class NotificationService {
+  sendLog() {
+    console.log("Logging...");
+  }
+
+  abstract send(message: string): void;
+}
+
+class EmailService extends NotificationService implements PaymentService {
+  pay(amount: number) {
+    console.log(`Paid ₹${amount}`);
+  }
+
+  send(message: string) {
+    console.log(`Email: ${message}`);
+  }
+}
+```
+
+---
+
+### `Quick Interview Difference:`
+
+| Interface                                                                                       | Abstract Class                                                       |
+| ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Defines only a contract                                                                         | Defines contract + common implementation                             |
+| No instance variables/state (conceptually)                                                      | Can have state, fields, constructors                                 |
+| Supports multiple implementations/inheritance (e.g., a class can implement multiple interfaces) | A class can extend only one abstract class in languages like Java/C# |
+| Best for capability/behavior                                                                    | Best for code reuse and shared logic                                 |
+
+
 9. Traits kya hote hain? kab use kiya?
 10. Dependency Injection kya hai?
 
