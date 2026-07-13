@@ -18944,6 +18944,130 @@ INDEX(user_id, course_id)
 ---
 
 2. What is normalization vs denormalization?
+## `Hinglish Explanation:`
+
+### **Normalization**
+
+Normalization ka matlab hai **data ko multiple related tables me divide karna** taaki duplicate data na ho aur data consistency bani rahe.
+
+Iska main goal hai:
+
+* Data redundancy kam karna
+* Data consistency maintain karna
+* Update anomalies avoid karna
+
+---
+
+### **Denormalization**
+
+Denormalization ka matlab hai **performance improve karne ke liye kuch duplicate data intentionally store karna**.
+
+Iska main goal hai:
+
+* Joins kam karna
+* Read queries fast banana
+* Complex reports ko optimize karna
+
+Isme storage thodi badh sakti hai, lekin read performance improve hoti hai.
+
+---
+
+## `Interview Answer:`
+
+**Normalization** is the process of organizing data into multiple related tables to eliminate redundancy and maintain data integrity.
+
+**Denormalization** is the process of intentionally adding redundant data to reduce joins and improve read performance, especially in read-heavy applications.
+
+---
+
+## `Example`
+
+### ✅ Normalized Schema
+
+```text
+Users
+------
+id
+name
+
+Orders
+-------
+id
+user_id
+amount
+```
+
+User ka name sirf `Users` table me store hoga.
+
+Order dekhna ho to JOIN lagega.
+
+```sql
+SELECT u.name, o.amount
+FROM Orders o
+JOIN Users u ON o.user_id = u.id;
+```
+
+---
+
+### ✅ Denormalized Schema
+
+```text
+Orders
+-------
+id
+user_id
+user_name
+amount
+```
+
+Ab `user_name` duplicate hai, lekin JOIN ki zarurat nahi.
+
+```sql
+SELECT user_name, amount
+FROM Orders;
+```
+
+Read fast hogi, lekin agar user ka name change hua to duplicate values bhi update karni padengi.
+
+---
+
+## `Real Project Example`
+
+### **CRM Project**
+
+Maine **normalized schema** use ki thi:
+
+* `users`
+* `roles`
+* `permissions`
+* `campaigns`
+
+Ye data frequently update hota tha, isliye consistency important thi.
+
+---
+
+### **Reporting Module**
+
+Large reports (25M+ records) ke liye kuch computed/reporting data ko **denormalize** kiya tha taaki heavy JOINs avoid ho aur report generation faster ho.
+
+---
+
+## `When to Use`
+
+| Normalization                    | Denormalization                  |
+| -------------------------------- | -------------------------------- |
+| Reduce redundancy                | Improve read performance         |
+| Better data integrity            | Fewer JOINs                      |
+| Write-heavy systems              | Read-heavy systems               |
+| OLTP applications (CRM, Banking) | Reporting, Analytics, Dashboards |
+
+
+
+## `30-Second Interview Answer`
+
+> Normalization organizes data into multiple related tables to reduce redundancy and maintain data integrity, while denormalization intentionally stores some duplicate data to reduce joins and improve read performance. In my projects, I typically use normalized schemas for transactional modules like CRM and LMS, and apply denormalization selectively for reporting or analytics where query performance is more important than minimizing redundancy.
+---
+
 3. What is indexing and trade-offs?
 4. How do you optimize slow queries?
 5. What is EXPLAIN and how used?
