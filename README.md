@@ -18844,6 +18844,105 @@ db.users.find().explain();
 ## 📊 Database (Top 25)
 
 1. How do you design database schema?
+## `Hinglish Explanation:`
+
+Database schema design karte waqt mera focus **business requirements**, **relationships**, **performance**, aur **future scalability** par hota hai.
+
+Main generally ye approach follow karta hoon:
+
+1. **Requirements samajhta hoon** – Kaun-kaun se entities hain (User, Course, Order, etc.).
+2. **Tables/Collections identify karta hoon** – Har entity ke liye alag table.
+3. **Relationships define karta hoon** – One-to-One, One-to-Many, Many-to-Many.
+4. **Data types choose karta hoon** – Har field ke liye appropriate data type.
+5. **Normalization apply karta hoon** – Data duplication avoid karne ke liye (generally 3NF tak).
+6. **Indexes add karta hoon** – Frequently searched columns par index.
+7. **Constraints use karta hoon** – Primary Key, Foreign Key, Unique, NOT NULL.
+8. **Performance review karta hoon** – Query patterns dekhkar indexing ya denormalization agar zarurat ho.
+
+---
+
+## `Interview Answer:`
+
+I start by understanding the business requirements and identifying the core entities. Then I define relationships, choose appropriate data types, normalize the schema to reduce redundancy, and add primary keys, foreign keys, and constraints for data integrity. Finally, I optimize the schema by creating indexes based on query patterns and consider denormalization only if performance requires it.
+
+---
+
+## `Real Example (LMS Project)`
+
+Suppose I am designing an LMS database.
+
+### Tables
+
+```text
+users
+------
+id
+name
+email
+role
+
+courses
+--------
+id
+title
+price
+instructor_id
+
+enrollments
+-----------
+id
+user_id
+course_id
+enrolled_at
+
+lessons
+-------
+id
+course_id
+title
+video_url
+```
+
+### Relationships
+
+* **User → Course** = One Instructor can create many courses.
+* **Course → Lesson** = One course has many lessons.
+* **User ↔ Course** = Many-to-Many through `enrollments`.
+
+### Indexes
+
+```sql
+INDEX(email)
+
+INDEX(course_id)
+
+INDEX(user_id, course_id)
+```
+
+* `email` → Login queries
+* `course_id` → Fetch lessons of a course
+* `(user_id, course_id)` → Check whether a student is already enrolled
+
+---
+
+## `Things I Consider While Designing`
+
+* Business requirements first
+* Correct relationships
+* Proper normalization
+* Appropriate data types
+* Primary & Foreign Keys
+* Unique constraints where needed
+* Indexes based on real query patterns
+* Scalability and future features
+
+
+## `30-Second Interview Answer`
+
+> I design a database schema by first understanding the business requirements and identifying the main entities. Then I define relationships, choose appropriate data types, normalize the schema to reduce redundancy, and add primary keys, foreign keys, and constraints to maintain data integrity. Finally, I optimize performance by creating indexes based on actual query patterns and consider denormalization only when it provides a measurable performance benefit.
+
+---
+
 2. What is normalization vs denormalization?
 3. What is indexing and trade-offs?
 4. How do you optimize slow queries?
