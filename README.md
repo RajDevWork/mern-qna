@@ -18993,6 +18993,91 @@ Hi, I'm Rahul from Delhi, India
 
 
 - Pollyfills
+
+### Hinglish Explanation:
+
+**Polyfill** ek JavaScript code ya library hoti hai jo **new JavaScript features ko old browsers me support** karne ke liye use ki jati hai. Agar kisi browser me koi modern feature available nahi hai, to polyfill us feature ka alternative implementation provide karti hai.
+
+Example ke liye, agar kisi old browser me `Array.prototype.includes()` support nahi karta, to hum uska polyfill likh sakte hain.
+
+---
+
+### Interview Answer:
+
+A **polyfill** is a piece of JavaScript code that provides modern functionality on older browsers that do not natively support that feature. It ensures backward compatibility by implementing missing APIs.
+
+---
+
+## Example: `Array.prototype.includes()` Polyfill
+
+```javascript
+if (!Array.prototype.includes) {
+  Array.prototype.includes = function (value) {
+    return this.indexOf(value) !== -1;
+  };
+}
+
+const numbers = [10, 20, 30];
+
+console.log(numbers.includes(20)); // true
+console.log(numbers.includes(40)); // false
+```
+
+---
+
+## Example: `String.prototype.startsWith()` Polyfill
+
+```javascript
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function (searchString) {
+    return this.indexOf(searchString) === 0;
+  };
+}
+
+console.log("JavaScript".startsWith("Java")); // true
+```
+
+---
+
+## Why are Polyfills Needed?
+
+### Hinglish Explanation:
+
+Polyfills use kiye jate hain taaki **modern JavaScript features purane browsers me bhi kaam karein**. Isse application cross-browser compatible ban jati hai.
+
+### Interview Answer:
+
+Polyfills are used to provide backward compatibility by enabling modern JavaScript features in browsers that do not support them natively.
+
+---
+
+## Difference: Polyfill vs Transpiler
+
+| Feature  | Polyfill                    | Transpiler                             |
+| -------- | --------------------------- | -------------------------------------- |
+| Purpose  | Adds missing APIs/features  | Converts modern syntax to older syntax |
+| Works On | Browser runtime             | Build time                             |
+| Example  | `core-js`, custom polyfills | Babel, TypeScript                      |
+| Use Case | Missing browser APIs        | Unsupported JavaScript syntax          |
+
+---
+
+## Common Polyfill Libraries
+
+* **core-js** – Provides polyfills for modern JavaScript features.
+* **regenerator-runtime** – Adds support for `async/await` and generators in older browsers.
+* **whatwg-fetch** – Polyfill for the Fetch API.
+
+---
+
+### Interview Tip
+
+* **Polyfill** = Adds missing browser features (runtime support).
+* **Transpiler (Babel)** = Converts modern JavaScript syntax into older JavaScript (build-time support).
+
+> **Example:** Babel can convert arrow functions (`=>`) into ES5 syntax, but it **cannot add missing APIs like `Promise` or `Array.prototype.includes()`**. For those, you need a **polyfill** (e.g., `core-js`).
+
+
 - Function currying
 - Closures with many follow-up questions
 - Event loop and its architecture
