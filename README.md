@@ -18804,6 +18804,89 @@ db.users.find().explain();
 
 ### Additional JS Tricky
 - What is execution context?
+
+
+### Hinglish Explanation:
+
+**Execution Context** wo environment hota hai jahan PHP code execute hota hai. Is context me PHP variable values, functions, classes aur current execution state ko manage karta hai. Jab bhi koi PHP script ya function execute hoti hai, PHP uske liye ek execution context create karta hai.
+
+### Interview Answer:
+
+An **execution context** is the environment in which PHP code is executed. It contains information about variables, functions, objects, and the current execution state required to run the code.
+
+**Example:**
+
+```php
+<?php
+
+$name = "Rahul";
+
+function greet()
+{
+    $message = "Hello!";
+    echo $message;
+}
+
+greet();
+```
+
+**Explanation:**
+
+* The script starts with the **Global Execution Context**, where `$name` is stored.
+* When `greet()` is called, PHP creates a **Function Execution Context**.
+* Inside this context, `$message` exists only during the function execution.
+* After the function finishes, its execution context is destroyed, and control returns to the global context.
+
+---
+
+## Types of Execution Context
+
+### 1. Global Execution Context
+
+**Hinglish Explanation:**
+
+Jab PHP script start hoti hai, sabse pehle Global Execution Context create hota hai. Global variables aur functions isi context me register hote hain.
+
+**Interview Answer:**
+
+The Global Execution Context is created when a PHP script starts. It manages global variables, functions, and the overall script execution.
+
+---
+
+### 2. Function Execution Context
+
+**Hinglish Explanation:**
+
+Har baar jab koi function call hota hai, PHP us function ke liye alag execution context banata hai. Function ke local variables sirf isi context me available hote hain.
+
+**Interview Answer:**
+
+A Function Execution Context is created whenever a function is invoked. It stores the function's local variables, parameters, and execution state.
+
+**Example:**
+
+```php
+<?php
+
+function add($a, $b)
+{
+    return $a + $b;
+}
+
+echo add(10, 20);
+```
+
+---
+
+## Difference Summary
+
+| Context                    | Purpose                                                          |
+| -------------------------- | ---------------------------------------------------------------- |
+| Global Execution Context   | Created once when the script starts and manages global scope.    |
+| Function Execution Context | Created every time a function is called and manages local scope. |
+
+> **Interview Tip:** PHP creates a **Global Execution Context** when the script starts and a **Function Execution Context** for every function call. Each function gets its own local scope, which is destroyed after the function completes execution.
+
 - Difference between call, apply, bind
 - Pollyfills
 - Function currying
