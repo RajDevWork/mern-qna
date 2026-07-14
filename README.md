@@ -18888,6 +18888,110 @@ echo add(10, 20);
 > **Interview Tip:** PHP creates a **Global Execution Context** when the script starts and a **Function Execution Context** for every function call. Each function gets its own local scope, which is destroyed after the function completes execution.
 
 - Difference between call, apply, bind
+
+### Hinglish Explanation:
+
+`call()`, `apply()`, aur `bind()` JavaScript me kisi function ka `this` context change karne ke liye use hote hain.
+
+* **`call()`** function ko **immediately** execute karta hai aur arguments **comma-separated** pass hote hain.
+* **`apply()`** function ko **immediately** execute karta hai, lekin arguments **array** ke form me pass hote hain.
+* **`bind()`** function ko **immediately execute nahi karta**. Ye ek **naya function return** karta hai jise baad me call kiya ja sakta hai.
+
+---
+
+### Interview Answer:
+
+* **`call()`** invokes a function immediately with a specified `this` value and individual arguments.
+* **`apply()`** invokes a function immediately with a specified `this` value and arguments passed as an array.
+* **`bind()`** returns a new function with the specified `this` value without executing it immediately.
+
+---
+
+## `call()` Example
+
+```javascript
+const person = {
+  name: "Rahul"
+};
+
+function greet(city, country) {
+  console.log(`Hi, I'm ${this.name} from ${city}, ${country}`);
+}
+
+greet.call(person, "Delhi", "India");
+```
+
+**Output:**
+
+```text
+Hi, I'm Rahul from Delhi, India
+```
+
+---
+
+## `apply()` Example
+
+```javascript
+const person = {
+  name: "Rahul"
+};
+
+function greet(city, country) {
+  console.log(`Hi, I'm ${this.name} from ${city}, ${country}`);
+}
+
+greet.apply(person, ["Delhi", "India"]);
+```
+
+**Output:**
+
+```text
+Hi, I'm Rahul from Delhi, India
+```
+
+---
+
+## `bind()` Example
+
+```javascript
+const person = {
+  name: "Rahul"
+};
+
+function greet(city, country) {
+  console.log(`Hi, I'm ${this.name} from ${city}, ${country}`);
+}
+
+const greetUser = greet.bind(person, "Delhi", "India");
+
+greetUser();
+```
+
+**Output:**
+
+```text
+Hi, I'm Rahul from Delhi, India
+```
+
+---
+
+## Difference Summary
+
+| Feature              | `call()`                | `apply()`                           | `bind()`                                     |
+| -------------------- | ----------------------- | ----------------------------------- | -------------------------------------------- |
+| Executes Immediately | ✅ Yes                   | ✅ Yes                               | ❌ No                                         |
+| Returns New Function | ❌ No                    | ❌ No                                | ✅ Yes                                        |
+| Arguments            | Comma-separated         | Array                               | Comma-separated (can be preset)              |
+| Changes `this`       | ✅ Yes                   | ✅ Yes                               | ✅ Yes                                        |
+| Common Use Case      | Immediate function call | Immediate call with array arguments | Event handlers, callbacks, delayed execution |
+
+### Interview Tip
+
+* Use **`call()`** when arguments are known individually.
+* Use **`apply()`** when arguments are already available as an array.
+* Use **`bind()`** when you need to preserve the `this` context and execute the function later (e.g., event listeners, callbacks, timers).
+
+
 - Pollyfills
 - Function currying
 - Closures with many follow-up questions
