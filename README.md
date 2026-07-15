@@ -20061,6 +20061,156 @@ The Context API is **not inherently slow**. The performance issue arises because
 
 
 17. Controlled vs uncontrolled components — real difference kya hai?
+
+### Hinglish Explanation:
+
+React me **Controlled** aur **Uncontrolled** components ka difference ye hai ki **form data ko kaun manage karta hai**.
+
+* **Controlled Component** me input ki value **React state** control karti hai.
+* **Uncontrolled Component** me input ki value **DOM** khud manage karta hai aur React `ref` ke through us value ko access karta hai.
+
+---
+
+### Interview Answer:
+
+A **Controlled Component** is a form element whose value is managed by React state, whereas an **Uncontrolled Component** stores its value in the DOM and is accessed using refs.
+
+---
+
+## Controlled Component ✅
+
+```jsx
+import { useState } from "react";
+
+function App() {
+  const [name, setName] = useState("");
+
+  return (
+    <input
+      type="text"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+    />
+  );
+}
+```
+
+### How it works?
+
+* User types.
+* `onChange` updates React state.
+* React state updates the input value.
+* React is the **single source of truth**.
+
+---
+
+## Uncontrolled Component ✅
+
+```jsx
+import { useRef } from "react";
+
+function App() {
+  const inputRef = useRef();
+
+  const handleSubmit = () => {
+    alert(inputRef.current.value);
+  };
+
+  return (
+    <>
+      <input type="text" ref={inputRef} />
+      <button onClick={handleSubmit}>Submit</button>
+    </>
+  );
+}
+```
+
+### How it works?
+
+* User types.
+* Value is stored in the DOM.
+* React reads it only when needed using `ref`.
+
+---
+
+## Real Difference
+
+### Controlled Component
+
+* React controls the value.
+* Easy validation.
+* Easy form handling.
+* Re-renders on every value change.
+
+### Uncontrolled Component
+
+* DOM controls the value.
+* Less code.
+* Fewer re-renders.
+* Harder validation and state synchronization.
+
+---
+
+## When to Use Controlled Components
+
+✅ Login forms
+
+✅ Registration forms
+
+✅ Search inputs
+
+✅ Real-time validation
+
+✅ Dynamic forms
+
+Example:
+
+```jsx
+if (email === "") {
+  setError("Email is required");
+}
+```
+
+---
+
+## When to Use Uncontrolled Components
+
+✅ File upload
+
+```jsx
+<input type="file" ref={fileRef} />
+```
+
+✅ Simple forms
+
+✅ Third-party libraries
+
+✅ Performance-sensitive forms with many inputs
+
+---
+
+## Difference Summary
+
+| Feature            | Controlled                | Uncontrolled              |
+| ------------------ | ------------------------- | ------------------------- |
+| Data Stored In     | React State               | DOM                       |
+| Source of Truth    | React                     | DOM                       |
+| Uses `useState`    | ✅ Yes                     | ❌ No                      |
+| Uses `ref`         | ❌ Optional                | ✅ Yes                     |
+| Validation         | Easy                      | More manual               |
+| Re-render on Input | ✅ Yes                     | ❌ No                      |
+| Best For           | Dynamic & validated forms | Simple forms, file inputs |
+
+---
+
+## Interview Tip
+
+* **Controlled Component** → React controls the input using **state** (`value` + `onChange`).
+* **Uncontrolled Component** → The browser (DOM) controls the input, and React accesses the value using a **ref**.
+* In most React applications, **controlled components are preferred** because they make validation, conditional rendering, and state management much easier. Uncontrolled components are useful for cases like **file inputs** or when integrating with non-React code.
+
+
+
 18. SSR ke baad hydration error kyun aata hai?
 
 ### 🌐 Browser & Rendering (19-24)
