@@ -19715,6 +19715,175 @@ To get the full benefit of `React.memo`, pass **stable props** using `useMemo` a
 
 
 15. Keys wrong use karne se bug kaise aata hai?
+
+### Hinglish Explanation:
+
+React me **`key`** list items ko uniquely identify karne ke liye use hoti hai. Agar **wrong key** (jaise array index) use karte ho, to React list update karte waqt galat item ko reuse kar sakta hai. Isse UI bugs, wrong state, input value mismatch aur unnecessary re-renders ho sakte hain.
+
+---
+
+### Interview Answer:
+
+Keys help React identify list items during reconciliation. Using unstable or incorrect keys (such as array indexes) can cause React to reuse the wrong components, leading to incorrect UI updates, state mismatches, and rendering bugs.
+
+---
+
+## Example 1: Using Array Index as Key ❌
+
+```jsx
+function TodoList({ todos }) {
+  return (
+    <ul>
+      {todos.map((todo, index) => (
+        <li key={index}>{todo}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### Problem
+
+Suppose the list is:
+
+```text
+0 - Apple
+1 - Banana
+2 - Mango
+```
+
+Now insert **Orange** at the beginning:
+
+```text
+0 - Orange
+1 - Apple
+2 - Banana
+3 - Mango
+```
+
+Since the indexes changed, React may think:
+
+* Orange = Old Apple
+* Apple = Old Banana
+* Banana = Old Mango
+
+Instead of recognizing them as different items.
+
+---
+
+## Example 2: Input Field Bug ❌
+
+```jsx
+function App() {
+  const [users, setUsers] = useState([
+    { id: 1, name: "Rahul" },
+    { id: 2, name: "Aman" }
+  ]);
+
+  return users.map((user, index) => (
+    <input key={index} defaultValue={user.name} />
+  ));
+}
+```
+
+### Problem
+
+If the first user is removed:
+
+```text
+Rahul
+Aman
+```
+
+becomes
+
+```text
+Aman
+```
+
+React reuses the first input because the key is still `0`, so the input may incorrectly display **Rahul** or preserve the wrong internal state.
+
+---
+
+## Correct Way ✅
+
+Use a unique and stable ID.
+
+```jsx
+function TodoList({ todos }) {
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo.id}>{todo.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+Now React correctly identifies each item even if the list is reordered, filtered, or updated.
+
+---
+
+## When is Index Safe?
+
+Using the array index as a key is acceptable only when:
+
+* ✅ The list is static.
+* ✅ Items are never added, removed, or reordered.
+* ✅ Items do not have their own state.
+
+Example:
+
+```jsx
+const colors = ["Red", "Blue", "Green"];
+
+colors.map((color, index) => (
+  <li key={index}>{color}</li>
+));
+```
+
+---
+
+## Common Bugs Caused by Wrong Keys
+
+| Wrong Key Usage                    | Result                                |
+| ---------------------------------- | ------------------------------------- |
+| Using array index in dynamic lists | Wrong item reused                     |
+| Reordering items                   | Incorrect UI updates                  |
+| Removing items                     | State moves to another item           |
+| Input fields                       | Wrong input values or cursor position |
+| Animations                         | Unexpected animation behavior         |
+
+---
+
+## Best Practices
+
+* ✅ Use a unique database ID (`id`).
+* ✅ Use a stable unique identifier.
+* ❌ Avoid `Math.random()` as a key (changes every render).
+* ❌ Avoid array indexes for dynamic lists.
+* ✅ Keys should be unique among sibling elements.
+
+---
+
+## Difference Summary
+
+| Key Type        | Recommended              | Reason                    |
+| --------------- | ------------------------ | ------------------------- |
+| Database ID     | ✅ Yes                    | Stable and unique         |
+| UUID            | ✅ Yes                    | Stable if generated once  |
+| Array Index     | ⚠️ Only for static lists | Changes when list changes |
+| `Math.random()` | ❌ No                     | New key every render      |
+
+---
+
+### Interview Tip
+
+Keys are used by React's **reconciliation algorithm** to match elements between renders. Using unstable keys (like array indexes in dynamic lists) can cause React to associate the wrong component instance with an item, resulting in **state mismatches, incorrect input values, and UI bugs**. Stable, unique keys ensure React updates only the correct elements.
+
+
+
 16. Context API performance issue kab deta hai?
 17. Controlled vs uncontrolled components — real difference kya hai?
 18. SSR ke baad hydration error kyun aata hai?
