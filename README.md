@@ -19384,6 +19384,156 @@ React batches state updates to improve performance by reducing unnecessary re-re
 
 
 13. `useMemo` aur `useCallback` galat use karne se performance worse kaise hoti hai?
+### Hinglish Explanation:
+
+`useMemo` aur `useCallback` ka purpose **performance optimize** karna hai, lekin agar inhe har jagah unnecessarily use kiya jaye, to performance **aur kharab** ho sakti hai.
+
+Reason ye hai ki React ko har render par memoized value/function aur dependency array ko compare karna padta hai. Agar calculation simple hai ya function lightweight hai, to memoization ka overhead uske benefit se zyada ho sakta hai.
+
+---
+
+### Interview Answer:
+
+`useMemo` and `useCallback` should be used only when memoization provides a measurable performance benefit. Overusing them adds unnecessary memory usage and dependency comparison overhead, which can degrade performance instead of improving it.
+
+---
+
+## Example 1: Unnecessary `useMemo` ❌
+
+```jsx
+function App() {
+  const count = 10;
+
+  const doubled = useMemo(() => count * 2, [count]);
+
+  return <h1>{doubled}</h1>;
+}
+```
+
+### Why is this bad?
+
+* `count * 2` is a very cheap calculation.
+* `useMemo` itself has an overhead.
+* Without `useMemo`, React can calculate it instantly.
+
+**Better:**
+
+```jsx
+function App() {
+  const count = 10;
+
+  const doubled = count * 2;
+
+  return <h1>{doubled}</h1>;
+}
+```
+
+---
+
+## Example 2: Unnecessary `useCallback` ❌
+
+```jsx
+function App() {
+  const handleClick = useCallback(() => {
+    console.log("Clicked");
+  }, []);
+
+  return <button onClick={handleClick}>Click</button>;
+}
+```
+
+### Why is this bad?
+
+* `handleClick` is simple.
+* It's not passed to a memoized child component.
+* `useCallback` adds unnecessary dependency tracking.
+
+**Better:**
+
+```jsx
+function App() {
+  const handleClick = () => {
+    console.log("Clicked");
+  };
+
+  return <button onClick={handleClick}>Click</button>;
+}
+```
+
+---
+
+## Good Use Case for `useMemo` ✅
+
+```jsx
+const sortedUsers = useMemo(() => {
+  return users.sort((a, b) => a.age - b.age);
+}, [users]);
+```
+
+### Why?
+
+Sorting a large array is expensive, so memoizing avoids repeating the work unless `users` changes.
+
+---
+
+## Good Use Case for `useCallback` ✅
+
+```jsx
+const handleDelete = useCallback((id) => {
+  deleteUser(id);
+}, []);
+
+return <UserList onDelete={handleDelete} />;
+```
+
+### Why?
+
+If `UserList` is wrapped with `React.memo`, a stable function reference helps prevent unnecessary re-renders.
+
+---
+
+## Common Mistakes
+
+| Mistake                                  | Why It's Bad                                           |
+| ---------------------------------------- | ------------------------------------------------------ |
+| Wrapping every calculation in `useMemo`  | Adds memoization overhead for cheap operations         |
+| Wrapping every function in `useCallback` | Adds dependency tracking without real benefit          |
+| Memoizing values that rarely change      | Little or no performance gain                          |
+| Incorrect dependency arrays              | Can lead to stale values or unnecessary recalculations |
+
+---
+
+## When to Use `useMemo`
+
+* ✅ Expensive calculations (sorting, filtering, large computations)
+* ✅ Derived values that are costly to recompute
+* ❌ Simple arithmetic or string concatenation
+
+---
+
+## When to Use `useCallback`
+
+* ✅ Functions passed to `React.memo` components
+* ✅ Functions used as dependencies in hooks like `useEffect`
+* ❌ Event handlers used only within the same component
+
+---
+
+## Difference Summary
+
+| Hook          | Purpose                       | Use When                            |
+| ------------- | ----------------------------- | ----------------------------------- |
+| `useMemo`     | Memoizes a computed value     | Computation is expensive            |
+| `useCallback` | Memoizes a function reference | Stable function reference is needed |
+
+---
+
+### Interview Tip
+
+`useMemo` and `useCallback` are **optimization tools, not default best practices**. Use them only after identifying a real performance issue. Memoization itself has a cost (dependency comparison and memory usage), so applying it to inexpensive computations or functions can make performance worse instead of better.
+
+
+
 14. React.memo kab kaam nahi karta?
 15. Keys wrong use karne se bug kaise aata hai?
 16. Context API performance issue kab deta hai?
