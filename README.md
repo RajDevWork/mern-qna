@@ -19233,6 +19233,156 @@ A `useEffect` infinite loop happens when the effect keeps causing a state change
 
 
 12. `useState` async kyun lagta hai?
+
+### Hinglish Explanation:
+
+`useState` **actually asynchronous nahi hota**, lekin **React state updates ko schedule aur batch** karta hai. Isliye `setState()` call karne ke turant baad state ki updated value nahi milti, aur hume lagta hai ki `useState` async hai.
+
+React performance improve karne ke liye multiple state updates ko ek saath process karta hai aur next render me updated state deta hai.
+
+---
+
+### Interview Answer:
+
+`useState` appears asynchronous because React schedules and batches state updates instead of updating the state immediately. The new state value becomes available during the next render, not immediately after calling the setter function.
+
+---
+
+## Example 1: State Doesn't Update Immediately
+
+```jsx
+import { useState } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setCount(1);
+
+    console.log(count);
+  };
+
+  return <button onClick={handleClick}>Click</button>;
+}
+```
+
+**Output:**
+
+```text
+0
+```
+
+**Why?**
+
+* `setCount(1)` schedules a state update.
+* `console.log(count)` still reads the current render's value (`0`).
+* React updates the state and re-renders afterward.
+
+---
+
+## Example 2: Updated Value After Re-render
+
+```jsx
+import { useState, useEffect } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log(count);
+  }, [count]);
+
+  return (
+    <button onClick={() => setCount(1)}>
+      Click
+    </button>
+  );
+}
+```
+
+**Output (after click):**
+
+```text
+1
+```
+
+**Why?**
+
+`useEffect` runs after React has completed the render with the updated state.
+
+---
+
+## Example 3: Multiple Updates
+
+```jsx
+const handleClick = () => {
+  setCount(count + 1);
+  setCount(count + 1);
+};
+```
+
+If `count` is `0`, the result is:
+
+```text
+1
+```
+
+**Why?**
+
+Both updates use the same current value (`0`), so both request `1`.
+
+---
+
+## Correct Way (Functional Update)
+
+```jsx
+const handleClick = () => {
+  setCount((prev) => prev + 1);
+  setCount((prev) => prev + 1);
+};
+```
+
+**Output:**
+
+```text
+2
+```
+
+**Why?**
+
+Each update receives the latest state value (`prev`), so both increments are applied.
+
+---
+
+## Why Does React Batch Updates?
+
+### Hinglish Explanation:
+
+React multiple state updates ko ek saath process karta hai taaki unnecessary re-renders na hon aur application fast chale.
+
+### Interview Answer:
+
+React batches state updates to improve performance by reducing unnecessary re-renders and processing multiple updates together.
+
+---
+
+## Difference Summary
+
+| Concept                   | Explanation                  |
+| ------------------------- | ---------------------------- |
+| `setState()`              | Schedules a state update     |
+| Immediate `console.log()` | Shows the old state          |
+| Updated State             | Available in the next render |
+| Functional Update         | Uses the latest state value  |
+
+---
+
+### Interview Tip
+
+`useState` is **not truly asynchronous**. It **appears asynchronous** because React **schedules and batches state updates**, making the updated state available only on the next render. Use the **functional update form** (`setState(prev => ...)`) when the next state depends on the previous state.
+
+
+
 13. `useMemo` aur `useCallback` galat use karne se performance worse kaise hoti hai?
 14. React.memo kab kaam nahi karta?
 15. Keys wrong use karne se bug kaise aata hai?
