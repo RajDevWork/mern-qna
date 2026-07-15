@@ -19535,6 +19535,185 @@ If `UserList` is wrapped with `React.memo`, a stable function reference helps pr
 
 
 14. React.memo kab kaam nahi karta?
+
+### Hinglish Explanation:
+
+`React.memo` ek component ko **unnecessary re-render** hone se rokta hai, lekin ye **sirf props ka shallow comparison** karta hai.
+
+Agar har render me **new object, new array, ya new function** pass ho rahi ho, ya component **context** ya **apni state** use kar raha ho, to `React.memo` kaam nahi karega aur component fir bhi re-render hoga.
+
+---
+
+### Interview Answer:
+
+`React.memo` skips re-rendering only when the component's props remain the same according to a **shallow comparison**. It does not prevent re-renders caused by changing object/function references, context updates, or the component's own state changes.
+
+---
+
+## Example 1: New Object Prop ❌
+
+```jsx
+const Child = React.memo(({ user }) => {
+  console.log("Child Rendered");
+  return <h1>{user.name}</h1>;
+});
+
+function App() {
+  return <Child user={{ name: "Rahul" }} />;
+}
+```
+
+### Why?
+
+Every render creates a **new object reference**.
+
+```javascript
+{ name: "Rahul" } !== { name: "Rahul" }
+```
+
+So `React.memo` thinks the prop changed.
+
+---
+
+## Example 2: New Function Prop ❌
+
+```jsx
+const Child = React.memo(({ onClick }) => {
+  console.log("Child Rendered");
+  return <button onClick={onClick}>Click</button>;
+});
+
+function App() {
+  const handleClick = () => {
+    console.log("Clicked");
+  };
+
+  return <Child onClick={handleClick} />;
+}
+```
+
+### Why?
+
+`handleClick` is recreated on every render, so its reference changes.
+
+**Solution:**
+
+```jsx
+const handleClick = useCallback(() => {
+  console.log("Clicked");
+}, []);
+```
+
+---
+
+## Example 3: Context Changes ❌
+
+```jsx
+const ThemeContext = React.createContext();
+
+const Child = React.memo(() => {
+  const theme = useContext(ThemeContext);
+
+  return <h1>{theme}</h1>;
+});
+```
+
+### Why?
+
+When the context value changes, React re-renders all consumers, even if they're wrapped with `React.memo`.
+
+---
+
+## Example 4: Internal State Changes ❌
+
+```jsx
+const Counter = React.memo(() => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {count}
+    </button>
+  );
+});
+```
+
+### Why?
+
+`React.memo` only compares **props**. If the component updates its own state, it will always re-render.
+
+---
+
+## Example 5: New Array Prop ❌
+
+```jsx
+const Child = React.memo(({ items }) => {
+  return <div>{items.length}</div>;
+});
+
+function App() {
+  return <Child items={[1, 2, 3]} />;
+}
+```
+
+### Why?
+
+A new array is created every render.
+
+**Solution:**
+
+```jsx
+const items = useMemo(() => [1, 2, 3], []);
+```
+
+---
+
+## Common Cases Where `React.memo` Doesn't Help
+
+| Scenario                      | Reason                          |
+| ----------------------------- | ------------------------------- |
+| New object prop               | Reference changes               |
+| New array prop                | Reference changes               |
+| New function prop             | Reference changes               |
+| Context value changes         | Context consumers always update |
+| Component's own state changes | State updates trigger re-render |
+| Parent passes changing props  | Props actually changed          |
+
+---
+
+## When Does `React.memo` Work Best?
+
+* ✅ Component receives primitive props (`string`, `number`, `boolean`)
+* ✅ Props have stable references (`useMemo`, `useCallback`)
+* ✅ Component is expensive to render
+* ✅ Parent re-renders frequently but props stay the same
+
+---
+
+## Difference Summary
+
+| Scenario                            | `React.memo` Prevents Re-render? |
+| ----------------------------------- | -------------------------------- |
+| Same primitive props                | ✅ Yes                            |
+| New object/array/function reference | ❌ No                             |
+| Context update                      | ❌ No                             |
+| Component state update              | ❌ No                             |
+| Actual prop value changes           | ❌ No                             |
+
+---
+
+### Interview Tip
+
+`React.memo` performs a **shallow comparison of props**. It **does not** prevent re-renders caused by:
+
+* New object, array, or function references.
+* Context updates.
+* The component's own state updates.
+
+To get the full benefit of `React.memo`, pass **stable props** using `useMemo` and `useCallback` where appropriate.
+
+
+
 15. Keys wrong use karne se bug kaise aata hai?
 16. Context API performance issue kab deta hai?
 17. Controlled vs uncontrolled components — real difference kya hai?
