@@ -19885,6 +19885,181 @@ Keys are used by React's **reconciliation algorithm** to match elements between 
 
 
 16. Context API performance issue kab deta hai?
+### Hinglish Explanation:
+
+**Context API** tab performance issue deta hai jab **context ki value frequently change hoti hai**. Jab bhi provider ki `value` change hoti hai, **us context ko use karne wale saare consumer components re-render ho jate hain**, chahe unhe updated value ki zarurat ho ya na ho.
+
+Agar ek hi context me bahut saari values store kar di jayein (user, theme, notifications, language, cart, etc.), to ek value change hone par bhi sabhi consumers re-render ho sakte hain.
+
+---
+
+### Interview Answer:
+
+The Context API can cause performance issues when the provider's value changes frequently. Every consumer subscribed to that context re-renders whenever the context value changes, even if it only uses a small part of the context.
+
+---
+
+## Example 1: Single Context ❌
+
+```jsx
+const AppContext = createContext();
+
+function App() {
+  const [user, setUser] = useState("Rahul");
+  const [theme, setTheme] = useState("light");
+
+  return (
+    <AppContext.Provider value={{ user, theme }}>
+      <Navbar />
+      <Profile />
+    </AppContext.Provider>
+  );
+}
+```
+
+```jsx
+function Navbar() {
+  const { theme } = useContext(AppContext);
+
+  return <h1>{theme}</h1>;
+}
+```
+
+```jsx
+function Profile() {
+  const { user } = useContext(AppContext);
+
+  return <h1>{user}</h1>;
+}
+```
+
+### Problem
+
+If only `theme` changes:
+
+```jsx
+setTheme("dark");
+```
+
+Both `Navbar` **and** `Profile` re-render.
+
+Even though `Profile` only needs `user`.
+
+---
+
+## Solution 1: Split Contexts ✅
+
+```jsx
+<UserContext.Provider value={user}>
+  <ThemeContext.Provider value={theme}>
+    <App />
+  </ThemeContext.Provider>
+</UserContext.Provider>
+```
+
+Now:
+
+* `theme` changes → Only `ThemeContext` consumers re-render.
+* `user` changes → Only `UserContext` consumers re-render.
+
+---
+
+## Example 2: New Object Reference ❌
+
+```jsx
+<AppContext.Provider
+  value={{
+    user,
+    theme
+  }}
+>
+```
+
+### Problem
+
+A **new object** is created on every render.
+
+Even if `user` and `theme` haven't changed, React sees a new `value` reference and notifies consumers.
+
+---
+
+## Solution 2: Use `useMemo` ✅
+
+```jsx
+const value = useMemo(() => {
+  return { user, theme };
+}, [user, theme]);
+
+<AppContext.Provider value={value}>
+```
+
+Now the `value` object reference changes only when `user` or `theme` changes.
+
+---
+
+## Example 3: Frequently Changing State ❌
+
+```jsx
+const [count, setCount] = useState(0);
+
+<AppContext.Provider value={{ count }}>
+```
+
+If:
+
+```jsx
+setCount(count + 1);
+```
+
+runs every second,
+
+all context consumers re-render every second.
+
+---
+
+## Better Choice
+
+For frequently changing global state (chat messages, live counters, stock prices, etc.), libraries like **Redux**, **Zustand**, or selector-based state management can be more efficient because they allow components to subscribe to only the data they need.
+
+---
+
+## Common Performance Issues
+
+| Issue                          | Result                                   |
+| ------------------------------ | ---------------------------------------- |
+| Large context object           | Unnecessary re-renders                   |
+| Frequently changing values     | All consumers re-render often            |
+| New object/function in `value` | Consumers re-render due to new reference |
+| Single context for everything  | Every consumer gets notified             |
+
+---
+
+## Best Practices
+
+* ✅ Split large contexts into smaller ones.
+* ✅ Memoize the provider value using `useMemo`.
+* ✅ Memoize callback functions with `useCallback` if they are passed in the context.
+* ✅ Keep frequently changing state out of a single global context when possible.
+
+---
+
+## Difference Summary
+
+| Bad Practice                       | Better Practice                          |
+| ---------------------------------- | ---------------------------------------- |
+| One large context                  | Multiple focused contexts                |
+| New object in `value`              | `useMemo` for stable value               |
+| Frequently changing global state   | Use optimized state management if needed |
+| Passing new functions every render | `useCallback`                            |
+
+---
+
+### Interview Tip
+
+The Context API is **not inherently slow**. The performance issue arises because **every consumer re-renders whenever the provider's `value` changes**. This can be minimized by **splitting contexts**, **memoizing the provider value**, and avoiding putting frequently changing or unrelated data into the same context.
+
+
+
 17. Controlled vs uncontrolled components — real difference kya hai?
 18. SSR ke baad hydration error kyun aata hai?
 
