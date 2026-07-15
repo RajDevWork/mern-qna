@@ -19085,6 +19085,153 @@ Polyfills are used to provide backward compatibility by enabling modern JavaScri
 
 ### ⚛️ React Tricky (11-18)
 11. `useEffect` infinite loop kab aur kyun hota hai?
+
+### Hinglish Explanation:
+
+`useEffect` me **infinite loop** tab hota hai jab effect ke andar state update hoti hai aur us state update ki wajah se component dobara render hota hai. Agar `useEffect` har render par fir se execute ho raha hai, to ye process baar-baar repeat hoti rehti hai.
+
+Sabse common reason:
+
+* Dependency array na dena.
+* Dependency array me aisi value dena jo har render me change ho (jaise object, array, function).
+* Effect ke andar usi state ko update karna jo dependency me hai.
+
+---
+
+### Interview Answer:
+
+An infinite loop in `useEffect` occurs when the effect continuously triggers a state update, causing the component to re-render, which runs the effect again. This usually happens due to missing or incorrect dependencies.
+
+---
+
+## Example 1: No Dependency Array ❌
+
+```jsx
+import { useState, useEffect } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setCount(count + 1);
+  });
+
+  return <h1>{count}</h1>;
+}
+```
+
+**Why?**
+
+* Component renders.
+* `useEffect` runs.
+* `setCount()` updates state.
+* Component re-renders.
+* `useEffect` runs again.
+* This continues forever.
+
+---
+
+## Example 2: State in Dependency Array ❌
+
+```jsx
+import { useState, useEffect } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setCount(count + 1);
+  }, [count]);
+
+  return <h1>{count}</h1>;
+}
+```
+
+**Why?**
+
+`count` changes → `useEffect` runs → `setCount()` changes `count` again → effect runs again → infinite loop.
+
+---
+
+## Example 3: Correct Usage ✅
+
+```jsx
+import { useState, useEffect } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setCount(1);
+  }, []);
+
+  return <h1>{count}</h1>;
+}
+```
+
+**Why?**
+
+The empty dependency array (`[]`) ensures the effect runs **only once** after the initial render.
+
+---
+
+## Example 4: Function Dependency ❌
+
+```jsx
+function App() {
+  const [count, setCount] = useState(0);
+
+  const increment = () => {
+    setCount(count + 1);
+  };
+
+  useEffect(() => {
+    increment();
+  }, [increment]);
+}
+```
+
+**Why?**
+
+`increment` is recreated on every render, so React treats it as a new dependency each time, causing the effect to run repeatedly.
+
+**Solution:**
+
+```jsx
+const increment = useCallback(() => {
+  setCount((prev) => prev + 1);
+}, []);
+```
+
+---
+
+## Common Causes of Infinite Loop
+
+| Cause                                          | Result                         |
+| ---------------------------------------------- | ------------------------------ |
+| No dependency array                            | Effect runs after every render |
+| Updating dependency inside effect              | Continuous re-render           |
+| Object/Array dependency recreated every render | Effect runs every render       |
+| Function dependency without `useCallback`      | Effect runs every render       |
+
+---
+
+## How to Prevent Infinite Loops
+
+* ✅ Use an empty dependency array (`[]`) if the effect should run only once.
+* ✅ Include only the required dependencies.
+* ✅ Memoize functions using `useCallback()`.
+* ✅ Memoize objects/arrays using `useMemo()`.
+* ✅ Avoid updating a state inside an effect if that same state is the trigger for the effect, unless you have a condition to stop the updates.
+
+---
+
+### Interview Tip
+
+A `useEffect` infinite loop happens when the effect keeps causing a state change that triggers the effect again. The most common reasons are **missing dependency arrays**, **updating dependent state inside the effect**, or **unstable dependencies like newly created functions, objects, or arrays**.
+
+
+
 12. `useState` async kyun lagta hai?
 13. `useMemo` aur `useCallback` galat use karne se performance worse kaise hoti hai?
 14. React.memo kab kaam nahi karta?
