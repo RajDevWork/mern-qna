@@ -710,292 +710,224 @@ src/
 ```
 
 ---
+# React Folder Structure (Quick Reference)
 
-# api/
+## Recommended Structure
 
-API endpoints.
-
-Example
-
-```
-auth.api.js
-
-course.api.js
-
-payment.api.js
-```
-
-Mostly
-
-Axios.
-
----
-
-# services/
-
-Business logic after API.
-
-Example
-
-```
-login()
-
-logout()
-
-purchaseCourse()
-```
-
-Suppose login ke baad
-
-```
-Save Token
-
-Update Store
-
-Redirect
-```
-
-Ye service karegi.
-
----
-
-# pages/
-
-Actual screen.
-
-```
-Home
-
-Dashboard
-
-Login
-
-Profile
-
-Checkout
-```
-
----
-
-# components/
-
-Reusable UI.
-
-```
-Button
-
-Modal
-
-Input
-
-Navbar
-
-Sidebar
-
-Card
+``` text
+src/
+├── api/
+│   ├── auth.api.js
+│   ├── course.api.js
+│   └── payment.api.js
+├── assets/
+│   ├── images/
+│   ├── icons/
+│   └── fonts/
+├── components/
+│   ├── Button.jsx
+│   ├── Input.jsx
+│   ├── Navbar.jsx
+│   └── CourseCard.jsx
+├── features/
+│   ├── auth/
+│   │   ├── LoginForm.jsx
+│   │   ├── auth.service.js
+│   │   └── auth.hooks.js
+│   ├── course/
+│   └── payment/
+├── hooks/
+│   ├── useAuth.js
+│   ├── useDebounce.js
+│   └── usePagination.js
+├── layouts/
+│   ├── DashboardLayout.jsx
+│   ├── AdminLayout.jsx
+│   └── AuthLayout.jsx
+├── pages/
+│   ├── HomePage.jsx
+│   ├── LoginPage.jsx
+│   ├── DashboardPage.jsx
+│   └── ProfilePage.jsx
+├── routes/
+│   ├── AppRoutes.jsx
+│   └── ProtectedRoute.jsx
+├── services/
+│   ├── auth.service.js
+│   ├── course.service.js
+│   └── payment.service.js
+├── store/
+│   ├── auth.store.js
+│   └── course.store.js
+├── context/
+│   ├── AuthContext.jsx
+│   └── ThemeContext.jsx
+├── providers/
+│   ├── AuthProvider.jsx
+│   └── QueryProvider.jsx
+├── utils/
+│   ├── formatDate.js
+│   ├── slugify.js
+│   └── currency.js
+├── constants/
+│   ├── roles.js
+│   ├── routes.js
+│   └── api.js
+├── lib/
+│   ├── axios.js
+│   └── react-query.js
+├── config/
+│   ├── env.js
+│   └── theme.js
+├── styles/
+│   ├── globals.css
+│   └── tailwind.css
+├── types/
+│   └── user.types.ts
+├── App.jsx
+└── main.jsx
 ```
 
-Rule
+------------------------------------------------------------------------
 
-Business logic minimum.
+## api/
 
----
+**Why?** API endpoint functions.
 
-# features/
+**Files** - auth.api.js - course.api.js - payment.api.js
 
-Bade projects ka heart.
-
-```
-features/
-
-auth/
-
-dashboard/
-
-course/
-
-payment/
-
-profile/
+``` js
+export const login = (data) => axios.post("/login", data);
 ```
 
-Har feature ke andar
+------------------------------------------------------------------------
 
-```
-components
+## assets/
 
-hooks
+**Files** - logo.png - hero.jpg - user.svg
 
-services
+------------------------------------------------------------------------
 
-types
-```
+## components/
 
----
+**Files** - Button.jsx - Input.jsx - Modal.jsx - Navbar.jsx
 
-# layouts/
-
-```
-DashboardLayout
-
-AuthLayout
-
-AdminLayout
+``` jsx
+export default function Button({children}) {
+  return <button>{children}</button>;
+}
 ```
 
----
+------------------------------------------------------------------------
 
-# hooks/
+## features/
 
-Custom Hooks.
+**Files** - auth/LoginForm.jsx - auth/auth.service.js -
+course/CourseCard.jsx
 
-```
-useAuth()
+------------------------------------------------------------------------
 
-useDebounce()
+## hooks/
 
-usePagination()
-```
+**Files** - useAuth.js - useDebounce.js - usePagination.js
 
----
-
-# store/
-
-Redux
-
-Zustand
-
-Jotai
-
----
-
-# context/
-
-React Context.
-
----
-
-# providers/
-
-```
-ThemeProvider
-
-QueryProvider
-
-AuthProvider
+``` js
+export function useAuth(){ }
 ```
 
----
+------------------------------------------------------------------------
 
-# utils/
+## layouts/
 
-```
-formatDate()
+**Files** - DashboardLayout.jsx - AuthLayout.jsx
 
-truncate()
+------------------------------------------------------------------------
 
-currencyFormat()
-```
+## pages/
 
----
+**Files** - LoginPage.jsx - HomePage.jsx - DashboardPage.jsx
 
-# lib/
+------------------------------------------------------------------------
 
-Wrapped libraries.
+## routes/
 
-```
-axios.js
+**Files** - AppRoutes.jsx - ProtectedRoute.jsx
 
-react-query.js
-```
+------------------------------------------------------------------------
 
----
+## services/
 
-# constants/
+**Files** - auth.service.js - payment.service.js
 
-```
-Routes
-
-Role
-
-Theme
-
-API_URL
+``` js
+export async function loginUser(data){}
 ```
 
----
+------------------------------------------------------------------------
 
-# config/
+## store/
 
-Frontend Config.
+**Files** - auth.store.js - user.store.js
 
-```
-env
+------------------------------------------------------------------------
 
-theme
+## context/
 
-menu
-```
+**Files** - AuthContext.jsx - ThemeContext.jsx
 
----
+------------------------------------------------------------------------
 
-# styles/
+## providers/
 
-Global CSS
+**Files** - AuthProvider.jsx - QueryProvider.jsx
 
-Tailwind
+------------------------------------------------------------------------
 
-Variables
+## utils/
 
----
+**Files** - formatDate.js - truncate.js - capitalize.js
 
-# types/
+------------------------------------------------------------------------
 
-TypeScript
+## constants/
 
-Interfaces
+**Files** - roles.js - routes.js - api.js
 
-Types
+------------------------------------------------------------------------
 
----
+## lib/
 
-# React Flow
+**Files** - axios.js - react-query.js
 
-```
-Page
+------------------------------------------------------------------------
 
-↓
+## config/
 
-Component
+**Files** - env.js - theme.js
 
-↓
+------------------------------------------------------------------------
 
-Hook
+## styles/
 
-↓
+**Files** - globals.css - tailwind.css
 
-Service
+------------------------------------------------------------------------
 
-↓
+## types/
 
-API
+**Files** - user.types.ts - course.types.ts
 
-↓
+------------------------------------------------------------------------
 
-Express
+## App.jsx
 
-↓
+Root component.
 
-Response
+## main.jsx
 
-↓
+React entry point.
 
-Store
 
-↓
-
-UI
-```
 
 # 📌 MERN Interviews ke liye 5 Golden Rules
 
