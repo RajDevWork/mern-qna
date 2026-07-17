@@ -34,606 +34,274 @@ src/
 ```
 
 ---
+# Node.js + Express Folder Structure (Quick Reference)
 
-# config/
+## Recommended Structure
 
-### Purpose
-
-Application configuration.
-
-### Isme kya hoga?
-
+``` text
+src/
+├── config/
+│   ├── db.js
+│   ├── redis.js
+│   ├── cloudinary.js
+│   ├── stripe.js
+│   └── mail.js
+├── routes/
+│   ├── auth.routes.js
+│   ├── user.routes.js
+│   ├── course.routes.js
+│   └── payment.routes.js
+├── controllers/
+│   ├── auth.controller.js
+│   ├── user.controller.js
+│   ├── course.controller.js
+│   └── payment.controller.js
+├── services/
+│   ├── auth.service.js
+│   ├── user.service.js
+│   ├── course.service.js
+│   └── payment.service.js
+├── repositories/
+│   ├── user.repository.js
+│   ├── course.repository.js
+│   └── payment.repository.js
+├── models/
+│   ├── User.js
+│   ├── Course.js
+│   ├── Enrollment.js
+│   └── Payment.js
+├── middlewares/
+│   ├── auth.middleware.js
+│   ├── role.middleware.js
+│   ├── upload.middleware.js
+│   └── error.middleware.js
+├── validations/
+│   ├── auth.validation.js
+│   ├── user.validation.js
+│   └── course.validation.js
+├── dto/
+│   ├── user.dto.js
+│   ├── course.dto.js
+│   └── payment.dto.js
+├── utils/
+│   ├── formatDate.js
+│   ├── slugify.js
+│   └── generateOTP.js
+├── helpers/
+│   ├── sendEmail.js
+│   ├── exportPDF.js
+│   └── csvReader.js
+├── constants/
+│   ├── roles.js
+│   ├── status.js
+│   └── messages.js
+├── lib/
+│   ├── jwt.js
+│   ├── bcrypt.js
+│   └── axios.js
+├── events/
+│   ├── userRegistered.event.js
+│   └── orderCreated.event.js
+├── jobs/
+│   ├── email.job.js
+│   ├── report.job.js
+│   └── cleanup.job.js
+├── sockets/
+│   ├── chat.socket.js
+│   └── notification.socket.js
+├── uploads/
+├── docs/
+│   └── swagger.yaml
+├── tests/
+│   ├── auth.test.js
+│   └── course.test.js
+├── app.js
+└── server.js
 ```
-db.js
-redis.js
-cloudinary.js
-stripe.js
-aws.js
-passport.js
-mail.js
-```
 
-### Rule
+------------------------------------------------------------------------
 
-✅ Third-party service initialize karo
+## config/
 
-❌ Business logic nahi.
+**Why?** Configure external services.
 
-Example
+**Files** - db.js - redis.js - cloudinary.js - stripe.js - mail.js
 
-```
-mongoose.connect()
-
-cloudinary.config()
-
-new Stripe(API_KEY)
-
-```
 ``` js
-// config/db.js
 mongoose.connect(process.env.MONGO_URI);
 ```
 
----
+------------------------------------------------------------------------
 
-# routes/
+## routes/
 
-### Purpose
+**Why?** Define API URLs.
 
-Sirf endpoints define karna.
+**Files** - auth.routes.js - user.routes.js - course.routes.js
 
-Example
-
-```
-POST /login
-
-GET /courses
-
-DELETE /course/:id
-```
-
-Example
-
-```js
-router.post("/login", loginController);
-```
-
-Route me kabhi ye nahi hona chahiye
-
-```js
-User.findOne(...)
-bcrypt.compare(...)
-```
-
----
-
-# controllers/
-
-### Purpose
-
-Request aur Response handle karna.
-
-Example
-
-```
-req.body
-
-req.params
-
-req.query
-
-res.json()
-```
 ``` js
-exports.login = async (req, res) => {
+router.post("/login", authController.login);
+```
+
+------------------------------------------------------------------------
+
+## controllers/
+
+**Why?** Handle request & response.
+
+**Files** - auth.controller.js - user.controller.js
+
+``` js
+exports.login = async (req,res)=>{
   const user = await authService.login(req.body);
   res.json(user);
 };
 ```
 
-Controller ka kaam
+------------------------------------------------------------------------
 
-```
-Receive Request
+## services/
 
-↓
+**Why?** Business logic.
 
-Call Service
-
-↓
-
-Return Response
-```
-
-Controller me kabhi
-
-```
-Huge business logic
-
-Complex calculations
-
-Database queries
-```
-
-nahi.
-
----
-
-# services/
-
-### Purpose
-
-Business Logic
-
-Yahi project ka brain hai.
-
-Example
-
-```
-Login
-
-Register
-
-Purchase Course
-
-Generate Invoice
-
-Send OTP
-
-Create Order
-
-Calculate Discount
-```
-``` js
-async function login(data) {
-  const user = await userRepo.findByEmail(data.email);
-  // compare password
-  // generate JWT
-  return user;
-}
-```
-
-Service ka rule
-
-Business decision yahi hoga.
-
-Example
-
-```
-Email already exists?
-
-↓
-
-Password compare
-
-↓
-
-Generate JWT
-
-↓
-
-Return User
-```
-
----
-
-# repositories/
-
-### Purpose
-
-Database access.
-
-Sirf database.
-
-Example
-
-```
-findUser()
-
-createUser()
-
-updateCourse()
-
-deleteEnrollment()
-```
+**Files** - auth.service.js - payment.service.js
 
 ``` js
-exports.findByEmail = (email) =>
-  User.findOne({ email });
+async function login(data){}
 ```
 
-Rule
+------------------------------------------------------------------------
 
-```
-Mongo
+## repositories/
 
-MySQL
+**Why?** Database queries.
 
-Postgres
-
-Prisma
-
-Mongoose
-```
-
-Jo bhi DB hai usse baat karega.
-
-Business logic nahi.
-
----
-
-# models/
-
-Mongo Schema
-
-```
-User.js
-
-Course.js
-
-Payment.js
-
-Enrollment.js
-```
+**Files** - user.repository.js - course.repository.js
 
 ``` js
-const UserSchema = new Schema({
-  name: String,
-  email: String
-});
+User.findOne({email});
 ```
 
-Rule
+------------------------------------------------------------------------
 
-Sirf schema.
+## models/
 
----
+**Why?** Database schema.
 
-# middlewares/
+**Files** - User.js - Course.js - Payment.js
 
-Express request ke beech me chalne wale functions.
+------------------------------------------------------------------------
 
-Example
+## middlewares/
 
-```
-Authentication
+**Why?** Execute before controller.
 
-Authorization
+**Files** - auth.middleware.js - role.middleware.js -
+upload.middleware.js - error.middleware.js
 
-Rate Limiter
+------------------------------------------------------------------------
 
-Logger
+## validations/
 
-Upload
+**Why?** Validate request.
 
-Error Handler
-```
-``` js
-router.get("/profile", verifyJWT, profileController);
-```
-
-Example
-
-```
-verifyJWT
-
-adminOnly
-
-uploadImage
-
-errorHandler
-```
-
----
-
-# validations/
-
-Request validation.
-
-```
-register.validation.js
-
-login.validation.js
-
-course.validation.js
-```
+**Files** - auth.validation.js - course.validation.js
 
 ``` js
 loginSchema.parse(req.body);
 ```
 
-Libraries
+------------------------------------------------------------------------
 
-```
-Zod
+## dto/
 
-Joi
+**Why?** Shape API response.
 
-Express Validator
-```
+**Files** - user.dto.js - payment.dto.js
 
----
+------------------------------------------------------------------------
 
-# dto/
+## utils/
 
-DTO = Data Transfer Object
+**Why?** Pure reusable functions.
 
-Purpose
+**Files** - formatDate.js - slugify.js - generateOTP.js
 
-Database se pura object mat bhejo.
+------------------------------------------------------------------------
 
-Sirf required fields.
+## helpers/
 
-Example
+**Why?** Reusable helper workflows.
 
+**Files** - sendEmail.js - exportPDF.js - csvReader.js
 
-``` js
-return {
-  id: user.id,
-  name: user.name,
-  email: user.email
-};
-```
-Database
+------------------------------------------------------------------------
 
-```
-password
+## constants/
 
-otp
+**Why?** Fixed values.
 
-refreshToken
+**Files** - roles.js - status.js - messages.js
 
-email
+------------------------------------------------------------------------
 
-role
-```
+## lib/
 
-Frontend
+**Why?** Wrap third-party libraries.
 
-```
-name
+**Files** - jwt.js - bcrypt.js - axios.js
 
-email
+------------------------------------------------------------------------
 
-profileImage
-```
+## events/
 
-DTO convert karega.
+**Why?** Application events.
 
----
+**Files** - userRegistered.event.js - orderCreated.event.js
 
-# utils/
+------------------------------------------------------------------------
 
-Reusable pure functions.
+## jobs/
 
-Example
+**Why?** Background tasks.
 
-```
-formatDate()
+**Files** - email.job.js - cleanup.job.js - report.job.js
 
-slugify()
+------------------------------------------------------------------------
 
-generateOTP()
+## sockets/
 
-capitalize()
+**Why?** Realtime communication.
 
-randomString()
-```
-``` js
-exports.slugify = (text) =>
-  text.toLowerCase().replace(/ /g, "-");
-```
+**Files** - chat.socket.js - notification.socket.js
 
+------------------------------------------------------------------------
 
-Rule
+## uploads/
 
-Database nahi.
+**Files** - Uploaded images - PDFs - Documents
 
-Request nahi.
+------------------------------------------------------------------------
 
-Response nahi.
+## docs/
 
----
+**Files** - swagger.yaml
 
-# helpers/
+------------------------------------------------------------------------
 
-Complex reusable helpers.
+## tests/
 
-Example
+**Files** - auth.test.js - course.test.js
 
-``` js
-await sendEmail(user.email, subject, html);
-```
-```
-sendEmail()
+------------------------------------------------------------------------
 
-generatePDF()
+## app.js
 
-excelExport()
+Configure Express app.
 
-csvReader()
-```
+## server.js
 
-Difference
-
-Utils
-
-👉 Pure Function
-
-Helpers
-
-👉 Third party ka helper.
-
----
-
-# constants/
-
-Fixed values.
-
-```
-ROLE
-
-STATUS
-
-ERROR_MESSAGE
-
-REGEX
-
-LIMITS
-```
-``` js
-module.exports = {
-  ROLE_ADMIN: "admin"
-};
-```
-
----
-
-# lib/
-
-External libraries wrap karna.
-
-Example
-
-``` js
-module.exports = new Stripe(process.env.STRIPE_SECRET);
-```
-
-```
-jwt.js
-
-bcrypt.js
-
-axios.js
-```
-
-Taaki future me replace karna easy ho.
-
----
-
-# events/
-
-Event Driven Architecture.
-
-Example
-
-``` js
-eventEmitter.emit("userRegistered", user);
-```
-
-```
-User Registered
-
-↓
-
-Email
-
-↓
-
-Notification
-
-↓
-
-Analytics
-```
-
----
-
-# jobs/
-
-Background Jobs.
-
-
-``` js
-cron.schedule("* * * * *", cleanup);
-```
-Example
-
-```
-Send Email
-
-Generate Report
-
-Cleanup
-
-Cron
-```
-
-Mostly
-
-BullMQ
-
-Agenda
-
-Cron
-
----
-
-# sockets/
-
-Realtime
-
-``` js
-io.emit("newMessage", message);
-```
-
-```
-Chat
-
-Notifications
-
-Live Tracking
-```
-
----
-
-# uploads/
-
-Temporary uploads.
-
----
-
-# docs/
-
-Swagger
-
-OpenAPI
-
-API Documentation
-
----
-
-# tests/
-
-Unit Test
-
-Integration Test
-
----
-
-# app.js
-
-Express App
-
-```
-middlewares
-
-routes
-
-cors
-```
-
----
-
-# server.js
-
-Application start.
-
-```
-connectDB()
-
-listen()
-```
+Start server and connect database.
 
 ---
 
