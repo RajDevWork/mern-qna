@@ -1,7 +1,4 @@
-Ye request mujhe kaafi pasand aayi, kyunki ye **industry-oriented** hai.
-
-Main tumhe **"meri पसंद"** wala structure nahi dunga. Main wo structure dunga jo tum **80-90% MERN companies** me dekh sakte ho (thoda bahut naam change ho sakta hai, responsibility almost same rehti hai).
-
+## Node.js + Express + React Folder Structure (Quick Reference)
 ---
 
 # 1. Backend (Node.js + Express)
