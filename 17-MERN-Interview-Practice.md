@@ -274,7 +274,7 @@
 
 # Micro task V/s Macro task:
                             Complete Diagram
-                            
+
                                 Call Stack
                                     │
                                     ▼
@@ -303,3 +303,101 @@
                         │ HTTP Request Callback      │
                         │ Socket Events              │
                         └─────────────────────────────┘
+
+# fetch microtask hai?
+
+    fetch() itself starts an asynchronous network operation. The Promise callbacks (.then, .catch, .finally) run as microtasks after the response is available.
+
+# Golden Rule ⭐⭐⭐⭐⭐
+
+    Priority sirf un tasks ke beech compare hoti hai jo "ready" hain.
+
+    fetch() ka .then() tab tak Microtask Queue me aata hi nahi jab tak network response na aa jaye.
+    setTimeout() ka callback tab tak Macrotask Queue me aata hi nahi jab tak timer complete na ho.
+
+    Isliye compare hamesha ready callbacks ka hota hai, na ki fetch() aur setTimeout() ka.
+
+# Promise always executes before setTimeout?
+
+    Promise callbacks execute before macrotasks only after the Promise has been resolved. If the Promise hasn't resolved yet, there is nothing to execute.
+
+# What is process.nextTick()?
+
+    process.nextTick() is a Node.js-specific API used to schedule a callback immediately after the current operation completes. It has higher priority than Promise microtasks, so callbacks registered with process.nextTick() execute before .then() callbacks.
+
+    ``` js
+    console.log("Start");
+
+    process.nextTick(() => {
+        console.log("nextTick");
+    });
+
+    Promise.resolve().then(() => {
+        console.log("Promise");
+    });
+
+    console.log("End");
+    ```
+    Output : Start > End > nextTick > Promise
+
+    Why? : Kyunki Node.js internally priority aise rakhta hai:
+
+            Call Stack
+
+            ↓
+
+            process.nextTick Queue
+
+            ↓
+
+            Promise Microtask Queue
+
+            ↓
+
+            Macrotask Queue 
+
+# Why do we need it?
+
+    Sometimes we want a callback to execute immediately after the current synchronous code, before any other asynchronous callbacks. process.nextTick() is useful in such cases
+
+
+# What is setImmediate()?
+
+    setImmediate() schedules a callback to run in the Check phase of the Node.js Event Loop. It is commonly used to execute code immediately after I/O operations without blocking the current execution.
+
+
+# process.nextTick vs Promise. Which executes first?
+
+    process.nextTick() executes first because Node.js gives it higher priority than the Promise microtask queue.
+
+    ``` js
+    console.log("A");
+
+    process.nextTick(()=>console.log("B"));
+
+    Promise.resolve().then(()=>console.log("C"));
+
+    console.log("D");
+
+    O/p: A D B C
+    ```
+
+
+# setImmediate vs setTimeout(0) Difference?
+
+    setTimeout(fn, 0) schedules the callback in the Timers phase, while setImmediate() schedules it in the Check phase. If both are called from the main module, the execution order is not guaranteed. However, inside an I/O callback, setImmediate() usually executes before setTimeout(0)
+
+
+# Browser vs Node Event Loop
+
+    Both Browser and Node.js use the Event Loop to execute asynchronous callbacks. The main difference is that browsers handle DOM events, rendering, and Web APIs, whereas Node.js has no DOM and uses the libuv library to manage timers, file system operations, and networking
+
+
+
+# Why does process.nextTick() run before Promise.then()?
+
+    Because Node.js maintains a separate NextTick Queue and gives it higher priority than the Promise Microtask Queue. After the current synchronous execution finishes, Node.js first drains the NextTick Queue completely, then processes Promise microtasks.
+
+# Why did Node.js designers give process.nextTick() higher priority?
+
+    process.nextTick() was designed for internal Node.js operations that need to execute immediately after the current synchronous code, before the Event Loop continues with other tasks. It allows Node.js and library authors to schedule critical callbacks without waiting for the next Event Loop phase.
