@@ -175,3 +175,131 @@
 # Why is useRef faster than useState for form inputs?
 
     Because updating useRef.current or typing into an uncontrolled input does not trigger a React re-render. In contrast, useState updates trigger a re-render of the component, allowing React to keep the UI in sync with state.
+
+
+=============================================== NODE JS ========================================================
+
+
+# Node.js asynchronous kaise bana? Event Loop?
+
+                           Architecture
+
+                            JavaScript
+
+                                │
+
+                        Call Stack
+
+                                │
+
+                            Event Loop
+
+                                │
+
+                            libuv
+
+                ┌──────────┬───────────┐
+
+                Timer      File IO     Network
+
+    The Event Loop is a mechanism in the JavaScript runtime that continuously monitors the call stack. When the call stack becomes empty, it first executes all pending microtasks, such as Promise callbacks, and then processes macrotasks like setTimeout. In Node.js, asynchronous operations such as timers, file I/O, and networking are handled by libuv, allowing JavaScript to remain non-blocking.
+
+
+# Node.js single-threaded hai. Fir ek hi time me thousands of requests kaise handle kar leta hai?
+
+    Node.js executes JavaScript on a single thread. Whenever a time-consuming task like file reading, network requests, or timers comes, it doesn't execute them on the main thread. Instead, it hands them over to the libuv library. While libuv processes those operations, the main thread remains free to handle other requests. Once the task is completed, the Event Loop moves its callback to the call stack for execution. This is why Node.js can handle many concurrent requests without blocking the main thread.
+
+# What is libuv? Why does Node.js need it?
+
+    libuv is a library used by Node.js to handle time-consuming asynchronous operations like timers, file system operations, and network requests. Instead of blocking the main JavaScript thread, Node.js delegates these tasks to libuv. Once the operation is completed, the callback is placed in the task queue. When the call stack becomes empty, the Event Loop moves the callback to the call stack for execution
+
+                            Event Loop Flow Diagram
+
+                                 JavaScript Code
+                                        │
+                                        ▼
+                                ┌──────────────┐
+                                │  Call Stack  │
+                                └──────────────┘
+                                        │
+                        ┌───────────────┼────────────────┐
+                        │               │                │
+                        ▼               ▼                ▼
+                Synchronous      setTimeout()     fs.readFile()
+                    Code             fetch()        DB Query
+                                        │
+                                        ▼
+                            ┌────────────────┐
+                            │     libuv      │
+                            │ (Handles Async)│
+                            └────────────────┘
+                                        │
+                        ┌───────────────┼─────────────────┐
+                        │                                 │
+                        ▼                                 ▼
+                Microtask Queue                    Macrotask Queue
+                (Promise.then, queueMicrotask)  (setTimeout, setInterval,
+                process.nextTick*)             setImmediate, I/O callbacks)
+                        │                                 │
+                        └───────────────┬─────────────────┘
+                                        ▼
+                                ┌────────────────┐
+                                │  Event Loop    │
+                                └────────────────┘
+                                        │
+                        Is Call Stack Empty?
+                               │
+                        ┌──────┴──────┐
+                        │             │
+                        No            Yes
+                        │             │
+                        │             ▼
+                        │     Run ALL Microtasks
+                        │             │
+                        │             ▼
+                        │      Run ONE Macrotask
+                        │             │
+                        └─────────────┘
+                                        │
+                                        ▼
+                                ┌──────────────┐
+                                │  Call Stack  │
+                                └──────────────┘
+                                        │
+                                    Execute
+
+# Libuv vs Event Loop:
+
+    libuv performs the asynchronous work, while the Event Loop is responsible for scheduling completed callbacks for execution on the JavaScript thread
+
+# Micro task V/s Macro task:
+                            Complete Diagram
+                            
+                                Call Stack
+                                    │
+                                    ▼
+                            Synchronous Code
+                                    │
+                                    ▼
+                        ┌─────────────────────────────┐
+                        │        Microtask Queue      │
+                        ├─────────────────────────────┤
+                        │ process.nextTick() ⭐       │
+                        │ Promise.then()             │
+                        │ Promise.catch()            │
+                        │ Promise.finally()          │
+                        │ queueMicrotask()           │
+                        └─────────────────────────────┘
+                                    │
+                                    ▼
+                        ┌─────────────────────────────┐
+                        │       Macrotask Queue       │
+                        ├─────────────────────────────┤
+                        │ setTimeout()               │
+                        │ setInterval()              │
+                        │ setImmediate()             │
+                        │ fs.readFile() Callback     │
+                        │ Network Callbacks          │
+                        │ HTTP Request Callback      │
+                        │ Socket Events              │
+                        └─────────────────────────────┘
