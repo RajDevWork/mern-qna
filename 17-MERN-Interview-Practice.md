@@ -534,3 +534,313 @@
 
 
     highWaterMark controls the chunk size of a stream. By default, a read stream reads around 64 KB at a time. We can change this value based on our requirements. A smaller chunk reduces memory usage but increases the number of read operations, while a larger chunk improves throughput but uses more memory. So it's a trade-off between memory consumption and performance.
+
+# What is pipe()?
+
+    pipe() is a method that connects a Readable Stream directly to a Writable Stream. It automatically transfers data chunk by chunk without manually reading and writing each chunk.
+
+    Example : 
+
+    ``` js
+
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("input.txt");
+        const writeStream = fs.createWriteStream("output.txt");
+
+        /**
+         * Question - 
+         * 
+         *  input.txt
+
+            ↓
+
+            Read
+
+            ↓
+
+            Write
+
+            ↓
+
+            output.txt
+         * kaise karoge?
+         * 
+         * **/
+
+        // Without pipe()
+
+        // Yahan tum manually:
+
+        // Read kar rahe ho
+        // Har chunk receive kar rahe ho
+        // Fir write kar rahe ho
+
+        readStream.on("data", (chunk) => {
+            writeStream.write(chunk);
+        });
+
+        // With pipe()
+
+        readStream.pipe(writeStream);
+    ```
+
+ # Why use pipe() instead of writing on('data') manually?
+
+    pipe() automatically handles data flow and is cleaner and less error-prone. It also manages backpressure internally, so the readable stream doesn't overwhelm the writable stream.
+
+# What is Backpressure?
+
+    Backpressure is a flow control mechanism used in streams. In many cases, the readable stream can produce data faster than the writable stream can consume it. If data keeps flowing, memory usage will increase. To avoid this, backpressure temporarily pauses the readable stream until the writable stream is ready, then it resumes the flow.
+
+# Can you give a real example?
+
+    Suppose I'm uploading a large file to cloud storage. Reading the file from disk may be faster than uploading it over the network. If I keep reading without control, data will accumulate in memory. Backpressure ensures that reading slows down whenever the network is busy.
+
+# Is backpressure automatic?
+
+    pipe() automatically handles backpressure. However, if we manually consume stream data using events like data, then we are responsible for handling backpressure ourselves using methods like pause(), resume(), and the drain event.
+
+
+    Example:
+
+    Using pipe() : yahan backpressure ko nodejs internally control karta hain.
+
+    ``` js
+        const readStream = fs.createReadStream("input.txt");
+        const writeStream = fs.createWriteStream("output.txt");
+
+        readStream.pipe(writeStream);
+    ```
+
+    Without Using pipe():
+
+    ``` js
+            readStream.on("data",(chunk)=>{
+
+            writeStream.write(chunk);
+
+            });
+
+            // iss case me humne manually check karna padega like:
+
+            const canWrite = writeStream.write(chunk);
+
+            if (!canWrite) {
+                readStream.pause();
+
+                writeStream.once("drain", () => {
+                    readStream.resume();
+                });
+            }
+    ```
+    pipe() sirf syntax sugar nahi hai.
+
+    Uske andar Node.js bahut saari complexity handle karta hai:
+
+    ✅ Reading
+    ✅ Writing
+    ✅ Error propagation
+    ✅ Backpressure
+    ✅ Flow control
+
+    Isi wajah se production me hum almost hamesha pipe() prefer karte hain instead of manually handling every chunk.
+
+# How does pipe() automatically handle backpressure internally?
+
+    pipe() continuously sends chunks from the readable stream to the writable stream. Internally, Node.js checks whether the writable stream is ready to accept more data. If the writable stream becomes busy or its internal buffer is full, pipe() automatically pauses the readable stream. Once the writable stream finishes processing the buffered data and emits the drain event, pipe() resumes the readable stream. This flow control mechanism is called backpressure.
+
+# Can you explain with a flow?
+
+            Readable Stream
+                │
+                ▼
+            Read Chunk
+                │
+                ▼
+            Writable.write(chunk)
+                │
+                ▼
+            Can Writable accept more data?
+                │
+            ┌────┴────┐
+            │         │
+            Yes        No
+            │         │
+            ▼         ▼
+            Next Chunk Pause Readable
+                        │
+                        ▼
+                Wait for 'drain' event
+                        │
+                        ▼
+                Resume Readable
+
+# How does Node.js know the writable stream is full?
+
+    ``` js
+        const canWrite = writeStream.write(chunk);
+    ```
+    pipe() automatically pauses the readable stream when the writable stream cannot consume data fast enough. Once the writable stream emits the drain event, it resumes reading. This prevents excessive memory usage and is how Node.js implements backpressure internally.
+
+# How many types of Streams are there in Node.js?
+
+    There are four types of streams in Node.js: Readable, Writable, Duplex, and Transform:
+
+    Readable Stream
+
+    Purpose
+
+    Read Data
+
+    Example
+
+    const readStream = fs.createReadStream("input.txt");
+
+    Real Life
+
+    Read file
+    Read request body
+    Download file
+
+    Diagram
+
+    Disk/File
+        │
+        ▼
+    Readable Stream
+        │
+        ▼
+    JavaScript
+    Writable Stream
+
+    Purpose
+
+    Write Data
+
+    Example
+
+    const writeStream = fs.createWriteStream("output.txt");
+
+    Real Life
+
+    Save uploaded file
+    Write logs
+    Generate CSV
+
+    Diagram
+
+    JavaScript
+        │
+        ▼
+    Writable Stream
+        │
+        ▼
+    Disk/File
+    Duplex Stream
+
+    Purpose
+
+    Read + Write
+
+    Example
+
+    TCP Socket
+
+    Real Life
+
+    Chat application
+
+    Client
+    │ Send
+    ▼
+    Server
+    ▲
+    Reply
+
+    Ek hi connection
+
+    Read bhi
+
+    Write bhi
+
+    Transform Stream ⭐⭐⭐⭐⭐
+
+    Purpose
+
+    Read
+
+    ↓
+
+    Modify
+
+    ↓
+
+    Write
+
+    Example
+
+    Compression
+
+    Encryption
+
+    Uppercase Conversion
+
+    Example Code
+
+    const zlib = require("zlib");
+
+    readStream.pipe(zlib.createGzip()).pipe(writeStream);
+
+    Yahan
+
+    Read
+
+    ↓
+
+    Compress
+
+    ↓
+
+    Write
+    Memory Trick
+    Readable
+
+    ↓
+
+    Read
+
+    -----------------
+
+    Writable
+
+    ↓
+
+    Write
+
+    -----------------
+
+    Duplex
+
+    ↓
+
+    Read + Write
+
+    -----------------
+
+    Transform
+
+    ↓
+
+    Read + Modify + Write
+
+
+# Is every Transform stream a Duplex stream?
+
+    ✅ Yes.
+
+    Because Transform
+
+    Read karta hai.
+    Write karta hai.
+    Aur beech me data modify bhi karta hai.
