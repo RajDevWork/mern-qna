@@ -401,3 +401,136 @@
 # Why did Node.js designers give process.nextTick() higher priority?
 
     process.nextTick() was designed for internal Node.js operations that need to execute immediately after the current synchronous code, before the Event Loop continues with other tasks. It allows Node.js and library authors to schedule critical callbacks without waiting for the next Event Loop phase.
+
+
+## Trick Question - 
+
+
+    ```javascript
+    console.log("A");
+
+    setTimeout(() => {
+        console.log("B");
+
+        Promise.resolve().then(() => {
+            console.log("C");
+        });
+
+        process.nextTick(() => {
+            console.log("D");
+        });
+
+    }, 0);
+
+    Promise.resolve().then(() => {
+        console.log("E");
+
+        process.nextTick(() => {
+            console.log("F");
+        });
+    });
+
+    process.nextTick(() => {
+        console.log("G");
+
+        Promise.resolve().then(() => {
+            console.log("H");
+        });
+    });
+
+    console.log("I");
+
+    ```
+
+    A,I, G, E, H, F, B , D , C
+
+    1: A - Sync code hone ke wajah se
+    2: SetTimeout - libuv ko timer complete karne ke liye
+    3: Promise jo resolved ho chuka hain microtask queue me add hoga
+    4: nextTick - Yeh nextTick wale queue me store hoga
+    5: I - Sync hone ke wajah se
+
+    Now - 
+    NextTick queue  drain hoga - 
+    4.1: G - Sync code
+    4.2: Promise jo resolved hain - Micro task queue me 3rd no code ke bad add hoga
+
+    NextTick completed hain Abb micro task queues process hoga
+
+    3.1: E - Sync hone ke wajah se
+    3.2: Again nextTick wala queue me add hoga
+
+    now 3rd complete - Callstack phir se nextTick ko execute karega
+    Micro task me abhi bhi  ek task hain H name se so 
+    H - sync ho ke wajah se - 
+    now micro task empty - nextTick task execute hoga - 
+
+    F - Sync hone ke wajah se
+
+    Finally Macro task queue execute hoga - 
+
+    2.1:  B - sync hone ke wajah se
+    2.2:  Micortask me jayega kyunki resolved promise hain - 
+    2.3:  nextTick queue me add hoga
+
+    Then 
+    nextTick queue se - D print hoga sync hoke ke wajah se
+    and lastly - C print hoga
+
+
+
+
+
+# Why do we need Streams?
+
+    A Stream is a way to process data in small chunks instead of loading the complete data into memory. This makes the application memory efficient and is especially useful for large file uploads, downloads, video streaming, and data processing.
+
+# Have you used Streams?
+
+    Yes. I have used streams during file uploads. Instead of loading the complete uploaded file into server memory, the file is processed chunk by chunk. This keeps memory usage low and allows large files to be handled efficiently.
+
+# How much is one chunk?
+
+    64KB
+
+# Why are Streams more memory efficient than fs.readFile()?
+
+    fs.readFile() reads the complete file into memory before processing starts. For small files this is fine, but for very large files it can consume a lot of RAM and affect application performance. Streams solve this problem by reading the file in smaller chunks. As soon as a chunk is available, processing can start without waiting for the entire file. This keeps memory usage low and makes large file handling much more efficient.
+
+# What is highWaterMark?
+
+    highWaterMark is a stream configuration that controls how much data is read into memory in a single chunk. By default, fs.createReadStream() reads about 64 KB at a time, but we can increase or decrease this size depending on our use case.
+
+    ``` js
+    const fs = require("fs");
+
+    const stream = fs.createReadStream("movie.mp4",{
+
+        highWaterMark : 1024 // 1KB chunk size default is 64KB
+
+    });
+
+    const stream = fs.createReadStream("movie.mp4",{
+
+        highWaterMark : 1024 * 1024 // 1MB chunk size default is 64KB
+
+    });
+
+    ```
+
+# Why would someone increase highWaterMark?
+
+    highWaterMark defines the maximum amount of data that a stream reads into its internal buffer at one time. Increasing it can improve throughput by reducing callback overhead, while decreasing it lowers memory usage
+
+
+# Why would you change it?
+
+    If the chunk size is too small, the stream has to perform more read operations and callbacks, which increases overhead. If the chunk size is too large, memory usage increases. So we choose a value that provides a good balance between performance and memory usage
+
+
+# Have you changed highWaterMark in production?
+
+    No, I haven't had a production requirement to tune highWaterMark. I've mostly used the default configuration, which was sufficient for our file upload use cases. I know it can be tuned when optimizing memory usage or throughput for very large files
+
+
+    highWaterMark controls the chunk size of a stream. By default, a read stream reads around 64 KB at a time. We can change this value based on our requirements. A smaller chunk reduces memory usage but increases the number of read operations, while a larger chunk improves throughput but uses more memory. So it's a trade-off between memory consumption and performance.
