@@ -889,3 +889,431 @@
 
                     Writable Stream
 
+## Stream Events
+
+                Stream Life Cycle (Imagine)
+
+                        movie.mp4
+
+                        ↓
+
+                        Readable Stream
+
+                        ↓
+
+                        JavaScript
+
+                        ↓
+
+                        Writable Stream
+
+                        ↓
+
+                        output.mp4
+
+    Iss journey me kya kya ho sakta hai?
+
+    1. Data aaya
+    2. Data khatam hua
+    3. Error aaya
+    4. Writable busy hua
+    5. Writing complete hui
+
+    Yehi events hain.
+
+# When does data event fire?
+
+    The data event is emitted every time a new chunk of data is available from a readable stream
+
+    ``` js
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("input.txt");
+
+        readStream.on("data", (chunk) => {
+            console.log(chunk); // chunk ka datatype - Buffer
+        });
+    ```
+
+# Difference between data and end?
+
+    data is emitted for every chunk, whereas end is emitted only once when the readable stream has no more data to provide.
+
+    ``` js
+            readStream.on("end", () => {
+                console.log("Reading Completed");
+            });
+    ```
+
+# Why should we always handle error?
+
+    Streams perform asynchronous operations, so errors are emitted through the error event. Handling it prevents unexpected crashes and allows graceful error handling.
+
+    ``` js  
+        readStream.on("error", (err) => {
+            console.log(err.message);
+        });
+    ```
+
+# When does drain event fire?
+
+    drain is emitted by a writable stream when its internal buffer has been emptied enough to accept more data after backpressure.
+
+    ``` js
+
+        readStream.on("data",(chunk)=>{
+
+        writeStream.write(chunk);
+
+        });
+
+        // iss case me humne manually check karna padega like:
+
+        const canWrite = writeStream.write(chunk);
+
+        if (!canWrite) {
+            readStream.pause();
+
+            writeStream.once("drain", () => {
+                readStream.resume();
+            });
+        }
+    ```
+
+# When does the finish event fire?
+
+    finish is emitted by a writable stream after all the data has been successfully written and stream.end() has been called. It indicates that the writing operation is complete.
+
+    ``` js
+        writeStream.on("finish", () => {
+            console.log("Writing Completed");
+        });
+    ```
+
+    Example:
+
+    ``` js
+
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("input.txt");
+
+        const writeStream = fs.createWriteStream("output.txt");
+
+        readStream.on("data",(chunk)=>{
+
+            console.log("Reading Chunk");
+
+        });
+
+        readStream.on("end",()=>{
+
+            console.log("Read Complete");
+
+        });
+
+        readStream.on("error",(err)=>{
+
+            console.log(err.message);
+
+        });
+
+        writeStream.once("drain", () => {
+                readStream.resume();
+            });
+
+        writeStream.on("finish",()=>{
+
+            console.log("Write Complete");
+
+        });
+
+    ```
+
+# Read a file using Streams instead of readFile().
+
+    ``` js
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("input.txt");
+        
+        //data event
+        readStream.on("data",(chunk)=>{
+            console.log(chunk.toString())
+        });
+
+        // end
+
+        readStream.on("end",()=>{
+            console.log("Reading completed")
+        })
+
+        //error
+
+        readStream.on("error",(err)=>{
+            console.log(err.message);
+        })
+
+    ```
+
+# Copy one file into another using Streams.
+
+    ``` js
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("input.txt");
+        const writeStream = fs.createWriteStream("output.txt");
+
+        readStream.on("data",(chunk)=>{
+            writeStream.write(chunk)
+        })
+
+        readStream.on("end",()=>{
+            writeStream.end();
+        })
+    ```
+
+# Isme problem kya hai?
+
+    This works, but I'm manually handling each chunk and also manually ending the writable stream. It also doesn't automatically manage backpressure.
+
+    BETTER:
+
+    ``` js
+
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("input.txt");
+
+        const writeStream = fs.createWriteStream("output.txt");
+
+        readStream.pipe(writeStream);
+    ```
+# Why is this better?
+
+    pipe() automatically transfers chunks, manages backpressure, and simplifies the code.
+
+
+# Calculate file size using Streams.
+
+    ``` js
+        const fs = require("fs");
+        let total = 0;
+
+        const readStream = fs.createReadStream("input.txt");
+
+        readStream.on("data",(chunk)=>{
+            total+=chunk.length; // because chunk is a Buffer
+        })
+
+        readStream.on("end",()=>{
+            console.log(total);
+        })
+    ```
+
+# Compress a File
+
+    ``` js
+
+        const fs = required("fs");
+
+        const zlib = required("zlib");
+
+        fs.createReadStream("movie.mp4").pipe(zlib.createGzip()).pipe(fs.createWriteStream("movie.mp4.gz"));
+
+    ```
+
+# File upload me Stream kahan use hota hai?
+
+    Flow
+
+    Client
+
+    ↓
+
+    Readable Stream
+
+    ↓
+
+    Buffer
+
+    ↓
+
+    Processing
+
+    ↓
+
+    Writable Stream
+
+    ↓
+
+    Storage
+
+    Agar Multer, Busboy, Cloudinary SDK ya S3 SDK use karte ho, to internally streams ka use hota hai.
+
+# Why not use readFile() everywhere?
+
+    readFile() loads the complete file into memory, which is fine for small files but inefficient for large files. Streams process data chunk by chunk, reducing memory usage and allowing processing to start before the entire file is read.
+
+# 20GB memory me load hoga then processing start hoga.
+
+    For a 20 GB file, I would use createReadStream().pipe(createWriteStream()) instead of readFile(). readFile() first loads the entire file into memory, which can consume a large amount of RAM and even cause memory exhaustion. Streams process the file chunk by chunk, so writing starts as soon as each chunk is read, without waiting for the entire file. In addition, pipe() automatically handles backpressure by pausing the readable stream when the writable stream is busy and resuming it when it is ready.
+
+# I thought pipe() handles everything automatically. Why do I still need error handlers?
+
+    pipe() automatically manages data flow and backpressure, but it does not replace application-level error handling. Read and write failures are emitted as error events, so we should still listen for them to avoid unhandled stream errors and to respond appropriately.
+
+
+    Node.js ne isi problem ko solve karne ke liye ek aur API introduce ki.
+
+    ``` js
+
+        const { pipeline } = require("stream");
+        pipeline(
+        readStream,
+        writeStream,
+        (err) => {
+            if (err) {
+                console.log("Pipeline Failed:", err.message);
+            } else {
+                console.log("Pipeline Completed");
+            }
+        }
+    );
+    ```
+
+    pipeline() ka benefit
+    ✅ Automatically connects streams
+    ✅ Better error propagation
+    ✅ Cleans up streams if one fails
+    ✅ Recommended over complex pipe() chains
+
+
+# Difference between pipe() and pipeline()?
+
+    pipe() is convenient for connecting streams and handling backpressure, but it requires manual error handling. pipeline() builds on top of streams by handling cleanup and propagating errors more reliably, making it the preferred choice for production stream pipelines.
+
+
+# pipe() vs pipeline()
+
+    ``` js
+
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("input.txt");
+        const writeStream = fs.createWriteStream("output.txt");
+
+        readStream.pipe(writeStream);
+    ```
+
+    Question.
+
+    Ye code sahi hai?
+
+    ✅ YES.
+
+    Question.
+
+    Production ready hai?
+
+    Not completely.
+
+    Kyun?
+
+    Suppose
+
+    input.txt
+
+    exist hi nahi karti.
+
+    Ya
+
+    Permission denied.
+
+    Ya
+
+    Disk full.
+
+    Question.
+
+    Kaun cleanup karega?
+
+    Kaun saare streams close karega?
+
+    Kaun ek hi jagah error dega?
+
+    Tumhe manually handle karna padega.
+
+
+    ## Ab pipeline()
+
+    ``` js
+        const fs = require("fs");
+        const {pipeline} = require("stream")
+
+        pipeline(
+           fs.createReadStream("input.txt"),
+           fs.createWriteStream("output.txt"),
+           (err)=>{
+                if(err){
+                    console.log("Pipeline Failed");
+                }else{
+                    console.log("Pipeline Success");
+                }
+
+           }
+
+        )
+    ```
+
+
+    pipe() is used to connect readable and writable streams and automatically handles backpressure. However, error handling and resource cleanup need to be managed separately. pipeline() provides the same streaming functionality but also handles error propagation and cleanup automatically, making it a better choice for production applications.
+
+
+# Can I replace every pipe() with pipeline()?
+
+    For production stream pipelines, pipeline() is generally preferred because it provides centralized error handling and automatic cleanup. pipe() is still useful for simpler cases or when you want finer control over the stream lifecycle.
+
+
+    Suppose tum ye likhte ho:
+
+    ``` js
+        readStream
+        .pipe(gzip)
+        .pipe(encrypt)
+        .pipe(writeStream);
+    ```
+
+    Yahan 4 streams hain.
+
+        Readable Stream
+        Gzip Transform Stream
+        Encrypt Transform Stream
+        Writable Stream
+
+    Error kis stream me aa sakta hai? - Kisi bhi stream me. to phir ?
+
+    ``` js
+
+    readStream.on("error", ...)
+
+    ```
+    enough nahi hai.
+
+    Manual Error Handling
+
+    ``` js
+        readStream.on("error", handleError);
+
+        gzip.on("error", handleError);
+
+        encrypt.on("error", handleError);
+
+        writeStream.on("error", handleError);
+    ```
+
+# If you're using pipe(), how will you handle errors?
+
+    With pipe(), I need to attach error listeners to every stream involved in the pipeline, such as the readable, transform, and writable streams. If any stream fails, I should also clean up the remaining streams. This is one of the reasons pipeline() is preferred in production, because it centralizes error handling and automatically cleans up resources.
+
+
