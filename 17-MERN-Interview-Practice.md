@@ -1317,3 +1317,24 @@
     With pipe(), I need to attach error listeners to every stream involved in the pipeline, such as the readable, transform, and writable streams. If any stream fails, I should also clean up the remaining streams. This is one of the reasons pipeline() is preferred in production, because it centralizes error handling and automatically cleans up resources.
 
 
+# Why are Streams considered memory efficient? Why can't we simply use fs.readFile() for every file operation?
+
+    Streams are more memory efficient because they process data chunk by chunk instead of loading the entire file into memory. In contrast, fs.readFile() first reads the complete file into RAM, which is fine for small files but can consume a large amount of memory for large files and may even lead to memory exhaustion. With streams, processing starts as soon as the first chunk is available, so memory usage stays low and large files can be handled efficiently
+
+# You said Streams start processing immediately. Can you explain what 'processing' means? Give me a real example.
+
+    By processing, I mean performing some operation on each chunk as soon as it becomes available. For example, while reading a large CSV file, I can validate each record immediately instead of waiting for the complete file. Similarly, during file uploads I can directly stream chunks to cloud storage, or compress and encrypt data while it is being read.
+
+
+# What is Backpressure? What happens if it doesn't exist?
+
+    Backpressure is a flow control mechanism that manages the rate of data transfer between a fast readable stream and a slower writable stream. If the writable stream cannot consume data fast enough, the readable stream is automatically paused. Once the writable stream empties its internal buffer and emits the drain event, reading resumes. Without backpressure, data would keep accumulating in memory, leading to increased memory usage, poor performance, and potentially memory exhaustion.
+
+
+# Who calls pause() and resume()?
+
+    It depends on how streams are being used. If I'm manually consuming the stream using events like data, then I'm responsible for handling backpressure by calling pause(), listening for the drain event, and then calling resume(). However, if I'm using pipe(), Node.js internally manages this flow automatically. pipe() pauses the readable stream when the writable stream is full and resumes it after the writable stream emits the drain event.
+
+# If pipe() already handles backpressure automatically, then why do we even have pause() and resume() methods?
+
+    pipe() is the preferred approach because it automatically handles data transfer and backpressure. However, if I need custom processing for each chunk—for example, validating data, modifying it, filtering records, encrypting it, or making decisions before writing—then I may consume the stream manually using the data event. In that case, I'm responsible for handling backpressure using pause(), resume(), and the drain event
