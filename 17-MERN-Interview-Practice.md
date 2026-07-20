@@ -1412,3 +1412,46 @@
 # Suppose your application needs to compress a video using FFmpeg. Would you choose Worker Threads or Child Process, and why?
 
     I would use child_process because FFmpeg is an external executable tool, not JavaScript code. child_process allows Node.js to start and communicate with external operating system processes. Worker Threads are suitable for CPU-intensive JavaScript tasks, whereas FFmpeg runs as a separate process."
+
+
+# CPU-bound vs I/O-bound
+
+
+    I/O-bound
+
+    Jab application
+
+    Database
+
+    Network
+
+    Redis
+
+    File
+
+    API
+
+    ka wait kar rahi hoti hai.
+
+    CPU
+
+    Mostly Free
+
+    rehta hai.
+
+
+    CPU-bound
+
+    Jab CPU continuously calculation kar raha ho.
+
+    Examples
+
+    Video Compression
+    Image Resize
+    Encryption
+    Hashing
+    PDF Generation
+    Sorting 5 Million Records
+    AI Inference
+
+
