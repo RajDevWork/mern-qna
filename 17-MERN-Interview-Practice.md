@@ -1486,3 +1486,53 @@
         TTL support.
         Automatic expiration.
 
+
+
+## API Design & Backend Architecture
+
+
+# What is a REST API?
+
+    REST (Representational State Transfer) is an architectural style for designing APIs. It uses standard HTTP methods such as GET, POST, PUT, PATCH, and DELETE to allow clients and servers to communicate in a stateless manner.
+
+
+# REST Principles - 
+
+    Stateless - Har request
+
+                ↓
+                Apne saath
+                JWT
+                Session ID
+                Authorization
+                lekar aayegi.
+                Isliye
+
+                Stateless.
+
+    Resource Based URLs - 
+
+                Good
+                GET /users
+                Good
+                GET /courses/10
+
+                Bad
+                GET /getUsers
+                Bad
+                POST /deleteCourse
+
+                Resource ko represent karo.
+
+                Action ko nahi.
+
+
+    Proper HTTP Methods - 
+
+                GET, POST, PUT, PATCH, DELETE
+
+# Why shouldn't we delete data using GET?
+
+    GET requests should only retrieve data and should not modify server state. Browsers, proxies, and caches assume that GET is safe and may automatically cache or prefetch such requests. If we perform a delete operation using GET, it violates REST principles and can lead to unintended data modifications. Therefore, DELETE should be used for delete operations.
+
+
