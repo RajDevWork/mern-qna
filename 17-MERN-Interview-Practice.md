@@ -844,3 +844,48 @@
     Read karta hai.
     Write karta hai.
     Aur beech me data modify bhi karta hai.
+
+
+# What is Buffer?
+
+    A Buffer is a temporary memory area used by Node.js to store raw binary data before it is processed.
+
+# Why can't Streams directly pass data to JavaScript?
+
+    Streams read binary data from sources like files or network sockets. Node.js stores this binary data in Buffers first because Buffers are optimized for handling raw binary data. JavaScript can then process or convert that data as required.
+
+# Have you ever used Buffer directly?
+
+    Not directly in business logic. Most of my usage has been indirect through streams and file uploads, where Node.js internally uses Buffers to process binary data.
+
+# What is the relationship between Streams and Buffers?
+
+    Streams process data chunk by chunk instead of loading the complete file into memory, making them memory efficient. Each chunk is received as a Buffer, which is Node.js's optimized temporary memory area for storing raw binary data. The stream reads binary data into Buffers, and then JavaScript can process or convert that data as required. So, Buffers store the binary data, while Streams are responsible for moving and processing that data efficiently.
+
+    OR
+
+    A Stream is the flow of data, while a Buffer is the temporary memory that holds each chunk of data during that flow.
+
+                Actually flow ye hai:
+                    File
+
+                    ↓
+
+                    Readable Stream
+
+                    ↓
+
+                    Buffer
+
+                    ↓
+
+                    JavaScript
+
+                    ↓
+
+                    (optional processing)
+
+                    ↓
+
+                    Writable Stream
+
