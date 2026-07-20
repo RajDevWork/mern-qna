@@ -1455,3 +1455,34 @@
     AI Inference
 
 
+# Difference between Vertical and Horizontal Scaling?
+
+    Vertical Scaling means increasing the resources of the same server, such as CPU or RAM. Horizontal Scaling means adding more servers and distributing traffic among them using a load balancer. Horizontal Scaling provides better fault tolerance and is generally preferred for large-scale applications.
+
+
+# If you have multiple servers, where will user sessions be stored?
+
+    Redis
+
+# Why is Horizontal Scaling generally preferred over Vertical Scaling in production?
+
+    In vertical scaling, we increase the resources of the same server, such as CPU and RAM. It is simple to implement but has hardware limits, and if that single server fails, the entire application can become unavailable. In horizontal scaling, we add multiple servers and distribute incoming traffic using a load balancer. This provides better fault tolerance, high availability, and allows the application to handle increasing traffic by adding more servers.
+
+
+# If you have 5 application servers behind a load balancer, what should you avoid storing in server memory?
+
+    In a horizontally scaled application, I would avoid storing user sessions in the memory of an individual application server because the load balancer can route subsequent requests to any server. If the session is stored only in one server's memory, other servers won't have access to it, causing the user to appear logged out or lose their session. Instead, I would use a shared session store such as Redis so that every application server can access the same session data.
+
+
+# Why Redis? Why not MongoDB for session storage?
+
+    Ye bahut frequently poochha jata hai.
+
+    Expected answer:
+
+        Session temporary hota hai.
+        Redis in-memory hai.
+        Very fast read/write.
+        TTL support.
+        Automatic expiration.
+
