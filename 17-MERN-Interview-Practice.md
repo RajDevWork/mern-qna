@@ -1549,3 +1549,186 @@
 # Is POST always non-idempotent?
 
     No. POST is generally non-idempotent because it is commonly used to create new resources, so repeated requests usually create multiple resources. However, it can be made idempotent by implementing mechanisms such as an Idempotency-Key, which is commonly used in payment APIs to prevent duplicate operations.
+
+
+
+# What is API Versioning?
+
+    API Versioning is a technique to introduce changes in an API without breaking existing clients. Older clients continue using the old version, while new clients can migrate to the newer version
+
+    Common Approaches:
+
+        1. URL Versioning - 
+
+            GET /api/v1/courses
+            GET /api/v2/courses
+
+            Ye sabse common aur interview-friendly answer hai.
+        
+        2. Header Versioning - 
+
+            Accept-Version: v2
+
+        3. Query Parameter - 
+
+            GET /courses?version=2
+
+# Which versioning approach have you used?
+
+    In my previous projects, we didn't need multiple API versions, but if backward compatibility is required, I would prefer URL versioning (/api/v1, /api/v2) because it is simple, explicit, and widely adopted
+
+# When should we create a new API version?
+
+    A new API version should be introduced when there are breaking changes, such as removing fields, changing response formats, modifying request structures, or changing the behavior of existing endpoints. Backward-compatible additions, like adding an optional field, often don't require a new version
+
+# Would you create a new API version? Why or why not?
+
+    No, not necessarily. If the change is backward compatible, such as adding an optional field, existing clients will continue to work because they can ignore fields they don't use. I would create a new API version only when introducing breaking changes that could impact existing clients.
+
+# What is Pagination?
+
+    Pagination is a technique used to divide a large dataset into smaller pages so that only a limited number of records are returned in each request. This improves performance, reduces network usage, and provides a better user experience.
+
+    Offset Pagination - 
+
+        GET /courses?page=2&limit=10
+
+        ``` js
+            const page = 2;
+            const limit = 10;
+
+            Course.find()
+                .skip((page - 1) * limit)
+                .limit(limit);
+        ```
+
+# How does skip() work?
+
+    skip() ignores the specified number of documents before returning the next set of results.
+
+
+    Cursor Pagination - 
+
+        Instead of
+
+        ?page=100
+
+        Hum bolte hain
+
+        GET /courses?cursor=66b8f2...
+
+        Ya
+
+        GET /courses?lastId=66b8f2...
+
+        ``` js
+                Course.find({
+                    _id: { $gt: lastId }
+                }).limit(10);
+        ```
+
+# When would you use Cursor Pagination instead of Offset Pagination?
+
+    For very large datasets or infinite scrolling applications, I prefer cursor pagination because it avoids large skip() operations and provides better performance
+
+
+# Why is Cursor Pagination faster than Offset Pagination for large datasets?
+
+    Offset pagination uses skip(), which becomes inefficient for large datasets because the database has to skip or scan many records before returning the requested page. Cursor pagination instead uses the last record's ID (or another indexed field) to fetch the next set of results directly, making it much more efficient for large datasets and infinite scrolling applications.
+
+# Why do we usually use _id or createdAt as the cursor?
+
+    _id and createdAt are commonly used as cursors because they are unique (or nearly unique when combined with _id), indexed, and naturally ordered. This allows the database to efficiently fetch the next set of records without scanning or skipping a large number of documents.
+
+
+# Rate Limiting
+
+    I use express-rate-limit middleware to limit the number of requests from a client within a specific time window. This helps protect APIs from abuse, brute-force attacks, and excessive traffic.
+
+    ``` js
+        const rateLimit = require("express-rate-limit");
+
+        const limiter = rateLimit({
+            windowMs: 15 * 60 * 1000,
+            max: 100
+        });
+
+        app.use(limiter);
+    ```
+
+# Caching (Redis)
+
+    I have used ioredis for caching. Before querying MongoDB, I first check Redis using redis.get(). If the data is available, I return it directly. Otherwise, I fetch it from MongoDB, store it in Redis with an expiry time using redis.set(), and then return the response.
+
+    ``` js
+
+        // Simple Example (ioredis)
+        // npm install ioredis
+        const Redis = require("ioredis");
+
+        const redis = new Redis();
+
+        // Controller
+
+        app.get("/courses", async (req, res) => {
+
+            const cache = await redis.get("courses");
+
+            if (cache) {
+                return res.json(JSON.parse(cache));
+            }
+
+            const courses = await Course.find();
+
+            await redis.set("courses", JSON.stringify(courses), "EX", 300);
+
+            res.json(courses);
+
+        });
+
+        // Yahan:
+
+        // redis.get() → Cache check
+        // Cache hit → Return
+        // Cache miss → MongoDB query
+        // redis.set(..., "EX", 300) → 5 minutes ke liye cache store
+
+
+    ```
+
+
+# WebSocket
+
+    Unlike HTTP, where the client must send a new request each time, WebSocket establishes a persistent two-way connection between the client and server. This enables real-time communication for applications such as chat, notifications, and live dashboards.
+
+
+    ``` js
+
+        // Installation
+        // npm install socket.io
+        // Server
+        const { Server } = require("socket.io");
+
+        const io = new Server(server);
+
+        io.on("connection", (socket) => {
+
+            console.log("User Connected");
+
+            socket.on("message", (msg) => {
+                console.log(msg);
+            });
+
+        });
+        // Client
+        socket.emit("message", "Hello");
+
+    ```
+
+# What is the difference between Lazy Loading and Code Splitting?
+
+    Code Splitting is the process of dividing a large JavaScript bundle into smaller chunks. Lazy Loading uses those chunks and loads them only when they are needed, instead of downloading everything during the initial page load
+
+# Can Lazy Loading work without Code Splitting?
+
+    No. Lazy Loading depends on Code Splitting. First the application is split into separate bundles, then Lazy Loading loads those bundles on demand
