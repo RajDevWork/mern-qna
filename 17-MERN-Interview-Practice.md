@@ -1536,3 +1536,16 @@
     GET requests should only retrieve data and should not modify server state. Browsers, proxies, and caches assume that GET is safe and may automatically cache or prefetch such requests. If we perform a delete operation using GET, it violates REST principles and can lead to unintended data modifications. Therefore, DELETE should be used for delete operations.
 
 
+# What is Idempotency?
+
+    An operation is idempotent if making the same request multiple times results in the same final state on the server as making it once.
+
+
+# Why is idempotency important?
+
+    It prevents duplicate operations caused by retries, network failures, or repeated user actions. This is especially important for critical operations such as payments, order creation, and financial transactions.
+
+
+# Is POST always non-idempotent?
+
+    No. POST is generally non-idempotent because it is commonly used to create new resources, so repeated requests usually create multiple resources. However, it can be made idempotent by implementing mechanisms such as an Idempotency-Key, which is commonly used in payment APIs to prevent duplicate operations.
