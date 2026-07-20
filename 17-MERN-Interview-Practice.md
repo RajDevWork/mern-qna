@@ -1338,3 +1338,77 @@
 # If pipe() already handles backpressure automatically, then why do we even have pause() and resume() methods?
 
     pipe() is the preferred approach because it automatically handles data transfer and backpressure. However, if I need custom processing for each chunk—for example, validating data, modifying it, filtering records, encrypting it, or making decisions before writing—then I may consume the stream manually using the data event. In that case, I'm responsible for handling backpressure using pause(), resume(), and the drain event
+
+
+## Cluster vs Worker Threads vs Child Process
+
+
+# Cluster
+
+    Cluster allows a Node.js application to create multiple processes so that all CPU cores of a machine can be utilized. Each worker process has its own memory and event loop
+
+# Why use Cluster?
+
+    "To utilize multiple CPU cores and increase the number of concurrent requests the server can handle."
+
+# Who distributes requests among Cluster workers?
+
+    Within a Node.js cluster running on a single machine, the primary process distributes incoming connections among worker processes. In a production environment with multiple servers, an external load balancer such as Nginx or AWS ALB first distributes traffic across servers, and then each server's cluster distributes requests among its worker processes
+
+    Real Production Architecture
+            Users
+            │
+            ▼
+        Load Balancer (Nginx / AWS ALB)
+            │
+        ┌────┴────┐
+        │         │
+        Server-1   Server-2
+        │          │
+        Cluster     Cluster
+        │          │
+        W1 W2 W3    W1 W2 W3
+
+
+# When would you choose Cluster and when would you choose Worker Threads?
+
+    I would use Cluster when I want to scale a Node.js server and utilize multiple CPU cores to handle more concurrent requests. A primary process creates multiple worker processes and distributes incoming requests among them
+
+    and 
+
+    I would use Worker Threads for CPU-intensive tasks such as image processing, video compression, encryption, or PDF generation. These tasks run in separate threads so that the main thread remains responsive and can continue handling incoming HTTP requests.
+
+
+# Video compression is CPU-intensive. Why not use Cluster instead of Worker Threads?
+
+    I would not use Cluster for video compression because Cluster is designed to scale request handling across CPU cores, not to offload CPU-intensive work inside a request. If one cluster worker starts compressing a video, that worker becomes busy and cannot efficiently handle other requests. Worker Threads are specifically designed for CPU-intensive tasks, allowing the main thread of that worker to continue serving HTTP requests while the heavy computation runs in a separate thread.
+
+    Cluster scales the application. Worker Threads accelerate CPU-intensive work.
+
+
+# Agar Cluster aur Worker Threads hain... to Child Process ki zarurat hi kya hai?
+
+    child_process is used to create a separate operating system process to execute external programs or commands.
+
+    ``` js
+        const { exec } = require("child_process");
+
+        exec("python app.py", (err, stdout, stderr) => {
+            console.log(stdout);
+        });
+
+    ```
+
+
+    Interview                                       Table
+    Use Case	                                    Choose
+    More HTTP Requests	                            Cluster
+    Image Compression in JS	                        Worker Thread
+    Run Python Script	                            Child Process
+    Run FFmpeg	                                    Child Process
+    Video Compression Library written in JS	        Worker Thread
+
+
+# Suppose your application needs to compress a video using FFmpeg. Would you choose Worker Threads or Child Process, and why?
+
+    I would use child_process because FFmpeg is an external executable tool, not JavaScript code. child_process allows Node.js to start and communicate with external operating system processes. Worker Threads are suitable for CPU-intensive JavaScript tasks, whereas FFmpeg runs as a separate process."
