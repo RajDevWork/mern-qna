@@ -1811,3 +1811,12 @@
 # When would you use w:"majority"?
 
     For critical business data such as banking transactions, payment records, order confirmations, or financial systems where data loss cannot be tolerated.
+
+
+# When would you use w:1?
+
+    For applications where high write performance is more important than maximum durability, such as analytics, logs, or temporary data.
+
+# Can data be lost with w:1?
+
+    Yes. If the primary acknowledges the write but crashes before replication to secondary nodes, that write may be rolled back during failover.
