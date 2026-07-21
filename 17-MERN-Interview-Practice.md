@@ -1736,4 +1736,78 @@
 
 ## MongoDB - 
 
-    
+# What is Write Concern in MongoDB?
+
+    Write Concern defines how much acknowledgment MongoDB should wait for before considering a write operation successful. It controls the balance between data durability and write performance.
+
+# What are the different Write Concern levels?
+
+    With w:1, MongoDB acknowledges the write as soon as the primary node writes the data. With w:"majority", MongoDB waits until the majority of replica set members confirm the write, providing better durability but with slightly higher latency.
+
+    ``` js
+        db.users.insertOne(
+        {name:"Raj"},
+        {writeConcern:{w:0}}
+        )
+    ```
+
+    Meaning
+
+    Fire and Forget.
+    Client acknowledgement ka wait nahi karega.
+
+    ✅ Fastest
+
+    ❌ Data loss possible.
+
+    w:1 ⭐⭐⭐⭐⭐
+    {writeConcern:{w:1}}
+
+    Meaning
+
+    Primary node ne write kar diya.
+
+    Bas.
+
+    Success.
+
+    Replication ka wait nahi.
+
+    Default.
+
+    w:"majority" ⭐⭐⭐⭐⭐
+    {writeConcern:{w:"majority"}}
+
+    Meaning
+
+    Primary + Majority Replica Set members me write replicate hone ke baad hi success.
+
+    Example
+
+    Replica Set
+
+    Primary
+
+    Secondary 1
+
+    Secondary 2
+
+    Majority = 2
+
+    Primary
+
+    Secondary1
+
+    Success.
+
+    Question 3
+    Difference between w:1 and w:"majority"?
+    w:1	w:"majority"
+    Only Primary acknowledges	Majority nodes acknowledge
+    Faster	Slower
+    Less Durable	More Durable
+    Rollback Possible	Rollback chance much lower
+
+# When would you use w:"majority"?
+
+    For critical business data such as banking transactions, payment records, order confirmations, or financial systems where data loss cannot be tolerated.
