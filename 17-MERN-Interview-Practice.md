@@ -1820,3 +1820,41 @@
 # Can data be lost with w:1?
 
     Yes. If the primary acknowledges the write but crashes before replication to secondary nodes, that write may be rolled back during failover.
+
+# Can rollback happen in MongoDB?
+
+    Yes. A rollback can occur if the primary node crashes before its writes are replicated to a majority of replica set members. During election, another node may become primary without those writes, causing them to be rolled back.
+
+# Why is rollback less likely with w:"majority"?
+
+    Because the write is acknowledged only after it has been replicated to the majority of nodes. During leader election, the new primary is very likely to already contain that write, making rollback much less likely.
+
+# Does w:"majority" guarantee zero data loss?
+
+    No. It provides much stronger durability than w:1, but no distributed system can claim absolute zero data loss under every possible failure scenario. However, for practical production systems, it is the recommended choice for critical data.
+
+# What is j:true?
+
+    ``` js
+        {
+        writeConcern:{
+            w:"majority",
+            j:true
+        }
+        }
+    ```
+    j:true ensures that the write is committed to MongoDB's journal before acknowledgment is returned, providing additional protection against crashes.
+
+# What is wtimeout?
+
+    ``` js
+        {
+        writeConcern:{
+        w:"majority",
+        wtimeout:5000
+        }
+        }
+    ```
+
+    wtimeout specifies how long MongoDB should wait for the requested write concern before returning a timeout error.
+
