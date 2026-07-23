@@ -308,19 +308,109 @@ fs.readFile("file.txt", (err, data) => {
 
 225. Buffers kya hain?
 
-`Hinglish Explanation:`
+  `Hinglish Explanation:`
 
-Buffer raw binary data ko temporarily memory me store karta hai. Streams aur file operations me Buffer ka use hota hai.
+  Buffer Node.js ka ek built-in object hai jo raw binary data ko temporarily memory me store karta hai.
 
-`Interview Answer:`
+  JavaScript normally strings, numbers aur objects ke saath kaam karta hai, lekin jab hum files, images, videos, audio, sockets ya network packets handle karte hain, to data binary format me hota hai. JavaScript directly binary data ko efficiently handle nahi kar sakta, isliye Node.js Buffer provide karta hai.
 
-A Buffer is a temporary memory area used to store binary data before processing or transmission.
+  Buffer ek fixed-size memory allocation hota hai jisme binary data bytes ke form me store hota hai.
 
-Example:
+  Streams jab data read karte hain, to woh bhi Buffer (chunks) ke form me data return karte hain.
 
-```javascript
-const buffer = Buffer.from("Hello");
-```
+  Common use cases:
+
+  File System (fs)
+  Streams
+  TCP/Socket Communication
+  HTTP Request/Response
+  Image & Video Processing
+  File Uploads/Downloads
+  `Interview Answer:`
+
+  A Buffer is a built-in Node.js object used to store and manipulate raw binary data in memory.
+
+  Unlike JavaScript strings or objects, a Buffer allows Node.js to efficiently work with binary data such as files, images, videos, network packets, and streams. Buffers are fixed in size and store data as a sequence of bytes.
+
+  They are commonly used in file operations, stream processing, network communication, and binary data transfer.
+
+  Example 1: Creating a Buffer
+  const buffer = Buffer.from("Hello");
+
+  console.log(buffer);
+  Output
+  <Buffer 48 65 6c 6c 6f>
+
+  Here,
+
+  Each character is stored as its ASCII/UTF-8 byte value.
+
+  H → 48
+  e → 65
+  l → 6c
+  l → 6c
+  o → 6f
+  Example 2: Convert Buffer back to String
+  const buffer = Buffer.from("Hello");
+
+  console.log(buffer.toString());
+
+  Output
+
+  Hello
+  Example 3: Creating Empty Buffer
+  const buffer = Buffer.alloc(10);
+
+  console.log(buffer);
+
+  Output
+  ``` js
+
+  <Buffer 00 00 00 00 00 00 00 00 00 00>
+
+  ```
+
+  This creates a 10-byte buffer, initialized with zeros.
+
+  Example 4: Reading File as Buffer
+  const fs = require("fs");
+
+  fs.readFile("image.png", (err, data) => {
+      console.log(data);
+  });
+
+  Output
+
+  ``` js
+
+  <Buffer 89 50 4e 47 ...>
+
+  ```
+
+  Here, data is a Buffer, not a string.
+
+  Buffer in Streams
+  const fs = require("fs");
+
+  const stream = fs.createReadStream("largeFile.txt");
+
+  stream.on("data", (chunk) => {
+      console.log(Buffer.isBuffer(chunk)); // true
+  });
+
+  Each chunk received from the stream is a Buffer.
+
+  Buffer Flow
+  Image/File
+      │
+      ▼
+  Binary Data
+      │
+      ▼
+    Buffer
+      │
+      ▼
+  Process / Send
 
 ---
 
