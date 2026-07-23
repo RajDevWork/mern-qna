@@ -126,20 +126,184 @@ fs.readFile("file.txt", (err, data) => {
 
 224. Streams kya hain?
 
-`Hinglish Explanation:`
+  `Hinglish Explanation:`
 
-Streams data ko chunks me process karte hain instead of loading the entire data into memory. Ye large files aur real-time data processing ke liye useful hote hain.
+  Streams Node.js ka ek mechanism hai jo large amount of data ko ek hi baar memory me load karne ke bajay, chhote-chhote chunks (pieces) me process karta hai.
 
-`Interview Answer:`
+  Agar koi 1 GB ki file read karni ho aur hum fs.readFile() use karein, to poori file ek saath memory me load hogi, jisse memory usage bahut badh sakta hai aur application slow ya crash bhi ho sakti hai.
 
-Streams are objects that allow reading or writing data in chunks, improving memory efficiency and performance.
+  Streams is problem ko solve karte hain.
 
-Example:
+  Ye data ko chunk by chunk read ya write karte hain, jisse:
 
-```javascript
-const stream = fs.createReadStream("file.txt");
-```
+  Memory efficient hota hai.
+  Performance better hoti hai.
+  Large files aur real-time data ko easily handle kiya ja sakta hai.
 
+  Streams ka use commonly hota hai:
+
+  Large file reading/writing
+  Video & audio streaming
+  File uploads/downloads
+  HTTP request/response
+  Data transfer between services
+  `Interview Answer:`
+
+  Streams are objects in Node.js that allow data to be processed incrementally in small chunks instead of loading the entire data into memory at once.
+
+  They are designed for handling large files, network communication, and real-time data efficiently. Since streams process data chunk by chunk, they reduce memory consumption and improve application performance.
+
+  Node.js provides built-in stream support, making it ideal for file handling, HTTP communication, and data pipelines.
+
+  Types of Streams
+  1. Readable Stream
+
+  Used to read data.
+
+  Examples:
+
+  Reading files
+  Reading HTTP requests
+  Reading data from a socket
+  const fs = require("fs");
+
+  const stream = fs.createReadStream("largeFile.txt");
+
+  stream.on("data", (chunk) => {
+      console.log(chunk.toString());
+  });
+  2. Writable Stream
+
+  Used to write data.
+
+  Example:
+
+  const fs = require("fs");
+
+  const stream = fs.createWriteStream("output.txt");
+
+  stream.write("Hello ");
+  stream.write("World");
+  stream.end();
+  3. Duplex Stream
+
+  Can read and write data.
+
+  Examples:
+
+  TCP Socket
+  Network connections
+  4. Transform Stream
+
+  Can read, modify, and write data.
+
+  Examples:
+
+  Compression (zlib)
+  Encryption
+  Data formatting
+
+  Example:
+
+  const fs = require("fs");
+  const zlib = require("zlib");
+
+  fs.createReadStream("input.txt")
+    .pipe(zlib.createGzip())
+    .pipe(fs.createWriteStream("input.txt.gz"));
+
+  Here:
+
+  Read data
+  Compress it
+  Write compressed data
+
+  All without loading the complete file into memory.
+
+  Example
+
+  Without Stream ❌
+
+  const fs = require("fs");
+
+  fs.readFile("largeFile.txt", (err, data) => {
+      console.log(data.length);
+  });
+
+  Problem:
+
+  Entire file loads into RAM.
+  High memory usage for large files.
+
+  With Stream ✅
+
+  const fs = require("fs");
+
+  const stream = fs.createReadStream("largeFile.txt");
+
+  stream.on("data", (chunk) => {
+      console.log(chunk.length);
+  });
+
+  Here:
+
+  File is read in chunks.
+  Lower memory consumption.
+  Better performance.
+  Stream Flow
+  Large File
+      │
+      ▼
+  Readable Stream
+      │
+      ▼
+  Chunk 1
+  Chunk 2
+  Chunk 3
+  Chunk 4
+      │
+      ▼
+  Process Data
+      │
+      ▼
+  Writable Stream
+  pipe() Method
+
+  pipe() directly connects one stream to another.
+
+  const fs = require("fs");
+
+  const readStream = fs.createReadStream("input.txt");
+  const writeStream = fs.createWriteStream("output.txt");
+
+  readStream.pipe(writeStream);
+
+  Benefits:
+
+  No manual chunk handling
+  Cleaner code
+  Better performance
+  Automatic backpressure handling
+  Advantages of Streams
+  Memory efficient
+  Faster processing for large files
+  Suitable for real-time data
+  Handles large datasets efficiently
+  Supports piping between streams
+  Built-in backpressure management
+  Interview Tips
+  Streams process data chunk by chunk, not all at once.
+  They are memory efficient because they don't load the entire file into RAM.
+  There are 4 types of streams:
+  Readable
+  Writable
+  Duplex
+  Transform
+  pipe() is commonly used to connect streams efficiently.
+  Streams are widely used in file systems, HTTP servers, file uploads/downloads, video streaming, and compression.
+  One-Line Interview Answer
+
+  "Streams in Node.js are objects that process data in small chunks instead of loading the entire data into memory, making them highly memory-efficient and ideal for handling large files, network communication, and real-time data processing."
 ---
 
 225. Buffers kya hain?
