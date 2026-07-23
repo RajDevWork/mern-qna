@@ -24,15 +24,39 @@ console.log("Hello Node.js");
 
 `Hinglish Explanation:`
 
-Event Loop Node.js ka core mechanism hai jo asynchronous operations ko handle karta hai. Ye callback queue se tasks uthakar execute karta hai jab call stack empty hota hai.
+Event Loop Node.js ka heart hai jo JavaScript ko single-threaded hote hue bhi asynchronous aur non-blocking banaata hai.
+
+JavaScript ek time par sirf ek hi task execute kar sakta hai, kyunki uske paas ek hi Call Stack hota hai.
+
+Jab koi asynchronous task aata hai, jaise:
+
+setTimeout()
+File Read (fs.readFile())
+Database Query
+API Call
+Network Request
+
+to JavaScript uske complete hone ka wait nahi karta.
+
+Instead:
+
+Async task ko libuv/OS ko de deta hai.
+JavaScript next line execute karta rehta hai.
+Jab async operation complete ho jata hai, uska callback Callback Queue (ya appropriate queue) me chala jata hai.
+Event Loop continuously check karta rehta hai ki Call Stack empty hai ya nahi.
+Jaise hi Call Stack empty hota hai, Event Loop queue se callback uthakar Call Stack me bhej deta hai aur callback execute ho jata hai.
+
+Isi wajah se Node.js ek hi thread par thousands of concurrent requests efficiently handle kar pata hai.
 
 `Interview Answer:`
 
-The Event Loop is responsible for handling asynchronous operations in Node.js. It continuously checks the call stack and executes queued callbacks when the stack is empty.
+The Event Loop is the core mechanism of Node.js that enables JavaScript to perform asynchronous and non-blocking operations while running on a single thread.
+
+When an asynchronous operation such as a timer, file read, database query, or API request is encountered, Node.js delegates it to libuv or the operating system instead of blocking the main thread. Once the operation completes, its callback is placed into the appropriate queue. The Event Loop continuously monitors the Call Stack, and whenever it becomes empty, it moves the pending callback from the queue to the Call Stack for execution.
+
+This architecture allows Node.js to efficiently handle a large number of concurrent I/O operations without creating a separate thread for each request.
 
 Example:
-
-```javascript
 console.log("Start");
 
 setTimeout(() => {
@@ -40,6 +64,42 @@ setTimeout(() => {
 }, 0);
 
 console.log("End");
+Output:
+Start
+End
+Timer
+Explanation:
+console.log("Start") executes immediately.
+setTimeout() is delegated to libuv.
+console.log("End") executes immediately.
+After the timer expires, its callback is placed in the Timer Queue.
+The Event Loop waits until the Call Stack is empty, then moves the callback to the stack.
+Finally, "Timer" is printed.
+Event Loop Flow
+Code
+  │
+  ▼
+Call Stack
+  │
+  ├── Synchronous Code → Execute Immediately
+  │
+  └── Asynchronous Code
+          │
+          ▼
+      libuv / OS
+          │
+          ▼
+   Callback Queue
+          │
+          ▼
+     Event Loop
+          │
+(Call Stack Empty?)
+          │
+         Yes
+          │
+          ▼
+Execute Callback
 ```
 
 ---
