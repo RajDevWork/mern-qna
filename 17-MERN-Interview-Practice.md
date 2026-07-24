@@ -1860,7 +1860,7 @@
 
 
 
-
+# ####################################################################################
 
 
 
@@ -2077,3 +2077,306 @@ Senior level par interviewer dekhte hain:
 * **Can you think under pressure?** ⚠️
 
 Mere hisaab se agar hum agle 2–3 mahine in **7 pillars** par systematically kaam karte hain, to tumhari profile 16–18 LPA roles ke liye kaafi competitive ho sakti hai. Technical foundation tumhare paas already hai; ab us foundation ko senior-level interview performance me convert karna objective hona chahiye.
+
+
+
+
+
+# ###############################################################################
+
+Raj, **ye kaam random list se nahi hona chahiye.**
+
+Main tumhare target (**16–18 LPA Product-Based / SaaS Full Stack Developer**) aur tumhare interview history ke hisaab se list bana raha hoon.
+
+Iska goal hai:
+
+> **100 questions complete = 90% Full Stack coding rounds cover.**
+
+---
+
+# Phase 1 - Arrays (15)
+
+### Easy
+
+* ✅ Find Maximum Element
+* ✅ Find Minimum Element
+* ✅ Second Largest
+* ✅ Reverse Array
+* ✅ Rotate Array
+* ✅ Move Zeroes
+* ✅ Remove Duplicates
+* ✅ Merge Two Sorted Arrays
+* ✅ Missing Number
+* ✅ Find Duplicate
+* ✅ Best Time to Buy and Sell Stock
+* ✅ Majority Element
+* ✅ Intersection of Arrays
+* ✅ Product Except Self
+* ✅ Maximum Subarray (Kadane)
+
+---
+
+# Phase 2 - Strings (15)
+
+* ✅ Reverse String
+* ✅ Palindrome
+* ✅ Valid Palindrome
+* ✅ Anagram
+* ✅ Frequency Count
+* ✅ String Compression
+* ✅ Longest Common Prefix
+* ✅ Reverse Words
+* ✅ First Unique Character
+* ✅ Longest Substring Without Repeating Characters
+* ✅ Valid Parentheses
+* ✅ Roman to Integer
+* ✅ Count Vowels
+* ✅ Isomorphic Strings
+* ✅ String Rotation
+
+---
+
+# Phase 3 - HashMap (12)
+
+* ✅ Two Sum
+* ✅ Contains Duplicate
+* ✅ Group Anagrams
+* ✅ Frequency Counter
+* ✅ Character Count
+* ✅ Happy Number
+* ✅ Intersection using HashMap
+* ✅ Missing Number using HashMap
+* ✅ Majority Element
+* ✅ Count Pairs
+* ✅ First Repeating Character
+* ✅ Employee Attendance Count
+
+---
+
+# Phase 4 - Two Pointer (10)
+
+* ✅ Pair Sum
+* ✅ Remove Duplicates
+* ✅ Merge Sorted Arrays
+* ✅ Reverse String
+* ✅ Valid Palindrome
+* ✅ Move Zeroes
+* ✅ Container With Most Water
+* ✅ Squares of Sorted Array
+* ✅ Remove Element
+* ✅ Three Sum (Basic)
+
+---
+
+# Phase 5 - Sliding Window (10)
+
+* ✅ Maximum Sum Subarray
+* ✅ Longest Unique Substring
+* ✅ Minimum Size Subarray
+* ✅ Maximum Consecutive Ones
+* ✅ Fruits into Basket
+* ✅ Maximum Average Subarray
+* ✅ Longest Repeating Character Replacement
+* ✅ Permutation in String
+* ✅ Fixed Window Maximum
+* ✅ Count Distinct Elements in Window
+
+---
+
+# Phase 6 - Stack (8)
+
+* ✅ Valid Parentheses
+* ✅ Min Stack
+* ✅ Next Greater Element
+* ✅ Remove Adjacent Duplicates
+* ✅ Evaluate Reverse Polish
+* ✅ Browser History
+* ✅ Daily Temperatures
+* ✅ Decode String
+
+---
+
+# Phase 7 - Queue (5)
+
+* ✅ Queue using Stack
+* ✅ Stack using Queue
+* ✅ Circular Queue
+* ✅ Sliding Window Maximum
+* ✅ Producer Consumer Simulation
+
+---
+
+# Phase 8 - Linked List (8)
+
+* ✅ Reverse Linked List
+* ✅ Middle Node
+* ✅ Detect Cycle
+* ✅ Remove Nth Node
+* ✅ Merge Two Lists
+* ✅ Intersection
+* ✅ Palindrome List
+* ✅ Reverse in Groups
+
+---
+
+# Phase 9 - Binary Search (8)
+
+* ✅ Binary Search
+* ✅ First Occurrence
+* ✅ Last Occurrence
+* ✅ Search Insert Position
+* ✅ Square Root
+* ✅ Peak Element
+* ✅ Rotated Sorted Array
+* ✅ Koko Eating Bananas
+
+---
+
+# Phase 10 - Tree (10)
+
+* ✅ DFS
+* ✅ BFS
+* ✅ Preorder
+* ✅ Inorder
+* ✅ Postorder
+* ✅ Height
+* ✅ Diameter
+* ✅ Same Tree
+* ✅ Symmetric Tree
+* ✅ Lowest Common Ancestor
+
+---
+
+# Phase 11 - Sorting (6)
+
+* ✅ Bubble Sort
+* ✅ Selection Sort
+* ✅ Insertion Sort
+* ✅ Merge Sort
+* ✅ Quick Sort
+* ✅ Sort Colors
+
+---
+
+# Phase 12 - Recursion (5)
+
+* ✅ Factorial
+* ✅ Fibonacci
+* ✅ Power
+* ✅ Reverse String
+* ✅ Generate Parentheses (Basic)
+
+---
+
+# Phase 13 - JavaScript Machine Coding (15)
+
+* ✅ Debounce
+* ✅ Throttle
+* ✅ Deep Clone
+* ✅ Flatten Array
+* ✅ Flatten Object
+* ✅ Event Emitter
+* ✅ Promise.all
+* ✅ Promise.race
+* ✅ Polyfill map
+* ✅ Polyfill filter
+* ✅ Polyfill reduce
+* ✅ Custom bind
+* ✅ Custom call
+* ✅ Custom apply
+* ✅ LRU Cache
+
+---
+
+# Phase 14 - Backend Coding (20)
+
+* ✅ Rate Limiter
+* ✅ Upload API
+* ✅ Pagination
+* ✅ Search API
+* ✅ JWT Auth
+* ✅ Role Based Access
+* ✅ CRUD API
+* ✅ File Upload
+* ✅ Queue Simulation
+* ✅ Retry Mechanism
+* ✅ Email Queue
+* ✅ Notification API
+* ✅ Cache Layer
+* ✅ Logger
+* ✅ Error Middleware
+* ✅ Worker Thread Demo
+* ✅ Stream Large File
+* ✅ CSV Parser
+* ✅ Resume Parser
+* ✅ REST API Design
+
+---
+
+# ⭐ Interview Puzzles
+
+Har week
+
+3
+
+* Jar Puzzle
+* Rope Puzzle
+* Bridge Crossing
+* Water Jug
+* Coins
+* Switches
+* Elevator
+* Probability Basics
+
+---
+
+# ⭐ Complexity
+
+Har question ke baad bolna hai
+
+```text
+Brute Force
+
+↓
+
+Better
+
+↓
+
+Optimal
+
+↓
+
+Time Complexity
+
+↓
+
+Space Complexity
+```
+
+---
+
+# ⭐ My Target
+
+Ye list complete hone ke baad tum confidently interview de sakte ho for:
+
+* PHP Full Stack
+* MERN Stack
+* Node.js Backend
+* Product Companies
+* SaaS Companies
+* 16–18 LPA range
+
+---
+
+## Raj, ek aur cheez jo main add karunga (aur ye sabse important hai)
+
+**Har coding question solve karne ke baad ye 5 sawalon ka answer likhna compulsory hoga:**
+
+1. **Pattern kya tha?** (HashMap, Two Pointer, Sliding Window...)
+2. **Brute force approach kya thi?**
+3. **Optimal approach kyun better hai?**
+4. **Time & Space Complexity kya hai?**
+5. **Real-world use case kya ho sakta hai?**
+
+Ye aadat tumhe sirf coding round hi nahi, balki technical discussion rounds me bhi alag level par le jayegi. Yahi transition 16–18 LPA interviews me bahut value create karta hai.
