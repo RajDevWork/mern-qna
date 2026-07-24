@@ -482,27 +482,27 @@ All questions from every section, listed without explanations/answers.
 
 **Additional Important Questions**
 
-1. # Explain the React reconciliation algorithm.
-2. # What are controlled vs. uncontrolled components?
-3. # How does React handle context and why use it?
-4. # What are the common performance optimization techniques in React?
-5. # How does memoization work in React (React.memo, useMemo)?
-6. # How does React handle batching of state updates?
-7. # What are custom hooks and when would you use them?
-8. # Explain lazy loading and code splitting in React.
-9. # What’s the difference between useEffect and useLayoutEffect?
-10. # How does React’s concurrent mode work?
-11. # What is the virtual DOM and how does React use it?
-12. # How do you implement SSR (Server-Side Rendering) with React?
-13. # Difference between lifting state and prop drilling.
-14. # What is Suspense in React?
-15. # How do you manage state in large applications (Redux, Context, Zustand)?
-16. # How does hydration work in React with SSR?
-17. # How do you secure a React frontend?
-18. # Explain error boundaries in React.
-19. # How does React Router handle dynamic routes?
-20. # How do you handle access control (auth-guard) in React?
-21. # How do you use useReducer and what is it best for?
+1. Explain the React reconciliation algorithm.
+2. What are controlled vs. uncontrolled components?
+3. How does React handle context and why use it?
+4. What are the common performance optimization techniques in React?
+5. How does memoization work in React (React.memo, useMemo)?
+6. How does React handle batching of state updates?
+7. What are custom hooks and when would you use them?
+8. Explain lazy loading and code splitting in React.
+9. What’s the difference between useEffect and useLayoutEffect?
+10. How does React’s concurrent mode work?
+11. What is the virtual DOM and how does React use it?
+12. How do you implement SSR (Server-Side Rendering) with React?
+13. Difference between lifting state and prop drilling.
+14. What is Suspense in React?
+15. How do you manage state in large applications (Redux, Context, Zustand)?
+16. How does hydration work in React with SSR?
+17. How do you secure a React frontend?
+18. Explain error boundaries in React.
+19. How does React Router handle dynamic routes?
+20. How do you handle access control (auth-guard) in React?
+21. How do you use useReducer and what is it best for?
 22. How do you handle WebSocket or real-time data in React?
 23. What is the role of key in React lists?
 24. Explain compound components pattern.
