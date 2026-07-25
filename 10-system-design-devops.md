@@ -270,6 +270,336 @@
 368. Horizontal scaling
 369. Vertical scaling
 370. Microservices
+
+    ## Hinglish Explanation:
+
+    **Microservices Architecture** ek software design approach hai jisme ek bade application ko **chhote-chhote independent services** me divide kiya jata hai.
+
+    Har service ka **apna specific responsibility** hota hai aur wo independently develop, deploy aur scale ho sakti hai.
+
+    Simple words me:
+
+    > **Ek bada application → Multiple small independent applications (services).**
+
+    ---
+
+    ## Real-Life Example
+
+    Socho ek **Shopping Mall** hai.
+
+    Mall me alag-alag shops hoti hain:
+
+    * Clothing Store
+    * Electronics Store
+    * Food Court
+    * Pharmacy
+
+    Har shop independently kaam karti hai.
+
+    Agar Food Court band ho jaye to Clothing Store chalti rahegi.
+
+    Microservices bhi isi tarah kaam karte hain.
+
+    ---
+
+    # Monolithic vs Microservices
+
+    ### Monolithic
+
+    ```text
+    +------------------------------------+
+    |           Single Application       |
+    |------------------------------------|
+    | Login                              |
+    | Product                            |
+    | Cart                               |
+    | Payment                            |
+    | Order                              |
+    | Notification                       |
+    +------------------------------------+
+    ```
+
+    Sab kuch ek hi application me hota hai.
+
+    ---
+
+    ### Microservices
+
+    ```text
+                    Client
+                        |
+                API Gateway
+                        |
+        -----------------------------------
+        |       |        |        |       |
+    User   Product   Order   Payment  Notification
+    Service Service   Service  Service     Service
+    ```
+
+    Har service alag application hai.
+
+    ---
+
+    # Interview Answer
+
+    **Microservices** is an architectural style where an application is divided into small, independent services. Each service is responsible for a specific business capability, has its own codebase, can be deployed independently, and communicates with other services using APIs or message brokers like RabbitMQ or Kafka.
+
+    This architecture improves scalability, maintainability, and fault isolation.
+
+    ---
+
+    # Example (E-Commerce)
+
+    Agar user order place karta hai:
+
+    ```text
+    User
+    |
+    |
+    API Gateway
+    |
+    |
+    Order Service
+    |
+    |---------------------------|
+    |                           |
+    Inventory Service       Payment Service
+    |                           |
+    Notification Service     Analytics Service
+    ```
+
+    Flow:
+
+    1. User order place karta hai.
+    2. Order Service order create karti hai.
+    3. Inventory stock update karta hai.
+    4. Payment Service payment verify karti hai.
+    5. Notification Service email bhejti hai.
+    6. Analytics Service report update karti hai.
+
+    Har service independently kaam karti hai.
+
+    ---
+
+    # Node.js Example
+
+    ### User Service
+
+    ```javascript
+    const express = require("express");
+
+    const app = express();
+
+    app.get("/users", (req, res) => {
+        res.json({
+            name: "Raj"
+        });
+    });
+
+    app.listen(3001);
+    ```
+
+    ---
+
+    ### Product Service
+
+    ```javascript
+    const express = require("express");
+
+    const app = express();
+
+    app.get("/products", (req, res) => {
+        res.json([
+            "Laptop",
+            "Mobile"
+        ]);
+    });
+
+    app.listen(3002);
+    ```
+
+    ---
+
+    ### Order Service
+
+    ```javascript
+    const express = require("express");
+
+    const app = express();
+
+    app.get("/orders", (req, res) => {
+        res.json({
+            orderId: 101
+        });
+    });
+
+    app.listen(3003);
+    ```
+
+    Ye teen alag Node.js applications hain jo independently run karte hain.
+
+    ---
+
+    # Services Communication
+
+    ### 1. Synchronous
+
+    REST API ya gRPC
+
+    ```text
+    Order Service
+        |
+    REST API
+        |
+    Payment Service
+    ```
+
+    Request bhejna aur turant response lena.
+
+    ---
+
+    ### 2. Asynchronous
+
+    RabbitMQ ya Kafka
+
+    ```text
+    Order Service
+        |
+    RabbitMQ/Kafka
+        |
+    Notification Service
+    ```
+
+    Background communication.
+
+    ---
+
+    # Microservices ke Advantages
+
+    * Independent Deployment
+    * Independent Scaling
+    * Fault Isolation
+    * Faster Development
+    * Better Maintainability
+    * Technology Flexibility (Ek service Java me, dusri Node.js me)
+    * Smaller Codebase
+    * Easier Team Collaboration
+
+    ---
+
+    # Disadvantages
+
+    * Complex Architecture
+    * Network Latency
+    * Distributed Transactions
+    * Monitoring Difficult
+    * Logging Complex
+    * Deployment Management
+    * Data Consistency Challenges
+
+    ---
+
+    # Common Interview Questions
+
+    ### 1. Microservices aur Monolith me difference?
+
+    | Monolith           | Microservices                  |
+    | ------------------ | ------------------------------ |
+    | Single application | Multiple small services        |
+    | Single deployment  | Independent deployment         |
+    | Shared codebase    | Separate codebase              |
+    | Difficult scaling  | Individual service scaling     |
+    | One technology     | Multiple technologies possible |
+
+    ---
+
+    ### 2. Microservices communicate kaise karte hain?
+
+    * REST API
+    * gRPC
+    * RabbitMQ
+    * Kafka
+
+    ---
+
+    ### 3. API Gateway kya hota hai?
+
+    API Gateway ek **single entry point** hota hai jo client ki request ko appropriate microservice tak route karta hai.
+
+    Example:
+
+    ```text
+    Client
+    |
+    API Gateway
+    |
+    ---------------
+    |      |      |
+    User Product Order
+    ```
+
+    ---
+
+    ### 4. Har service ka apna database hota hai?
+
+    Best practice ke according **haan**.
+
+    ```text
+    User Service ------ User DB
+
+    Product Service --- Product DB
+
+    Order Service ----- Order DB
+    ```
+
+    Isse services loosely coupled rehti hain aur ek service ke database changes dusri service ko affect nahi karte.
+
+    ---
+
+    ### 5. Microservices me authentication kaise hota hai?
+
+    Generally:
+
+    * JWT (JSON Web Token)
+    * OAuth 2.0
+    * API Gateway authentication
+
+    ---
+
+    # Production Architecture (7+ YOE)
+
+    ```text
+                        Client
+                        |
+                    Load Balancer
+                        |
+                    API Gateway
+                        |
+    -----------------------------------------------------
+    |          |           |           |               |
+    User     Product      Order      Payment      Notification
+    Service   Service     Service     Service       Service
+    |          |           |           |               |
+    MongoDB   MongoDB     MongoDB     MySQL         MongoDB
+                        |
+                    Kafka / RabbitMQ
+                        |
+                    Email Worker
+                    SMS Worker
+                    Analytics Worker
+    ```
+
+    ---
+
+    # Interview Tip (7+ YOE)
+
+    Agar interviewer pooche **"Have you worked on Microservices?"**, to ek strong answer ho sakta hai:
+
+    > "Yes. I have worked with microservice-based applications where different business domains such as User, Product, Order, and Payment were separated into independent services. The services communicated using REST APIs for synchronous operations and RabbitMQ/Kafka for asynchronous events. We used JWT for authentication, an API Gateway for routing, Docker for containerization, and Load Balancers to distribute traffic. This architecture made the system more scalable, fault tolerant, and easier to deploy independently."
+
+
+
+
 371. Kafka kya hai
 
     ## Hinglish Explanation:
