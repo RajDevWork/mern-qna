@@ -1174,6 +1174,330 @@
 375. Circuit breaker
 376. API gateway
 377. Saga pattern
+
+
+    ## Hinglish Explanation:
+
+    **Saga Pattern** ek design pattern hai jo **Microservices me distributed transactions** ko handle karne ke liye use hota hai.
+
+    Simple words me:
+
+    > Jab ek transaction me multiple microservices involved hoti hain aur kisi ek service me failure ho jaye, to Saga Pattern pehle se complete hue steps ko **rollback (compensate)** karta hai.
+
+    Isse system me **data consistency** maintain rehti hai.
+
+    ---
+
+    ## Real-Life Example
+
+    Maan lo aap Flipkart ya Amazon se order place karte ho.
+
+    Order place karne ke steps:
+
+    1. Order Create ✅
+    2. Payment Deduct ✅
+    3. Inventory Update ❌ (Stock Out)
+
+    Ab kya hoga?
+
+    Agar inventory fail ho gayi to:
+
+    * Payment Refund ✅
+    * Order Cancel ✅
+
+    Ye rollback process hi **Saga Pattern** ka core idea hai.
+
+    ---
+
+    # Problem Without Saga
+
+    ```text
+    Order Service  ✅
+
+    Payment Service ✅
+
+    Inventory Service ❌
+
+    Result:
+    Order Created
+    Payment Deducted
+    No Stock
+    ```
+
+    Yahan customer ke paise kat gaye, lekin order complete nahi hua.
+
+    ---
+
+    # With Saga Pattern
+
+    ```text
+    Order Created
+        |
+    Payment Success
+        |
+    Inventory Failed
+        |
+    Compensation Starts
+        |
+    Payment Refund
+        |
+    Order Cancel
+    ```
+
+    System dubara consistent state me aa jata hai.
+
+    ---
+
+    # Interview Answer
+
+    **Saga Pattern** is a distributed transaction pattern used in microservices to maintain data consistency across multiple services.
+
+    Instead of using one large database transaction, each service performs its own local transaction. If any step fails, previously completed steps are compensated (rolled back) using compensation actions.
+
+    It helps maintain consistency without relying on two-phase commit (2PC).
+
+    ---
+
+    # Architecture
+
+    ```text
+    Client
+    |
+    Order Service
+    |
+    Payment Service
+    |
+    Inventory Service
+    |
+    Notification Service
+    ```
+
+    Successful Flow
+
+    ```text
+    Order
+    |
+    Payment
+    |
+    Inventory
+    |
+    Notification
+    ```
+
+    Failure Flow
+
+    ```text
+    Order
+    |
+    Payment
+    |
+    Inventory Failed
+    |
+    Refund Payment
+    |
+    Cancel Order
+    ```
+
+    ---
+
+    # Two Types of Saga Pattern
+
+    ## 1. Choreography (Event-Based)
+
+    Har service events publish karti hai.
+
+    Koi central controller nahi hota.
+
+    ```text
+    Order Service
+        |
+    OrderCreated Event
+        |
+    Payment Service
+        |
+    PaymentCompleted Event
+        |
+    Inventory Service
+        |
+    InventoryUpdated Event
+    ```
+
+    **Pros**
+
+    * No central controller
+    * Loosely coupled
+
+    **Cons**
+
+    * Events zyada ho jate hain
+    * Debugging difficult hoti hai
+
+    ---
+
+    ## 2. Orchestration
+
+    Ek **Saga Orchestrator** decide karta hai kis service ko kab call karna hai.
+
+    ```text
+            Saga Orchestrator
+                    |
+    -------------------------------
+    |         |         |         |
+    Order    Payment   Inventory Notification
+    ```
+
+    Agar Inventory fail ho jaye:
+
+    ```text
+    Saga Orchestrator
+        |
+    Refund Payment
+        |
+    Cancel Order
+    ```
+
+    **Pros**
+
+    * Easy monitoring
+    * Easy debugging
+    * Better control
+
+    **Cons**
+
+    * Central orchestrator maintain karna padta hai
+
+    ---
+
+    # Simple Node.js Example (Concept)
+
+    ### Order Service
+
+    ```javascript
+    createOrder();
+    ```
+
+    ### Payment Service
+
+    ```javascript
+    makePayment();
+    ```
+
+    ### Inventory Service
+
+    ```javascript
+    updateInventory();
+    ```
+
+    Suppose inventory fails:
+
+    ```javascript
+    try {
+        createOrder();
+
+        makePayment();
+
+        updateInventory();
+
+    } catch (err) {
+
+        refundPayment();
+
+        cancelOrder();
+    }
+    ```
+
+    Real microservices me ye services alag applications hoti hain aur REST APIs ya RabbitMQ/Kafka ke through communicate karti hain.
+
+    ---
+
+    # Saga vs Database Transaction
+
+    | Database Transaction | Saga Pattern              |
+    | -------------------- | ------------------------- |
+    | Single database      | Multiple microservices    |
+    | COMMIT / ROLLBACK    | Compensation Transactions |
+    | ACID                 | Eventually Consistent     |
+    | Monolithic apps      | Microservices             |
+
+    ---
+
+    # Common Interview Questions
+
+    ### 1. Saga Pattern ki need kyun padti hai?
+
+    Kyuki microservices me har service ka apna database hota hai. Ek single database transaction sab services par apply nahi ki ja sakti.
+
+    ---
+
+    ### 2. Compensation Transaction kya hota hai?
+
+    Agar koi step fail ho jaye to pehle complete hue steps ko reverse karna.
+
+    Example:
+
+    ```text
+    Payment Success
+
+    ↓
+
+    Inventory Failed
+
+    ↓
+
+    Refund Payment
+    ```
+
+    ---
+
+    ### 3. Saga me rollback kaise hota hai?
+
+    Traditional database rollback nahi hota.
+
+    Har service apna **compensation action** execute karti hai.
+
+    Example:
+
+    ```text
+    Reserve Stock
+
+    ↓
+
+    Release Stock
+    ```
+
+    ---
+
+    ### 4. Saga Pattern me RabbitMQ ya Kafka ka role kya hai?
+
+    * **RabbitMQ**: Commands aur background tasks ko reliably deliver karne ke liye use ho sakta hai.
+    * **Kafka**: Events publish aur consume karne ke liye, especially event-driven microservices me.
+
+    Dono Saga implementation me communication layer ka kaam kar sakte hain.
+
+    ---
+
+    # Interview Tip (7+ YOE)
+
+    Agar interviewer pooche **"How would you handle distributed transactions in microservices?"**, to ek strong answer ho sakta hai:
+
+    > "I would use the Saga Pattern instead of a distributed database transaction. Each microservice executes its own local transaction. If all steps succeed, the workflow completes. If any step fails, compensation transactions are triggered to undo the previously completed actions. Depending on the system, I would implement Saga using choreography with Kafka events or orchestration with a central Saga orchestrator. This approach keeps services loosely coupled while maintaining eventual consistency."
+
+    ---
+
+    ## Easy Memory Trick
+
+    * **Microservices** → Multiple independent services.
+    * **Saga Pattern** → Keeps data consistent across those services.
+    * **RabbitMQ/Kafka** → Carries commands/events between services.
+    * **Compensation Transaction** → "Undo" the completed steps if a later step fails.
+
+    **One-line interview answer:**
+
+    > **Saga Pattern is used in microservices to manage distributed transactions by executing local transactions and, if a failure occurs, running compensation transactions to maintain eventual data consistency.**
+
+
+
+
 378. Distributed systems challenges
 379. Consistency models
 380. Failover systems
