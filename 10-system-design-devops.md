@@ -271,6 +271,320 @@
 369. Vertical scaling
 370. Microservices
 371. Kafka kya hai
+
+    ## Hinglish Explanation:
+
+    **Apache Kafka** ek **Distributed Event Streaming Platform** hai jo **real-time me bahut bade amount ke data (millions of events)** ko receive, store aur process kar sakta hai.
+
+    Simple words me:
+
+    > **Kafka applications ke beech events/messages ko high speed aur reliable way me transfer karta hai.**
+
+    RabbitMQ ki tarah Kafka bhi messages handle karta hai, lekin Kafka **high throughput, event streaming aur data retention** ke liye design kiya gaya hai.
+
+    ---
+
+    ## Real-Life Example:
+
+    Socho ek **YouTube Live** chal raha hai.
+
+    * Lakhon users videos dekh rahe hain.
+    * Har second millions of events generate ho rahe hain:
+
+    * Video Play
+    * Pause
+    * Like
+    * Comment
+    * Subscribe
+
+    Ye saare events Kafka me store hote hain aur alag-alag services unhe consume karti hain.
+
+    ```text
+    User Actions
+        |
+        |
+    Kafka
+    /   |    \
+    Analytics Recommendation Notification
+    ```
+
+    Ek hi event ko multiple services independently consume kar sakti hain.
+
+    ---
+
+    # Interview Answer:
+
+    **Apache Kafka** is a distributed event streaming platform used for building real-time data pipelines and event-driven applications.
+
+    It allows producers to publish events to topics, while multiple consumers read those events independently. Kafka provides high throughput, scalability, fault tolerance, and message retention, making it ideal for log processing, analytics, and microservices communication.
+
+    ---
+
+    # Kafka Architecture
+
+    ```text
+    Producer
+        |
+        |
+    Topic
+    (Kafka)
+    /   |   \
+    C1   C2   C3
+    ```
+
+    Example:
+
+    ```text
+    Order Created
+        |
+        |
+    Kafka Topic
+    /     |      \
+    Inventory Payment Analytics
+    Service   Service  Service
+    ```
+
+    Ek hi **Order Created** event ko teen alag services consume kar sakti hain.
+
+    ---
+
+    # Main Components
+
+    ### Producer
+
+    Message/Event send karta hai.
+
+    Example:
+
+    ```text
+    User Registered
+    ```
+
+    ---
+
+    ### Topic
+
+    Kafka me queue ki jagah **Topic** hota hai.
+
+    Example:
+
+    ```text
+    user-events
+    ```
+
+    ---
+
+    ### Broker
+
+    Kafka server jo topics aur messages store karta hai.
+
+    ---
+
+    ### Consumer
+
+    Topic se messages read karta hai.
+
+    ---
+
+    ### Consumer Group
+
+    Multiple consumers milkar messages process karte hain.
+
+    ```text
+    Topic
+    |
+    |---- Consumer 1
+    |
+    |---- Consumer 2
+    |
+    |---- Consumer 3
+    ```
+
+    Har message group ke kisi ek consumer ko hi jata hai.
+
+    ---
+
+    # Simple Node.js Example
+
+    Install:
+
+    ```bash
+    npm install kafkajs
+    ```
+
+    ---
+
+    ### Producer
+
+    ```javascript
+    const { Kafka } = require("kafkajs");
+
+    const kafka = new Kafka({
+        clientId: "app",
+        brokers: ["localhost:9092"]
+    });
+
+    const producer = kafka.producer();
+
+    async function send() {
+        await producer.connect();
+
+        await producer.send({
+            topic: "orders",
+            messages: [
+                { value: "Order Created" }
+            ]
+        });
+
+        console.log("Message Sent");
+
+        await producer.disconnect();
+    }
+
+    send();
+    ```
+
+    ---
+
+    ### Consumer
+
+    ```javascript
+    const { Kafka } = require("kafkajs");
+
+    const kafka = new Kafka({
+        clientId: "consumer",
+        brokers: ["localhost:9092"]
+    });
+
+    const consumer = kafka.consumer({
+        groupId: "order-group"
+    });
+
+    async function run() {
+
+        await consumer.connect();
+
+        await consumer.subscribe({
+            topic: "orders"
+        });
+
+        await consumer.run({
+            eachMessage: async ({ message }) => {
+                console.log(message.value.toString());
+            }
+        });
+    }
+
+    run();
+    ```
+
+    Output:
+
+    ```text
+    Order Created
+    ```
+
+    ---
+
+    # Kafka kab use karte hain?
+
+    * Real-time Analytics
+    * Event Streaming
+    * Log Aggregation
+    * Clickstream Data
+    * Banking Transactions
+    * Fraud Detection
+    * IoT Data
+    * Stock Market
+    * E-commerce Events
+    * Microservices Communication
+
+    ---
+
+    # Kafka ke Advantages
+
+    * High Throughput
+    * Horizontal Scalability
+    * Fault Tolerance
+    * Distributed Architecture
+    * Event Retention
+    * Replay Messages
+    * Multiple Consumers
+    * Real-time Processing
+
+    ---
+
+    # RabbitMQ vs Kafka
+
+    | RabbitMQ                                           | Kafka                                          |
+    | -------------------------------------------------- | ---------------------------------------------- |
+    | Message Queue                                      | Event Streaming Platform                       |
+    | Queue-based                                        | Topic-based                                    |
+    | Background jobs                                    | Event streaming                                |
+    | Messages consume hone ke baad remove ho sakte hain | Messages retention period tak store rehte hain |
+    | Email, SMS, PDF                                    | Analytics, logs, clickstream, events           |
+    | Lower throughput                                   | Very high throughput                           |
+    | Best for task queues                               | Best for event-driven systems                  |
+
+    ---
+
+    # Common Interview Questions
+
+    ### 1. Kafka Topic kya hota hai?
+
+    Topic ek logical channel hota hai jisme producer events publish karta hai aur consumers unhe read karte hain.
+
+    ---
+
+    ### 2. Broker kya hota hai?
+
+    Kafka server jo topics aur messages ko store aur manage karta hai.
+
+    ---
+
+    ### 3. Consumer Group kya hota hai?
+
+    Consumers ka group jo milkar topic ke messages process karta hai.
+
+    ---
+
+    ### 4. Kafka message ko delete karta hai?
+
+    By default **nahi**. Kafka messages ko configured **retention period** tak store karta hai. Isi wajah se events ko baad me dubara (replay) bhi kiya ja sakta hai.
+
+    ---
+
+    ### 5. Kafka itna fast kyun hai?
+
+    * Sequential disk writes
+    * Partitioning
+    * Distributed architecture
+    * Zero-copy optimizations
+    * Batch processing
+
+    ---
+
+    # Interview Tip (7+ YOE)
+
+    Senior-level interview me aap aisa answer de sakte hain:
+
+    > "Kafka is my preferred choice when building event-driven systems that require high throughput and scalability. For example, in an e-commerce application, after an order is created, the Order Service publishes an event to a Kafka topic. Multiple services like Inventory, Payment, Notification, and Analytics consume the same event independently. Kafka retains events for a configurable duration, so consumers can replay them if needed. This makes the system loosely coupled, scalable, and fault tolerant."
+
+    ---
+
+    ## RabbitMQ vs Kafka (One-Line Memory Trick)
+
+    * **RabbitMQ → "Do the task."** (Task Queue / Background Jobs)
+    * **Kafka → "Broadcast the event."** (Event Streaming / Real-time Data)
+
+    **Easy example:**
+
+    * **RabbitMQ:** "Send welcome email to the user."
+    * **Kafka:** "User Registered" event → Email Service, Analytics Service, Recommendation Service, and Audit Service all receive the same event independently.
+
+
+
+
 372. RabbitMQ kya hai
 
     ## Hinglish Explanation:
