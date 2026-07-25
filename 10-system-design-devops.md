@@ -272,6 +272,259 @@
 370. Microservices
 371. Kafka kya hai
 372. RabbitMQ kya hai
+
+    ## Hinglish Explanation:
+
+    **RabbitMQ** ek **Message Broker (Message Queue)** hai jo do applications ya services ke beech messages ko safely transfer karta hai.
+
+    Simple words me:
+
+    > **RabbitMQ sender aur receiver ke beech ek middleman ki tarah kaam karta hai.**
+
+    Iska use tab hota hai jab koi task immediately complete karna zaroori na ho ya background me process karna ho.
+
+    ### Real-Life Example:
+
+    Socho aap restaurant me order dete ho.
+
+    * **Customer** → Order deta hai.
+    * **Waiter** → Order ko kitchen tak pahunchata hai.
+    * **Chef** → Order prepare karta hai.
+
+    Yahan:
+
+    * Customer = Producer
+    * Waiter = RabbitMQ
+    * Chef = Consumer
+
+    Customer ko kitchen me jaane ki zarurat nahi hoti. Waiter (RabbitMQ) order ko queue me rakhkar chef tak pahucha deta hai.
+
+    ---
+
+    # Interview Answer:
+
+    **RabbitMQ** is an open-source message broker that enables asynchronous communication between applications using message queues.
+
+    It decouples producers and consumers, improves scalability, reliability, and fault tolerance, and is commonly used for background jobs, email notifications, order processing, and microservices communication.
+
+    ---
+
+    # Architecture
+
+    ```text
+            Producer
+                |
+                |
+            RabbitMQ Queue
+                |
+                |
+            Consumer
+    ```
+
+    Example:
+
+    ```text
+    User Registration
+            |
+            |
+    Save User
+            |
+            |
+    RabbitMQ Queue
+            |
+    -------------------
+    |        |        |
+    Email    SMS     Analytics
+    Worker   Worker    Worker
+    ```
+
+    User ko registration ka response turant mil jata hai, aur email/SMS background me process hote rehte hain.
+
+    ---
+
+    # Simple Node.js Example
+
+    ### Producer
+
+    ```javascript
+    const amqp = require("amqplib");
+
+    async function sendMessage() {
+        const connection = await amqp.connect("amqp://localhost");
+        const channel = await connection.createChannel();
+
+        const queue = "emails";
+
+        await channel.assertQueue(queue);
+
+        channel.sendToQueue(queue, Buffer.from("Welcome Email"));
+
+        console.log("Message Sent");
+
+        setTimeout(() => connection.close(), 500);
+    }
+
+    sendMessage();
+    ```
+
+    ---
+
+    ### Consumer
+
+    ```javascript
+    const amqp = require("amqplib");
+
+    async function receiveMessage() {
+
+        const connection = await amqp.connect("amqp://localhost");
+
+        const channel = await connection.createChannel();
+
+        const queue = "emails";
+
+        await channel.assertQueue(queue);
+
+        console.log("Waiting for messages...");
+
+        channel.consume(queue, (msg) => {
+            console.log(msg.content.toString());
+        }, {
+            noAck: true
+        });
+    }
+
+    receiveMessage();
+    ```
+
+    Output:
+
+    ```text
+    Waiting for messages...
+
+    Welcome Email
+    ```
+
+    ---
+
+    # RabbitMQ kab use karte hain?
+
+    * Background Email Sending
+    * SMS Notifications
+    * Order Processing
+    * Payment Processing
+    * Image/Video Processing
+    * PDF Generation
+    * Report Generation
+    * Microservices Communication
+    * Logging
+    * Data Synchronization
+
+    ---
+
+    # RabbitMQ ke Advantages
+
+    * Asynchronous Processing
+    * Faster API Response
+    * Reliable Message Delivery
+    * Retry Mechanism
+    * Decoupled Services
+    * Load Balancing Between Consumers
+    * High Availability
+    * Fault Tolerance
+
+    ---
+
+    # RabbitMQ vs Direct API Call
+
+    ### Without RabbitMQ
+
+    ```text
+    User
+    |
+    API
+    |
+    |- Save User
+    |- Send Email
+    |- Send SMS
+    |- Generate PDF
+    |- Upload Image
+
+    Response after all tasks finish
+    ```
+
+    API ko sab kaam complete hone ka wait karna padta hai.
+
+    ---
+
+    ### With RabbitMQ
+
+    ```text
+    User
+    |
+    API
+    |
+    |- Save User
+    |- Push Message to RabbitMQ
+
+    Immediate Response
+
+            RabbitMQ
+            /    |    \
+        Email  SMS   PDF
+        Worker Worker Worker
+    ```
+
+    User ko response jaldi mil jata hai, aur heavy tasks background me execute hote hain.
+
+    ---
+
+    # Common Interview Questions
+
+    ### 1. RabbitMQ aur Kafka me difference?
+
+    | RabbitMQ                                                   | Kafka                                                       |
+    | ---------------------------------------------------------- | ----------------------------------------------------------- |
+    | Message Queue                                              | Event Streaming Platform                                    |
+    | Task Processing                                            | Large-scale Event Streaming                                 |
+    | Low Latency                                                | High Throughput                                             |
+    | Messages queue se consume hone ke baad remove ho jate hain | Messages configurable retention period tak store rehte hain |
+    | Background jobs ke liye popular                            | Real-time analytics, event-driven systems ke liye popular   |
+
+    ---
+
+    ### 2. Producer kya hota hai?
+
+    Jo application message bhejti hai.
+
+    ---
+
+    ### 3. Consumer kya hota hai?
+
+    Jo application queue se message read karke process karti hai.
+
+    ---
+
+    ### 4. Queue kya hoti hai?
+
+    Temporary storage jahan messages wait karte hain jab tak consumer unhe process na kare.
+
+    ---
+
+    ### 5. RabbitMQ synchronous hai ya asynchronous?
+
+    RabbitMQ mainly **asynchronous communication** ke liye use hota hai, jisse long-running tasks background me process ho sakte hain aur API response fast rehta hai.
+
+    ---
+
+    ## Interview Tip (7+ YOE)
+
+    Senior-level interview me sirf definition dene ke bajay production use case bataye:
+
+    > "Hum RabbitMQ ko asynchronous background processing ke liye use karte hain. Jaise user registration ke baad email, SMS, PDF generation ya image processing ko queue me push kar dete hain. API user ko immediately response de deti hai, aur multiple consumer workers queue se messages uthakar process karte hain. Isse application scalable, reliable aur fault tolerant ban jati hai."
+
+
+
+
 373. Event-driven architecture
 374. Idempotency
 375. Circuit breaker
