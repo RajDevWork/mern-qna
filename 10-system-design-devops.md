@@ -1172,6 +1172,350 @@
 373. Event-driven architecture
 374. Idempotency
 375. Circuit breaker
+
+
+    ## Hinglish Explanation
+
+    **Circuit Breaker** ek design pattern hai jo **microservices me cascading failures ko prevent** karta hai.
+
+    Simple words me:
+
+    > **Agar koi service baar-baar fail ho rahi hai, to Circuit Breaker us service ko repeatedly call karna temporarily band kar deta hai.**
+
+    Isse:
+
+    * Application fast response deti hai.
+    * System overload nahi hota.
+    * Resources waste nahi hote.
+    * Dusri services bhi stable rehti hain.
+
+    ---
+
+    ## Real-Life Example
+
+    Socho aap kisi dost ko call kar rahe ho.
+
+    * 1st Call ❌ No Response
+    * 2nd Call ❌ No Response
+    * 3rd Call ❌ No Response
+
+    Ab aap har second call nahi karoge.
+
+    Aap **5 minutes wait** karoge, fir ek baar dubara try karoge.
+
+    Yehi Circuit Breaker ka concept hai.
+
+    ---
+
+    # Problem Without Circuit Breaker
+
+    ```text
+    Client
+    |
+    Order Service
+    |
+    Payment Service ❌
+    |
+    Timeout
+    |
+    Retry
+    |
+    Timeout
+    |
+    Retry
+    |
+    Timeout
+    ```
+
+    Har request Payment Service ko hit karegi, jiski wajah se:
+
+    * CPU waste
+    * Memory waste
+    * Network congestion
+    * Poor response time
+
+    ---
+
+    # With Circuit Breaker
+
+    ```text
+    Client
+    |
+    Order Service
+    |
+    Circuit Breaker
+    |
+    Payment Service
+    ```
+
+    Agar Payment Service fail hoti rahe:
+
+    ```text
+    Payment Service ❌
+
+    ↓
+
+    Circuit Opens
+
+    ↓
+
+    Further Requests Block
+
+    ↓
+
+    Return Fallback Response
+    ```
+
+    Application unnecessary retries se bach jati hai.
+
+    ---
+
+    # Interview Answer
+
+    **Circuit Breaker** is a resilience design pattern used in distributed systems and microservices to prevent repeated calls to a failing service.
+
+    When failures exceed a configured threshold, the circuit opens and blocks further requests to the failing service. After a timeout period, it allows a few test requests to check if the service has recovered. This improves system stability, reduces cascading failures, and provides graceful degradation.
+
+    ---
+
+    # Three States of Circuit Breaker
+
+    ## 1. Closed State ✅
+
+    Sab normal hai.
+
+    Requests directly service tak jati hain.
+
+    ```text
+    Client
+
+    ↓
+
+    Payment Service
+    ```
+
+    ---
+
+    ## 2. Open State ❌
+
+    Failure threshold cross ho gaya.
+
+    Circuit open ho gaya.
+
+    Ab requests service tak nahi jayengi.
+
+    ```text
+    Client
+
+    ↓
+
+    Circuit Breaker
+
+    ↓
+
+    Fallback Response
+    ```
+
+    Example Response
+
+    ```json
+    {
+        "message": "Payment service is temporarily unavailable"
+    }
+    ```
+
+    ---
+
+    ## 3. Half-Open State ⏳
+
+    Kuch time baad Circuit Breaker ek ya do requests allow karta hai.
+
+    Agar service recover ho gayi:
+
+    ```text
+    Half Open
+
+    ↓
+
+    Request Success
+
+    ↓
+
+    Closed
+    ```
+
+    Agar fir fail hui:
+
+    ```text
+    Half Open
+
+    ↓
+
+    Failure
+
+    ↓
+
+    Open
+    ```
+
+    ---
+
+    # State Flow
+
+    ```text
+            Success
+                ↑
+                |
+            Closed
+                |
+            Failures > Threshold
+                |
+                ↓
+                Open
+                |
+        Wait Timeout
+                |
+                ↓
+            Half Open
+            /      \
+    Success         Failure
+    |                |
+    Closed           Open
+    ```
+
+    ---
+
+    # Node.js Example (Using opossum)
+
+    Install
+
+    ```bash
+    npm install opossum axios
+    ```
+
+    ---
+
+    ### Circuit Breaker
+
+    ```javascript
+    const CircuitBreaker = require("opossum");
+    const axios = require("axios");
+
+    async function paymentService() {
+        const response = await axios.get("http://localhost:3001/payment");
+        return response.data;
+    }
+
+    const breaker = new CircuitBreaker(paymentService, {
+        timeout: 3000,
+        errorThresholdPercentage: 50,
+        resetTimeout: 5000
+    });
+
+    breaker.fallback(() => {
+        return {
+            message: "Payment service unavailable"
+        };
+    });
+
+    breaker.fire()
+        .then(console.log)
+        .catch(console.error);
+    ```
+
+    ---
+
+    # Real Production Architecture
+
+    ```text
+                Client
+                    |
+                API Gateway
+                    |
+            Order Service
+                    |
+            Circuit Breaker
+                    |
+            Payment Service
+                    |
+                Database
+    ```
+
+    ---
+
+    # Benefits
+
+    * Prevent Cascading Failures
+    * Better Fault Tolerance
+    * Fast Failure Detection
+    * Graceful Degradation
+    * Better User Experience
+    * Protects Downstream Services
+    * Reduces Resource Consumption
+
+    ---
+
+    # Common Interview Questions
+
+    ### 1. Circuit Breaker ki need kyun padti hai?
+
+    Taaki baar-baar failing service ko call na kiya jaye aur poora system slow ya crash na ho.
+
+    ---
+
+    ### 2. Fallback kya hota hai?
+
+    Jab actual service unavailable ho, tab alternate response dena.
+
+    Example:
+
+    ```json
+    {
+        "status": "Service unavailable. Please try again later."
+    }
+    ```
+
+    ---
+
+    ### 3. Retry aur Circuit Breaker me difference?
+
+    | Retry                                     | Circuit Breaker                                            |
+    | ----------------------------------------- | ---------------------------------------------------------- |
+    | Failure ke baad dubara request bhejta hai | Repeated failures ke baad request bhejna band kar deta hai |
+    | Temporary network issues ke liye useful   | Long outages aur cascading failures se bachata hai         |
+
+    ---
+
+    ### 4. Timeout aur Circuit Breaker me difference?
+
+    * **Timeout:** Ek request kitni der wait karegi uski limit.
+    * **Circuit Breaker:** Agar service repeatedly fail ho rahi hai, to future requests ko temporarily rok deta hai.
+
+    ---
+
+    # Interview Tip (7+ YOE)
+
+    Agar interviewer pooche:
+
+    **"How do you make microservices resilient?"**
+
+    Aap answer de sakte hain:
+
+    > "I use resilience patterns such as retries with exponential backoff for transient failures, Circuit Breaker to stop repeated calls to unhealthy services, timeouts to avoid long waits, and fallback responses for graceful degradation. For asynchronous workflows, I use RabbitMQ or Kafka, and for distributed transactions, I prefer the Saga Pattern. Together, these patterns improve the reliability and fault tolerance of a microservices-based system."
+
+    ---
+
+    ## Easy Memory Trick
+
+    * **Load Balancer** → Traffic ko distribute karta hai.
+    * **RabbitMQ** → Background tasks ko queue karta hai.
+    * **Kafka** → Events ko stream karta hai.
+    * **Saga Pattern** → Distributed transactions ko consistent rakhta hai.
+    * **Circuit Breaker** → Failing service ko temporarily isolate karta hai taaki poora system impact na ho.
+
+
+
+
 376. API gateway
 377. Saga pattern
 
