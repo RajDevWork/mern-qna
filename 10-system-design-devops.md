@@ -1171,6 +1171,330 @@
 
 373. Event-driven architecture
 374. Idempotency
+
+    ## Hinglish Explanation
+
+    **Idempotency** ka matlab hai:
+
+    > **Ek hi request ko kitni bhi baar bhejo, final result hamesha same hona chahiye.**
+
+    Yani agar client ne network issue ki wajah se same request 2–3 baar bhej di, to duplicate operation nahi hona chahiye.
+
+    ---
+
+    # Real-Life Example
+
+    ### ATM Example
+
+    Aap ATM se **₹5000** withdraw karte ho.
+
+    Network slow tha, isliye ATM ne request dobara bhej di.
+
+    **Without Idempotency**
+
+    ```text
+    Request 1 → ₹5000 Deducted ✅
+
+    Request 2 → ₹5000 Deducted ❌
+
+    Total = ₹10000 Deducted
+    ```
+
+    Customer ka nuksan ho gaya.
+
+    ---
+
+    **With Idempotency**
+
+    ```text
+    Request 1 → ₹5000 Deducted ✅
+
+    Request 2 → Same Request
+
+    ↓
+
+    Already Processed
+
+    ↓
+
+    No Deduction
+    ```
+
+    Chahe request kitni bhi baar aaye, paisa sirf **ek hi baar** katega.
+
+    ---
+
+    # Interview Answer
+
+    **Idempotency** is the property of an operation where making the same request multiple times produces the same final result as making it once.
+
+    It is commonly used in payment systems, order processing, and APIs to prevent duplicate operations caused by retries or network failures.
+
+    ---
+
+    # HTTP Methods and Idempotency
+
+    | HTTP Method | Idempotent? | Reason                                                                |
+    | ----------- | ----------- | --------------------------------------------------------------------- |
+    | GET         | ✅ Yes       | Data sirf read hota hai                                               |
+    | PUT         | ✅ Yes       | Same resource ko same data se overwrite karta hai                     |
+    | DELETE      | ✅ Yes       | Ek baar delete hone ke baad dobara delete karne se state nahi badalti |
+    | POST        | ❌ No        | Har request naya resource create kar sakti hai                        |
+    | PATCH       | Depends     | Update implementation par depend karta hai                            |
+
+    ---
+
+    # Example Without Idempotency
+
+    ```text
+    POST /orders
+    ```
+
+    Request
+
+    ```json
+    {
+        "product": "Laptop"
+    }
+    ```
+
+    User ne button do baar click kar diya.
+
+    Result
+
+    ```text
+    Order 101
+
+    Order 102
+    ```
+
+    Do orders create ho gaye.
+
+    ---
+
+    # Example With Idempotency
+
+    Request
+
+    ```http
+    POST /orders
+    Idempotency-Key: abc123
+    ```
+
+    Server pehle request process karega.
+
+    Database
+
+    ```text
+    abc123
+
+    ↓
+
+    Order 101
+    ```
+
+    Agar same request fir aaye:
+
+    ```http
+    POST /orders
+    Idempotency-Key: abc123
+    ```
+
+    Server check karega:
+
+    ```text
+    Key already exists
+
+    ↓
+
+    Return Existing Order
+
+    ↓
+
+    No New Order Created
+    ```
+
+    Result
+
+    ```text
+    Order 101
+
+    Order 101
+
+    Order 101
+    ```
+
+    Har baar wahi order return hoga.
+
+    ---
+
+    # Simple Node.js Example
+
+    ```javascript
+    const express = require("express");
+
+    const app = express();
+
+    app.use(express.json());
+
+    const processedRequests = new Map();
+
+    app.post("/payment", (req, res) => {
+
+        const key = req.headers["idempotency-key"];
+
+        if (processedRequests.has(key)) {
+            return res.json(processedRequests.get(key));
+        }
+
+        const payment = {
+            paymentId: Date.now(),
+            status: "Success"
+        };
+
+        processedRequests.set(key, payment);
+
+        res.json(payment);
+
+    });
+
+    app.listen(3000);
+    ```
+
+    ### First Request
+
+    ```http
+    POST /payment
+
+    Idempotency-Key: xyz123
+    ```
+
+    Response
+
+    ```json
+    {
+        "paymentId": 1001,
+        "status": "Success"
+    }
+    ```
+
+    ---
+
+    ### Second Request
+
+    ```http
+    POST /payment
+
+    Idempotency-Key: xyz123
+    ```
+
+    Response
+
+    ```json
+    {
+        "paymentId": 1001,
+        "status": "Success"
+    }
+    ```
+
+    Naya payment create nahi hua.
+
+    ---
+
+    # Real Production Flow
+
+    ```text
+    Client
+    |
+    POST /payment
+    Idempotency-Key: abc123
+    |
+    API
+    |
+    Redis / Database
+    |
+    Key Exists?
+    /        \
+    No         Yes
+    |           |
+    Process    Return
+    Payment    Previous Result
+    ```
+
+    Production me idempotency keys ko aksar **Redis** ya database me expiry (TTL) ke saath store kiya jata hai.
+
+    ---
+
+    # Idempotency Use Cases
+
+    * Payment Gateway
+    * Order Creation
+    * Ticket Booking
+    * Money Transfer
+    * Wallet Recharge
+    * Subscription APIs
+    * Inventory Reservation
+
+    ---
+
+    # Common Interview Questions
+
+    ### 1. POST idempotent kyun nahi hota?
+
+    Kyuki har POST request naya resource create kar sakti hai.
+
+    ---
+
+    ### 2. PUT idempotent kyun hota hai?
+
+    Kyuki same resource ko same data se update karne par final state same rehti hai.
+
+    ---
+
+    ### 3. Idempotency Key kya hoti hai?
+
+    Ek unique identifier (UUID ya random string) jo client har request ke saath bhejta hai. Server us key ko use karke duplicate requests ko identify karta hai.
+
+    Example:
+
+    ```http
+    Idempotency-Key: 6b2b2d74-1b35-4db4-bf3d-5e18d6c7f221
+    ```
+
+    ---
+
+    ### 4. Idempotency aur Retry me difference?
+
+    | Retry                    | Idempotency                        |
+    | ------------------------ | ---------------------------------- |
+    | Request ko dobara bhejna | Duplicate request ka safe handling |
+    | Client-side behavior     | Server-side guarantee              |
+
+    Retry bina idempotency ke duplicate payments ya duplicate orders create kar sakta hai.
+
+    ---
+
+    # Interview Tip (7+ YOE)
+
+    Agar interviewer pooche:
+
+    **"How do you prevent duplicate payments in a distributed system?"**
+
+    Aap answer de sakte hain:
+
+    > "I use idempotency keys for payment and order APIs. Every client request includes a unique idempotency key, which is stored in Redis or a database after the first successful execution. If the same request is retried due to a timeout or network issue, the server detects the existing key and returns the original response instead of processing the transaction again. This prevents duplicate payments and ensures safe retries."
+
+    ---
+
+    ## Easy Memory Trick
+
+    * **Retry** → "Try again."
+    * **Circuit Breaker** → "Stop calling a failing service."
+    * **Saga Pattern** → "Undo completed steps if a later step fails."
+    * **Idempotency** → **"Same request, same final result."**
+
+
+
 375. Circuit breaker
 
 
