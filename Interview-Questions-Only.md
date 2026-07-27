@@ -306,7 +306,7 @@ All questions from every section, listed without explanations/answers.
     **Answer:**
     Modern JavaScript engines (like V8) use **Just-In-Time (JIT) compilation**, so JavaScript is not purely interpreted anymore. It is compiled to machine code at runtime for better performance.
 
-
+    ---
 
 
 
