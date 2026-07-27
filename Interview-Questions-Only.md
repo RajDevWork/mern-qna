@@ -313,14 +313,1029 @@ All questions from every section, listed without explanations/answers.
 
 
 2. JS dynamically typed kaise hai?
+
+    ## Hinglish Explanation
+
+    JavaScript **dynamically typed language** hai kyunki **variable ka data type runtime par decide hota hai**, aur ek hi variable me different types ki values assign kar sakte ho.
+
+    Matlab, variable declare karte waqt type batane ki zarurat nahi hoti. JavaScript khud value dekhkar type identify kar leti hai.
+
+    ### Example
+
+    ```javascript
+    let data = "Raj";      // String
+
+    data = 25;             // Number
+
+    data = true;           // Boolean
+
+    console.log(data);     // true
+    ```
+
+    Yahan `data` variable ka type baar-baar change ho raha hai, aur JavaScript bina error ke allow karti hai.
+
+    **Static Typed Language (Java/C++/TypeScript):**
+
+    ```java
+    String name = "Raj";
+    name = 25; // ❌ Compile-time Error
+    ```
+
+    Yahan type pehle hi fix ho gaya, isliye number assign nahi kar sakte.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    let value = "Hello";
+
+    console.log(typeof value); // string
+
+    value = 100;
+    console.log(typeof value); // number
+
+    value = false;
+    console.log(typeof value); // boolean
+    ```
+
+    **Output:**
+
+    ```
+    string
+    number
+    boolean
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    JavaScript is a dynamically typed language because the data type of a variable is determined at runtime. We don't need to declare the variable type explicitly. The same variable can store different types of values during execution, such as a string, number, or boolean.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Does the variable change its type?**
+
+    **Answer:**
+    **No.** Variable ka type fixed nahi hota. **Value ka type hota hai.** Jab nayi value assign hoti hai, variable us value ko reference karta hai. Isi behavior ko hum practical terms me "dynamic typing" kehte hain.
+
+    ---
+
+
+
 3. var vs let vs const?
+
+    ## Hinglish Explanation
+
+    `var`, `let` aur `const` teeno variables declare karne ke liye use hote hain. Inke beech main difference **scope**, **re-declaration**, **re-assignment**, aur **hoisting** ka hota hai.
+
+    ### 1. `var`
+
+    * **Function scoped** hota hai.
+    * Dubara declare bhi kar sakte ho.
+    * Value reassign bhi kar sakte ho.
+    * Hoist hota hai aur `undefined` se initialize ho jata hai.
+
+    ```javascript
+    var name = "Raj";
+    var name = "Rahul"; // ✅ Allowed
+
+    name = "Amit"; // ✅ Allowed
+    ```
+
+    ---
+
+    ### 2. `let`
+
+    * **Block scoped** hota hai (`{}` ke andar hi accessible).
+    * Dubara declare **nahi** kar sakte.
+    * Value reassign kar sakte ho.
+    * Hoist hota hai, lekin **Temporal Dead Zone (TDZ)** ki wajah se declaration se pehle access nahi kar sakte.
+
+    ```javascript
+    let age = 25;
+
+    // let age = 30; ❌ Error
+
+    age = 30; // ✅ Allowed
+    ```
+
+    ---
+
+    ### 3. `const`
+
+    * **Block scoped** hota hai.
+    * Dubara declare nahi kar sakte.
+    * Reassign bhi nahi kar sakte.
+    * Declare karte time value dena mandatory hai.
+
+    ```javascript
+    const PI = 3.14;
+
+    // PI = 3.1415; ❌ Error
+    ```
+
+    > **Important Interview Point:**
+    > `const` ka matlab object immutable nahi hota. Sirf variable ka reference change nahi kar sakte.
+
+    ```javascript
+    const user = {
+    name: "Raj"
+    };
+
+    user.name = "Rahul"; // ✅ Allowed
+
+    // user = {}; ❌ Error
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    function demo() {
+    var a = 10;
+    let b = 20;
+    const c = 30;
+
+    if (true) {
+        var x = 100;
+        let y = 200;
+    }
+
+    console.log(x); // 100 ✅
+    // console.log(y); // ❌ Error
+    }
+
+    demo();
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    `var`, `let`, and `const` are used to declare variables in JavaScript.
+
+    * `var` is function scoped and allows both redeclaration and reassignment.
+    * `let` is block scoped. It allows reassignment but does not allow redeclaration in the same scope.
+    * `const` is also block scoped, but it does not allow reassignment and must be initialized when declared.
+    * In modern JavaScript, `let` and `const` are preferred over `var` because they provide better scope control and help avoid bugs.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Which one should we use in modern JavaScript?**
+
+    **Answer:**
+
+    * Use **`const`** by default.
+    * Use **`let`** only when the value needs to change.
+    * Avoid **`var`** in modern code because its function scope and redeclaration behavior can lead to unexpected bugs.
+
+    ---
+
+
 4. Hoisting kya hai?
+
+
+    ## Hinglish Explanation
+
+    **Hoisting** ka matlab hai ki JavaScript **execution se pehle declarations ko memory me register kar deta hai**.
+
+    Is wajah se kuch variables aur functions ko unki declaration se pehle access karna possible hota hai.
+
+    Lekin hoisting ka behavior `var`, `let`, `const` aur functions ke liye alag hota hai.
+
+    ### `var`
+
+    `var` hoist hota hai aur uski initial value `undefined` hoti hai.
+
+    ```javascript
+    console.log(name); // undefined
+
+    var name = "Raj";
+    ```
+
+    JavaScript internally is tarah treat karti hai:
+
+    ```javascript
+    var name;
+
+    console.log(name); // undefined
+
+    name = "Raj";
+    ```
+
+    ---
+
+    ### `let` aur `const`
+
+    Ye bhi hoist hote hain, **lekin initialize nahi hote**. Declaration se pehle access karoge to **ReferenceError** aayega. Is period ko **Temporal Dead Zone (TDZ)** kehte hain.
+
+    ```javascript
+    console.log(age); // ❌ ReferenceError
+
+    let age = 25;
+    ```
+
+    ---
+
+    ### Function Declaration
+
+    Function declaration poori hoist hoti hai, isliye declaration se pehle bhi call kar sakte ho.
+
+    ```javascript
+    greet();
+
+    function greet() {
+    console.log("Hello");
+    }
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    console.log(a); // undefined
+    var a = 10;
+
+    // console.log(b); // ReferenceError
+    let b = 20;
+
+    sayHi();
+
+    function sayHi() {
+    console.log("Hi");
+    }
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Hoisting is JavaScript's behavior of registering declarations before the code is executed. Because of this, `var` variables and function declarations can be accessed before their declaration. A `var` variable is initialized with `undefined`, while `let` and `const` are hoisted but remain in the Temporal Dead Zone until their declaration is reached, so accessing them early throws a `ReferenceError`.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Are `let` and `const` hoisted?**
+
+    **Answer:**
+    **Yes.** They are hoisted, but they are **not initialized** until execution reaches their declaration. That's why accessing them before declaration results in a **ReferenceError** due to the **Temporal Dead Zone (TDZ)**.
+
+    ---
+
 5. Temporal Dead Zone kya hai?
+
+    ## Hinglish Explanation
+
+    **Temporal Dead Zone (TDZ)** woh time period hai **jab variable memory me exist karta hai, lekin initialize nahi hua hota**.
+
+    Ye sirf **`let`** aur **`const`** ke saath hota hai.
+
+    Agar declaration se pehle variable ko access karte hain, to JavaScript **ReferenceError** throw karti hai.
+
+    **Simple flow:**
+
+    1. Variable hoist ho gaya. ✅
+    2. Lekin initialize nahi hua. ❌
+    3. Declaration line tak ka time = **Temporal Dead Zone (TDZ)**
+    4. Declaration execute hote hi variable use kar sakte hain. ✅
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    console.log(age); // ❌ ReferenceError
+
+    let age = 25;
+
+    console.log(age); // 25
+    ```
+
+    Yahan `console.log(age)` aur `let age = 25` ke beech ka area **Temporal Dead Zone** hai.
+
+    ---
+
+    ### `const` ke saath bhi same behavior
+
+    ```javascript
+    console.log(PI); // ❌ ReferenceError
+
+    const PI = 3.14;
+    ```
+
+    ---
+
+    ### `var` me TDZ nahi hota
+
+    ```javascript
+    console.log(name); // undefined
+
+    var name = "Raj";
+    ```
+
+    `var` hoist hoke `undefined` se initialize ho jata hai, isliye TDZ apply nahi hota.
+
+    ---
+
+    ## English Interview Answer
+
+    The Temporal Dead Zone (TDZ) is the period between entering a scope and the execution of a `let` or `const` declaration. During this time, the variable is hoisted but not initialized. If we try to access it before its declaration, JavaScript throws a `ReferenceError`. `var` does not have a Temporal Dead Zone because it is initialized with `undefined`.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Why was TDZ introduced?**
+
+    **Answer:**
+    TDZ helps catch programming mistakes by preventing the use of `let` and `const` variables before they are properly initialized. This makes the code safer and easier to debug.
+
+
+    ---
+
+
 6. Scope kya hota hai?
+
+    ## Hinglish Explanation
+
+    **Scope** ka matlab hai **koi variable program ke kis area me accessible hai**.
+
+    Simple words me:
+
+    > **"Variable ko code ke kis part se access kar sakte hain, usi ko Scope kehte hain."**
+
+    JavaScript me mainly **3 types ke scope** hote hain:
+
+    ### 1. Global Scope
+
+    Global scope me declare kiya gaya variable har jagah access ho sakta hai.
+
+    ```javascript
+    let name = "Raj";
+
+    function greet() {
+    console.log(name);
+    }
+
+    greet(); // Raj
+    console.log(name); // Raj
+    ```
+
+    ---
+
+    ### 2. Function Scope
+
+    `var` function scoped hota hai. Function ke bahar usse access nahi kar sakte.
+
+    ```javascript
+    function demo() {
+    var age = 25;
+    console.log(age); // 25
+    }
+
+    // console.log(age); // ❌ Error
+    ```
+
+    ---
+
+    ### 3. Block Scope
+
+    `let` aur `const` block (`{}`) ke andar hi accessible hote hain.
+
+    ```javascript
+    if (true) {
+    let city = "Bilaspur";
+    const state = "CG";
+
+    console.log(city);
+    console.log(state);
+    }
+
+    // console.log(city);  // ❌ Error
+    // console.log(state); // ❌ Error
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    let a = 1; // Global Scope
+
+    function test() {
+    var b = 2; // Function Scope
+
+    if (true) {
+        let c = 3; // Block Scope
+
+        console.log(a); // 1
+        console.log(b); // 2
+        console.log(c); // 3
+    }
+
+    // console.log(c); // ❌ Error
+    }
+
+    test();
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Scope defines where a variable can be accessed in a program. JavaScript has three main types of scope: Global Scope, Function Scope, and Block Scope. Variables declared with `var` are function scoped, while `let` and `const` are block scoped. Understanding scope helps avoid variable conflicts and keeps code organized.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Is `var` block scoped?**
+
+    **Answer:**
+    **No.** `var` is **function scoped**, not block scoped.
+
+    ```javascript
+    if (true) {
+    var x = 10;
+    }
+
+    console.log(x); // ✅ 10
+    ```
+
+    Yehi reason hai ki modern JavaScript me `let` aur `const` ko `var` se zyada prefer kiya jata hai.
+
+    ---
+
 7. Scope types?
+
+    ## Hinglish Explanation
+
+    JavaScript me **3 main types of Scope** hote hain:
+
+    ### 1. Global Scope
+
+    Global scope me declare kiya gaya variable application me kahin se bhi access kiya ja sakta hai.
+
+    ```javascript id="5gzuxh"
+    let company = "Google";
+
+    function show() {
+    console.log(company);
+    }
+
+    show(); // Google
+    ```
+
+    ---
+
+    ### 2. Function Scope
+
+    Function ke andar declare kiya gaya variable sirf us function ke andar hi accessible hota hai.
+
+    > `var` function scoped hota hai.
+
+    ```javascript id="2d6wua"
+    function test() {
+    var age = 25;
+    console.log(age);
+    }
+
+    // console.log(age); // ❌ Error
+    ```
+
+    ---
+
+    ### 3. Block Scope
+
+    `{}` ke andar declare kiya gaya variable sirf us block ke andar accessible hota hai.
+
+    > `let` aur `const` block scoped hote hain.
+
+    ```javascript id="gx87r2"
+    if (true) {
+    let city = "Bilaspur";
+    const state = "CG";
+
+    console.log(city);
+    console.log(state);
+    }
+
+    // console.log(city); // ❌ Error
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="w8q5n4"
+    let a = "Global";
+
+    function demo() {
+    var b = "Function";
+
+    if (true) {
+        let c = "Block";
+
+        console.log(a); // Global
+        console.log(b); // Function
+        console.log(c); // Block
+    }
+    }
+
+    demo();
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    JavaScript has three main types of scope:
+
+    * **Global Scope**: Variables are accessible throughout the program.
+    * **Function Scope**: Variables declared with `var` are accessible only inside the function where they are declared.
+    * **Block Scope**: Variables declared with `let` and `const` are accessible only inside the block (`{}`) where they are declared.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Which scope is used by `let`, `const`, and `var`?**
+
+    **Answer:**
+
+    * `var` → **Function Scope**
+    * `let` → **Block Scope**
+    * `const` → **Block Scope**
+
+
+    ---
+
 8. Lexical scope kya hai?
+
+    ## Hinglish Explanation
+
+    **Lexical Scope** ka matlab hai ki **ek function kin variables ko access kar sakta hai, ye uski location (where it is written) se decide hota hai**, na ki usse kahan se call kiya gaya hai.
+
+    Simple words me:
+
+    > **Function apne parent (outer) scope ke variables ko access kar sakta hai.**
+
+    ---
+
+    ### Example
+
+    ```javascript id="a7f2m1"
+    let company = "OpenAI";
+
+    function outer() {
+    let name = "Raj";
+
+    function inner() {
+        console.log(name);     // ✅ Parent scope
+        console.log(company);  // ✅ Global scope
+    }
+
+    inner();
+    }
+
+    outer();
+    ```
+
+    Yahan `inner()` function:
+
+    * Apna scope access kar sakta hai.
+    * `outer()` ka scope access kar sakta hai.
+    * Global scope bhi access kar sakta hai.
+
+    Yehi **Lexical Scope** hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="n5k8v2"
+    function parent() {
+    let message = "Hello";
+
+    function child() {
+        console.log(message);
+    }
+
+    child();
+    }
+
+    parent();
+    ```
+
+    **Output:**
+
+    ```text
+    Hello
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Lexical scope means that a function can access variables from its own scope and its outer (parent) scope. The scope is determined by where the function is defined in the code, not where it is called. This is the reason nested functions can access variables declared in their parent functions.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Why is Lexical Scope important?**
+
+    **Answer:**
+    Lexical scope is the foundation of **closures**. Since an inner function can access variables from its outer function, JavaScript can preserve those variables even after the outer function has finished execution.
+
+    > **Note:** Interview me aksar agla question hota hai: **"What is Closure?"** Lexical Scope samajh loge to Closure bahut easy ho jayega.
+
+
+    ---
+
+
 9. Closure kya hai?
+
+
+    ## Hinglish Explanation
+
+    **Closure** tab banta hai jab **ek inner function apne outer function ke variables ko yaad rakhta hai, even after the outer function has finished execution.**
+
+    Simple definition:
+
+    > **Closure = Function + Uska Lexical Environment (Outer Variables)**
+
+    Iska reason **Lexical Scope** hai.
+
+    ---
+
+    ### Example
+
+    ```javascript
+    function outer() {
+    let count = 0;
+
+    return function inner() {
+        count++;
+        console.log(count);
+    };
+    }
+
+    const counter = outer();
+
+    counter(); // 1
+    counter(); // 2
+    counter(); // 3
+    ```
+
+    ### Kya hua yahan?
+
+    * `outer()` execute hua.
+    * `count` variable create hua.
+    * `inner()` return ho gaya.
+    * Normally `outer()` khatam hone ke baad `count` destroy ho jana chahiye tha.
+    * Lekin `inner()` ko `count` ki zarurat hai, isliye JavaScript us variable ko memory me preserve rakhti hai.
+    * Isi behavior ko **Closure** kehte hain.
+
+    ---
+
+    ## Real-life Use Cases
+
+    * Data hiding / Private variables
+    * Counters
+    * Memoization (Caching)
+    * Event handlers
+    * `setTimeout()` callbacks
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    function greet(name) {
+    return function () {
+        console.log(`Hello, ${name}`);
+    };
+    }
+
+    const sayHello = greet("Raj");
+
+    sayHello(); // Hello, Raj
+    ```
+
+    Yahan `greet()` execute hone ke baad bhi `name` variable accessible hai because of **Closure**.
+
+    ---
+
+    ## English Interview Answer
+
+    A closure is created when an inner function remembers and accesses variables from its outer function even after the outer function has finished execution. This happens because JavaScript uses lexical scoping. Closures are commonly used for data encapsulation, counters, event handlers, and callbacks.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Why do we use closures?**
+
+    **Answer:**
+
+    * To maintain private state.
+    * To preserve data between function calls.
+    * To implement counters, caching, and callbacks without using global variables.
+
+    > **Interview Tip:** Agar interviewer puchhe *"Closure kya hai?"*, ek line ki definition ke baad **counter wala example** zarur explain karo. Ye sabse common aur effective interview example hai.
+
+    ---
+
+    # 1. Data Encapsulation (Private Variable)
+
+    ## Hinglish Explanation
+
+    Suppose bank account ka balance koi directly change na kar sake. Sirf `deposit()` aur `withdraw()` se hi change ho.
+
+    Closure ki wajah se `balance` private ban jata hai.
+
+    ### Code
+
+    ```javascript
+    function createAccount() {
+    let balance = 1000;
+
+    return {
+        deposit(amount) {
+        balance += amount;
+        console.log(balance);
+        },
+
+        getBalance() {
+        return balance;
+        }
+    };
+    }
+
+    const account = createAccount();
+
+    account.deposit(500);      // 1500
+    console.log(account.getBalance()); // 1500
+
+    // console.log(balance); ❌ Error
+    ```
+
+    **Interview Point:**
+    `balance` ko bahar se access nahi kar sakte.
+    Ye Closure ki wajah se private hai.
+
+    ---
+
+    # 2. Counter
+
+    ## Hinglish Explanation
+
+    Har function call par value increase karni hai bina global variable use kiye.
+
+    ### Code
+
+    ```javascript
+    function createCounter() {
+    let count = 0;
+
+    return function () {
+        count++;
+        console.log(count);
+    };
+    }
+
+    const counter = createCounter();
+
+    counter(); // 1
+    counter(); // 2
+    counter(); // 3
+    ```
+
+    **Interview Point**
+
+    `count` variable har call ke baad memory me save rehta hai.
+
+    ---
+
+    # 3. Event Handler
+
+    ## Hinglish Explanation
+
+    Button click hone par previous data yaad rakhna ho.
+
+    ```javascript
+    function setupButton() {
+    let clicks = 0;
+
+    document.getElementById("btn").addEventListener("click", function () {
+        clicks++;
+        console.log(`Clicked ${clicks} times`);
+    });
+    }
+
+    setupButton();
+    ```
+
+    Har click par `clicks` increase hota rahega.
+
+    Agar Closure nahi hota to har click par `clicks` reset ho jata.
+
+    ---
+
+    # 4. Callback
+
+    ## Hinglish Explanation
+
+    Callback future me execute hota hai.
+
+    Closure uske liye outer variables ko preserve rakhta hai.
+
+    ```javascript
+    function greet(name) {
+    setTimeout(function () {
+        console.log(`Hello ${name}`);
+    }, 2000);
+    }
+
+    greet("Raj");
+    ```
+
+    Output (2 sec baad)
+
+    ```
+    Hello Raj
+    ```
+
+    `greet()` khatam ho chuka hai.
+
+    Fir bhi `setTimeout()` callback ke paas `name` variable available hai.
+
+    Ye Closure ki wajah se possible hai.
+
+    ---
+
+    # English Interview Answer
+
+    Closures are commonly used in real applications:
+
+    * **Data Encapsulation:** To create private variables that cannot be accessed directly from outside.
+    * **Counters:** To maintain state between multiple function calls.
+    * **Event Handlers:** To remember values across user interactions like button clicks.
+    * **Callbacks:** To preserve variables for asynchronous functions such as `setTimeout` or API callbacks.
+
+    ---
+
+    ## ⭐ Interview Trick (Bahut Important)
+
+    Agar interviewer pooche:
+
+    > **"Can you give some real-world use cases of closures?"**
+
+    Bas itna bol do:
+
+    > "Yes. Closures are commonly used for creating private variables (data encapsulation), implementing counters, maintaining state in event handlers, and preserving variables in asynchronous callbacks like `setTimeout` or API requests."
+
+    ---
+
 10. Closure ka real use case?
+
+
+    ## Hinglish Explanation
+
+    Interview me **"Closure ka real use case?"** puchha jaye to 4-5 common use cases batana enough hota hai. Sabse practical examples ye hain:
+
+    ### 1. Private Variables (Most Common)
+
+    Sensitive data ko direct access se bachane ke liye.
+
+    ```javascript
+    function createUser() {
+    let password = "secret123";
+
+    return {
+        checkPassword(input) {
+        return input === password;
+        }
+    };
+    }
+
+    const user = createUser();
+
+    console.log(user.checkPassword("secret123")); // true
+    // console.log(user.password); // undefined
+    ```
+
+    **Real Use Case:** Password, API key, token, balance jaise data ko private rakhna.
+
+    ---
+
+    ### 2. Counter
+
+    State ko multiple function calls ke beech maintain karna.
+
+    ```javascript
+    function createCounter() {
+    let count = 0;
+
+    return () => ++count;
+    }
+
+    const counter = createCounter();
+
+    console.log(counter()); // 1
+    console.log(counter()); // 2
+    ```
+
+    **Real Use Case:** Page views, click count, request count.
+
+    ---
+
+    ### 3. Event Handler
+
+    Button click ya user interaction ka state maintain karna.
+
+    ```javascript
+    let count = 0;
+
+    button.addEventListener("click", () => {
+    count++;
+    console.log(count);
+    });
+    ```
+
+    **Real Use Case:** Like button, notification count, form interactions.
+
+    ---
+
+    ### 4. Async Callback
+
+    Asynchronous code me outer variables ko preserve rakhna.
+
+    ```javascript
+    function fetchUser(name) {
+    setTimeout(() => {
+        console.log(name);
+    }, 1000);
+    }
+
+    fetchUser("Raj");
+    ```
+
+    **Real Use Case:** API response, timers, file reading.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    function createLogger(prefix) {
+    return function (message) {
+        console.log(`${prefix}: ${message}`);
+    };
+    }
+
+    const errorLogger = createLogger("ERROR");
+
+    errorLogger("Database connection failed");
+    // ERROR: Database connection failed
+    ```
+
+    Yahan `prefix` closure ki wajah se yaad rehta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Closures are used to preserve data after a function has finished execution. Common real-world use cases include creating private variables, implementing counters, handling events, and maintaining values in asynchronous callbacks like `setTimeout` or API requests. They are also widely used in JavaScript libraries and frameworks to maintain state without using global variables.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Where have you seen closures in React or Node.js?**
+
+    **Answer:**
+
+    * **React:** Event handlers, custom hooks, and functions returned from hooks use closures to access state and props.
+    * **Node.js:** Middleware, callbacks, timers (`setTimeout`), and route handlers often rely on closures to preserve request-specific data.
+
+    > **Interview Tip (8+ YOE):** Agar interviewer sirf **"Real use case?"** puche, sabse pehle **private variables** aur **event handlers** bolo. Ye do examples sabse common aur interview-friendly hote hain.
+
+
+    ---
+
+
+
 11. Execution context kya hai?
 12. Call stack kya hai?
 13. Event loop kya hai?
