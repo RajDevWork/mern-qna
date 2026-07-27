@@ -255,6 +255,63 @@ All questions from every section, listed without explanations/answers.
 ## 🧠 JavaScript (1-120)
 
 1. JavaScript kya hai?
+
+    ## Hinglish Explanation
+
+    JavaScript ek **high-level, interpreted scripting language** hai jo web pages ko **interactive aur dynamic** banati hai.
+
+    Pehle JavaScript sirf browser me use hoti thi, lekin ab **Node.js** ki wajah se backend bhi bana sakte hain.
+
+    JavaScript ka use:
+
+    * Button click handle karna
+    * Form validation
+    * API call karna
+    * Dynamic UI update karna
+    * Full Stack applications (MERN) banana
+
+    **Interview Point:**
+    JavaScript **single-threaded** language hai aur asynchronous programming support karti hai using callbacks, promises aur async/await.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    function greet(name) {
+    return `Hello, ${name}`;
+    }
+
+    console.log(greet("Raj"));
+    ```
+
+    **Output:**
+
+    ```
+    Hello, Raj
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    JavaScript is a high-level, interpreted programming language used to build interactive web applications. It runs in the browser and also on the server using Node.js. JavaScript supports object-oriented, functional, and asynchronous programming. It is one of the core technologies of web development along with HTML and CSS.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Is JavaScript compiled or interpreted?**
+
+    **Answer:**
+    Modern JavaScript engines (like V8) use **Just-In-Time (JIT) compilation**, so JavaScript is not purely interpreted anymore. It is compiled to machine code at runtime for better performance.
+
+
+
+
+
+
+
 2. JS dynamically typed kaise hai?
 3. var vs let vs const?
 4. Hoisting kya hai?
