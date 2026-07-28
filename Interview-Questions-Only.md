@@ -2436,9 +2436,360 @@ All questions from every section, listed without explanations/answers.
 
 
 231. Middleware kya hai?
+
+    ## Hinglish Explanation
+
+    **Middleware** ek function hota hai jo **request aur response ke beech execute hota hai**.
+
+    Jab client request bhejta hai, to request direct route par nahi jati. Pehle middleware ke paas jati hai. Middleware request ko:
+
+    * Check kar sakta hai
+    * Modify kar sakta hai
+    * Request ko rok sakta hai
+    * Ya `next()` call karke next middleware/route ko bhej sakta hai.
+
+    **Real-world Examples:**
+
+    * Authentication
+    * Authorization
+    * Logging
+    * Request validation
+    * Error handling
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    function logger(req, res, next) {
+    console.log(`${req.method} ${req.url}`);
+    next(); // Pass control to next middleware
+    }
+
+    app.use(logger);
+
+    app.get("/", (req, res) => {
+    res.send("Home Page");
+    });
+
+    app.listen(3000);
+    ```
+
+    Agar request `GET /` aati hai, flow hoga:
+
+    ```
+    Client Request
+        ↓
+    Logger Middleware
+        ↓
+    Route Handler
+        ↓
+    Response
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Middleware is a function that executes between the request and the response in an Express application. It can access the request and response objects, perform tasks such as logging, authentication, or validation, and then pass control to the next middleware or route handler by calling `next()`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the purpose of `next()`?**
+
+    **Answer:**
+
+    `next()` passes control to the next middleware or route handler. If we don't call `next()` (and also don't send a response), the request will remain pending.
+
+    Example:
+
+    ```javascript
+    app.use((req, res, next) => {
+    console.log("Middleware");
+    next(); // Continue to next middleware/route
+    });
+    ```
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Can a middleware end the request?"**
+
+    **Answer:**
+
+    **Yes.** Middleware do kaam kar sakta hai:
+
+    1. **Send a response** (e.g., `res.status(401).json(...)`) and end the request.
+    2. **Call `next()`** to continue to the next middleware or route.
+
+    Ye point batane se interviewer ko pata chalta hai ki tum middleware ka actual request lifecycle samajhte ho.
+
+    ---
+
 232. Express kya hai?
+
+    ## Hinglish Explanation
+
+    **Express.js** ek **minimal aur flexible web framework** hai jo **Node.js** ke upar bana hai.
+
+    Node.js ke built-in `http` module se bhi server bana sakte hain, lekin routing, middleware, request handling sab manually karna padta hai.
+
+    Express ye kaam easy kar deta hai.
+
+    **Express ki help se hum:**
+
+    * APIs bana sakte hain.
+    * Routes handle kar sakte hain.
+    * Middleware use kar sakte hain.
+    * Request aur response ko easily manage kar sakte hain.
+
+    > **Interview Point:** Express khud web server nahi hai. Ye Node.js ke `http` module ke upar bana hua framework hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Without Express
+
+    ```javascript
+    const http = require("http");
+
+    const server = http.createServer((req, res) => {
+    res.end("Hello");
+    });
+
+    server.listen(3000);
+    ```
+
+    ### With Express
+
+    ```javascript
+    const express = require("express");
+
+    const app = express();
+
+    app.get("/", (req, res) => {
+    res.send("Hello");
+    });
+
+    app.listen(3000);
+    ```
+
+    Express me code kam likhna padta hai aur readable bhi hota hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Express.js is a minimal and flexible web framework for Node.js. It simplifies server-side development by providing features such as routing, middleware, and request/response handling. It is widely used to build REST APIs and web applications.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why do we use Express instead of Node.js HTTP module?**
+
+    **Answer:**
+
+    Because Express provides built-in features like:
+
+    * Easy routing
+    * Middleware support
+    * Better request and response handling
+    * Cleaner and more maintainable code
+
+    Without Express, these features have to be implemented manually using the `http` module.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"Is Express a framework or a library?"**
+
+    **Answer:**
+
+    > **Express is a web framework for Node.js. It is built on top of the Node.js `http` module and simplifies backend development.**
+
+    Ye answer concise hai aur interview ke liye sufficient hai.
+
+    ---
+
+
+
 233. Routing kaise hoti hai?
+
+    ## Hinglish Explanation
+
+    **Routing** ka matlab hai **client ki request ko correct handler (function) tak pahunchana.**
+
+    Jab client koi URL hit karta hai, Express **HTTP Method (GET, POST, PUT, DELETE)** aur **URL Path** dekhkar decide karta hai ki kaunsa function execute karna hai.
+
+    Example:
+
+    * `GET /users` → Users list
+    * `POST /users` → New user create
+    * `PUT /users/1` → User update
+    * `DELETE /users/1` → User delete
+
+    > **Interview Point:** Route = **HTTP Method + URL Path + Handler Function**
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    app.get("/users", (req, res) => {
+    res.send("Get All Users");
+    });
+
+    app.post("/users", (req, res) => {
+    res.send("Create User");
+    });
+
+    app.put("/users/:id", (req, res) => {
+    res.send(`Update User ${req.params.id}`);
+    });
+
+    app.delete("/users/:id", (req, res) => {
+    res.send(`Delete User ${req.params.id}`);
+    });
+
+    app.listen(3000);
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Routing is the process of mapping an incoming HTTP request to the appropriate handler function. Express matches the HTTP method and the requested URL with the defined route, and then executes the corresponding callback function to generate a response.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How does Express decide which route to execute?**
+
+    **Answer:**
+
+    Express checks:
+
+    1. **HTTP Method** (GET, POST, PUT, DELETE, etc.)
+    2. **URL Path**
+
+    If both match a defined route, it executes that route's handler.
+
+    Example:
+
+    ```javascript
+    app.get("/users", handler);
+    ```
+
+    This route will handle only **GET /users**. It will **not** handle `POST /users`.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **30–40 seconds**
+
+    ---
+
+
 234. Error handling middleware?
+
+    ## Hinglish Explanation
+
+    **Error Handling Middleware** Express ka special middleware hota hai jo application me aane wale errors ko handle karta hai.
+
+    Normal middleware me 3 parameters hote hain:
+
+    ```javascript
+    (req, res, next)
+    ```
+
+    Lekin **Error Handling Middleware** me **4 parameters** hote hain:
+
+    ```javascript
+    (err, req, res, next)
+    ```
+
+    Jab application me error aata hai aur hum `next(error)` call karte hain, Express directly Error Handling Middleware ko call karta hai.
+
+    **Real Use Cases:**
+
+    * Database errors
+    * Validation errors
+    * Unexpected server errors
+    * Centralized error response
+
+    > **Interview Point:** Error handling middleware **hamesha routes aur baaki middlewares ke baad define kiya jata hai.**
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    app.get("/", (req, res, next) => {
+    const error = new Error("Something went wrong");
+    next(error);
+    });
+
+    app.use((err, req, res, next) => {
+    res.status(500).json({
+        message: err.message
+    });
+    });
+
+    app.listen(3000);
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Error handling middleware is a special middleware in Express that handles application errors in a centralized way. It has four parameters: `err`, `req`, `res`, and `next`. When an error is passed using `next(error)`, Express skips the remaining middleware and routes and executes the error handling middleware.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why do we use Error Handling Middleware?**
+
+    **Answer:**
+
+    Instead of handling errors in every route separately, we use a centralized error handler. This keeps the code clean, consistent, and easier to maintain.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar ye counter question puchta hai:
+
+    > **"Why does it have 4 parameters?"**
+
+    **Answer:**
+
+    > Express identifies an error handling middleware by its **4 parameters**: `(err, req, res, next)`. If the `err` parameter is missing, Express treats it as a normal middleware.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **40–50 seconds**
+    ---
+
 235. Custom middleware?
 236. Request lifecycle?
 237. REST API kya hai?
