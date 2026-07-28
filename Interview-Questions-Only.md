@@ -2791,10 +2791,495 @@ All questions from every section, listed without explanations/answers.
     ---
 
 235. Custom middleware?
+
+    ## Hinglish Explanation
+
+    **Custom Middleware** wo middleware hota hai jo **hum khud apni application ki requirement ke according banate hain.**
+
+    Express kuch built-in middleware deta hai (`express.json()`), lekin agar hume custom logic chahiye, to hum apna middleware create karte hain.
+
+    **Real-world Use Cases:**
+
+    * Authentication
+    * Logging
+    * Request validation
+    * Checking API keys
+    * Measuring request time
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    // Custom Middleware
+    function logger(req, res, next) {
+    console.log(`${req.method} ${req.url}`);
+    next();
+    }
+
+    app.use(logger);
+
+    app.get("/", (req, res) => {
+    res.send("Home Page");
+    });
+
+    app.listen(3000);
+    ```
+
+    Har request aane par pehle `logger` middleware chalega, fir route handler execute hoga.
+
+    ---
+
+    ## English Interview Answer
+
+    A custom middleware is a middleware function created by the developer to perform application-specific tasks. It executes before the route handler and can access the request and response objects. Common use cases include logging, authentication, validation, and request processing. It should call `next()` to pass control to the next middleware or route handler.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between built-in middleware and custom middleware?**
+
+    **Answer:**
+
+    * **Built-in Middleware** → Provided by Express (e.g., `express.json()`).
+    * **Custom Middleware** → Created by the developer for application-specific logic.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer kabhi-kabhi puchta hai:
+
+    > **"Have you written any custom middleware in your project?"**
+
+    **Answer (Production Experience):**
+
+    > **Yes. I have created custom middleware for JWT authentication, request logging, role-based authorization, and request validation before processing API requests.**
+
+    Ye answer practical lagta hai aur real project experience reflect karta hai.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **30–40 seconds**
+
+    ---
+
+
+
 236. Request lifecycle?
+
+
+    ## Hinglish Explanation
+
+    **Request Lifecycle** ka matlab hai **client se request aane ke baad response wapas jane tak request kin-kin steps se pass hoti hai.**
+
+    Express me flow generally aisa hota hai:
+
+    ```text
+    Client Request
+        ↓
+    Application-level Middleware
+        ↓
+    Route-specific Middleware (Optional)
+        ↓
+    Route Handler (Controller)
+        ↓
+    Response
+    ```
+
+    Agar beech me koi error aa jaye aur `next(error)` call ho:
+
+    ```text
+    Client Request
+        ↓
+    Middleware
+        ↓
+    Route Handler
+        ↓
+    Error Handling Middleware
+        ↓
+    Response
+    ```
+
+    > **Interview Point:** Har middleware `next()` call karta hai, tabhi request next middleware ya route handler tak pahunchti hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    app.use((req, res, next) => {
+    console.log("Middleware");
+    next();
+    });
+
+    app.get("/", (req, res) => {
+    console.log("Route Handler");
+    res.send("Hello");
+    });
+
+    app.listen(3000);
+    ```
+
+    **Output (Console):**
+
+    ```text
+    Middleware
+    Route Handler
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    The request lifecycle is the sequence of steps an HTTP request follows in an Express application. A request first passes through middleware, then reaches the matching route handler. The route processes the request and sends a response. If an error occurs, Express forwards it to the error handling middleware before sending the response.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What happens if `next()` is not called?**
+
+    **Answer:**
+
+    If the middleware does **not** call `next()` and also does **not** send a response, the request will remain **pending**, and the client will keep waiting until it times out.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer kabhi-kabhi puchta hai:
+
+    > **"Where does authentication middleware run?"**
+
+    **Answer:**
+
+    > Authentication middleware runs **before the route handler**. It verifies the user, and if authentication succeeds, it calls `next()`. Otherwise, it sends an error response like **401 Unauthorized**.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **40–50 seconds**
+
+    ---
+
+
 237. REST API kya hai?
+
+    ## Hinglish Explanation
+
+    **REST API (Representational State Transfer API)** ek architecture style hai jiske through **client aur server HTTP methods ka use karke communicate karte hain.**
+
+    REST API me har resource ka ek unique URL hota hai aur us resource par operations perform karne ke liye HTTP methods use hote hain.
+
+    **Common HTTP Methods:**
+
+    * **GET** → Data fetch karna
+    * **POST** → Naya data create karna
+    * **PUT** → Existing data update karna
+    * **DELETE** → Data delete karna
+
+    Example:
+
+    ```text
+    GET    /users      → Get all users
+    POST   /users      → Create a user
+    PUT    /users/1    → Update user
+    DELETE /users/1    → Delete user
+    ```
+
+    > **Interview Point:** REST API **stateless** hoti hai, yani server har request ko independently process karta hai. Server previous request ki state remember nahi karta.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    app.get("/users", (req, res) => {
+    res.json([
+        { id: 1, name: "Raj" },
+        { id: 2, name: "Aman" }
+    ]);
+    });
+
+    app.listen(3000);
+    ```
+
+    Request:
+
+    ```http
+    GET /users
+    ```
+
+    Response:
+
+    ```json
+    [
+    {
+        "id": 1,
+        "name": "Raj"
+    },
+    {
+        "id": 2,
+        "name": "Aman"
+    }
+    ]
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    A REST API is an architectural style used to build communication between a client and a server over HTTP. It uses standard HTTP methods such as GET, POST, PUT, and DELETE to perform operations on resources. REST APIs are stateless, meaning each request contains all the information required to process it.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why is REST called stateless?**
+
+    **Answer:**
+
+    Because the server does not store client state between requests. Every request must contain all the required information, such as authentication tokens or request data.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"What is a Resource in REST?"**
+
+    **Answer:**
+
+    > A **resource** is any object or data that the API exposes, such as a **user**, **product**, or **order**. Each resource is identified by a unique URL, for example `/users/1`.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **40–50 seconds**
+
+    ---
+
+
 238. CRUD API kaise banate ho?
+
+    ## Hinglish Explanation
+
+    CRUD ka matlab hota hai:
+
+    * **C** → Create
+    * **R** → Read
+    * **U** → Update
+    * **D** → Delete
+
+    Express me CRUD API banane ke liye hum har operation ke liye alag HTTP method use karte hain.
+
+    | Operation | HTTP Method | Example                |
+    | --------- | ----------- | ---------------------- |
+    | Create    | POST        | `/users`               |
+    | Read      | GET         | `/users`, `/users/:id` |
+    | Update    | PUT/PATCH   | `/users/:id`           |
+    | Delete    | DELETE      | `/users/:id`           |
+
+    **Real Project Flow:**
+
+    ```text
+    Client
+    ↓
+    Route
+    ↓
+    Middleware (Auth/Validation)
+    ↓
+    Controller
+    ↓
+    Database
+    ↓
+    Response
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    app.use(express.json());
+
+    // Create
+    app.post("/users", (req, res) => {
+    res.json({ message: "User Created" });
+    });
+
+    // Read
+    app.get("/users", (req, res) => {
+    res.json({ message: "All Users" });
+    });
+
+    // Update
+    app.put("/users/:id", (req, res) => {
+    res.json({ message: `User ${req.params.id} Updated` });
+    });
+
+    // Delete
+    app.delete("/users/:id", (req, res) => {
+    res.json({ message: `User ${req.params.id} Deleted` });
+    });
+
+    app.listen(3000);
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    To build a CRUD API, I create separate endpoints for each operation using the appropriate HTTP methods. I use **POST** to create data, **GET** to read data, **PUT** or **PATCH** to update data, and **DELETE** to remove data. In a real project, the request usually passes through middleware, then the controller, which performs the database operation and returns the response.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between PUT and PATCH?**
+
+    **Answer:**
+
+    * **PUT** → Replaces the entire resource.
+    * **PATCH** → Updates only the specified fields.
+
+    Example:
+
+    ```http
+    PUT /users/1
+    ```
+
+    ```json
+    {
+    "name": "Raj",
+    "email": "raj@gmail.com"
+    }
+    ```
+
+    ```http
+    PATCH /users/1
+    ```
+
+    ```json
+    {
+    "name": "Raj"
+    }
+    ```
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"How do you build CRUD APIs in your project?"**
+
+    Production-level answer:
+
+    > **I first define the routes, then apply middleware such as authentication or validation if required. The request is handled by the controller, which performs the database operation using the model, and finally returns a JSON response with the appropriate HTTP status code.**
+
+    Ye answer **Express + MVC architecture** ko reflect karta hai aur 8+ years ke candidate ke liye natural lagta hai.
+
+    ### 🎯 Expected Interview Duration: **45–60 seconds**
+
+
+
 239. Validation kaise karte ho?
+
+
+    ## Hinglish Explanation
+
+    **Validation** ka matlab hai request me aaya hua data check karna ki wo **correct aur complete** hai ya nahi.
+
+    Example:
+    User register kar raha hai.
+
+    Hume check karna hoga:
+
+    * Name empty to nahi hai.
+    * Email valid format me hai ya nahi.
+    * Password minimum 8 characters ka hai ya nahi.
+
+    Agar validation fail ho jaye, to **400 Bad Request** return karte hain.
+
+    **Real Projects me** validation middleware me ki jati hai. Common libraries:
+
+    * **express-validator**
+    * **Joi**
+    * **Zod**
+
+    ---
+
+    ## Small Coding Implementation (express-validator)
+
+    ```javascript
+    const { body, validationResult } = require("express-validator");
+
+    app.post(
+    "/users",
+    [
+        body("email").isEmail(),
+        body("password").isLength({ min: 8 })
+    ],
+    (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+        }
+
+        res.json({ message: "User Created" });
+    }
+    );
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Validation is the process of checking whether the incoming request data is correct before processing it. In Express, I usually perform validation using middleware such as **express-validator**. If the validation fails, I return a **400 Bad Request** response with the validation errors. This helps prevent invalid data from reaching the database.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why do we validate data on the backend if the frontend already validates it?**
+
+    **Answer:**
+
+    Frontend validation is only for a better user experience. Backend validation is mandatory because anyone can bypass the frontend and send requests directly to the API using tools like Postman or cURL.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"Where do you perform validation in your project?"**
+
+    Bolna:
+
+    > **I perform validation before the controller using middleware. If the request is valid, I call `next()`. Otherwise, I return a 400 response with the validation errors.**
+
+    Ye answer production-level Express application ka standard flow dikhata hai.
+
+    ### 🎯 Expected Interview Duration: **40–50 seconds**
+
+    ---
+
 240. File upload?
 241. Authentication?
 242. Authorization?
