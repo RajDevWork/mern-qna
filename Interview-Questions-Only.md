@@ -1890,10 +1890,454 @@ All questions from every section, listed without explanations/answers.
 
 
 225. Buffers kya hain?
+
+    ## Hinglish Explanation
+
+    **Buffer** Node.js ka ek object hai jo **binary data ko temporarily memory me store** karta hai.
+
+    JavaScript normally **strings aur objects** ke saath kaam karti hai. Lekin jab file, image, video ya network se data aata hai, to wo **binary format** me hota hai. Us binary data ko handle karne ke liye **Buffer** use hota hai.
+
+    **Simple Example:**
+
+    Maan lo tum ek image download kar rahe ho.
+
+    Image ek string nahi hoti. Wo binary data hoti hai. Node.js us binary data ko **Buffer** me store karta hai.
+
+    > **Interview Point:** Buffer fixed-size memory allocation hota hai jo binary data handle karne ke liye use hota hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="6w9k2p"
+    const buffer = Buffer.from("Hello");
+
+    console.log(buffer);
+    console.log(buffer.toString());
+    ```
+
+    **Output:**
+
+    ```text id="x7a1mz"
+    <Buffer 48 65 6c 6c 6f>
+    Hello
+    ```
+
+    Yahan:
+
+    * `Buffer.from("Hello")` string ko binary data me convert karta hai.
+    * `toString()` us binary data ko wapas string bana deta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    A Buffer is a Node.js object used to store and manipulate binary data. It is commonly used when working with files, network communication, or streams. Buffers allow Node.js to process binary data efficiently before it is read from or written to a destination.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Where are Buffers used?**
+
+    **Answer:**
+
+    * File handling (`fs` module)
+    * Streams
+    * TCP/Socket communication
+    * Image and video processing
+    * File uploads/downloads
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer kabhi-kabhi puchta hai:
+
+    > **"What is the relationship between Buffers and Streams?"**
+
+    **Answer:**
+
+    > **Streams transfer data in chunks, and each chunk is usually represented as a Buffer.**
+
+    Ye line bahut important hai.
+
+    * **Buffer** → Ek chunk of binary data.
+    * **Stream** → Bahut saare buffers (chunks) ka continuous flow.
+
+    Is relationship ko samajh loge to Streams aur Buffers dono concepts clear ho jayenge.
+
+    ---
+
+
 226. Modules system?
+
+
+    ## Hinglish Explanation
+
+    **Module System** ka matlab hai **code ko chhote-chhote reusable files me organize karna.**
+
+    Agar pura application ek hi file me likhoge to code maintain karna bahut difficult ho jayega. Isliye hum functionality ko alag files (modules) me divide karte hain.
+
+    Example:
+
+    * `user.js` → User logic
+    * `product.js` → Product logic
+    * `auth.js` → Authentication logic
+
+    Jis file me zarurat ho, us module ko import karke use kar lete hain.
+
+    ### Node.js me 2 Module Systems hain:
+
+    1. **CommonJS (CJS)** → `require()` aur `module.exports`
+    2. **ES Modules (ESM)** → `import` aur `export`
+
+    > **Interview Point:** Modern projects me **ES Modules** prefer kiye ja rahe hain, lekin bahut saare existing Node.js projects abhi bhi **CommonJS** use karte hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### CommonJS
+
+    **math.js**
+
+    ```javascript
+    function add(a, b) {
+    return a + b;
+    }
+
+    module.exports = add;
+    ```
+
+    **app.js**
+
+    ```javascript
+    const add = require("./math");
+
+    console.log(add(5, 3));
+    ```
+
+    ---
+
+    ### ES Modules
+
+    **math.js**
+
+    ```javascript
+    export function add(a, b) {
+    return a + b;
+    }
+    ```
+
+    **app.js**
+
+    ```javascript
+    import { add } from "./math.js";
+
+    console.log(add(5, 3));
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    A module system is a way to organize code into separate, reusable files. It helps improve code maintainability and reusability. Node.js supports two module systems: CommonJS, which uses `require()` and `module.exports`, and ES Modules, which use `import` and `export`. Modern JavaScript projects generally prefer ES Modules.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. What is the difference between CommonJS and ES Modules?**
+
+    | CommonJS            | ES Modules                                 |
+    | ------------------- | ------------------------------------------ |
+    | `require()`         | `import`                                   |
+    | `module.exports`    | `export`                                   |
+    | Synchronous loading | Static imports (analyzed before execution) |
+    | Traditional Node.js | Standard JavaScript module system          |
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer sirf puche:
+
+    > **"What is a module?"**
+
+    To sirf itna bolo:
+
+    > **"A module is a reusable piece of code stored in a separate file. It helps organize the application and improves code reusability and maintainability."**
+
+    Aur agar wo puche:
+
+    > **"Which module system have you used?"**
+
+    To confidently bolo:
+
+    > **"I have worked with both CommonJS (`require`) and ES Modules (`import`), although in modern projects I mostly use ES Modules."**
+
+    ---
+
+
 227. require vs import?
+
+
+    ## Hinglish Explanation
+
+    `require` aur `import` dono modules ko use karne ke liye hote hain. Difference ye hai ki `require` **CommonJS** ka part hai, jabki `import` **ES Modules (ESM)** ka part hai.
+
+    ### `require()` (CommonJS)
+
+    * Purane Node.js projects me use hota hai.
+    * `module.exports` ke saath kaam karta hai.
+    * Synchronous loading karta hai.
+
+    ```javascript id="8l0b2v"
+    // math.js
+    module.exports = function add(a, b) {
+    return a + b;
+    };
+
+    // app.js
+    const add = require("./math");
+
+    console.log(add(2, 3));
+    ```
+
+    ---
+
+    ### `import` (ES Modules)
+
+    * Modern JavaScript ka standard module system hai.
+    * `export` ke saath use hota hai.
+    * Static imports hote hain, isliye engine pehle hi dependencies analyze kar sakta hai.
+
+    ```javascript id="d2q7fk"
+    // math.js
+    export function add(a, b) {
+    return a + b;
+    }
+
+    // app.js
+    import { add } from "./math.js";
+
+    console.log(add(2, 3));
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="5i4k0m"
+    // CommonJS
+    const fs = require("fs");
+
+    // ES Modules
+    import fs from "fs";
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    `require` is used in the CommonJS module system, while `import` is used in the ES Module system. `require` loads modules using `module.exports`, whereas `import` works with `export`. ES Modules are the standard module system in modern JavaScript, and most new projects use `import` and `export`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which one do you prefer?**
+
+    **Answer:**
+
+    > For modern projects, I prefer **ES Modules (`import/export`)** because they are the standard JavaScript module system. However, I can also work with **CommonJS (`require/module.exports`)** in existing Node.js projects.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer usually **doesn't expect 10 differences**. Bas ye 3 yaad rakho:
+
+    | `require`                     | `import`                             |
+    | ----------------------------- | ------------------------------------ |
+    | CommonJS                      | ES Modules                           |
+    | `module.exports`              | `export`                             |
+    | Mostly older Node.js projects | Modern JavaScript & Node.js projects |
+
+    Ye 3 points bolna interview ke liye sufficient hota hai.
+
+    ---
+
 228. npm kya hai?
+
+    ## Hinglish Explanation
+
+    **NPM (Node Package Manager)** Node.js ka **default package manager** hai.
+
+    Iska use **libraries/packages install, update, remove aur manage** karne ke liye hota hai.
+
+    Example:
+    Agar Express use karna hai, to hume manually download karne ki zarurat nahi hoti.
+
+    ```bash
+    npm install express
+    ```
+
+    NPM automatically package download karke `node_modules` folder me install kar deta hai aur dependencies ko `package.json` me manage karta hai.
+
+    **NPM se hum:**
+
+    * Packages install karte hain.
+    * Packages update/remove karte hain.
+    * Project scripts run karte hain (`npm start`, `npm test`).
+    * Dependencies manage karte hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Express install
+
+    ```bash
+    npm install express
+    ```
+
+    ### Run application
+
+    ```bash
+    npm start
+    ```
+
+    ### package.json
+
+    ```json
+    {
+    "scripts": {
+        "start": "node app.js"
+    }
+    }
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    NPM stands for **Node Package Manager**. It is the default package manager for Node.js and is used to install, update, remove, and manage project dependencies. It also helps run project scripts using the `scripts` section in the `package.json` file.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is `package.json`?**
+
+    **Answer:**
+
+    > `package.json` is the project's configuration file. It contains project metadata, dependencies, scripts, version, and other project-related information.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"Is NPM only for installing packages?"**
+
+    **Answer:**
+
+    > **No.** NPM is not just for installing packages. It also manages project dependencies, runs scripts, handles package versions, and publishes packages to the NPM registry.
+
+    Ye answer thoda mature lagta hai aur experienced developers se expect kiya jata hai.
+
+    ---
+
 229. package.json kya hai?
+
+    ## Hinglish Explanation
+
+    **`package.json`** ek **project configuration file** hai jo Node.js project ki important information store karti hai.
+
+    Isme project ka:
+
+    * Name
+    * Version
+    * Dependencies
+    * Scripts
+    * Entry point
+    * Author (optional)
+
+    jaise details hoti hain.
+
+    Jab koi developer project download karta hai, to sirf:
+
+    ```bash
+    npm install
+    ```
+
+    chalane se `package.json` me likhi sari dependencies automatically install ho jati hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```json
+    {
+    "name": "my-app",
+    "version": "1.0.0",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "dev": "nodemon app.js"
+    },
+    "dependencies": {
+        "express": "^5.0.0"
+    }
+    }
+    ```
+
+    ### Example
+
+    ```bash
+    npm install
+    ```
+
+    Ye command `package.json` padhkar Express aur baaki dependencies install kar dega.
+
+    ---
+
+    ## English Interview Answer
+
+    `package.json` is the configuration file of a Node.js project. It contains project metadata such as the project name, version, dependencies, scripts, and entry point. NPM uses this file to install project dependencies and run scripts like `npm start` or `npm test`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between `package.json` and `package-lock.json`?**
+
+    **Answer:**
+
+    * **`package.json`** → Defines the project configuration and dependency versions (e.g., `^5.0.0`).
+    * **`package-lock.json`** → Stores the **exact installed versions** of all dependencies and sub-dependencies to ensure everyone installs the same versions.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer kabhi-kabhi puchta hai:
+
+    > **"What happens when you run `npm install`?"**
+
+    **Answer:**
+
+    > NPM reads the `package.json` file, downloads all required dependencies into the `node_modules` folder, and updates or creates the `package-lock.json` file with the exact installed versions.
+
+    Ye answer production-level understanding dikhata hai aur bahut common interview question hai.
+
+
+    ---
+
+
 230. process object?
 231. Middleware kya hai?
 232. Express kya hai?
