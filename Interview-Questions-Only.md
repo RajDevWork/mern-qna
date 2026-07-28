@@ -2339,6 +2339,102 @@ All questions from every section, listed without explanations/answers.
 
 
 230. process object?
+
+    ## Hinglish Explanation
+
+    **`process`** Node.js ka **global object** hai jo current Node.js process ki information aur control provide karta hai.
+
+    Isse hume application ka environment, command-line arguments, current working directory, process ID, aur process ko exit karne jaise features milte hain.
+
+    **Common Uses:**
+
+    * Environment variables (`process.env`)
+    * Command-line arguments (`process.argv`)
+    * Current working directory (`process.cwd()`)
+    * Process exit (`process.exit()`)
+
+    > **Interview Point:** `process` ko use karne ke liye import karne ki zarurat nahi hoti. Ye Node.js me **global object** hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Environment Variable
+
+    ```javascript id="7pq2sj"
+    console.log(process.env.NODE_ENV);
+    ```
+
+    ---
+
+    ### Command-line Arguments
+
+    ```javascript id="hq9x5v"
+    console.log(process.argv);
+    ```
+
+    Run:
+
+    ```bash id="7ng4bq"
+    node app.js Raj
+    ```
+
+    Output:
+
+    ```text id="m0r1sy"
+    [
+    'node',
+    '/path/app.js',
+    'Raj'
+    ]
+    ```
+
+    ---
+
+    ### Exit Process
+
+    ```javascript id="5uh0na"
+    console.log("Application stopped");
+
+    process.exit(0);
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    The `process` object is a global object in Node.js that provides information and control over the current Node.js process. It is commonly used to access environment variables, command-line arguments, the current working directory, and to exit the application. Since it is a global object, it does not need to be imported.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What are the most commonly used properties of the `process` object?**
+
+    **Answer:**
+
+    * `process.env` → Access environment variables.
+    * `process.argv` → Read command-line arguments.
+    * `process.cwd()` → Get the current working directory.
+    * `process.exit()` → Exit the application.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"Where have you used the `process` object in real projects?"**
+
+    Bol sakte ho:
+
+    > **"Main mostly `process.env` use karta hoon to read environment variables like database URL, API keys, JWT secret, and server port. Ye sensitive configuration ko code se alag rakhne ke liye best practice hai."**
+
+    Ye practical answer hai aur production experience reflect karta hai.
+
+    ---
+
+
 231. Middleware kya hai?
 232. Express kya hai?
 233. Routing kaise hoti hai?
