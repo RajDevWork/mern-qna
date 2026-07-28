@@ -1590,9 +1590,305 @@ All questions from every section, listed without explanations/answers.
 ## 🌐 Node + Express (221-310)
 
 221. Node.js kya hai?
+
+    ## Hinglish Explanation
+
+    **Node.js** ek **JavaScript runtime environment** hai jo JavaScript ko **browser ke bahar**, yani server par run karne ki permission deta hai.
+
+    Pehle JavaScript sirf browser me chalti thi. Node.js ke aane ke baad hum JavaScript se backend applications, APIs, real-time applications aur command-line tools bhi bana sakte hain.
+
+    Node.js **Google Chrome ke V8 JavaScript Engine** par based hai aur **event-driven, non-blocking I/O** architecture use karta hai. Is wajah se ye I/O-heavy applications ke liye fast aur efficient hai.
+
+    **Common Use Cases:**
+
+    * REST APIs
+    * Real-time chat applications
+    * File handling
+    * Streaming
+    * Microservices
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    // app.js
+
+    const http = require("http");
+
+    const server = http.createServer((req, res) => {
+    res.end("Hello from Node.js");
+    });
+
+    server.listen(3000, () => {
+    console.log("Server is running on port 3000");
+    });
+    ```
+
+    Server start karne ke baad browser me `http://localhost:3000` open karoge to output milega:
+
+    ```
+    Hello from Node.js
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Node.js is a JavaScript runtime environment that allows us to run JavaScript outside the browser. It is built on Google's V8 JavaScript engine and is mainly used for backend development. Node.js uses an event-driven, non-blocking I/O model, which makes it efficient for handling multiple concurrent requests. It is commonly used to build APIs, real-time applications, and scalable server-side applications.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Is Node.js a programming language or a framework?**
+
+    **Answer:**
+    Neither. **Node.js is a JavaScript runtime environment** that executes JavaScript code outside the browser.
+
+    > **Interview Tip:** Agar interviewer puche **"What is Node.js?"**, first line me hamesha bolo:
+    >
+    > **"Node.js is a JavaScript runtime environment, not a programming language or a framework."**
+    >
+    > Ye ek common interview expectation hoti hai.
+
+
+    ---
+
+2221. What is event loop?
+
+    The Event Loop is a mechanism provided by the JavaScript runtime environment to handle asynchronous operations. It continuously checks whether the Call Stack is empty. When an asynchronous task is completed and the stack is free, the Event Loop moves its callback to the Call Stack for execution.
+
+
+    ---
+
 222. Event loop Node mein?
+
+    ## Hinglish Explanation
+
+    **Event Loop** Node.js ka mechanism hai jo **asynchronous operations ko manage karta hai**.
+
+    Node.js **single-threaded** hai, matlab ek hi main thread par JavaScript code execute hota hai. Lekin file read, database query, API call jaise slow operations background me handle hote hain. Jab ye complete ho jate hain, **Event Loop** unke callbacks ko execute karwata hai.
+
+    ### Flow
+
+    1. Synchronous code execute hota hai.
+    2. Async task (e.g., `setTimeout`, file read) background me chala jata hai.
+    3. Jab task complete hota hai, uska callback queue me aata hai.
+    4. Event Loop check karta hai ki **Call Stack empty hai ya nahi**.
+    5. Agar stack empty hai, callback execute ho jata hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="1k9mzp"
+    console.log("Start");
+
+    setTimeout(() => {
+    console.log("Timeout");
+    }, 0);
+
+    console.log("End");
+    ```
+
+    **Output:**
+
+    ```text
+    Start
+    End
+    Timeout
+    ```
+
+    **Kyun?**
+
+    * `"Start"` sync hai.
+    * `setTimeout()` background me chala gaya.
+    * `"End"` pehle print hua.
+    * Call Stack empty hone ke baad Event Loop ne callback execute kar diya.
+
+    ---
+
+    ## English Interview Answer
+
+    The Event Loop is a mechanism in Node.js that manages asynchronous operations. Node.js executes JavaScript on a single thread. When an asynchronous task like a timer, file read, or API call is started, it runs outside the main execution flow. Once the task is completed, its callback is queued. The Event Loop checks if the Call Stack is empty and then executes the callback.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Why is the Event Loop important in Node.js?**
+
+    **Answer:**
+    It allows Node.js to handle many concurrent requests without creating a separate thread for each request. This makes Node.js efficient for I/O-intensive applications like APIs, chat applications, and streaming services.
+
+    > **Interview Tip:** Agar interviewer kahe **"Explain Event Loop in Node.js"**, sirf browser wala answer mat do. Mention karo ki Node.js me async operations ko **libuv** handle karta hai aur Event Loop callbacks ko execute karta hai. Ye follow-up question bahut common hai: **"What is libuv?"**
+
+    ---
+
 223. Non-blocking I/O?
+
+    ## Hinglish Explanation
+
+    **Non-blocking I/O** ka matlab hai ki **Node.js kisi I/O operation (file read, database query, API call) ka wait nahi karta.** Jab tak wo operation complete ho raha hota hai, Node.js dusre requests process karta rehta hai.
+
+    Simple example:
+
+    Maan lo user ne file read karne ki request bheji.
+
+    * **Blocking I/O:** File read hone tak server ruk jayega. ❌
+    * **Non-blocking I/O:** File read background me chalegi aur server baaki requests handle karta rahega. ✅
+
+    Isi wajah se Node.js ek hi thread par bhi bahut saari concurrent requests handle kar leta hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const fs = require("fs");
+
+    console.log("Start");
+
+    fs.readFile("data.txt", "utf8", (err, data) => {
+    console.log("File Read Completed");
+    });
+
+    console.log("End");
+    ```
+
+    **Output:**
+
+    ```text
+    Start
+    End
+    File Read Completed
+    ```
+
+    **Reason:**
+
+    * `readFile()` background me chali gayi.
+    * JavaScript ne wait nahi kiya.
+    * `End` pehle print hua.
+    * File read complete hone ke baad callback execute hua.
+
+    ---
+
+    ## English Interview Answer
+
+    Non-blocking I/O means that Node.js does not wait for an I/O operation to complete before processing the next task. Operations like file reading, database queries, or network requests are handled asynchronously. Once the operation is finished, the callback or promise is executed. This allows Node.js to handle many concurrent requests efficiently.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. Give examples of I/O operations.**
+
+    **Answer:**
+
+    * File reading/writing (`fs`)
+    * Database queries (MongoDB, MySQL)
+    * API/HTTP requests
+    * Network communication
+    * Socket connections
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer aksar puchta hai:
+
+    > **"What does I/O mean?"**
+
+    **Answer:**
+
+    > **I/O stands for Input/Output. It refers to operations where the application communicates with external resources such as files, databases, networks, or APIs.**
+
+    Ye ek line bol doge to next explanation dena aur easy ho jayega.
+
+
+    ---
+
 224. Streams kya hain?
+
+    ## Hinglish Explanation
+
+    **Streams** ka matlab hai **data ko ek saath pura load karne ke bajay, chhote-chhote chunks me process karna.**
+
+    Example:
+
+    Maan lo **5 GB ki video file** client ko bhejni hai.
+
+    * ❌ Agar puri file pehle memory me load karoge, to bahut RAM use hogi.
+    * ✅ Stream use karoge, to file **chunk by chunk** read aur send hogi.
+
+    Isi wajah se streams **memory efficient** aur **fast** hote hain.
+
+    **Real-world Use Cases:**
+
+    * Video streaming (YouTube, Netflix)
+    * Large file download/upload
+    * Reading large log files
+    * File copy
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const fs = require("fs");
+
+    const readStream = fs.createReadStream("video.mp4");
+
+    readStream.on("data", (chunk) => {
+    console.log(`Received ${chunk.length} bytes`);
+    });
+
+    readStream.on("end", () => {
+    console.log("File reading completed");
+    });
+    ```
+
+    Yahan `createReadStream()` puri file ek saath memory me load nahi karta. Data **chunks** me aata hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Streams are used to process data in small chunks instead of loading the entire data into memory at once. They are memory efficient and improve performance, especially when working with large files or network data. Streams are commonly used for file handling, video streaming, and data transfer in Node.js.
+
+    ---
+
+    ### Interview Follow-up
+
+    **Q. What are the types of Streams in Node.js?**
+
+    **Answer:**
+
+    There are **4 types of streams**:
+
+    * **Readable Stream** → Read data (e.g., `fs.createReadStream()`)
+    * **Writable Stream** → Write data (e.g., `fs.createWriteStream()`)
+    * **Duplex Stream** → Read and write both (e.g., TCP sockets)
+    * **Transform Stream** → Read, modify, and write data (e.g., compression with `zlib`)
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"Why do we use Streams?"**
+
+    Ek line me bolo:
+
+    > **"Streams allow us to process large amounts of data in chunks, which reduces memory usage and improves performance."**
+
+    Ye answer concise bhi hai aur interview ke liye sufficient bhi.
+
+    ---
+
+
 225. Buffers kya hain?
 226. Modules system?
 227. require vs import?
