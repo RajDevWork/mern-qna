@@ -3988,3 +3988,31 @@ All questions from every section, listed without explanations/answers.
 
 ---
 
+
+
+## Mistakes On Interview:
+
+Kahan kya miss hua:
+1) string concatenation trick kharab gya.
+2) Promise based questions me answer predication nhi kar paya
+3) Object/Nested object ko single line destructuring nhi kar paya
+4) string compression/ frequency counter wala nhi kar paya
+5) Unique/duplicate/ sort karne wala nhi kar paya
+6) SQL Queries predication nhi kar paya
+7) php kaa &$a wala trick questions kaa answer prediction wrong ho gya
+8) OOP php traits realted question miss hua
+9) laravel ke interview me milti lingual, RBAC, Auth, Approach, performace, optimization wale sabhi question miss hua
+10) this kaa proper answer karna miss hua
+11) trade-off, latency, performance realted questions miss huye
+12) MongoDB related sabhi question kaa - pipeline, query, replication, scaling, sharding, write concern wale sabhi question miss hua
+13) Debouncing kaa senario based questions miss hua
+14) Scalinng, load balancer, rate limiting, caching ke implementation ke questions miss hua
+15) API load, Worker thread, scaling, Designing related question nhi bna
+16) stream, buffer, node advance related question nhi bna
+17) Project deployment, AWS, Docker related questions nhi bna.
+18) DSA ke array, string, object related questions nhi bna.
+19) React se related questions nhi bna, performace, optimization, rendering, hooks, state-management
+20) HTML, Css, js basics question me bhi confusion hua.
+21) Communication ko sabhi me khrab tha.
+
+---
