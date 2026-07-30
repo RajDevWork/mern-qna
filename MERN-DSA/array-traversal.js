@@ -32,7 +32,7 @@ for(let i=1; i<arrr.length; i++){
         max = arrr[i]
     }
 }
-console.log("Max = ",max);
+// console.log("Max = ",max);
 
 console.log("================== Finding min ===================");
 
@@ -49,7 +49,7 @@ function findMin(arr){
     return min;
 }
 let array = [12, 45, 7, 89, 23];
-console.log(findMin(array))
+// console.log(findMin(array))
 
 
 console.log("================== Second Largest ===================");
@@ -101,7 +101,7 @@ function SecondLargest(arr){
 }
 array = [-10, -20, -5];
 
-console.log(SecondLargest(array));
+// console.log(SecondLargest(array));
 
 
 function secondLargest(arr){
@@ -130,7 +130,7 @@ function secondLargest(arr){
 
 }
 
-console.log(secondLargest(array));
+// console.log(secondLargest(array));
 
 /**
  * 
@@ -162,3 +162,27 @@ function secondLargest(arr) {
 
     return second === Number.NEGATIVE_INFINITY ? null : second;
 }
+
+
+
+console.log("=========================Move zeros===========================")
+
+function moveZeroes(arr){
+
+    let index = 0;
+
+    for(let i=0; i<arr.length; i++){
+
+        if(arr[i] !== 0){
+            if (index !== i) {
+                [arr[index], arr[i]] = [arr[i], arr[index]];
+            }
+            index++;
+        }
+
+    }
+return arr;
+
+}
+let myArr = [0, 1, 0, 3, 12];
+console.log(moveZeroes(myArr))
