@@ -185,4 +185,26 @@ return arr;
 
 }
 let myArr = [0, 1, 0, 3, 12];
-console.log(moveZeroes(myArr))
+// console.log(moveZeroes(myArr))
+
+
+console.log("=========================Remove Duplicate===========================")
+
+function removeDuplicates(arr) {
+    // your code
+    let index =1;
+
+    for(let i=1; i<arr.length; i++){
+
+        if(arr[i]!==arr[i-1]){
+            arr[index] = arr[i]
+            index++;
+        }
+
+    }
+
+    arr.length = index;
+    return arr;
+}
+myArr = [0,0,1,1,1,2,2,3,3,4];
+console.log(removeDuplicates(myArr))

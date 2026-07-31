@@ -3281,6 +3281,96 @@ All questions from every section, listed without explanations/answers.
     ---
 
 240. File upload?
+
+    ## Hinglish Explanation
+
+    **File Upload** ka matlab hai client se files (image, PDF, video, etc.) receive karke server par process ya store karna.
+
+    Express me file upload ke liye sabse common middleware **Multer** use hota hai.
+
+    **Flow:**
+
+    ```text
+    Client
+    ↓
+    Multer Middleware
+    ↓
+    File Validation (optional)
+    ↓
+    Local Storage / Cloud Storage
+    ↓
+    Response
+    ```
+
+    **Real Projects:**
+
+    * Profile image upload
+    * Resume upload
+    * Product images
+    * Documents
+
+    > **Interview Point:** Express khud file upload handle nahi karta. Iske liye **Multer** jaisi middleware use ki jati hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const express = require("express");
+    const multer = require("multer");
+
+    const app = express();
+
+    const upload = multer({ dest: "uploads/" });
+
+    app.post("/upload", upload.single("image"), (req, res) => {
+    res.json({
+        filename: req.file.filename,
+        originalName: req.file.originalname
+    });
+    });
+
+    app.listen(3000);
+    ```
+
+    Agar form me `image` naam se file bhejoge, to Multer usse `uploads/` folder me save kar dega.
+
+    ---
+
+    ## English Interview Answer
+
+    File upload in Express is commonly handled using the **Multer** middleware. Multer processes `multipart/form-data` requests, extracts the uploaded file, and makes it available through `req.file` or `req.files`. After uploading, the file can be stored locally or in cloud storage such as AWS S3 or Cloudinary.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why do we use Multer?**
+
+    **Answer:**
+
+    Because Express cannot process `multipart/form-data` by itself. Multer parses the incoming file data and provides easy access to uploaded files.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Where do you store uploaded files?"**
+
+    **Answer:**
+
+    > **In development, I usually store files locally. In production, I prefer cloud storage like Cloudinary or AWS S3 because they are more scalable and reliable.**
+
+    Ye answer practical experience dikhata hai.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **40–50 seconds**
+
+    ---
+
 241. Authentication?
 242. Authorization?
 243. JWT kaise kaam karta hai?
