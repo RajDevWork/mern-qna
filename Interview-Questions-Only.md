@@ -3372,6 +3372,92 @@ All questions from every section, listed without explanations/answers.
     ---
 
 241. Authentication?
+
+
+    ## Hinglish Explanation
+
+    **Authentication** ka matlab hai **user ki identity verify karna**, yani check karna ki user waise hi hai jaisa wo claim kar raha hai.
+
+    Example:
+    User login karta hai email aur password se.
+
+    * Agar credentials sahi hain → User authenticate ho jata hai.
+    * Agar galat hain → `401 Unauthorized` return karte hain.
+
+    **Common Authentication Methods:**
+
+    * JWT (Most common in MERN)
+    * Session-based Authentication
+    * OAuth (Google, GitHub Login)
+
+    > **Interview Point:** Authentication ka answer hamesha **Authorization** se alag rakhna.
+
+    ---
+
+    ## Small Coding Implementation (JWT)
+
+    ```javascript
+    const jwt = require("jsonwebtoken");
+
+    const token = jwt.sign(
+    { userId: 1 },
+    "secretKey",
+    { expiresIn: "1h" }
+    );
+
+    console.log(token);
+    ```
+
+    Protected Route:
+
+    ```javascript
+    app.get("/profile", authMiddleware, (req, res) => {
+    res.json({ message: "Profile Data" });
+    });
+    ```
+
+    Yahan `authMiddleware` pehle JWT verify karega. Agar token valid hoga to request route tak jayegi.
+
+    ---
+
+    ## English Interview Answer
+
+    Authentication is the process of verifying a user's identity. It ensures that the user is who they claim to be. In my projects, I have commonly used JWT-based authentication, where the user logs in with valid credentials, receives a token, and includes that token in subsequent requests to access protected APIs.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between Authentication and Authorization?**
+
+    **Answer:**
+
+    * **Authentication** → Verifies **who the user is**.
+    * **Authorization** → Verifies **what the user is allowed to access**.
+
+    Example:
+
+    * Login with email and password → **Authentication**
+    * Checking whether the user is an Admin before deleting a user → **Authorization**
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"How have you implemented authentication in your project?"**
+
+    **Answer:**
+
+    > **After successful login, I generate a JWT token and send it to the client. The client includes the token in the Authorization header for future requests. A middleware verifies the token before allowing access to protected routes.**
+
+    Ye answer concise hai, practical hai, aur MERN interviews me bahut commonly expected hota hai.
+
+    ### 🎯 Expected Interview Duration: **45–60 seconds**
+
+    ---
+
 242. Authorization?
 243. JWT kaise kaam karta hai?
 244. OAuth kya hai?
