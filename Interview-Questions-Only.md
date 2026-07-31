@@ -3565,6 +3565,107 @@ All questions from every section, listed without explanations/answers.
 
 
 243. JWT kaise kaam karta hai?
+
+    ## Hinglish Explanation
+
+    **JWT (JSON Web Token)** user ko **authenticate** karne ke liye use hota hai.
+
+    ### Flow
+
+    1. User **email/password** se login karta hai.
+    2. Server credentials verify karta hai.
+    3. Agar credentials sahi hain, server **JWT token generate** karta hai.
+    4. Server token client ko bhej deta hai.
+    5. Client har protected request me token **Authorization Header** me bhejta hai.
+    6. Server token verify karta hai.
+    7. Token valid hua to request allow, warna **401 Unauthorized** return.
+
+    ```text
+    Login
+    ↓
+    Server verifies credentials
+    ↓
+    JWT Token Generated
+    ↓
+    Client stores token
+    ↓
+    Authorization: Bearer <token>
+    ↓
+    Server verifies token
+    ↓
+    Access Granted
+    ```
+
+    > **Interview Point:** JWT **password store nahi karta**. Isme generally user information (like `userId`, `role`) aur signature hota hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Generate Token
+
+    ```javascript
+    const jwt = require("jsonwebtoken");
+
+    const token = jwt.sign(
+    { userId: 1, role: "admin" },
+    "secretKey",
+    { expiresIn: "1h" }
+    );
+    ```
+
+    ### Verify Token
+
+    ```javascript
+    const decoded = jwt.verify(token, "secretKey");
+
+    console.log(decoded.userId);
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    JWT works by generating a signed token after successful user authentication. The server sends this token to the client, and the client includes it in the `Authorization` header for future requests. For protected APIs, the server verifies the token. If the token is valid, the request is processed; otherwise, it returns a **401 Unauthorized** response.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Where do you send the JWT token?**
+
+    **Answer:**
+
+    The client sends the JWT in the **Authorization** header:
+
+    ```http
+    Authorization: Bearer <token>
+    ```
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"What does a JWT contain?"**
+
+    **Answer:**
+
+    A JWT has **3 parts**:
+
+    * **Header** → Token type and signing algorithm.
+    * **Payload** → User information (e.g., `userId`, `role`).
+    * **Signature** → Used to verify that the token has not been modified.
+
+    > **Note:** Payload is **encoded, not encrypted**, so sensitive information like passwords should never be stored in a JWT.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **50–60 seconds**
+
+    ---
+
 244. OAuth kya hai?
 245. Sessions vs Tokens?
 246. Cookies handling?
