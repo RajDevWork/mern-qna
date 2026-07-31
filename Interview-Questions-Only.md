@@ -3459,6 +3459,111 @@ All questions from every section, listed without explanations/answers.
     ---
 
 242. Authorization?
+
+    ## Hinglish Explanation
+
+    **Authorization** ka matlab hai **ye check karna ki authenticated user kya-kya access kar sakta hai.**
+
+    Simple flow:
+
+    * **Authentication** → User kaun hai? ✅
+    * **Authorization** → User ko kya permission hai? ✅
+
+    Example:
+
+    Maan lo do users hain:
+
+    * **Admin**
+    * **Customer**
+
+    Dono login kar chuke hain (Authenticated).
+
+    Ab:
+
+    * Admin → User delete kar sakta hai. ✅
+    * Customer → User delete nahi kar sakta. ❌
+
+    Ye check **Authorization** karta hai.
+
+    > **Interview Point:** Authorization hamesha **Authentication ke baad** hoti hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="a7d3kq"
+    function authorize(role) {
+    return (req, res, next) => {
+        if (req.user.role !== role) {
+        return res.status(403).json({
+            message: "Access Denied"
+        });
+        }
+
+        next();
+    };
+    }
+
+    app.delete(
+    "/users/:id",
+    authMiddleware,
+    authorize("admin"),
+    (req, res) => {
+        res.json({ message: "User Deleted" });
+    }
+    );
+    ```
+
+    Flow:
+
+    ```text
+    Request
+    ↓
+    Authentication (JWT Verify)
+    ↓
+    Authorization (Role Check)
+    ↓
+    Controller
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Authorization is the process of determining what an authenticated user is allowed to access or perform. After verifying the user's identity, the application checks the user's role or permissions before allowing access to a resource. For example, only an admin may be allowed to delete users, while a normal user cannot.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which HTTP status code is returned if authorization fails?**
+
+    **Answer:**
+
+    * **401 Unauthorized** → User is **not authenticated** (missing/invalid token).
+    * **403 Forbidden** → User is authenticated but **does not have permission**.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"How have you implemented authorization in your project?"**
+
+    **Answer:**
+
+    > **After the JWT token is verified, I check the user's role (such as Admin or User) in a middleware. If the user has the required permission, I call `next()`. Otherwise, I return a `403 Forbidden` response.**
+
+    Ye answer production-level RBAC (Role-Based Access Control) implementation ko reflect karta hai.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **40–50 seconds**
+
+    ---
+
+
 243. JWT kaise kaam karta hai?
 244. OAuth kya hai?
 245. Sessions vs Tokens?
