@@ -3850,8 +3850,242 @@ All questions from every section, listed without explanations/answers.
 
 
 246. Cookies handling?
+
+    ## Hinglish Explanation
+
+    **Cookie** browser me store hone wala **chhota data** hota hai. Browser har request ke saath relevant cookies automatically server ko bhej deta hai.
+
+    Cookies ka use commonly:
+
+    * Authentication
+    * Session ID
+    * User preferences
+    * Remember Me
+
+    Express me cookies handle karne ke liye generally **`cookie-parser`** middleware use karte hain.
+
+    > **Interview Point:** Cookie browser me store hoti hai, server me nahi.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Set Cookie
+
+    ```javascript id="v5n2jp"
+    app.get("/login", (req, res) => {
+    res.cookie("token", "abc123", {
+        httpOnly: true
+    });
+
+    res.send("Login Successful");
+    });
+    ```
+
+    ### Read Cookie
+
+    ```javascript id="n8w1fk"
+    const cookieParser = require("cookie-parser");
+
+    app.use(cookieParser());
+
+    app.get("/profile", (req, res) => {
+    console.log(req.cookies.token);
+    res.send("Profile");
+    });
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Cookies are small pieces of data stored in the user's browser. They are commonly used to store session IDs, authentication tokens, or user preferences. In Express, cookies can be set using `res.cookie()` and read using middleware like `cookie-parser`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the purpose of `httpOnly`?**
+
+    **Answer:**
+
+    `httpOnly` prevents JavaScript from accessing the cookie using `document.cookie`. This helps reduce the risk of XSS attacks.
+
+    Example:
+
+    ```javascript id="rm8m7t"
+    res.cookie("token", token, {
+    httpOnly: true
+    });
+    ```
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Where do you store JWT: Local Storage or Cookies?"**
+
+    **Answer:**
+
+    > **For production applications, I prefer storing JWT in an `httpOnly` cookie because it cannot be accessed by client-side JavaScript, making it more secure against XSS attacks.**
+
+    > **Note:** Agar JWT cookie me store karte ho, CSRF protection (e.g., `SameSite` or CSRF tokens) ka bhi dhyan rakhna chahiye.
+
+    Ye answer production-level understanding dikhata hai.
+
+    ---
+
+
+
 247. Rate limiting?
+
+    ## Hinglish Explanation
+
+    **Rate Limiting** ek technique hai jo **ek user ya IP address kitni requests ek fixed time me bhej sakta hai, usko limit karti hai.**
+
+    Example:
+
+    Agar API limit hai:
+
+    * **100 requests / 15 minutes**
+
+    Aur koi user 101st request bhejta hai, to server:
+
+    ```http
+    429 Too Many Requests
+    ```
+
+    return karega.
+
+    **Rate Limiting kyun use karte hain?**
+
+    * API abuse rokne ke liye
+    * Brute-force login attacks se bachne ke liye
+    * Server overload prevent karne ke liye
+    * Fair usage ensure karne ke liye
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="jtz0pq"
+    const rateLimit = require("express-rate-limit");
+
+    const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // 100 requests
+    });
+
+    app.use(limiter);
+    ```
+
+    Ab ek IP se 15 minutes me sirf 100 requests allow hongi.
+
+    ---
+
+    ## English Interview Answer
+
+    Rate limiting is a technique used to control how many requests a client can make within a specific time period. It helps protect APIs from abuse, brute-force attacks, and server overload. In Express, it is commonly implemented using middleware such as `express-rate-limit`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which HTTP status code is returned when the rate limit is exceeded?**
+
+    **Answer:**
+
+    **429 - Too Many Requests**
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"How have you implemented rate limiting in production?"**
+
+    **Answer:**
+
+    > **I use `express-rate-limit` middleware. For distributed applications with multiple server instances, I use Redis as a shared store so that the rate limit is consistent across all servers.**
+
+    Ye last line (**Redis as a shared store**) senior-level answer hai aur interviews me kaafi impress karti hai.
+
+    ---
+
+
+
 248. Helmet kya hai?
+
+    ## Hinglish Explanation
+
+    **Helmet** ek **Express middleware** hai jo application me **security-related HTTP headers** automatically add karta hai.
+
+    Iska purpose common web attacks se application ko protect karna hai.
+
+    Example attacks:
+
+    * XSS (Cross-Site Scripting)
+    * Clickjacking
+    * MIME sniffing
+
+    > **Interview Point:** Helmet security headers add karta hai, lekin ye authentication ya authorization nahi karta.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="f9m3x2"
+    const express = require("express");
+    const helmet = require("helmet");
+
+    const app = express();
+
+    app.use(helmet());
+
+    app.listen(3000);
+    ```
+
+    Bas `app.use(helmet())` lagane se Helmet recommended security headers response me add kar deta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Helmet is an Express middleware that helps secure web applications by setting various HTTP security headers. It protects against common web vulnerabilities such as clickjacking, MIME sniffing, and some cross-site scripting related attacks. It is commonly used as part of the application's security middleware.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Does Helmet prevent all attacks?**
+
+    **Answer:**
+
+    **No.** Helmet only adds security headers. It does **not** replace input validation, authentication, authorization, rate limiting, or other security measures.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer kabhi-kabhi puchta hai:
+
+    > **"Which security middleware have you used in Express?"**
+
+    **Answer:**
+
+    > **I have used Helmet for security headers, CORS for cross-origin requests, Express Rate Limit for API protection, and authentication middleware using JWT.**
+
+    Ye answer production-level experience dikhata hai.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **30–40 seconds**
+
+
+
 249. Logging kaise karte ho?
 250. Morgan kya hai?
 251. Clustering kya hai?
