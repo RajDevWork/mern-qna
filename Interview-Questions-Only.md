@@ -4087,7 +4087,183 @@ All questions from every section, listed without explanations/answers.
 
 
 249. Logging kaise karte ho?
+
+    ## Hinglish Explanation
+
+    **Logging** ka matlab hai application me hone wale important events ko record karna.
+
+    Logs ki help se hum:
+
+    * Errors debug karte hain.
+    * API requests track karte hain.
+    * Production issues identify karte hain.
+    * User activity monitor karte hain.
+
+    Express me logging ke liye commonly:
+
+    * **Morgan** → HTTP request logging
+    * **Winston** / **Pino** → Application logs
+
+    > **Interview Point:** Morgan request logs ke liye hai, Winston/Pino application logs ke liye.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Morgan
+
+    ```javascript id="8w4qta"
+    const express = require("express");
+    const morgan = require("morgan");
+
+    const app = express();
+
+    app.use(morgan("dev"));
+
+    app.get("/", (req, res) => {
+    res.send("Hello");
+    });
+    ```
+
+    Request:
+
+    ```http
+    GET /
+    ```
+
+    Console:
+
+    ```text
+    GET / 200 5 ms
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Logging is the process of recording application events such as incoming requests, errors, and important operations. In Express, I commonly use **Morgan** for HTTP request logging. For application and error logs, I prefer logging libraries such as **Winston** or **Pino**.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What do you log in production?**
+
+    **Answer:**
+
+    I typically log:
+
+    * HTTP requests
+    * Errors and exceptions
+    * Authentication failures
+    * Database errors
+    * Important business events
+
+    I avoid logging sensitive information such as passwords, JWT tokens, or API keys.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Have you used `console.log()` in production?"**
+
+    **Answer:**
+
+    > **During development, `console.log()` is fine for debugging. In production, I prefer structured logging libraries like Winston or Pino because they support log levels, file logging, and integration with monitoring tools.**
+
+    Ye answer practical aur production-oriented lagta hai.
+
+    ---
+
+
 250. Morgan kya hai?
+
+    ## Hinglish Explanation
+
+    **Morgan** Express ka **HTTP request logging middleware** hai.
+
+    Jab bhi koi request API par aati hai, Morgan us request ki details automatically log kar deta hai.
+
+    Ye information log kar sakta hai:
+
+    * HTTP Method (GET, POST)
+    * URL
+    * Status Code
+    * Response Time
+    * Response Size
+
+    **Real Use Case:**
+    Development aur debugging ke time dekhne ke liye ki kaunsi request kab aayi aur uska response kya tha.
+
+    > **Interview Point:** Morgan sirf **HTTP requests** log karta hai. Application errors ya business logs ke liye **Winston** ya **Pino** use karte hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="d4a7kp"
+    const express = require("express");
+    const morgan = require("morgan");
+
+    const app = express();
+
+    app.use(morgan("dev"));
+
+    app.get("/", (req, res) => {
+    res.send("Hello");
+    });
+
+    app.listen(3000);
+    ```
+
+    Agar request aaye:
+
+    ```http
+    GET /
+    ```
+
+    Console:
+
+    ```text
+    GET / 200 4.5 ms
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Morgan is an HTTP request logging middleware for Express. It automatically logs information about incoming requests, such as the HTTP method, URL, status code, and response time. It is mainly used for request monitoring and debugging during development.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What's the difference between Morgan and Winston?**
+
+    **Answer:**
+
+    * **Morgan** → Logs **HTTP requests** only.
+    * **Winston** → Logs application events, errors, warnings, and custom messages.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common ye puchta hai:
+
+    > **"Do you use Morgan in production?"**
+
+    **Answer:**
+
+    > **Yes, but usually with a proper logging setup. Morgan captures HTTP request logs, and I often forward those logs to Winston or another logging system for centralized storage and monitoring.**
+
+    Ye answer production-level understanding dikhata hai.
+
+    ---
+
+
 251. Clustering kya hai?
 252. Worker threads?
 253. Load balancing?
