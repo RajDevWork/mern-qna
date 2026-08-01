@@ -3667,7 +3667,188 @@ All questions from every section, listed without explanations/answers.
     ---
 
 244. OAuth kya hai?
+
+    ## Hinglish Explanation
+
+    **OAuth (Open Authorization)** ek authorization framework hai jo user ko **apna password share kiye bina** third-party application me login karne ki permission deta hai.
+
+    Example:
+
+    Tum kisi website par **"Login with Google"** par click karte ho.
+
+    * Tum apna Google password us website ko nahi dete.
+    * Password sirf Google ko dete ho.
+    * Google verify karta hai aur website ko ek access token de deta hai.
+    * Website us token ki help se user ki basic information access karti hai.
+
+    > **Interview Point:** OAuth **password sharing avoid** karta hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Example using Passport.js with Google OAuth:
+
+    ```javascript id="x6s9pb"
+    app.get(
+    "/auth/google",
+    passport.authenticate("google", {
+        scope: ["profile", "email"]
+    })
+    );
+    ```
+
+    User Google se login karega aur successful authentication ke baad application me redirect ho jayega.
+
+    ---
+
+    ## English Interview Answer
+
+    OAuth is an authorization framework that allows users to log in using a third-party provider such as Google or GitHub without sharing their password with the application. The user authenticates with the provider, and the provider returns an access token that the application uses to access permitted user information.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Is OAuth the same as Authentication?**
+
+    **Answer:**
+
+    **No.**
+
+    * **OAuth** is primarily an **authorization** framework.
+    * Authentication is often provided by protocols like **OpenID Connect (OIDC)**, which is built on top of OAuth 2.0.
+
+    > **Interview Note:** In day-to-day development, people often say "Google OAuth Login", but technically:
+    >
+    > * **OAuth 2.0** → Authorization
+    > * **OpenID Connect (OIDC)** → Authentication + User Identity
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Have you implemented OAuth in any project?"**
+
+    **Answer:**
+
+    > **Yes. I have implemented Google Login using Passport.js. After Google verifies the user, I receive the user's profile information, create or find the user in the database, and then generate my own JWT for the application's authenticated session.**
+
+    Ye production-level flow hai aur interview me strong impression deta hai.
+
+    ---
+
+
 245. Sessions vs Tokens?
+
+    ## Hinglish Explanation
+
+    **Session** aur **Token (JWT)** dono authentication ke liye use hote hain, lekin inka data store karne ka tarika alag hota hai.
+
+    ### Session-based Authentication
+
+    * User login karta hai.
+    * Server ek **Session** create karta hai.
+    * Session ID client ko cookie me bhej di jati hai.
+    * Har request ke saath cookie aati hai.
+    * Server session store se Session ID verify karta hai.
+
+    ```text
+    Login
+    ↓
+    Server creates Session
+    ↓
+    Session ID stored in Cookie
+    ↓
+    Every request sends Cookie
+    ↓
+    Server checks Session
+    ```
+
+    ---
+
+    ### Token-based Authentication (JWT)
+
+    * User login karta hai.
+    * Server JWT generate karta hai.
+    * Client token store karta hai.
+    * Har request me token `Authorization` header me bhejta hai.
+    * Server JWT verify karta hai.
+
+    ```text
+    Login
+    ↓
+    Server generates JWT
+    ↓
+    Client stores Token
+    ↓
+    Authorization: Bearer <token>
+    ↓
+    Server verifies JWT
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Session
+
+    ```javascript id="2f8d7k"
+    req.session.userId = user.id;
+    ```
+
+    ### JWT
+
+    ```javascript id="r9m4xq"
+    const token = jwt.sign(
+    { userId: user.id },
+    "secretKey"
+    );
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Sessions and tokens are both used for authentication.
+
+    * In **session-based authentication**, the server stores user session data and the client sends a session ID with each request.
+    * In **token-based authentication**, the server generates a JWT and the client sends the token with each request. The server verifies the token instead of looking up session data.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which one do you prefer in MERN applications?**
+
+    **Answer:**
+
+    > I generally prefer **JWT-based authentication** because it is stateless and works well with REST APIs and microservices. Session-based authentication is commonly used in traditional server-rendered applications.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common ye question puchta hai:
+
+    > **"What's the biggest difference between Sessions and JWT?"**
+
+    **Answer:**
+
+    | Session                    | JWT                                           |
+    | -------------------------- | --------------------------------------------- |
+    | **Stateful**               | **Stateless**                                 |
+    | Server stores session data | Client stores the token                       |
+    | Cookie-based               | Usually Authorization header (`Bearer Token`) |
+
+    > Bas ye **3 differences** confidently bol do. 8–9 out of 10 interviews me itna sufficient hota hai.
+
+    ---
+
+
+
 246. Cookies handling?
 247. Rate limiting?
 248. Helmet kya hai?
