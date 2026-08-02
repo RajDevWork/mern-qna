@@ -4265,6 +4265,86 @@ All questions from every section, listed without explanations/answers.
 
 
 251. Clustering kya hai?
+
+    ## Hinglish Explanation
+
+    **Clustering** ka matlab hai **Node.js application ki multiple processes (workers) run karna**, taaki server multiple CPU cores ka use kar sake.
+
+    By default, Node.js **single-threaded** hota hai aur sirf **1 CPU core** use karta hai.
+
+    Agar server me **8 CPU cores** hain aur clustering use nahi karte, to baaki 7 cores idle reh sakte hain.
+
+    Clustering me:
+
+    * Ek **Master (Primary) Process** hota hai.
+    * Wo multiple **Worker Processes** create karta hai.
+    * Incoming requests workers ke beech distribute ho jati hain.
+
+    ```text
+            Client Requests
+                    │
+            Primary Process
+            /      |      \
+        Worker1 Worker2 Worker3
+    ```
+
+    > **Interview Point:** Clustering performance improve karta hai by utilizing multiple CPU cores.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const cluster = require("cluster");
+    const os = require("os");
+
+    if (cluster.isPrimary) {
+    const cpuCount = os.cpus().length;
+
+    for (let i = 0; i < cpuCount; i++) {
+        cluster.fork();
+    }
+    } else {
+    console.log(`Worker ${process.pid} is running`);
+    }
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Clustering is a technique in Node.js that allows an application to run multiple worker processes. It helps utilize multiple CPU cores and improves the application's ability to handle more concurrent requests. A primary process creates and manages worker processes, and incoming requests are distributed among them.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why do we need clustering if Node.js is asynchronous?**
+
+    **Answer:**
+
+    Node.js handles **I/O operations** efficiently with asynchronous programming, but JavaScript execution still runs on a **single CPU core**. Clustering allows the application to use **multiple CPU cores**, improving CPU utilization and increasing the number of requests the server can handle.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Have you used clustering in production?"**
+
+    **Answer:**
+
+    > **I have mostly deployed Node.js applications using PM2 in cluster mode. PM2 automatically creates worker processes across CPU cores and restarts them if a worker crashes.**
+
+    Ye answer production-oriented hai, kyunki real projects me developers directly `cluster` module se zyada **PM2 cluster mode** use karte hain.
+
+    ---
+
+    ### 🎯 Expected Interview Duration: **45–60 seconds**
+
+
+
 252. Worker threads?
 253. Load balancing?
 254. Scaling Node app?
