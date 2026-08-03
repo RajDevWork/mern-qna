@@ -8,6 +8,479 @@ All questions from every section, listed without explanations/answers.
 **Basics**
 
 1. HTML kya hai?
+
+# HTML Kya Hai? (Interview Answer - Hinglish)
+
+### Simple Definition
+
+**HTML (HyperText Markup Language)** ek **markup language** hai jo web pages ki **structure (dhancha)** banane ke liye use hoti hai.
+
+HTML batata hai ki webpage par **heading**, **paragraph**, **image**, **button**, **table**, **form**, **video**, **links** etc. kis order me aur kaise display honge.
+
+> **Important:** HTML programming language nahi hai. Ye ek **Markup Language** hai.
+
+---
+
+# Interview Answer (1-2 Minutes)
+
+> **"HTML stands for HyperText Markup Language. Ye web page ka basic structure create karne ke liye use hoti hai. HTML ke through hum headings, paragraphs, images, forms, tables, videos aur hyperlinks define karte hain. HTML khud styling ya business logic handle nahi karti. Styling ke liye CSS aur functionality ke liye JavaScript use hota hai. Browser HTML ko parse karta hai aur usse DOM (Document Object Model) me convert karta hai jise CSS aur JavaScript manipulate kar sakte hain."**
+
+---
+
+# HTML ka Full Form
+
+**H - HyperText**
+Different pages ko links ke through connect karna.
+
+**M - Markup**
+Tags ke through content ko define karna.
+
+**L - Language**
+Ye standard markup language hai.
+
+---
+
+# HTML Kaam Kaise Karti Hai?
+
+Flow kuch is tarah hota hai:
+
+```
+HTML File
+      │
+      ▼
+Browser HTML Parse karta hai
+      │
+      ▼
+DOM (Document Object Model) banta hai
+      │
+      ▼
+CSS Apply hoti hai
+      │
+      ▼
+JavaScript DOM manipulate karta hai
+      │
+      ▼
+Final Web Page Render hota hai
+```
+
+---
+
+# Basic HTML Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+</head>
+<body>
+
+<h1>Hello World</h1>
+
+<p>Welcome to HTML</p>
+
+<button>Click Me</button>
+
+</body>
+</html>
+```
+
+---
+
+# HTML Document Structure
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+
+</body>
+
+</html>
+```
+
+### `<!DOCTYPE html>`
+
+Browser ko batata hai ki HTML5 document hai.
+
+---
+
+### `<html>`
+
+Root element.
+
+---
+
+### `<head>`
+
+Metadata rakhta hai.
+
+Jaise:
+
+* Title
+* CSS
+* Meta Tags
+* Charset
+* Viewport
+
+Ye directly webpage par visible nahi hota.
+
+Example
+
+```html
+<head>
+   <title>Home</title>
+</head>
+```
+
+---
+
+### `<body>`
+
+Jo bhi user webpage par dekhta hai wo body ke andar hota hai.
+
+Example
+
+```html
+<body>
+
+<h1>Hello</h1>
+
+<img>
+
+<button>
+
+</body>
+```
+
+---
+
+# HTML Tags
+
+Tag content ko define karte hain.
+
+Example
+
+```html
+<h1>Hello</h1>
+```
+
+Yaha
+
+Opening Tag
+
+```html
+<h1>
+```
+
+Closing Tag
+
+```html
+</h1>
+```
+
+Content
+
+```
+Hello
+```
+
+---
+
+# Common HTML Tags
+
+| Tag        | Use              |
+| ---------- | ---------------- |
+| `<h1>`     | Heading          |
+| `<p>`      | Paragraph        |
+| `<a>`      | Hyperlink        |
+| `<img>`    | Image            |
+| `<button>` | Button           |
+| `<input>`  | Input            |
+| `<form>`   | Form             |
+| `<table>`  | Table            |
+| `<div>`    | Container        |
+| `<span>`   | Inline Container |
+| `<ul>`     | Unordered List   |
+| `<ol>`     | Ordered List     |
+| `<li>`     | List Item        |
+
+---
+
+# HTML Elements
+
+Element = Opening Tag + Content + Closing Tag
+
+Example
+
+```html
+<p>Hello</p>
+```
+
+Pure ko HTML Element bolte hain.
+
+---
+
+# HTML Attributes
+
+Attributes extra information provide karte hain.
+
+Example
+
+```html
+<img src="cat.jpg" alt="Cat">
+```
+
+Yaha
+
+```
+src
+```
+
+image ka path
+
+```
+alt
+```
+
+alternative text
+
+---
+
+# Empty Elements
+
+Kuch tags ke closing tag nahi hote.
+
+Example
+
+```html
+<img>
+
+<br>
+
+<hr>
+
+<input>
+```
+
+---
+
+# Block vs Inline Elements
+
+### Block Elements
+
+Nayi line se start hote hain.
+
+Examples
+
+```
+div
+
+p
+
+h1
+
+section
+
+article
+
+form
+```
+
+---
+
+### Inline Elements
+
+Same line me rehte hain.
+
+Examples
+
+```
+span
+
+a
+
+strong
+
+em
+
+img
+```
+
+---
+
+# Semantic HTML
+
+Semantic tags meaning batate hain.
+
+Example
+
+```html
+<header>
+
+<nav>
+
+<main>
+
+<section>
+
+<article>
+
+<footer>
+```
+
+Benefits
+
+* SEO improve hota hai
+* Accessibility better hoti hai
+* Code readable hota hai
+* Maintainability improve hoti hai
+
+---
+
+# HTML + CSS + JavaScript Relationship
+
+```
+HTML → Structure
+
+CSS → Styling
+
+JavaScript → Functionality
+```
+
+Example
+
+```
+House
+
+Bricks = HTML
+
+Paint = CSS
+
+Electricity = JavaScript
+```
+
+---
+
+# Browser HTML Ko Kaise Read Karta Hai?
+
+```
+HTML
+
+↓
+
+Parser
+
+↓
+
+DOM Tree
+
+↓
+
+CSSOM
+
+↓
+
+Render Tree
+
+↓
+
+Layout
+
+↓
+
+Paint
+
+↓
+
+Screen
+```
+
+Ye interview me bahut common question hota hai.
+
+---
+
+# HTML Ki Limitations
+
+* Dynamic logic nahi likh sakte.
+* Variables nahi hote.
+* Loops nahi hote.
+* Conditions nahi hoti.
+* Database access nahi hota.
+* API call nahi hoti.
+
+Ye sab JavaScript ya backend languages handle karti hain.
+
+---
+
+# HTML Ke Advantages
+
+* Easy to learn
+* Lightweight
+* Cross-browser support
+* SEO friendly
+* Platform independent
+* Forms support
+* Multimedia support
+* Semantic structure
+
+---
+
+# Interview Follow-up Questions
+
+### Q1. HTML Programming Language hai?
+
+**Answer:**
+
+> Nahi. HTML ek **Markup Language** hai jo webpage ka structure define karti hai. Isme programming features jaise variables, loops aur conditions nahi hote.
+
+---
+
+### Q2. HTML aur HTML5 me difference?
+
+**Answer:**
+
+* HTML5 latest version hai.
+* Semantic tags (`<header>`, `<footer>`, `<article>`) introduce hue.
+* Audio aur Video support without plugins.
+* Canvas aur SVG support.
+* Local Storage aur Session Storage.
+* Better Form Input Types.
+* Geolocation API support (JavaScript ke saath).
+
+---
+
+### Q3. HTML ka role frontend me kya hai?
+
+**Answer:**
+
+> HTML webpage ka structure banati hai, CSS usse style karti hai, aur JavaScript usme interactivity aur business logic add karta hai.
+
+---
+
+### Q4. Browser HTML ko kaise process karta hai?
+
+**Answer:**
+
+> Browser HTML ko parse karta hai, usse DOM tree me convert karta hai. Phir CSS apply hoti hai, Render Tree banti hai, Layout calculate hota hai aur finally page screen par paint ho jata hai.
+
+---
+
+# Interview Tips
+
+* Kabhi mat bolna ki **HTML programming language hai**.
+* Hamesha mention karo: **"HTML creates structure, CSS provides styling, JavaScript adds behavior."**
+* Agar 5+ years experience ke interview me ho, to **DOM, Semantic HTML, Accessibility, SEO aur Browser Rendering Process** ka bhi mention karo. Ye answer ko strong banata hai.
+
+
+
+
+
 2. HTML5 kya hai?
 3. Doctype kya hota hai?
 4. Meta tags kya hote hain?
