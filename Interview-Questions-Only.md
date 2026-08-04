@@ -4611,6 +4611,109 @@ All questions from every section, listed without explanations/answers.
 
 
 255. Microservices Node mein?
+
+    ## Hinglish Explanation
+
+    **Microservices** ek architecture hai jisme **bade application ko chhote-chhote independent services** me divide kiya jata hai.
+
+    Example:
+
+    E-commerce application
+
+    Instead of ek hi application me sab kuch rakhna:
+
+    * User Service
+    * Product Service
+    * Order Service
+    * Payment Service
+    * Notification Service
+
+    Har service ka apna codebase, database aur deployment ho sakta hai.
+
+    ```text
+                    Client
+                    │
+                API Gateway
+            ┌────────┼────────┐
+            │        │        │
+    User Service  Product Service  Order Service
+    ```
+
+    **Node.js microservices ke liye popular hai** kyunki ye lightweight hai aur APIs banane me fast hai.
+
+    > **Interview Point:** Har microservice independently develop, deploy aur scale ki ja sakti hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    **User Service**
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    app.get("/users", (req, res) => {
+    res.json([{ id: 1, name: "Raj" }]);
+    });
+
+    app.listen(3001);
+    ```
+
+    **Product Service**
+
+    ```javascript
+    const express = require("express");
+    const app = express();
+
+    app.get("/products", (req, res) => {
+    res.json([{ id: 101, name: "Laptop" }]);
+    });
+
+    app.listen(3002);
+    ```
+
+    Yahan dono services independently run kar rahi hain.
+
+    ---
+
+    ## English Interview Answer
+
+    Microservices is an architectural approach where a large application is divided into smaller, independent services. Each service is responsible for a specific business function, such as user management, orders, or payments. These services can be developed, deployed, and scaled independently, and they communicate with each other using APIs or messaging systems.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How do microservices communicate with each other?**
+
+    **Answer:**
+
+    There are two common ways:
+
+    * **Synchronous communication** → REST APIs or gRPC.
+    * **Asynchronous communication** → Message brokers like RabbitMQ, Kafka, or Redis Pub/Sub.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Have you worked on Microservices?"**
+
+    Agar **actual experience nahi hai**, to overclaim mat karna.
+
+    **Safe answer:**
+
+    > **I have mainly worked on modular REST APIs. I understand the microservices architecture, where different services handle different business domains and communicate through APIs. Although I haven't built a large production microservices system, I understand its concepts and deployment approach.**
+
+    Ye honest bhi hai aur interview me positive impression bhi deta hai.
+
+    ---
+
+
+
 256. GraphQL kya hai?
 257. REST vs GraphQL?
 258. API versioning?
