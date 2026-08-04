@@ -4346,6 +4346,95 @@ All questions from every section, listed without explanations/answers.
 
 
 252. Worker threads?
+
+    ## Hinglish Explanation
+
+    **Worker Threads** Node.js ka feature hai jo **CPU-intensive tasks ko alag thread me run** karne ke liye use hota hai.
+
+    Normally Node.js ka JavaScript code **main thread** par execute hota hai.
+
+    Agar koi heavy task ho, jaise:
+
+    * Image processing
+    * Video processing
+    * PDF generation
+    * Large calculations
+
+    to main thread block ho sakta hai.
+
+    Is problem ko solve karne ke liye **Worker Threads** use karte hain.
+
+    > **Interview Point:** Worker Threads **CPU-bound tasks** ke liye hote hain, na ki normal API ya database requests ke liye.
+
+    ---
+
+    ## Small Coding Implementation
+
+    **main.js**
+
+    ```javascript id="gx9r4a"
+    const { Worker } = require("worker_threads");
+
+    const worker = new Worker("./worker.js");
+
+    worker.on("message", (result) => {
+    console.log(result);
+    });
+    ```
+
+    **worker.js**
+
+    ```javascript id="u0m8kq"
+    const { parentPort } = require("worker_threads");
+
+    let sum = 0;
+
+    for (let i = 0; i < 1e9; i++) {
+    sum += i;
+    }
+
+    parentPort.postMessage(sum);
+    ```
+
+    Yahan heavy calculation **worker thread** me ho rahi hai, isliye main thread block nahi hota.
+
+    ---
+
+    ## English Interview Answer
+
+    Worker Threads allow Node.js to execute CPU-intensive tasks in separate threads without blocking the main event loop. They are useful for operations such as image processing, video encoding, and large computations. This keeps the main thread responsive while the heavy task runs in the background.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between Clustering and Worker Threads?**
+
+    | Clustering                      | Worker Threads                               |
+    | ------------------------------- | -------------------------------------------- |
+    | Creates **multiple processes**  | Creates **multiple threads**                 |
+    | Uses multiple CPU cores         | Used for CPU-intensive work inside a process |
+    | Each process has its own memory | Threads can communicate more efficiently     |
+    | Best for handling more requests | Best for heavy computations                  |
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common ye puchta hai:
+
+    > **"When would you use Worker Threads instead of the Event Loop?"**
+
+    **Answer:**
+
+    > **The Event Loop is excellent for I/O-bound operations like database queries or API calls. For CPU-intensive tasks that would block the main thread, I use Worker Threads so the Event Loop remains free to handle incoming requests.**
+
+    Ye answer senior-level understanding dikhata hai.
+
+    ---
+
+
+
 253. Load balancing?
 254. Scaling Node app?
 255. Microservices Node mein?
