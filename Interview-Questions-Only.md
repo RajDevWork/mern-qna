@@ -4715,6 +4715,123 @@ All questions from every section, listed without explanations/answers.
 
 
 256. GraphQL kya hai?
+
+    ## Hinglish Explanation
+
+    **GraphQL** ek **API query language** aur runtime hai jo client ko **sirf utna hi data fetch karne deta hai jitni usse zarurat hai.**
+
+    REST API me kabhi-kabhi extra data mil jata hai (**Over-fetching**) ya multiple APIs call karni padti hain (**Under-fetching**).
+
+    GraphQL me client khud decide karta hai ki kaun-kaun se fields chahiye.
+
+    ### Example
+
+    **REST**
+
+    ```http
+    GET /users/1
+    ```
+
+    Response:
+
+    ```json
+    {
+    "id": 1,
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "address": "...",
+    "phone": "...",
+    "dob": "..."
+    }
+    ```
+
+    Agar sirf `name` chahiye tha, tab bhi pura object aa gaya.
+
+    ---
+
+    **GraphQL**
+
+    ```graphql
+    query {
+    user(id: 1) {
+        name
+        email
+    }
+    }
+    ```
+
+    Response:
+
+    ```json
+    {
+    "data": {
+        "user": {
+        "name": "Raj",
+        "email": "raj@gmail.com"
+        }
+    }
+    }
+    ```
+
+    Sirf requested fields hi mile.
+
+    > **Interview Point:** GraphQL me generally **ek endpoint** hota hai (e.g., `/graphql`), jabki REST me multiple endpoints hote hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const typeDefs = `
+    type User {
+        id: ID
+        name: String
+        email: String
+    }
+
+    type Query {
+        user(id: ID!): User
+    }
+    `;
+    ```
+
+    Ye GraphQL schema ka basic example hai.
+
+    ---
+
+    ## English Interview Answer
+
+    GraphQL is a query language for APIs that allows clients to request exactly the data they need. Unlike REST, where multiple endpoints are often used, GraphQL typically exposes a single endpoint. It helps reduce over-fetching and under-fetching of data by allowing clients to specify the required fields.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. GraphQL vs REST?**
+
+    | REST                          | GraphQL                    |
+    | ----------------------------- | -------------------------- |
+    | Multiple endpoints            | Single endpoint            |
+    | Fixed response                | Client chooses fields      |
+    | Can cause over/under-fetching | Fetches only required data |
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Have you used GraphQL?"**
+
+    Agar production me use **nahi kiya hai**, to ye bolo:
+
+    > **I have mainly worked with REST APIs. I understand GraphQL concepts and know that it allows clients to request only the required data through a single endpoint, but my production experience has primarily been with REST.**
+
+    Ye honest answer hai aur overclaim bhi nahi karta.
+
+    ---
+
+
 257. REST vs GraphQL?
 258. API versioning?
 259. Pagination?
