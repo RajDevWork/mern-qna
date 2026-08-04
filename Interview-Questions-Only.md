@@ -4518,6 +4518,98 @@ All questions from every section, listed without explanations/answers.
 
 
 254. Scaling Node app?
+
+    ## Hinglish Explanation
+
+    **Scaling** ka matlab hai **application ko zyada users aur requests handle karne layak banana**.
+
+    Node.js application ko mainly **2 tarike se scale** karte hain.
+
+    ### 1. Vertical Scaling (Scale Up)
+
+    Server ki capacity badha do.
+
+    Example:
+
+    * RAM: 8 GB → 32 GB
+    * CPU: 2 Cores → 8 Cores
+
+    Ye easy hai, lekin ek limit ke baad hardware aur upgrade nahi kar sakte.
+
+    ---
+
+    ### 2. Horizontal Scaling (Scale Out) ✅
+
+    Ek server ki jagah multiple application instances chalao.
+
+    Phir **Load Balancer** requests ko distribute karega.
+
+    ```text
+            Load Balancer
+                │
+        ┌──────┼──────┐
+        │      │      │
+        App-1  App-2  App-3
+    ```
+
+    Ye production me sabse common approach hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    PM2 Cluster Mode:
+
+    ```bash
+    pm2 start app.js -i max
+    ```
+
+    Ye command available CPU cores ke according multiple Node.js instances start kar deta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Scaling a Node.js application means increasing its capacity to handle more users and requests. There are two approaches:
+
+    * **Vertical Scaling**: Increase the server's CPU or memory.
+    * **Horizontal Scaling**: Run multiple application instances behind a load balancer.
+
+    In production, horizontal scaling is generally preferred because it provides better scalability and high availability.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Besides multiple instances, what else is important for scaling?**
+
+    **Answer:**
+
+    * Use **Redis** for caching.
+    * Use a **Load Balancer** (Nginx/AWS ALB).
+    * Store sessions in a shared store like **Redis** (if using sessions).
+    * Optimize database queries and indexing.
+    * Run multiple instances using **PM2** or containers (Docker/Kubernetes).
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer (especially 5–8 YOE) bahut baar puchta hai:
+
+    > **"Your Node.js API suddenly starts receiving 10x more traffic. What will you do?"**
+
+    **Answer:**
+
+    > **First, I'll identify the bottleneck. Then I'll scale the application horizontally by running multiple instances behind a load balancer, use Redis for caching frequently accessed data, optimize database queries and indexes, and monitor the application to identify any further performance issues.**
+
+    Ye answer practical aur production-oriented lagta hai.
+
+    ---
+
+
+
+
 255. Microservices Node mein?
 256. GraphQL kya hai?
 257. REST vs GraphQL?
