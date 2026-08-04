@@ -4436,6 +4436,87 @@ All questions from every section, listed without explanations/answers.
 
 
 253. Load balancing?
+
+    ## Hinglish Explanation
+
+    **Load Balancing** ka matlab hai **incoming requests ko multiple servers ya application instances me distribute karna**, taaki kisi ek server par zyada load na aaye.
+
+    Example:
+
+    Maan lo 3 servers hain.
+
+    Agar 3000 requests aati hain:
+
+    * ❌ Bina Load Balancer → Saari requests Server-1 par aa sakti hain.
+    * ✅ Load Balancer → Har server ko lagbhag 1000-1000 requests milengi.
+
+    ```text
+                Client Requests
+                    │
+                Load Balancer
+            ┌────────┼────────┐
+            │        │        │
+        Server-1  Server-2  Server-3
+    ```
+
+    **Real-world Load Balancers:**
+
+    * Nginx
+    * AWS Application Load Balancer (ALB)
+    * HAProxy
+
+    > **Interview Point:** Load Balancer performance, scalability aur high availability improve karta hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Example (Nginx Concept):
+
+    ```nginx
+    upstream backend {
+        server 192.168.1.10:3000;
+        server 192.168.1.11:3000;
+        server 192.168.1.12:3000;
+    }
+    ```
+
+    Yahan Nginx incoming requests ko teeno Node.js servers me distribute karega.
+
+    ---
+
+    ## English Interview Answer
+
+    Load balancing is the process of distributing incoming client requests across multiple servers or application instances. It improves performance, scalability, and availability by preventing a single server from becoming overloaded. Common load balancers include Nginx, HAProxy, and cloud load balancers such as AWS ALB.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between Clustering and Load Balancing?**
+
+    | Clustering                                              | Load Balancing                                                |
+    | ------------------------------------------------------- | ------------------------------------------------------------- |
+    | Multiple worker **processes** on the **same machine**   | Distributes requests across **multiple servers or instances** |
+    | Uses multiple CPU cores                                 | Scales across machines or containers                          |
+    | Implemented inside the Node.js application (or via PM2) | Implemented by Nginx, HAProxy, AWS ALB, etc.                  |
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common ye puchta hai:
+
+    > **"Have you used load balancing in production?"**
+
+    **Answer:**
+
+    > **Yes. In production, Node.js applications are usually deployed with multiple instances, and a load balancer like Nginx or AWS ALB distributes incoming traffic across those instances.**
+
+    ---
+
+
+
 254. Scaling Node app?
 255. Microservices Node mein?
 256. GraphQL kya hai?
