@@ -6026,6 +6026,91 @@ Browser automatically validation kar dega.
 
 
 261. Redis integration?
+
+    ## Hinglish Explanation
+
+    **Redis** ek **in-memory database** hai jo mostly **caching** ke liye use hota hai.
+
+    Agar koi data baar-baar database se fetch ho raha hai, to hum usse Redis me store kar dete hain.
+
+    Next request par:
+
+    * Pehle Redis check karte hain.
+    * Agar data mil gaya (**Cache Hit**) → Redis se return kar dete hain.
+    * Agar nahi mila (**Cache Miss**) → Database se fetch karke Redis me store kar dete hain.
+
+    Isse database par load kam hota hai aur response fast milta hai.
+
+    ```text
+    Request
+    ↓
+    Redis
+    ↓      ↓
+    Hit    Miss
+    ↓       ↓
+    Response Database
+                ↓
+        Save in Redis
+                ↓
+            Response
+    ```
+
+    > **Interview Point:** Redis ka sabse common use case **caching** hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const redis = require("redis");
+
+    const client = redis.createClient();
+
+    await client.connect();
+
+    // Store data
+    await client.set("user:1", JSON.stringify(user));
+
+    // Get data
+    const cachedUser = await client.get("user:1");
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Redis is an in-memory data store commonly used for caching. In my applications, I use Redis to store frequently accessed data so that repeated requests can be served from the cache instead of querying the database every time. This improves response time and reduces database load.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is Cache Hit and Cache Miss?**
+
+    **Answer:**
+
+    * **Cache Hit** → Data is found in Redis, so no database query is needed.
+    * **Cache Miss** → Data is not found in Redis, so it is fetched from the database, stored in Redis, and then returned.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer (5–8 YOE) bahut baar puchta hai:
+
+    > **"Where have you used Redis in your project?"**
+
+    **Answer:**
+
+    > **I have used Redis mainly for caching frequently accessed API responses. This reduces database queries and improves API response time. Redis can also be used for session storage, rate limiting, and background job queues.**
+
+    Ye answer practical aur production-oriented lagta hai.
+
+    ---
+
+
+
+
 262. Caching strategies?
 263. Queue system?
 264. Background jobs?
