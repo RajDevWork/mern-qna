@@ -5625,6 +5625,130 @@ Browser automatically validation kar dega.
 
 
 257. REST vs GraphQL?
+
+    ## Hinglish Explanation
+
+    **REST** aur **GraphQL** dono APIs banane ke liye use hote hain, lekin data fetch karne ka tarika alag hai.
+
+    ### REST
+
+    * Multiple endpoints hote hain.
+    * Server decide karta hai response me kya data jayega.
+
+    Example:
+
+    ```http id="cujn3b"
+    GET /users/1
+    GET /users/1/orders
+    ```
+
+    ---
+
+    ### GraphQL
+
+    * Ek hi endpoint hota hai (`/graphql`).
+    * Client decide karta hai ki kaunse fields chahiye.
+
+    Example:
+
+    ```graphql id="jc5ktz"
+    query {
+    user(id: 1) {
+        name
+        orders {
+        id
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### REST
+
+    ```http id="hv7a5o"
+    GET /users/1
+    ```
+
+    Response:
+
+    ```json id="sv06h4"
+    {
+    "id": 1,
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "phone": "9999999999",
+    "address": "Bilaspur"
+    }
+    ```
+
+    Agar sirf `name` chahiye tha, tab bhi pura object aa gaya.
+
+    ---
+
+    ### GraphQL
+
+    ```graphql id="b27f77"
+    query {
+    user(id: 1) {
+        name
+    }
+    }
+    ```
+
+    Response:
+
+    ```json id="y44g0r"
+    {
+    "data": {
+        "user": {
+        "name": "Raj"
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    REST and GraphQL are both used to build APIs.
+
+    * REST uses multiple endpoints, and the server defines the response structure.
+    * GraphQL typically uses a single endpoint, and the client requests only the required fields.
+
+    GraphQL helps reduce over-fetching and under-fetching, while REST is simpler and widely used for standard CRUD APIs.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which one would you choose?**
+
+    **Answer:**
+
+    * **REST** → Best for most CRUD applications because it is simple, easy to cache, and widely adopted.
+    * **GraphQL** → Best when clients need flexible data fetching or have complex relationships between resources.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer (especially 5–8 YOE) bahut baar puchta hai:
+
+    > **"Why do most companies still use REST if GraphQL is more flexible?"**
+
+    **Answer:**
+
+    > **REST is simpler to build, easier to cache, easier to maintain, and works well for most business applications. GraphQL is useful when clients need flexible data fetching, but it also adds complexity. That's why many companies still prefer REST for standard APIs.**
+
+    Ye answer balanced hai aur production-level understanding dikhata hai.
+
+    ---
+
+
 258. API versioning?
 259. Pagination?
 260. Filtering & sorting?
