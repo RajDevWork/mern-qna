@@ -5750,6 +5750,84 @@ Browser automatically validation kar dega.
 
 
 258. API versioning?
+
+    ## Hinglish Explanation
+
+    **API Versioning** ka matlab hai **API ke different versions maintain karna**, taaki naye changes karne par purane clients break na ho.
+
+    Example:
+
+    Tumhari mobile app **v1 API** use kar rahi hai.
+
+    Ab tum API me breaking changes karna chahte ho.
+
+    Agar direct changes kar doge, purani app kaam karna band kar degi.
+
+    Isliye naya version bana dete hain.
+
+    ```text id="tq2t1h"
+    /api/v1/users
+    /api/v2/users
+    ```
+
+    Ab:
+
+    * Purane clients → `v1`
+    * Naye clients → `v2`
+
+    Dono saath me chal sakte hain.
+
+    > **Interview Point:** API Versioning backward compatibility maintain karne ke liye use hoti hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="4qh9fy"
+    app.get("/api/v1/users", (req, res) => {
+    res.json({ version: "v1" });
+    });
+
+    app.get("/api/v2/users", (req, res) => {
+    res.json({
+        version: "v2",
+        users: []
+    });
+    });
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    API versioning is the practice of maintaining different versions of an API so that existing clients continue to work when new changes are introduced. It helps maintain backward compatibility. A common approach is URL versioning, such as `/api/v1` and `/api/v2`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What are the common ways to implement API versioning?**
+
+    **Answer:**
+
+    * **URL Versioning** → `/api/v1/users` ✅ (Most common)
+    * **Header Versioning** → `API-Version: v1`
+    * **Query Parameter Versioning** → `/users?version=v1`
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common puchta hai:
+
+    > **"Which versioning approach have you used?"**
+
+    **Answer:**
+
+    > **I have mainly used URL versioning (for example, `/api/v1`) because it is simple, easy to understand, and commonly used in REST APIs.**
+
+    ---
+
 259. Pagination?
 260. Filtering & sorting?
 261. Redis integration?
