@@ -6112,6 +6112,123 @@ Browser automatically validation kar dega.
 
 
 262. Caching strategies?
+
+    ## Hinglish Explanation
+
+    **Caching Strategy** ka matlab hai **cache ko kab read karna, kab update karna aur kab remove karna.**
+
+    Production me mainly **3 strategies** sabse common hain.
+
+    ---
+
+    ### 1. Cache Aside (Most Common) ⭐
+
+    Flow:
+
+    * Pehle Redis check karo.
+    * Data mila → Redis se return.
+    * Nahi mila → Database se fetch karo → Redis me save karo → Response bhejo.
+
+    ```text id="g4k0p2"
+    Request
+    ↓
+    Redis
+    ↓      ↓
+    Hit    Miss
+    ↓       ↓
+    Return  Database
+            ↓
+        Save in Redis
+    ```
+
+    > Ye strategy sabse zyada use hoti hai.
+
+    ---
+
+    ### 2. Write Through
+
+    Jab bhi database update karo:
+
+    * Database update karo.
+    * Saath hi Redis bhi update karo.
+
+    ```text id="n1w8qb"
+    Update Request
+        ↓
+    Database
+        ↓
+    Redis Update
+    ```
+
+    Isse cache hamesha fresh rehta hai.
+
+    ---
+
+    ### 3. Cache Expiration (TTL)
+
+    Redis me data ko expiry time ke saath store karte hain.
+
+    Example:
+
+    ```javascript id="2s6n9m"
+    await client.set("users", data, {
+    EX: 300
+    });
+    ```
+
+    Ye cache **300 seconds (5 minutes)** baad automatically expire ho jayega.
+
+    ---
+
+    ## Small Coding Implementation (Cache Aside)
+
+    ```javascript id="vfph1w"
+    const cachedData = await client.get("users");
+
+    if (cachedData) {
+    return res.json(JSON.parse(cachedData));
+    }
+
+    const users = await User.find();
+
+    await client.set("users", JSON.stringify(users), {
+    EX: 300
+    });
+
+    res.json(users);
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    A caching strategy defines how an application reads, updates, and expires cached data. The most common strategy is **Cache Aside**, where the application checks the cache first and falls back to the database on a cache miss. Other common strategies include **Write Through**, where the cache is updated together with the database, and **TTL-based expiration**, where cached data is automatically removed after a specified time.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which caching strategy have you used?**
+
+    **Answer:**
+
+    > **I have mainly used the Cache Aside strategy because it is simple, efficient, and commonly used in REST APIs with Redis.**
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common puchta hai:
+
+    > **"When do you invalidate the cache?"**
+
+    **Answer:**
+
+    > **Whenever the underlying data changes (create, update, or delete), I either remove the cached data or update it so that users always receive the latest information.**
+
+    ---
+
+
 263. Queue system?
 264. Background jobs?
 265. Cron jobs?
