@@ -5916,6 +5916,115 @@ Browser automatically validation kar dega.
 
 
 260. Filtering & sorting?
+
+    ## Hinglish Explanation
+
+    **Filtering** ka matlab hai **condition ke basis par data fetch karna.**
+
+    **Sorting** ka matlab hai **data ko ascending ya descending order me arrange karna.**
+
+    ### Example
+
+    Products API:
+
+    **Filtering:**
+
+    ```http
+    GET /products?category=mobile
+    ```
+
+    Sirf **mobile** category ke products milenge.
+
+    **Sorting:**
+
+    ```http
+    GET /products?sort=price
+    ```
+
+    Price ke according sort hoga.
+
+    Descending order:
+
+    ```http
+    GET /products?sort=-price
+    ```
+
+    > **Interview Point:** Filtering decides **which data** to return, while sorting decides **in what order** to return it.
+
+    ---
+
+    ## Small Coding Implementation (MongoDB)
+
+    ```javascript
+    const { category, sort } = req.query;
+
+    const filter = {};
+
+    if (category) {
+    filter.category = category;
+    }
+
+    const products = await Product.find(filter).sort(sort);
+
+    res.json(products);
+    ```
+
+    Request:
+
+    ```http
+    GET /products?category=mobile&sort=-price
+    ```
+
+    Ye:
+
+    * Sirf **mobile** category ke products return karega.
+    * Unhe **highest price se lowest price** tak sort karega.
+
+    ---
+
+    ## English Interview Answer
+
+    Filtering is used to return only the data that matches specific conditions, while sorting is used to arrange the returned data in a particular order, such as ascending or descending. In MongoDB, filtering is commonly done using query conditions, and sorting is implemented using the `sort()` method.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Can we use filtering, sorting, and pagination together?**
+
+    **Answer:**
+
+    **Yes.** In production APIs, they are commonly used together.
+
+    Example:
+
+    ```http
+    GET /products?category=mobile&sort=-price&page=1&limit=10
+    ```
+
+    This request:
+
+    * Filters by category.
+    * Sorts by price (highest first).
+    * Returns only the first page with 10 records.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common puchta hai:
+
+    > **"How do you build list APIs in production?"**
+
+    **Answer:**
+
+    > **I usually support filtering, sorting, pagination, and searching in list APIs. This makes the API efficient and flexible for frontend applications.**
+
+    Ye answer production-level API design ko reflect karta hai.
+
+    ---
+
+
 261. Redis integration?
 262. Caching strategies?
 263. Queue system?
