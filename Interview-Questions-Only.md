@@ -5829,6 +5829,92 @@ Browser automatically validation kar dega.
     ---
 
 259. Pagination?
+
+    ## Hinglish Explanation
+
+    **Pagination** ka matlab hai **ek baar me saara data bhejne ke bajay, data ko chhote-chhote pages me return karna.**
+
+    Example:
+
+    Database me **1 lakh users** hain.
+
+    Agar ek hi request me 1 lakh records bhej doge:
+
+    * Response slow hoga.
+    * Memory zyada use hogi.
+    * Network load badhega.
+
+    Isliye hum page-wise data bhejte hain.
+
+    Example:
+
+    ```text id="sm76wx"
+    Page 1 → 10 Users
+    Page 2 → Next 10 Users
+    Page 3 → Next 10 Users
+    ```
+
+    > **Interview Point:** Pagination improves performance and reduces response size.
+
+    ---
+
+    ## Small Coding Implementation (MongoDB)
+
+    ```javascript id="eqo5sx"
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    const users = await User.find()
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+    res.json(users);
+    ```
+
+    Request:
+
+    ```http id="y3qjks"
+    GET /users?page=2&limit=10
+    ```
+
+    Ye **11–20** records return karega.
+
+    ---
+
+    ## English Interview Answer
+
+    Pagination is the process of dividing a large dataset into smaller pages instead of returning all records at once. It improves performance, reduces response size, and provides a better user experience. In MongoDB, pagination is commonly implemented using `skip()` and `limit()`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the problem with `skip()` for very large datasets?**
+
+    **Answer:**
+
+    For very large datasets, `skip()` becomes slower because the database still has to scan the skipped records. In such cases, **cursor-based pagination** (using `_id` or another indexed field) is more efficient.
+
+    > **Example:** `find({ _id: { $gt: lastId } }).limit(10)`
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer (5–8 YOE) bahut baar puchta hai:
+
+    > **"Which pagination have you used in production?"**
+
+    **Answer:**
+
+    > **For normal CRUD APIs, I have used `skip()` and `limit()`. For large datasets or infinite scrolling, I would prefer cursor-based pagination because it performs better.**
+
+    Ye answer practical hai aur senior-level understanding dikhata hai.
+
+    ---
+
+
+
 260. Filtering & sorting?
 261. Redis integration?
 262. Caching strategies?
