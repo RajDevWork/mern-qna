@@ -6421,6 +6421,74 @@ Browser automatically validation kar dega.
 
 
 265. Cron jobs?
+
+    ## Hinglish Explanation
+
+    **Cron Job** ek **scheduled task** hota hai jo **fixed time ya interval par automatically run hota hai.**
+
+    Difference samjho:
+
+    * **Background Job** → Event ke baad run hota hai (e.g., user registration).
+    * **Cron Job** → Time ke according run hota hai (e.g., every day at 12 AM).
+
+    **Real-world Examples:**
+
+    * Daily database backup
+    * Expired orders delete karna
+    * Daily report email bhejna
+    * Subscription renewal check karna
+
+    > **Interview Point:** Cron jobs **time-based** hote hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Using `node-cron`:
+
+    ```javascript id="u8n2kp"
+    const cron = require("node-cron");
+
+    cron.schedule("0 0 * * *", () => {
+    console.log("Running every day at 12:00 AM");
+    });
+    ```
+
+    Ye job **har din raat 12 baje** execute hogi.
+
+    ---
+
+    ## English Interview Answer
+
+    A cron job is a scheduled task that runs automatically at a specific time or interval. It is commonly used for recurring tasks such as database backups, sending scheduled emails, cleaning old data, and generating reports. In Node.js, cron jobs are commonly implemented using libraries like `node-cron`.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between a Cron Job and a Background Job?**
+
+    | Cron Job              | Background Job                                 |
+    | --------------------- | ---------------------------------------------- |
+    | Runs on a schedule    | Runs when triggered by an event                |
+    | Example: Daily backup | Example: Send welcome email after registration |
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common puchta hai:
+
+    > **"Have you used cron jobs in production?"**
+
+    **Answer:**
+
+    > **Yes. I have used cron jobs for scheduled tasks such as cleaning expired records, generating reports, and sending scheduled emails at fixed intervals.**
+
+    ---
+
+
+
 266. Email service?
 267. File storage (S3)?
 268. WebSockets?
