@@ -6571,6 +6571,92 @@ Browser automatically validation kar dega.
 
 
 267. File storage (S3)?
+
+    ## Hinglish Explanation
+
+    **Amazon S3 (Simple Storage Service)** AWS ki **cloud storage service** hai jahan hum files store karte hain.
+
+    Instead of images ya PDFs apne server me store karne ke, hum unhe **S3 bucket** me upload kar dete hain.
+
+    **Real-world Examples:**
+
+    * Profile images
+    * Product images
+    * Resumes
+    * PDFs
+    * Videos
+
+    **Flow:**
+
+    ```text
+    Client
+    ↓
+    Node.js API
+    ↓
+    Amazon S3 Bucket
+    ↓
+    File URL
+    ↓
+    Save URL in Database
+    ```
+
+    > **Interview Point:** Production me files server ke local storage me rakhne ke bajay S3 jaisi cloud storage services use ki jati hain kyunki ye scalable aur reliable hoti hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript
+    const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+    const s3 = new S3Client({ region: "ap-south-1" });
+
+    await s3.send(
+    new PutObjectCommand({
+        Bucket: "my-bucket",
+        Key: "profile.jpg",
+        Body: fileBuffer
+    })
+    );
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    Amazon S3 is a cloud object storage service provided by AWS. It is commonly used to store files such as images, documents, and videos. In a typical application, the file is uploaded to an S3 bucket, and the file URL is stored in the database instead of storing the file on the application server.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why use S3 instead of storing files on the server?**
+
+    **Answer:**
+
+    * S3 is highly scalable.
+    * Files remain available even if the application server is replaced.
+    * It offers high durability and reliability.
+    * It reduces storage load on the application server.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut baar puchta hai:
+
+    > **"Have you used S3 in your project?"**
+
+    Agar **use nahi kiya hai**, to ye bolo:
+
+    > **I have worked with Cloudinary for file uploads. The overall flow is similar to S3—upload the file to cloud storage, receive the file URL, and store that URL in the database. I understand how the same approach works with Amazon S3.**
+
+    Ye honest answer hai aur agar tumne Cloudinary use kiya hai to ye naturally justify bhi karta hai.
+
+    ---
+
+
+
 268. WebSockets?
 269. Socket.io?
 270. Real-time apps?
