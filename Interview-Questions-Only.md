@@ -6230,6 +6230,102 @@ Browser automatically validation kar dega.
 
 
 263. Queue system?
+
+    ## Hinglish Explanation
+
+    **Queue System** ka matlab hai **time-consuming tasks ko background me process karna**, taaki user ko turant response mil jaye.
+
+    Example:
+
+    User ne order place kiya.
+
+    Uske baad:
+
+    * Email bhejna
+    * Invoice generate karna
+    * SMS bhejna
+
+    Ye sab kaam agar request ke andar hi karoge to API slow ho jayegi.
+
+    Isliye in tasks ko **Queue** me daal dete hain.
+
+    ```text
+    Client Request
+        ↓
+    API
+        ↓
+    Queue (Redis)
+        ↓
+    Worker
+        ↓
+    Send Email / Generate PDF / SMS
+    ```
+
+    > **Interview Point:** Queue system long-running tasks ko background me process karta hai.
+
+    ---
+
+    ## Small Coding Implementation (Bull + Redis)
+
+    ```javascript
+    const Queue = require("bull");
+
+    const emailQueue = new Queue("email", {
+    redis: { host: "127.0.0.1", port: 6379 }
+    });
+
+    // Add job to queue
+    emailQueue.add({
+    email: "raj@gmail.com"
+    });
+    ```
+
+    Worker:
+
+    ```javascript
+    emailQueue.process(async (job) => {
+    console.log("Sending email to:", job.data.email);
+    });
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    A queue system is used to process time-consuming tasks asynchronously in the background instead of handling them during the request-response cycle. This improves API response time and user experience. In Node.js, queues are commonly implemented using Redis with libraries such as Bull or BullMQ.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What kind of tasks should be processed using a queue?**
+
+    **Answer:**
+
+    * Sending emails
+    * SMS/Notifications
+    * PDF or invoice generation
+    * Image/video processing
+    * Background data synchronization
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common puchta hai:
+
+    > **"Why not send the email directly from the API?"**
+
+    **Answer:**
+
+    > **Because sending an email can take time. If we do it inside the request, the user has to wait for the response. By pushing the task to a queue, the API responds immediately, and a worker processes the email in the background.**
+
+    Ye answer production-level understanding dikhata hai.
+
+    ---
+
+
+
 264. Background jobs?
 265. Cron jobs?
 266. Email service?
