@@ -6327,6 +6327,99 @@ Browser automatically validation kar dega.
 
 
 264. Background jobs?
+
+    ## Hinglish Explanation
+
+    **Background Job** aisa task hota hai jo **user ko response dene ke baad background me execute hota hai.**
+
+    Iska purpose hai API ko fast rakhna.
+
+    Example:
+
+    User registration ke baad:
+
+    * Welcome email bhejna
+    * PDF generate karna
+    * Image resize karna
+    * Notification bhejna
+
+    Ye sab immediately user ko dikhana zaroori nahi hai, isliye inhe background me chala dete hain.
+
+    > **Interview Point:** Queue task ko **store** karti hai, Worker us task ko **background me execute** karta hai. Ye execution hi **Background Job** kehlata hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="4tj1cm"
+    // API
+    app.post("/register", async (req, res) => {
+
+    await emailQueue.add({
+        email: req.body.email
+    });
+
+    res.json({
+        message: "User Registered Successfully"
+    });
+    });
+    ```
+
+    Worker:
+
+    ```javascript id="4m5jgx"
+    emailQueue.process(async (job) => {
+    console.log(`Sending email to ${job.data.email}`);
+    });
+    ```
+
+    Flow:
+
+    ```text id="tzbxtl"
+    User Register
+        ↓
+    API Response (Immediately)
+        ↓
+    Background Job
+        ↓
+    Send Welcome Email
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    A background job is a task that runs asynchronously after the API has responded to the client. It is used for time-consuming operations such as sending emails, generating PDFs, processing images, or sending notifications. In Node.js, background jobs are commonly implemented using a queue system like Bull or BullMQ with Redis.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between a Queue and a Background Job?**
+
+    **Answer:**
+
+    * **Queue** → Holds the jobs waiting to be processed.
+    * **Background Job** → The actual task executed by a worker from the queue.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer (5–8 YOE) bahut baar puchta hai:
+
+    > **"Can background jobs fail? What do you do then?"**
+
+    **Answer:**
+
+    > **Yes. Queue libraries like Bull/BullMQ support automatic retries. If a job fails due to a temporary issue, it can be retried automatically. Failed jobs can also be logged and monitored for later investigation.**
+
+    Ye answer production-level experience dikhata hai.
+
+    ---
+
+
+
 265. Cron jobs?
 266. Email service?
 267. File storage (S3)?
