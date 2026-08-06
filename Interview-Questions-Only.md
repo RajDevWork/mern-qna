@@ -6490,6 +6490,86 @@ Browser automatically validation kar dega.
 
 
 266. Email service?
+
+    ## Hinglish Explanation
+
+    **Email Service** ka matlab hai application se **automatically emails send karna.**
+
+    Examples:
+
+    * Welcome Email
+    * Password Reset
+    * OTP
+    * Order Confirmation
+    * Invoice Email
+
+    Node.js me email bhejne ke liye commonly:
+
+    * **Nodemailer**
+    * **SendGrid**
+    * **Amazon SES**
+    * **Mailgun**
+
+    use kiye jate hain.
+
+    > **Interview Point:** Production me email bhejna usually **background job/queue** ke through kiya jata hai, directly API se nahi.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Using **Nodemailer**:
+
+    ```javascript id="b4q7hd"
+    const nodemailer = require("nodemailer");
+
+    const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: "test@gmail.com",
+        pass: "password"
+    }
+    });
+
+    await transporter.sendMail({
+    to: "user@gmail.com",
+    subject: "Welcome",
+    text: "Welcome to our application!"
+    });
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    An email service is used to send emails from an application, such as welcome emails, password reset links, OTPs, and notifications. In Node.js, I have used Nodemailer for sending emails. In production, I prefer sending emails through a background queue to avoid delaying the API response.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why don't you send emails directly inside the API?**
+
+    **Answer:**
+
+    Because sending an email can take time. If it's done inside the request, the API response becomes slower. Instead, I add the email task to a queue, and a background worker sends it asynchronously.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common puchta hai:
+
+    > **"Which email service have you used?"**
+
+    **Answer:**
+
+    > **I have used Nodemailer for SMTP-based email sending. In production, services like SendGrid or Amazon SES are commonly preferred because they provide better reliability, scalability, and email delivery monitoring.**
+
+    ---
+
+
+
 267. File storage (S3)?
 268. WebSockets?
 269. Socket.io?
