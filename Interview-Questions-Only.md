@@ -6658,6 +6658,86 @@ Browser automatically validation kar dega.
 
 
 268. WebSockets?
+
+    ## Hinglish Explanation
+
+    **WebSocket** ek protocol hai jo **client aur server ke beech real-time, two-way communication** provide karta hai.
+
+    Normal HTTP me:
+
+    * Client request bhejta hai.
+    * Server response deta hai.
+    * Connection close ho jata hai.
+
+    WebSocket me:
+
+    * Ek baar connection establish ho jata hai.
+    * Uske baad **client aur server dono kabhi bhi data bhej sakte hain**, bina baar-baar new request banaye.
+
+    **Real-world Examples:**
+
+    * Chat Application
+    * Live Notifications
+    * Live Stock Prices
+    * Multiplayer Games
+    * Live Sports Scores
+
+    ```text id="vrpc1g"
+    Client  ⇄  WebSocket Connection  ⇄  Server
+    ```
+
+    > **Interview Point:** WebSocket is **full-duplex**, meaning both client and server can send data at any time.
+
+    ---
+
+    ## Small Coding Implementation (Socket.IO)
+
+    ```javascript id="o5zv8x"
+    const io = require("socket.io")(3000);
+
+    io.on("connection", (socket) => {
+    console.log("User Connected");
+
+    socket.emit("message", "Welcome!");
+    });
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    WebSocket is a protocol that enables real-time, bidirectional communication between a client and a server over a single persistent connection. It is commonly used for applications such as chat systems, live notifications, online games, and real-time dashboards.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between HTTP and WebSocket?**
+
+    | HTTP                            | WebSocket                            |
+    | ------------------------------- | ------------------------------------ |
+    | Request-Response                | Persistent connection                |
+    | Client initiates communication  | Client and Server both can send data |
+    | New connection for each request | One long-lived connection            |
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Interviewer bahut common puchta hai:
+
+    > **"When would you choose WebSockets over REST APIs?"**
+
+    **Answer:**
+
+    > **I use REST APIs for normal CRUD operations like creating, updating, or fetching data. I use WebSockets when the client needs real-time updates, such as chat messages, live notifications, or live dashboards.**
+
+    Ye answer interview me bahut strong aur practical lagta hai.
+
+    ---
+
+
+
 269. Socket.io?
 270. Real-time apps?
 271. Security best practices?
