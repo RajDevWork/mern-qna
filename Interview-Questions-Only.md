@@ -618,6 +618,8 @@ Browser khud validation provide karta hai.
 
 ```html
 <input placeholder="Enter Name">
+
+
 ```
 
 ---
