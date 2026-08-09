@@ -6991,6 +6991,108 @@ Browser automatically validation kar dega.
 
 
 272. CORS handle kaise?
+
+
+    ## Hinglish Explanation
+
+    **CORS (Cross-Origin Resource Sharing)** browser ka security mechanism hai jo decide karta hai ki **ek origin se aayi request ko doosre origin ke server par allow karna hai ya nahi.**
+
+    Example:
+
+    ```text
+    Frontend → http://localhost:3000
+    Backend  → http://localhost:5000
+    ```
+
+    Dono ka **origin different** hai, isliye browser CORS rules apply karega.
+
+    Express me generally `cors` middleware use karte hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### Allow specific frontend
+
+    ```javascript
+    const cors = require("cors");
+
+    app.use(cors({
+    origin: "https://myfrontend.com"
+    }));
+    ```
+
+    Ab sirf `https://myfrontend.com` se browser requests allow karega.
+
+    Multiple origins:
+
+    ```javascript
+    const allowedOrigins = [
+    "https://myfrontend.com",
+    "https://admin.myfrontend.com"
+    ];
+
+    app.use(cors({
+    origin: allowedOrigins
+    }));
+    ```
+
+    ### Development me
+
+    ```javascript
+    app.use(cors());
+    ```
+
+    Ye all origins allow kar deta hai, lekin **production me blindly `cors()` use karna avoid** karna chahiye.
+
+    ---
+
+    ## English Interview Answer
+
+    CORS is a browser security mechanism that controls whether a frontend from one origin can access resources from a different origin. In Express, I usually handle CORS using the `cors` middleware and allow only trusted origins in production.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is an Origin?**
+
+    **Answer:**
+
+    Origin is the combination of:
+
+    ```text
+    Protocol + Host + Port
+    ```
+
+    For example:
+
+    ```text
+    http://localhost:3000
+    ```
+
+    and
+
+    ```text
+    http://localhost:5000
+    ```
+
+    have different origins because their **ports are different**.
+
+    ---
+
+    ### ⭐ Important Counter Question
+
+    **Q. Does CORS protect my API from Postman or backend-to-backend requests?**
+
+    **Answer:**
+
+    > **No. CORS is mainly enforced by browsers. It doesn't stop clients like Postman, cURL, or another backend from calling the API. Authentication and authorization are still required to secure the API.**
+
+    Ye **bahut important distinction** hai interview ke liye.
+
+
+
 273. Input sanitization?
 274. SQL/NoSQL injection prevent?
 275. HTTPS setup?
