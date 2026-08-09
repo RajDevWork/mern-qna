@@ -7169,6 +7169,90 @@ Browser automatically validation kar dega.
 
 
 274. SQL/NoSQL injection prevent?
+
+    ## Hinglish Explanation
+
+    **SQL Injection / NoSQL Injection** tab hota hai jab attacker user input ke through **database query ka behavior manipulate** karne ki koshish karta hai.
+
+    Example idea:
+
+    ```text
+    Normal input → raj@example.com
+    Malicious input → query ko manipulate karne wala input
+    ```
+
+    Prevent karne ke liye main 4 cheezein important maanta hoon:
+
+    1. **Parameterized queries / prepared statements** → SQL me user input ko query se separate rakho.
+    2. **ORM/ODM ka proper use** → Raw query ko unnecessarily concatenate mat karo.
+    3. **Input validation + sanitization** → Expected format/type enforce karo.
+    4. **Least-privilege DB user** → Application ko database me unnecessary permissions mat do.
+
+    ### SQL Example
+
+    ❌ Bad:
+
+    ```javascript
+    const query = `SELECT * FROM users WHERE email = '${email}'`;
+    ```
+
+    ✅ Better:
+
+    ```javascript
+    const result = await db.query(
+    "SELECT * FROM users WHERE email = $1",
+    [email]
+    );
+    ```
+
+    Yahan `email` query ka part nahi banta; wo parameter ke form me pass hota hai.
+
+    ### MongoDB / NoSQL
+
+    MongoDB me user-controlled objects ko directly query me merge karna risky ho sakta hai.
+
+    ❌ Avoid:
+
+    ```javascript
+    User.find(req.body);
+    ```
+
+    Better hai expected fields explicitly pick aur validate karna:
+
+    ```javascript
+    const { email } = req.body;
+
+    User.findOne({ email });
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    To prevent SQL and NoSQL injection, I never directly concatenate user input into database queries. For SQL, I use parameterized queries or prepared statements. For MongoDB, I validate the input and avoid passing uncontrolled objects directly into queries. I also use ORM/ODM features properly, apply input validation, and follow the principle of least privilege for database users.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Is input sanitization enough to prevent SQL injection?**
+
+    **Answer:**
+
+    > **No. Sanitization alone is not enough. For SQL, parameterized queries are the primary protection. Validation and sanitization are additional layers of security.**
+
+    ### ⭐ Interview Tip
+
+    Iska **core answer** bas yaad rakho:
+
+    ```text
+    SQL       → Parameterized Queries
+    NoSQL     → Validate input + Don't trust query objects
+    Both      → Least Privilege + Proper ORM/ODM usage
+    ```
+
+
+
 275. HTTPS setup?
 276. Reverse proxy?
 277. Nginx integration?
