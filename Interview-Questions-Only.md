@@ -7094,6 +7094,80 @@ Browser automatically validation kar dega.
 
 
 273. Input sanitization?
+
+
+    ## Hinglish Explanation
+
+    **Input sanitization** ka matlab hai user se aane wale input ko **clean/normalize karna** taaki malicious ya unwanted data application me problem create na kare.
+
+    Example:
+
+    User name ki jagah ye bhej de:
+
+    ```text
+    <script>alert("hack")</script>
+    ```
+
+    Ya MongoDB query me unexpected operators bhejne ki koshish kare.
+
+    Sanitization input ko safe format me convert/filter karne me help karta hai.
+
+    > **Important:** **Validation** check karti hai *"data valid hai ya nahi"*, jabki **sanitization** input ko *"safe/clean banane"* ki koshish karti hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Example using `express-validator`:
+
+    ```javascript
+    const { body } = require("express-validator");
+
+    app.post(
+    "/users",
+    body("name")
+        .trim()
+        .escape(),
+    (req, res) => {
+        console.log(req.body.name);
+
+        res.json({ message: "User created" });
+    }
+    );
+    ```
+
+    Agar input me unnecessary spaces ya HTML characters hain, middleware unhe clean/escape karne me help karega.
+
+    ---
+
+    ## English Interview Answer
+
+    Input sanitization is the process of cleaning or normalizing user-provided data before using it in the application. It helps reduce security risks caused by malicious or unexpected input. For example, we can trim whitespace, escape HTML characters, or remove unwanted input before processing it.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Validation vs Sanitization?**
+
+    **Answer:**
+
+    > **Validation checks whether the input is valid according to our rules, while sanitization cleans or transforms the input into a safer format.**
+
+    Example:
+
+    ```text
+    Email → Validation → Is it a valid email?
+    Name  → Sanitization → Trim spaces / escape HTML
+    ```
+
+    ### ⭐ Important Interview Point
+
+    Sanitization **alone security solution nahi hai**. Database queries ke liye proper parameterization/ORM usage, output encoding, authentication, authorization, etc. bhi important hain.
+
+
+
+
 274. SQL/NoSQL injection prevent?
 275. HTTPS setup?
 276. Reverse proxy?
