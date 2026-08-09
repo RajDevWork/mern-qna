@@ -6819,6 +6819,80 @@ Browser automatically validation kar dega.
 
 
 270. Real-time apps?
+
+    ## Hinglish Explanation
+
+    **Real-time app** wo application hoti hai jahan **data change hote hi client ko update mil jata hai**, bina page refresh ya baar-baar API request bheje.
+
+    Examples:
+
+    * Chat application
+    * Live notifications
+    * Live location tracking
+    * Live dashboard
+    * Multiplayer games
+
+    Typical Node.js architecture:
+
+    ```text
+    Client A
+    ↕
+    Socket.IO / WebSocket
+    ↕
+    Node.js Server
+    ↕
+    Client B
+    ```
+
+    Example: Chat me User A message send karta hai, server immediately User B ko message push kar deta hai.
+
+    > **Interview Point:** Real-time communication ke liye Node.js me commonly **WebSocket ya Socket.IO** use karte hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    **Server:**
+
+    ```javascript
+    io.on("connection", (socket) => {
+
+    socket.on("message", (message) => {
+        io.emit("message", message);
+    });
+
+    });
+    ```
+
+    Yahan ek user message bhejta hai aur server connected clients ko immediately message broadcast kar deta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    A real-time application is an application where clients receive updates immediately when data changes, without repeatedly polling the server. In Node.js, real-time communication is commonly implemented using WebSockets or Socket.IO. Examples include chat applications, live notifications, live dashboards, and location tracking.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How would you build a real-time chat application?**
+
+    **Answer:**
+
+    > **I would use Node.js with Socket.IO for real-time communication. When a user sends a message, the server receives the event and broadcasts it to the intended user or chat room. I would store messages in the database for persistence, and use Redis if multiple Node.js instances are running.**
+
+    ### ⭐ Important
+
+    Last point yaad rakhna:
+
+    **Single Node instance → Socket.IO enough**
+
+    **Multiple Node instances → Redis adapter/pub-sub useful**, because message ko different server instances ke connected clients tak bhi pahunchana hota hai.
+
+
+    
+
 271. Security best practices?
 272. CORS handle kaise?
 273. Input sanitization?
