@@ -6891,9 +6891,105 @@ Browser automatically validation kar dega.
     **Multiple Node instances → Redis adapter/pub-sub useful**, because message ko different server instances ke connected clients tak bhi pahunchana hota hai.
 
 
-    
+
 
 271. Security best practices?
+
+    ## Hinglish Explanation
+
+    Node.js/Express application me **security best practices** ka goal hai unauthorized access, data leaks aur common attacks ko prevent karna.
+
+    Interview me main ye important points cover karunga:
+
+    1. **Authentication & Authorization** → JWT/session properly verify karo.
+    2. **Input Validation** → User input ko validate aur sanitize karo.
+    3. **Password Hashing** → Password ko plain text me store mat karo; `bcrypt`/`argon2` use karo.
+    4. **HTTPS** → Production me encrypted communication.
+    5. **Helmet** → Security-related HTTP headers.
+    6. **Rate Limiting** → Brute-force aur API abuse prevent karna.
+    7. **CORS** → Sirf trusted origins ko allow karna.
+    8. **Secrets** → API keys, DB passwords `.env`/secret manager me rakho; code me hardcode mat karo.
+    9. **Dependency Security** → Packages updated rakho aur vulnerabilities check karo.
+    10. **Error Handling** → Production me internal errors/stack traces client ko expose mat karo.
+
+    > **Interview Point:** Security ek single middleware se solve nahi hoti. Multiple layers chahiye.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Basic Express security setup:
+
+    ```javascript
+    const express = require("express");
+    const helmet = require("helmet");
+    const rateLimit = require("express-rate-limit");
+    const cors = require("cors");
+
+    const app = express();
+
+    app.use(helmet());
+
+    app.use(cors({
+    origin: "https://myapp.com"
+    }));
+
+    app.use(express.json());
+
+    app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+    }));
+    ```
+
+    Password ke liye:
+
+    ```javascript
+    const hash = await bcrypt.hash(password, 12);
+    ```
+
+    **Plain password database me store nahi karna chahiye.**
+
+    ---
+
+    ## English Interview Answer
+
+    For securing a Node.js application, I follow multiple layers of security. I use authentication and authorization, validate user input, hash passwords using bcrypt or Argon2, use HTTPS, Helmet, CORS and rate limiting, keep secrets in environment variables or a secret manager, regularly check dependencies for vulnerabilities, and avoid exposing sensitive information in production errors.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How do you prevent common attacks in a Node.js application?**
+
+    **Answer:**
+
+    > **I validate and sanitize inputs to reduce injection risks, use Helmet for security headers, rate limiting for abuse and brute-force protection, proper authentication and authorization, secure cookies where applicable, HTTPS for data in transit, and never expose sensitive information or secrets in the application or error responses.**
+
+    ### ⭐ Interview Tip
+
+    Is question me **10 points ratne ki zarurat nahi hai**.
+
+    Bas ye **5 core points** yaad rakho:
+
+    ```text
+    Authentication
+        +
+    Input Validation
+        +
+    Password Hashing
+        +
+    HTTPS + Security Headers
+        +
+    Rate Limiting
+    ```
+
+    Agar interviewer deeper counter-question kare, tab individual topics explain karna.
+
+
+
+
+
 272. CORS handle kaise?
 273. Input sanitization?
 274. SQL/NoSQL injection prevent?
