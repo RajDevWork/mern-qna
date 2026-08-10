@@ -7589,6 +7589,105 @@ Browser automatically validation kar dega.
 
 
 278. Docker Node app?
+
+    ## Hinglish Explanation
+
+    **Dockerizing a Node.js app** ka matlab hai Node.js application ko **Docker container ke andar package karke run karna**.
+
+    Container me hum application ke saath uski required dependencies aur runtime environment define kar dete hain. Isse:
+
+    > **"Works on my machine"** wali problem reduce hoti hai.
+
+    Typical flow:
+
+    ```text
+    Dockerfile
+    ↓
+    Docker Image
+    ↓
+    Docker Container
+    ↓
+    Node.js App
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    ### `Dockerfile`
+
+    ```dockerfile
+    FROM node:20-alpine
+
+    WORKDIR /app
+
+    COPY package*.json ./
+
+    RUN npm ci
+
+    COPY . .
+
+    EXPOSE 3000
+
+    CMD ["node", "app.js"]
+    ```
+
+    Build:
+
+    ```bash
+    docker build -t my-node-app .
+    ```
+
+    Run:
+
+    ```bash
+    docker run -p 3000:3000 my-node-app
+    ```
+
+    Ab:
+
+    ```text
+    localhost:3000
+        ↓
+    Docker Container
+        ↓
+    Node.js App
+    ```
+
+    > **Interview Point:** `Dockerfile` image banane ke instructions define karta hai, aur **container us image ka running instance** hota hai.
+
+    ---
+
+    ## English Interview Answer
+
+    I use Docker to containerize a Node.js application along with its runtime and dependencies. I create a Dockerfile that defines the Node.js version, working directory, dependencies, exposed port, and startup command. Then I build a Docker image and run it as a container. This provides a consistent environment across development, testing, and production.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why use Docker for a Node.js application?**
+
+    **Answer:**
+
+    > Docker provides a consistent environment, isolates the application and its dependencies, makes deployment easier, and helps run multiple application instances consistently.
+
+    ---
+
+    ### ⭐ Important Counter Question
+
+    **Q. Docker Image vs Docker Container?**
+
+    **Answer:**
+
+    > **An image is a packaged blueprint containing the application and its dependencies. A container is a running instance of that image.**
+
+    ```text
+    Image → Container
+    ```
+
+
+
 279. Deployment strategies?
 280. Monitoring tools?
 281. High traffic handle kaise?
