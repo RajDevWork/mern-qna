@@ -7449,6 +7449,145 @@ Browser automatically validation kar dega.
 
 
 277. Nginx integration?
+
+
+    ## Hinglish Explanation
+
+    **Nginx integration** ka matlab hai Node.js application ke aage **Nginx ko reverse proxy** ke roop me configure karna.
+
+    Typical production setup:
+
+    ```text
+    Client
+    ↓ HTTPS :443
+    Nginx
+    ↓
+    Node.js :3000
+    ↓
+    Database
+    ```
+
+    Nginx client ki request receive karta hai aur Node.js application ko forward karta hai.
+
+    **Nginx ke common uses:**
+
+    * Reverse Proxy
+    * HTTPS / TLS termination
+    * Load Balancing
+    * Static file serving
+    * Request routing
+
+    ---
+
+    ## Small Coding Implementation
+
+    Maan lo Node.js app `3000` port par chal rahi hai.
+
+    Nginx configuration:
+
+    ```nginx
+    server {
+        listen 80;
+
+        server_name api.example.com;
+
+        location / {
+            proxy_pass http://localhost:3000;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    }
+    ```
+
+    Ab client:
+
+    ```text
+    http://api.example.com/users
+    ```
+
+    request karega.
+
+    Flow:
+
+    ```text
+    Client
+    ↓
+    Nginx :80
+    ↓
+    Node.js :3000
+    ↓
+    /users
+    ```
+
+    Node.js ko directly `api.example.com:3000` expose karne ki zarurat nahi hai.
+
+    ---
+
+    ## Multiple Node.js Instances
+
+    Agar application horizontally scale karni ho:
+
+    ```nginx
+    upstream node_backend {
+        server 127.0.0.1:3001;
+        server 127.0.0.1:3002;
+        server 127.0.0.1:3003;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://node_backend;
+        }
+    }
+    ```
+
+    Ab Nginx requests ko multiple Node.js instances me distribute karega.
+
+    ---
+
+    ## English Interview Answer
+
+    I use Nginx as a reverse proxy in front of the Node.js application. Nginx receives incoming requests and forwards them to the Node.js server. It can also handle HTTPS termination, load balancing, request routing, and static file serving. For scaling, I can configure multiple Node.js instances behind Nginx.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why not expose Node.js directly to the internet?**
+
+    **Answer:**
+
+    > **Nginx provides an additional layer in front of Node.js for HTTPS termination, load balancing, request handling, and hiding the internal application server details.**
+
+    ### ⭐ Interview Tip
+
+    Is question me **Nginx ko Node.js ka replacement mat bolna**.
+
+    Correct understanding:
+
+    ```text
+    Nginx = Reverse Proxy / Web Server
+    Node.js = Application Server
+    ```
+
+    Aur production architecture yaad rakho:
+
+    ```text
+    Client
+    ↓
+    Nginx
+    ↓
+    Node.js instances
+    ↓
+    Redis / Database
+    ```
+
+
+
 278. Docker Node app?
 279. Deployment strategies?
 280. Monitoring tools?
