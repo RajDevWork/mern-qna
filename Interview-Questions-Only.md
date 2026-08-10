@@ -7350,6 +7350,104 @@ Browser automatically validation kar dega.
 
 
 276. Reverse proxy?
+
+    ## Hinglish Explanation
+
+    **Reverse Proxy** ek server hota hai jo **client aur backend servers ke beech middle layer** ki tarah kaam karta hai.
+
+    Client directly Node.js server ko request bhejne ke bajay pehle reverse proxy ko request bhejta hai. Reverse proxy phir request ko appropriate backend server tak forward karta hai.
+
+    ```text
+    Client
+    ↓
+    Nginx (Reverse Proxy)
+    ↓
+    Node.js App
+    ```
+
+    Agar multiple Node.js instances hain:
+
+    ```text
+                    ┌→ Node App 1
+    Client → Nginx ──┼→ Node App 2
+                    └→ Node App 3
+    ```
+
+    ### Reverse Proxy ke common uses:
+
+    * **Load balancing**
+    * **HTTPS/TLS termination**
+    * **Request routing**
+    * **Caching**
+    * **Compression**
+    * Backend server ko directly expose na karna
+
+    > **Interview Point:** Nginx ek popular reverse proxy hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Nginx configuration:
+
+    ```nginx
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://localhost:3000;
+        }
+    }
+    ```
+
+    Ab:
+
+    ```text
+    Client
+    ↓
+    Nginx :80
+    ↓
+    Node.js :3000
+    ```
+
+    Client ko Node.js ka port `3000` directly expose karne ki zarurat nahi hai.
+
+    ---
+
+    ## English Interview Answer
+
+    A reverse proxy is a server that sits between clients and backend servers. It receives client requests and forwards them to the appropriate backend service. Nginx is commonly used as a reverse proxy for load balancing, HTTPS termination, request routing, caching, and protecting backend servers from direct exposure.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Reverse Proxy vs Forward Proxy?**
+
+    Simple difference:
+
+    * **Forward Proxy** → Client ki taraf se request forward karta hai.
+    * **Reverse Proxy** → Server/application ki taraf se incoming requests handle karta hai.
+
+    ```text
+    Forward Proxy:
+    Client → Proxy → Internet
+
+    Reverse Proxy:
+    Client → Proxy → Backend
+    ```
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"Why would you put Nginx in front of Node.js?"**
+
+    Bolna:
+
+    > **"I can use Nginx for HTTPS termination, load balancing multiple Node.js instances, request routing, and keeping the Node.js servers behind the proxy instead of exposing them directly."**
+
+
 277. Nginx integration?
 278. Docker Node app?
 279. Deployment strategies?
