@@ -7689,6 +7689,103 @@ Browser automatically validation kar dega.
 
 
 279. Deployment strategies?
+
+    ## Hinglish Explanation
+
+    **Deployment Strategy** ka matlab hai application ka **new version production me safely release karne ka approach**.
+
+    Main commonly ye strategies dekhta hoon:
+
+    ### 1. Rolling Deployment ⭐
+
+    Old instances ko gradually new version se replace karte hain.
+
+    ```text
+    v1  v1  v1
+    ↓   ↓   ↓
+    v2  v1  v1
+    ↓   ↓   ↓
+    v2  v2  v1
+    ↓
+    v2  v2  v2
+    ```
+
+    **Benefit:** Downtime generally nahi hota.
+
+    ---
+
+    ### 2. Blue-Green Deployment
+
+    Do environments maintain karte hain:
+
+    ```text
+    Blue  → Current Version
+    Green → New Version
+    ```
+
+    Pehle Green deploy aur test karte hain, phir traffic Green par switch kar dete hain.
+
+    **Benefit:** Rollback bahut fast hota hai.
+
+    ---
+
+    ### 3. Canary Deployment
+
+    New version ko pehle **small percentage of users** ke liye release karte hain.
+
+    ```text
+    95% → v1
+    5%  → v2
+    ```
+
+    Agar v2 stable hai, gradually traffic increase karte hain.
+
+    **Benefit:** Risk limited users tak rehta hai.
+
+    ---
+
+    ### Small Example
+
+    Kubernetes me rolling deployment ka basic idea:
+
+    ```yaml
+    strategy:
+    type: RollingUpdate
+    ```
+
+    Canary me load balancer/ingress ke through small percentage traffic new version ko route kiya ja sakta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Deployment strategies define how we release a new version of an application to production. Common strategies include **Rolling Deployment**, where instances are gradually replaced; **Blue-Green Deployment**, where traffic is switched from the old environment to the new one; and **Canary Deployment**, where the new version is initially released to a small percentage of users and then gradually increased.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which deployment strategy would you choose?**
+
+    **Answer:**
+
+    > **It depends on the application. For a normal Node.js API, I would commonly use rolling deployment. For high-risk changes, I prefer canary deployment because it allows us to test the new version with limited traffic before a full rollout.**
+
+    ### ⭐ Interview Tip
+
+    Ye 3 words strongly yaad rakho:
+
+    ```text
+    Rolling  → Gradually replace
+    Blue-Green → Switch environments
+    Canary   → Small traffic first
+    ```
+
+    Aur agar interviewer **rollback** puchhe:
+
+    > **Blue-Green me rollback particularly simple hota hai because we can switch traffic back to the previous environment.**
+
+
 280. Monitoring tools?
 281. High traffic handle kaise?
 282. Memory leak detect?
