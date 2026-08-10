@@ -7256,6 +7256,99 @@ Browser automatically validation kar dega.
 
 
 275. HTTPS setup?
+
+    ## Hinglish Explanation
+
+    **HTTPS** HTTP ka secure version hai. Isme client aur server ke beech data **TLS encryption** ke through securely transfer hota hai.
+
+    Simple:
+
+    ```text
+    HTTP
+    Client ───────────────→ Server
+        Plain/unencrypted
+
+    HTTPS
+    Client ═══ TLS ═══════→ Server
+        Encrypted
+    ```
+
+    HTTPS mainly:
+
+    * Data ko encrypt karta hai.
+    * Man-in-the-middle attacks ka risk reduce karta hai.
+    * Server ki identity certificate ke through verify karta hai.
+
+    Production me generally **SSL/TLS certificate** (jaise Let's Encrypt) use karke HTTPS setup kiya jata hai.
+
+    > **Interview Point:** Technically aaj **TLS** use hota hai; commonly hum ise SSL certificate/HTTPS setup bolte hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Node.js me directly HTTPS server bhi bana sakte ho:
+
+    ```javascript
+    const https = require("https");
+    const fs = require("fs");
+    const app = require("express")();
+
+    const options = {
+    key: fs.readFileSync("private.key"),
+    cert: fs.readFileSync("certificate.crt")
+    };
+
+    app.get("/", (req, res) => {
+    res.send("Secure API");
+    });
+
+    https.createServer(options, app).listen(443);
+    ```
+
+    Lekin production me commonly:
+
+    ```text
+    Client
+    ↓ HTTPS
+    Nginx / Load Balancer
+    ↓ HTTP/HTTPS
+    Node.js App
+    ```
+
+    TLS termination **Nginx ya cloud load balancer** par kar dete hain.
+
+    ---
+
+    ## English Interview Answer
+
+    HTTPS secures communication between the client and server using TLS encryption. In production, I typically configure an SSL/TLS certificate on a reverse proxy such as Nginx or a cloud load balancer, and forward the request to the Node.js application. This protects sensitive data such as passwords, tokens, and personal information while in transit.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How do you redirect HTTP to HTTPS?**
+
+    **Answer:**
+
+    > **I configure the reverse proxy, such as Nginx, to listen on port 80 and redirect HTTP requests to HTTPS on port 443.**
+
+    ---
+
+    ### ⭐ Important Counter Question
+
+    **Q. Does HTTPS encrypt data stored in the database?**
+
+    **Answer:**
+
+    > **No. HTTPS encrypts data while it is being transmitted between client and server. Data at rest requires separate database/storage encryption.**
+
+    Ye distinction interview me important hai.
+
+
+
+
 276. Reverse proxy?
 277. Nginx integration?
 278. Docker Node app?
