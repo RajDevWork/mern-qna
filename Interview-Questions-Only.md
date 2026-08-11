@@ -8137,6 +8137,98 @@ Browser automatically validation kar dega.
 
 
 284. DB bottleneck?
+
+    ## Hinglish Explanation
+
+    **DB bottleneck** ka matlab hai application ki performance ko **database slow kar raha hai**.
+
+    Example:
+
+    ```text
+    Client
+    ↓
+    Node.js API
+    ↓
+    Database  ← Slow
+    ↓
+    Response
+    ```
+
+    Agar API 5 seconds le rahi hai aur database query hi 4 seconds le rahi hai, to **DB bottleneck** hai.
+
+    ### DB bottleneck ke common reasons
+
+    * Missing/incorrect **indexes**
+    * Slow/complex queries
+    * Large dataset scan
+    * N+1 queries
+    * Too many DB connections
+    * Poor schema/query design
+    * Locking/contention
+    * Database CPU/memory overload
+
+    ---
+
+    ## Small Coding Implementation
+
+    MongoDB me query ka execution plan check kar sakte hain:
+
+    ```javascript id="2w5n0m"
+    const result = await User.find({
+    email: "raj@example.com"
+    }).explain("executionStats");
+    ```
+
+    Agar query **collection scan** kar rahi hai, to appropriate index consider kar sakte hain:
+
+    ```javascript id="7b4n0q"
+    db.users.createIndex({ email: 1 });
+    ```
+
+    Phir query ka execution plan dobara check karenge.
+
+    ---
+
+    ## English Interview Answer
+
+    A database bottleneck occurs when database operations become the main reason for an application's poor performance. I would identify it by checking query execution time, database CPU and memory, connection usage, and execution plans. Then I would optimize queries, add appropriate indexes, fix N+1 queries, use connection pooling, and introduce caching where appropriate.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How do you identify a slow database query?**
+
+    **Answer:**
+
+    > **I measure the query execution time and use the database's execution plan, such as MongoDB `explain()` or PostgreSQL `EXPLAIN ANALYZE`, to understand how the query is being executed and whether indexes are being used efficiently.**
+
+    Example:
+
+    ```text id="5b1x0a"
+    Slow Query
+        ↓
+    Execution Plan
+        ↓
+    Index Used?
+        ↓
+    Documents/Rows Scanned?
+        ↓
+    Optimize Query / Index
+    ```
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer bole **"API slow hai, DB bottleneck hai—what will you do?"**, answer ka flow:
+
+    > **Measure → Explain Plan → Check Index → Optimize Query → Check N+1 → Cache if appropriate → Monitor again**
+
+    Ye approach **guess-based nahi, data-based debugging** dikhati hai.
+
+
+
+
+
 285. Logging strategy?
 286. Retry mechanism?
 287. Circuit breaker?
