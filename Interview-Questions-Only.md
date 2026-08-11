@@ -7787,6 +7787,76 @@ Browser automatically validation kar dega.
 
 
 280. Monitoring tools?
+
+    ## Hinglish Explanation
+
+    **Monitoring tools** ka use production application ki **health, performance aur errors track karne** ke liye hota hai.
+
+    Node.js application me hum generally monitor karte hain:
+
+    * CPU & Memory usage
+    * API response time
+    * Error rate
+    * Request throughput
+    * Database performance
+    * Server uptime
+
+    Common tools:
+
+    * **PM2** → Process monitoring, CPU/memory, restart
+    * **Prometheus + Grafana** → Metrics aur dashboards
+    * **Sentry** → Error tracking
+    * **New Relic / Datadog** → Application Performance Monitoring (APM)
+
+    > **Interview Point:** Logging batata hai **"kya hua?"**, monitoring/metrics batate hain **"system ki health kaisi hai?"**
+
+    ---
+
+    ## Small Coding Implementation
+
+    PM2 ke saath Node.js app:
+
+    ```bash
+    pm2 start app.js
+    pm2 monit
+    ```
+
+    `pm2 monit` se CPU, memory aur process status dekh sakte ho.
+
+    Sentry jaisa error monitoring tool application me unexpected errors capture kar sakta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Monitoring tools help us track the health and performance of a production application. For a Node.js application, I monitor metrics such as CPU and memory usage, API response time, request rate, error rate, and database performance. Common tools include PM2, Prometheus with Grafana, Sentry, Datadog, and New Relic.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Logging vs Monitoring?**
+
+    **Answer:**
+
+    > **Logging records application events and errors, while monitoring continuously tracks system health and performance metrics.**
+
+    Example:
+
+    ```text
+    Logging    → "API /users returned 500"
+    Monitoring → "Error rate increased from 1% to 10%"
+    ```
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche **"Production me issue kaise detect karoge?"**, simple answer:
+
+    > **I would check application logs and monitoring dashboards for error rate, response time, CPU and memory usage. Then I would identify whether the issue is coming from the application, database, or infrastructure.**
+
+
+
+
 281. High traffic handle kaise?
 282. Memory leak detect?
 283. API slow ho toh?
