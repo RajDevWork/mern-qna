@@ -8034,6 +8034,108 @@ Browser automatically validation kar dega.
 
 
 283. API slow ho toh?
+
+
+    ## Hinglish Explanation
+
+    Agar **API slow ho**, to main directly code optimize nahi karunga. Pehle **bottleneck identify** karunga.
+
+    Typical flow:
+
+    ```text id="j6l9zv"
+    Slow API
+    ↓
+    Check Monitoring / Logs
+    ↓
+    Measure Response Time
+    ↓
+    Identify Bottleneck
+    ├── DB?
+    ├── External API?
+    ├── Node.js code?
+    └── Network?
+            ↓
+    Optimize
+    ```
+
+    ### Main cheezein check karunga:
+
+    1. **Database query** → Slow query? Missing index?
+    2. **External API** → Third-party API slow hai?
+    3. **Node.js code** → CPU-intensive/blocking operation to nahi?
+    4. **Payload** → Bahut bada response to nahi?
+    5. **N+1 queries** → Loop ke andar baar-baar DB query to nahi?
+    6. **Caching** → Frequently requested data Redis se serve ho sakta hai?
+    7. **Logs/Monitoring** → Exact bottleneck kaha hai?
+
+    ---
+
+    ## Small Coding Example
+
+    Maan lo API me database query slow hai:
+
+    ```javascript id="4axjz9"
+    console.time("getUsers");
+
+    const users = await User.find({
+    status: "active"
+    });
+
+    console.timeEnd("getUsers");
+    ```
+
+    Agar query consistently slow hai, database side par **`EXPLAIN` / execution plan**, indexes aur query structure check karunga.
+
+    Agar same data repeatedly request ho raha hai:
+
+    ```javascript id="3k5g5s"
+    const cached = await redis.get("active-users");
+
+    if (cached) {
+    return res.json(JSON.parse(cached));
+    }
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    If an API is slow, I first identify the bottleneck instead of immediately changing the code. I check monitoring and logs to measure where the time is being spent. Then I investigate database queries, external API calls, Node.js processing, payload size, and network latency. Depending on the bottleneck, I may optimize queries and indexes, add caching, reduce the response size, or move heavy operations to background jobs.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Suppose your API takes 5 seconds. How will you find where those 5 seconds are spent?**
+
+    **Answer:**
+
+    > **I would add or check request-level and operation-level timing. For example, I would measure database query time, external API time, and application processing time separately. This helps me identify whether the bottleneck is in the database, external service, or Node.js code.**
+
+    Example:
+
+    ```text id="v6qf5u"
+    Total API = 5 sec
+
+    DB Query       → 3.5 sec  ← Bottleneck
+    External API   → 0.8 sec
+    Node Processing→ 0.7 sec
+    ```
+
+    Then **DB query optimize** karunga instead of randomly changing Node.js code.
+
+    ---
+
+    ### ⭐ Interview Tip
+
+    Ye line yaad rakho:
+
+    > **"First identify the bottleneck, then optimize."**
+
+    5–8 YOE interview me ye approach **sirf "Redis laga denge"** bolne se kaafi better hai.
+
+
+
 284. DB bottleneck?
 285. Logging strategy?
 286. Retry mechanism?
