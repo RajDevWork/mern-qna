@@ -7858,6 +7858,102 @@ Browser automatically validation kar dega.
 
 
 281. High traffic handle kaise?
+
+    ## Hinglish Explanation
+
+    Agar Node.js application par **high traffic** aa raha hai, to main ek single solution nahi lagaunga. Pehle bottleneck identify karunga, phir different layers par scale/optimize karunga.
+
+    Typical approach:
+
+    ```text id="9s3j7k"
+                High Traffic
+                    ↓
+                Load Balancer
+            /      |      \
+        Node-1  Node-2  Node-3
+            ↓      ↓      ↓
+                Redis Cache
+                    ↓
+                Database
+    ```
+
+    ### Main steps:
+
+    1. **Horizontal Scaling** → Multiple Node.js instances.
+    2. **Load Balancer** → Traffic distribute karna.
+    3. **Redis Cache** → Frequently accessed data cache karna.
+    4. **Database Optimization** → Indexes, slow queries, connection pooling.
+    5. **Queue/Background Jobs** → Heavy tasks request cycle se bahar karna.
+    6. **CDN** → Static assets ko users ke closer serve karna.
+    7. **Monitoring** → CPU, memory, latency, error rate monitor karna.
+
+    > **Interview Point:** High traffic handle karne se pehle **bottleneck identify** karna important hai. Blindly servers increase karna correct approach nahi hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Node.js ko multiple instances me run kar sakte hain:
+
+    ```bash
+    pm2 start app.js -i max
+    ```
+
+    Aur Nginx un instances ke beech traffic distribute kar sakta hai:
+
+    ```nginx
+    upstream backend {
+        server 127.0.0.1:3001;
+        server 127.0.0.1:3002;
+        server 127.0.0.1:3003;
+    }
+
+    location / {
+        proxy_pass http://backend;
+    }
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    For handling high traffic in a Node.js application, I first identify the bottleneck using monitoring and logs. Then I can horizontally scale the application by running multiple instances behind a load balancer. I would use Redis for caching frequently accessed data, optimize database queries and indexes, move heavy tasks to background queues, and use a CDN for static content. I would continuously monitor latency, error rates, CPU, memory, and database performance.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Your traffic suddenly becomes 10x. What will you do first?**
+
+    **Answer:**
+
+    > **First, I would check monitoring metrics to identify the bottleneck. I would then scale the application horizontally if the application layer is the bottleneck, use caching to reduce database load, and optimize or scale the database if necessary.**
+
+    ### ⭐ Interview Tip
+
+    Is question ka **framework** yaad rakho:
+
+    ```text
+    1. Identify bottleneck
+            ↓
+    2. Scale application
+            ↓
+    3. Cache
+            ↓
+    4. Optimize database
+            ↓
+    5. Move heavy work to queues
+            ↓
+    6. Monitor
+    ```
+
+    **Ye ratta maarne se better hai** — interviewer kisi bhi high-traffic scenario me counter-question kare, isi flow se answer build kar sakte ho.
+
+    ### 🎯 Expected Interview Duration: **60–90 seconds**
+
+
+
+
 282. Memory leak detect?
 283. API slow ho toh?
 284. DB bottleneck?
