@@ -8230,6 +8230,97 @@ Browser automatically validation kar dega.
 
 
 285. Logging strategy?
+
+    ## Hinglish Explanation
+
+    **Logging strategy** ka matlab hai application me **important events, errors aur useful information ko structured way me record karna**, taaki production issues ko easily debug aur monitor kar sakein.
+
+    Node.js application me main generally:
+
+    1. **Log levels** use karunga:
+
+    * `error` → failures/exceptions
+    * `warn` → potentially problematic situations
+    * `info` → important application events
+    * `debug` → development/debugging details
+
+    2. **Structured logs** use karunga, preferably JSON format.
+
+    3. Har request ke saath **request ID / correlation ID** rakhunga, taaki ek request ko logs me trace kar sakein.
+
+    4. Production logs ko centralized logging system me bhejunga.
+
+    5. **Passwords, JWTs, API keys, sensitive personal data** logs me nahi rakhunga.
+
+    > **Interview Point:** Good logging ka goal sirf logs banana nahi, balki **production issue ko quickly trace aur debug karna** hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    `pino` jaise logger ka simple example:
+
+    ```javascript
+    const logger = require("pino")();
+
+    logger.info("User registered");
+
+    logger.warn("Database response is slow");
+
+    logger.error(error, "Payment failed");
+    ```
+
+    Structured log kuch aisa ho sakta hai:
+
+    ```json
+    {
+    "level": "error",
+    "requestId": "abc123",
+    "message": "Payment failed",
+    "userId": 101
+    }
+    ```
+
+    Ab production me search/filter karna easy hota hai.
+
+    ---
+
+    ## English Interview Answer
+
+    A logging strategy defines what we log, at which level, and how we store and monitor those logs. In Node.js applications, I prefer structured logging with levels such as error, warn, info, and debug. I also use request or correlation IDs to trace requests across services. Sensitive information like passwords, tokens, and API keys should never be logged. In production, logs should be centralized so they can be searched and monitored easily.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What should you NOT log?**
+
+    **Answer:**
+
+    > **I would never log passwords, authentication tokens, API keys, database credentials, or sensitive personal information.**
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer bole **"Production me ek request ko trace kaise karoge?"**, bolo:
+
+    > **I would assign a unique request ID to each incoming request and include that ID in all related logs. This allows me to trace the complete request flow across different services.**
+
+    ```text
+    Request
+    ↓ requestId: abc123
+    API
+    ↓
+    Database
+    ↓
+    External Service
+    ↓
+    Response
+
+    All logs → abc123
+    ```
+
+
+
 286. Retry mechanism?
 287. Circuit breaker?
 288. Graceful shutdown?
