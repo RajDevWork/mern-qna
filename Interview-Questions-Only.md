@@ -7949,12 +7949,90 @@ Browser automatically validation kar dega.
 
     **Ye ratta maarne se better hai** — interviewer kisi bhi high-traffic scenario me counter-question kare, isi flow se answer build kar sakte ho.
 
-    ### 🎯 Expected Interview Duration: **60–90 seconds**
-
 
 
 
 282. Memory leak detect?
+
+    ## Hinglish Explanation
+
+    **Memory leak** tab hota hai jab application aise objects/data ko memory me hold karke rakhti hai jo ab required nahi hain. Garbage Collector unhe clean nahi kar pata, aur application ka **memory usage continuously increase** hone lagta hai.
+
+    Node.js me memory leak detect karne ka basic approach:
+
+    ```text
+    Memory usage increase
+            ↓
+    Check monitoring
+            ↓
+    Heap Snapshot
+            ↓
+    Compare snapshots
+            ↓
+    Find retained objects
+            ↓
+    Fix reference
+    ```
+
+    ### Common causes
+
+    * Global variables me unnecessary data rakhna
+    * Event listeners remove na karna
+    * Large objects/cache ko indefinitely hold karna
+    * Timers/intervals properly clear na karna
+    * Unbounded arrays/maps
+
+    ---
+
+    ## Small Coding Implementation
+
+    Basic memory monitoring:
+
+    ```javascript id="c4a5xj"
+    setInterval(() => {
+    const memory = process.memoryUsage();
+
+    console.log({
+        heapUsed: memory.heapUsed,
+        heapTotal: memory.heapTotal,
+        rss: memory.rss
+    });
+    }, 5000);
+    ```
+
+    Agar `heapUsed` continuously increase ho raha hai aur GC ke baad bhi memory release nahi ho rahi, to leak investigate karna chahiye.
+
+    Production/debugging me **Chrome DevTools Heap Snapshot** ya Node.js profiling tools use kar sakte hain.
+
+    ---
+
+    ## English Interview Answer
+
+    A memory leak occurs when an application keeps references to objects that are no longer needed, preventing the garbage collector from releasing that memory. In Node.js, I would monitor memory usage and use heap snapshots to compare memory over time and identify objects that are being retained unexpectedly. Common causes include global references, uncleared timers, event listeners, and unbounded caches.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How would you investigate a memory leak in production?**
+
+    **Answer:**
+
+    > **First, I would monitor the application's heap and RSS memory over time. If memory keeps increasing, I would take and compare heap snapshots to identify retained objects. Then I would check common sources such as event listeners, timers, global variables, and caches.**
+
+    ### ⭐ Interview Tip
+
+    Ek important distinction:
+
+    ```text
+    heapUsed → JavaScript heap memory
+    rss      → Total memory occupied by Node.js process
+    ```
+
+    Aur interview me **"memory badh rahi hai = definitely memory leak"** mat bolna. High memory usage normal bhi ho sakti hai; **continuous growth without recovery** leak ka stronger signal hai.
+
+
+
 283. API slow ho toh?
 284. DB bottleneck?
 285. Logging strategy?
