@@ -8409,6 +8409,114 @@ Browser automatically validation kar dega.
 
 
 287. Circuit breaker?
+
+    ## Hinglish Explanation
+
+    **Circuit Breaker** ek pattern hai jo **repeatedly failing external service ko baar-baar call karne se temporarily rokta hai**.
+
+    Example:
+
+    Tumhari Node.js API ek payment service ko call karti hai. Payment service down hai.
+
+    Agar har request us service ko call karti rahegi:
+
+    ```text
+    API → Payment ❌
+    API → Payment ❌
+    API → Payment ❌
+    API → Payment ❌
+    ```
+
+    To tumhari application bhi slow ho sakti hai.
+
+    Circuit breaker kuch failures ke baad circuit **OPEN** kar deta hai:
+
+    ```text
+    API → Circuit Breaker → Payment ❌
+                        ↓
+                        OPEN
+                        ↓
+                    Request blocked
+    ```
+
+    ### Circuit ke 3 states
+
+    **1. CLOSED**
+    Normal requests ja rahi hain.
+
+    **2. OPEN**
+    Service repeatedly fail hui → requests temporarily block.
+
+    **3. HALF-OPEN**
+    Kuch time baad ek test request bhejte hain.
+
+    ```text
+    CLOSED → failures → OPEN
+    OPEN → wait → HALF-OPEN
+    HALF-OPEN → success → CLOSED
+    HALF-OPEN → failure → OPEN
+    ```
+
+    > **Interview Point:** Retry failed request ko **dobara try** karta hai, while Circuit Breaker repeatedly failing service ko **temporarily call karna stop** karta hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Conceptually:
+
+    ```javascript id="7q8y5m"
+    if (circuitOpen) {
+    throw new Error("Service temporarily unavailable");
+    }
+
+    try {
+    const result = await paymentService();
+    failureCount = 0;
+
+    return result;
+    } catch (error) {
+    failureCount++;
+
+    if (failureCount >= 5) {
+        circuitOpen = true;
+    }
+
+    throw error;
+    }
+    ```
+
+    Production me circuit breaker ke liye dedicated libraries bhi use ki ja sakti hain.
+
+    ---
+
+    ## English Interview Answer
+
+    A circuit breaker is a resilience pattern used to prevent repeated calls to a failing service. When failures cross a certain threshold, the circuit opens and temporarily blocks further requests. After a cooldown period, it enters a half-open state and allows a test request. If the service recovers, the circuit closes again. This prevents cascading failures and protects the application from a failing dependency.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Retry vs Circuit Breaker?**
+
+    | Retry                             | Circuit Breaker                                |
+    | --------------------------------- | ---------------------------------------------- |
+    | Failed request ko retry karta hai | Failing service ko temporarily block karta hai |
+    | Transient failures ke liye        | Repeated failures ke liye                      |
+    | Limited attempts                  | Cooldown ke baad recovery check                |
+
+    ### ⭐ Interview Tip
+
+    Ek line yaad rakho:
+
+    > **"Retry says try again; Circuit Breaker says stop trying for now."**
+
+    Ye counter-question me kaafi useful hai.
+
+
+
+
 288. Graceful shutdown?
 289. Zero downtime deploy?
 290. Load testing kaise karte ho?
