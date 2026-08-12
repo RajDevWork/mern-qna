@@ -8518,6 +8518,88 @@ Browser automatically validation kar dega.
 
 
 288. Graceful shutdown?
+
+    ## Hinglish Explanation
+
+    **Graceful shutdown** ka matlab hai application ko **suddenly terminate karne ke bajay safely shutdown karna**.
+
+    Suppose Node.js server ko stop/restart karna hai aur us time kuch requests process ho rahi hain.
+
+    Agar forcefully kill kar diya:
+
+    ```text
+    Request → Processing ❌
+    Server → Kill
+    ```
+
+    User ko incomplete response mil sakta hai.
+
+    Graceful shutdown me:
+
+    ```text
+    Shutdown Signal
+        ↓
+    Stop accepting new requests
+        ↓
+    Existing requests complete
+        ↓
+    Close DB / Redis connections
+        ↓
+    Shutdown server
+    ```
+
+    > **Interview Point:** Graceful shutdown ka purpose **in-flight requests aur resources ko safely handle karke application ko cleanly stop karna** hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Node.js me `SIGTERM` handle kar sakte hain:
+
+    ```javascript id="3c0w6s"
+    const server = app.listen(3000);
+
+    process.on("SIGTERM", async () => {
+    console.log("Shutdown started");
+
+    server.close(async () => {
+        await mongoose.connection.close();
+
+        console.log("Server stopped");
+        process.exit(0);
+    });
+    });
+    ```
+
+    `server.close()` new connections accept karna stop karta hai aur existing connections ko complete hone ka chance deta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Graceful shutdown means safely stopping an application instead of terminating it immediately. When the application receives a shutdown signal such as `SIGTERM`, I stop accepting new requests, allow ongoing requests to complete, close database and other resource connections, and then terminate the process.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why is graceful shutdown important in a production Node.js application?**
+
+    **Answer:**
+
+    > **It prevents requests from being abruptly terminated and ensures resources like database connections are properly closed. It is especially important during deployments, container restarts, and scaling operations.**
+
+    ### ⭐ Important Counter
+
+    **Q. When do you commonly receive `SIGTERM`?**
+
+    **Answer:**
+
+    > **It is commonly sent when a process is being asked to terminate gracefully, for example during Docker or Kubernetes deployments and container shutdowns.**
+
+
+
+
 289. Zero downtime deploy?
 290. Load testing kaise karte ho?
 291. Clustering vs Worker Threads?
