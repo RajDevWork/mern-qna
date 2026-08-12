@@ -8322,6 +8322,92 @@ Browser automatically validation kar dega.
 
 
 286. Retry mechanism?
+
+    ## Hinglish Explanation
+
+    **Retry mechanism** ka matlab hai agar koi operation **temporary failure** ki wajah se fail ho jaye, to application us operation ko **automatically dobara attempt** kare.
+
+    Example:
+
+    ```text
+    API Call
+    ↓
+    Failed
+    ↓
+    Wait
+    ↓
+    Retry
+    ↓
+    Success
+    ```
+
+    Common cases:
+
+    * External API temporarily unavailable
+    * Network timeout
+    * Database connection temporarily fail
+    * Background job fail
+
+    > **Important:** Har error par retry nahi karna chahiye. Sirf **temporary/transient errors** par retry useful hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Simple retry with **exponential backoff**:
+
+    ```javascript
+    async function retry(fn, retries = 3) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+        return await fn();
+        } catch (error) {
+        if (attempt === retries) {
+            throw error;
+        }
+
+        const delay = 1000 * 2 ** (attempt - 1);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+    }
+    ```
+
+    Delay:
+
+    ```text
+    1st retry → 1 sec
+    2nd retry → 2 sec
+    3rd retry → 4 sec
+    ```
+
+    Isse continuously immediately request bhejne ke bajay system gradually wait karta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    A retry mechanism automatically retries a failed operation when the failure is likely to be temporary. I usually use a limited number of retries with exponential backoff to avoid putting additional load on the failing service. I don't retry permanent errors such as validation or authentication failures.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. When should you NOT retry?**
+
+    **Answer:**
+
+    > **I would not retry permanent failures such as invalid input, authentication errors, or authorization failures. I mainly retry transient failures such as network timeouts or temporary service unavailability.**
+
+    ### ⭐ Important Counter
+
+    **Q. What is exponential backoff?**
+
+    > **Instead of retrying immediately, we progressively increase the delay between retries, for example 1 second, 2 seconds, 4 seconds. This reduces pressure on the failing service.**
+
+
+
+
 287. Circuit breaker?
 288. Graceful shutdown?
 289. Zero downtime deploy?
