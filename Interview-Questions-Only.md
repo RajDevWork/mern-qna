@@ -8691,6 +8691,92 @@ Browser automatically validation kar dega.
 
 
 290. Load testing kaise karte ho?
+
+    ## Hinglish Explanation
+
+    **Load testing** ka matlab hai application ko **expected ya high traffic ke under test karna**, taaki pata chale ki system kitna load handle kar sakta hai aur bottleneck kaha aa raha hai.
+
+    Example:
+
+    ```text
+    Normal Traffic → 100 requests/sec
+    Expected Peak → 500 requests/sec
+
+    Load Test → 500 requests/sec
+                ↓
+        Check Performance
+    ```
+
+    Main generally ye metrics dekhta hoon:
+
+    * **Response time / latency**
+    * **Requests per second (RPS)**
+    * **Error rate**
+    * **CPU / Memory**
+    * **Database performance**
+
+    Common tools:
+
+    * **k6**
+    * **JMeter**
+    * **Artillery**
+
+    ---
+
+    ## Small Coding Implementation
+
+    `k6` ka simple example:
+
+    ```javascript
+    import http from "k6/http";
+
+    export const options = {
+    vus: 50,
+    duration: "30s"
+    };
+
+    export default function () {
+    http.get("http://localhost:3000/api/users");
+    }
+    ```
+
+    Run:
+
+    ```bash
+    k6 run load-test.js
+    ```
+
+    Yahan 50 virtual users 30 seconds tak API ko hit karenge.
+
+    ---
+
+    ## English Interview Answer
+
+    For load testing, I use tools like k6 or JMeter to simulate multiple concurrent users and requests against the application. I monitor response time, throughput, error rate, CPU, memory, and database performance. Based on the results, I identify bottlenecks and optimize or scale the application.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What is the difference between Load Testing and Stress Testing?**
+
+    **Answer:**
+
+    > **Load testing checks whether the system can handle the expected traffic, while stress testing pushes the system beyond its expected capacity to find its breaking point.**
+
+    ```text
+    Load Test   → Expected traffic
+    Stress Test → Beyond expected traffic
+    ```
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche **"API ki capacity kaise determine karoge?"**, sirf "500 requests/sec" mat bolna.
+
+    Bolo:
+
+    > **I would gradually increase the load and monitor latency, error rate, CPU, memory, and database performance. The point where the system starts violating our performance targets helps determine its practical capacity.**
+
 291. Clustering vs Worker Threads?
 292. PM2 kya hai?
 293. Error monitoring tools?
