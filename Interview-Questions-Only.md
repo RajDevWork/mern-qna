@@ -8601,6 +8601,95 @@ Browser automatically validation kar dega.
 
 
 289. Zero downtime deploy?
+
+    ## Hinglish Explanation
+
+    **Zero-downtime deployment** ka matlab hai new version deploy karte time **users ki service available rehni chahiye**.
+
+    Agar ek hi Node.js server hai:
+
+    ```text
+    v1 → Stop → Deploy v2 → Start
+    ```
+
+    to beech me downtime aa sakta hai.
+
+    Production me multiple instances rakh sakte hain:
+
+    ```text
+                Load Balancer
+                /     |     \
+            v1      v1      v1
+            ↓
+            Deploy
+            ↓
+            v2      v1      v1
+            ↓
+            v2      v2      v1
+            ↓
+            v2      v2      v2
+    ```
+
+    Load balancer traffic ko **healthy instances** par bhejta rahega while instances gradually update hote hain.
+
+    > **Interview Point:** Zero-downtime deployment ka main idea hai **old instances ko tab tak traffic dena jab tak new instances healthy na ho jayein.**
+
+    ---
+
+    ## Small Coding Implementation
+
+    PM2 ke saath cluster mode:
+
+    ```bash
+    pm2 start app.js -i max
+    ```
+
+    Deployment ke time:
+
+    ```bash
+    pm2 reload app
+    ```
+
+    `reload` ka purpose hai instances ko gradually reload karna instead of stopping the whole application at once.
+
+    ---
+
+    ## English Interview Answer
+
+    Zero-downtime deployment means releasing a new application version without making the service unavailable to users. I achieve this by running multiple application instances behind a load balancer and gradually replacing or restarting the old instances. I also use health checks and graceful shutdown so traffic is only sent to healthy instances.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. How would you achieve zero downtime with Docker/Kubernetes?**
+
+    **Answer:**
+
+    > **I would run multiple replicas of the Node.js application behind a load balancer or Kubernetes Service and use a rolling deployment. New containers are started and verified as healthy before old containers are terminated.**
+
+    ### ⭐ Important Connection
+
+    Tumhare previous topics ko connect karo:
+
+    ```text
+    Zero Downtime
+        ↓
+    Multiple Instances
+        ↓
+    Load Balancer
+        ↓
+    Rolling Deployment
+        ↓
+    Health Checks
+        ↓
+    Graceful Shutdown
+    ```
+
+    Ye **high traffic + deployment** questions ka common production architecture hai.
+
+
+
 290. Load testing kaise karte ho?
 291. Clustering vs Worker Threads?
 292. PM2 kya hai?
