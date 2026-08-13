@@ -9057,6 +9057,118 @@ Browser automatically validation kar dega.
 
 
 294. Health checks?
+
+    ## Hinglish Explanation
+
+    **Health Check** ek endpoint hota hai jisse pata chalta hai ki application **healthy hai ya nahi**.
+
+    Typical endpoint:
+
+    ```http
+    GET /health
+    ```
+
+    Agar application properly chal rahi hai:
+
+    ```json
+    {
+    "status": "ok"
+    }
+    ```
+
+    Production me health checks **load balancer, Kubernetes, Docker, monitoring systems** use kar sakte hain.
+
+    ### Do common types:
+
+    **1. Liveness Check**
+
+    > "Process/application alive hai?"
+
+    ```text
+    GET /health/live
+    ```
+
+    **2. Readiness Check**
+
+    > "Application traffic receive karne ke liye ready hai?"
+
+    ```text
+    GET /health/ready
+    ```
+
+    Readiness me database/Redis jaise critical dependencies bhi check ki ja sakti hain.
+
+    ---
+
+    ## Small Coding Implementation
+
+    ```javascript id="h6f8z2"
+    app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok"
+    });
+    });
+    ```
+
+    Thoda production-oriented:
+
+    ```javascript id="6g5f9x"
+    app.get("/health/ready", async (req, res) => {
+    try {
+        await mongoose.connection.db.admin().ping();
+
+        res.status(200).json({
+        status: "ready"
+        });
+    } catch (error) {
+        res.status(503).json({
+        status: "not ready"
+        });
+    }
+    });
+    ```
+
+    `503` ka meaning hai service currently ready nahi hai.
+
+    ---
+
+    ## English Interview Answer
+
+    A health check is an endpoint used to determine whether an application is running and ready to receive traffic. I commonly use separate liveness and readiness checks. Liveness checks whether the application process is alive, while readiness verifies whether the application and its required dependencies are ready to handle requests. Load balancers and orchestration systems can use these checks to route traffic only to healthy instances.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why not check the database in every health check?**
+
+    **Answer:**
+
+    > **For a simple liveness check, I don't need to check the database because the purpose is only to know whether the application process is alive. For readiness checks, I can check critical dependencies like the database or Redis.**
+
+    ### ⭐ Important Connection
+
+    Previous topics ko connect karo:
+
+    ```text id="w4m8sa"
+    Deployment
+        ↓
+    New Node.js Instance
+        ↓
+    Health Check
+        ↓
+    Healthy?
+    ↓       ↓
+    Yes      No
+    ↓        ↓
+    Traffic   No Traffic
+    ```
+
+    **Ye zero-downtime deployment aur load balancing me particularly important hai.**
+
+
+
+
 295. API documentation?
 296. GraphQL subscriptions?
 297. Database connection pooling?
