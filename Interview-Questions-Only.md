@@ -8778,6 +8778,100 @@ Browser automatically validation kar dega.
     > **I would gradually increase the load and monitor latency, error rate, CPU, memory, and database performance. The point where the system starts violating our performance targets helps determine its practical capacity.**
 
 291. Clustering vs Worker Threads?
+
+    ## Hinglish Explanation
+
+    **Clustering** aur **Worker Threads** dono Node.js me performance/scaling ke liye use hote hain, lekin purpose different hai.
+
+    ### 1. Clustering
+
+    Cluster me hum **multiple Node.js processes** run karte hain.
+
+    ```text
+                Load Balancer
+                /      |      \
+            Worker  Worker  Worker
+            Process Process Process
+    ```
+
+    Har process ka **apna memory space aur event loop** hota hai.
+
+    **Use case:**
+    👉 Multiple CPU cores ka use karke **HTTP server ko scale** karna.
+
+    ---
+
+    ### 2. Worker Threads
+
+    Worker Threads ek Node.js process ke andar **separate threads** create karte hain.
+
+    ```text
+    Node.js Process
+        |
+    Main Thread
+        |
+    Worker Thread
+    ```
+
+    **Use case:**
+    👉 **CPU-intensive tasks** ko main event loop se offload karna.
+
+    Example:
+
+    ```javascript
+    const { Worker } = require("worker_threads");
+
+    const worker = new Worker("./heavy-task.js");
+
+    worker.on("message", (result) => {
+    console.log(result);
+    });
+    ```
+
+    Heavy tasks:
+
+    * Image processing
+    * Large calculations
+    * Data processing
+    * CPU-intensive encryption/compression
+
+    ---
+
+    ## Simple Difference
+
+    | Clustering                       | Worker Threads                |
+    | -------------------------------- | ----------------------------- |
+    | Multiple processes               | Multiple threads              |
+    | Each process has separate memory | Same process ke andar threads |
+    | HTTP server scaling              | CPU-intensive task handling   |
+    | Fault isolation better           | Lightweight than processes    |
+    | Multiple event loops             | Main + worker threads         |
+
+    ### ⭐ Sabse Important
+
+    **Cluster = Scale the application**
+
+    **Worker Thread = Offload CPU-heavy work**
+
+    ---
+
+    ## English Interview Answer
+
+    Clustering and Worker Threads solve different problems in Node.js. Clustering runs multiple Node.js processes, each with its own event loop and memory space, and is mainly used to utilize multiple CPU cores and scale HTTP applications. Worker Threads run separate threads within a Node.js process and are mainly used to offload CPU-intensive tasks from the main event loop.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. If you have a CPU-intensive image processing task in a Node.js API, what would you use?**
+
+    **Answer:**
+
+    > **I would use Worker Threads or a background job system depending on the requirement. Worker Threads are useful when the CPU-intensive task needs to be processed locally, while a queue with workers is better when the task can be processed asynchronously in the background.**
+
+
+
+
 292. PM2 kya hai?
 293. Error monitoring tools?
 294. Health checks?
