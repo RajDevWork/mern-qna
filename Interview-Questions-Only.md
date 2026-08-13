@@ -9170,6 +9170,106 @@ Browser automatically validation kar dega.
 
 
 295. API documentation?
+
+    ## Hinglish Explanation
+
+    **API Documentation** ka matlab hai API ko properly document karna taaki **frontend developers, other backend developers ya third-party consumers** easily samajh saken ki API ko kaise use karna hai.
+
+    Documentation me generally ye information hoti hai:
+
+    * Endpoint
+    * HTTP Method
+    * Request parameters
+    * Request body
+    * Headers
+    * Authentication
+    * Response format
+    * Error responses
+    * Status codes
+
+    Example:
+
+    ```text id="a3nq0m"
+    POST /api/v1/users
+
+    Headers:
+    Authorization: Bearer <token>
+
+    Body:
+    {
+    "name": "Raj",
+    "email": "raj@example.com"
+    }
+
+    Response:
+    {
+    "id": 101,
+    "name": "Raj"
+    }
+    ```
+
+    Node.js/Express projects me **Swagger / OpenAPI** commonly use kiya jata hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Swagger/OpenAPI ka basic idea:
+
+    ```javascript id="0v7b6p"
+    const swaggerJsdoc = require("swagger-jsdoc");
+    const swaggerUi = require("swagger-ui-express");
+
+    const spec = swaggerJsdoc({
+    definition: {
+        openapi: "3.0.0",
+        info: {
+        title: "User API",
+        version: "1.0.0"
+        }
+    },
+    apis: ["./routes/*.js"]
+    });
+
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(spec));
+    ```
+
+    Ab:
+
+    ```text
+    GET /api-docs
+    ```
+
+    par interactive API documentation available ho sakti hai.
+
+    ---
+
+    ## English Interview Answer
+
+    API documentation describes how an API should be used, including endpoints, HTTP methods, request parameters, authentication, request and response formats, and error responses. In Node.js applications, I commonly use OpenAPI or Swagger to generate interactive API documentation.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Swagger vs OpenAPI?**
+
+    **Answer:**
+
+    > **OpenAPI is the specification used to describe an API, while Swagger is a set of tools that can be used to create, visualize, and interact with OpenAPI documentation.**
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche:
+
+    > **"Why is API documentation important?"**
+
+    Bolo:
+
+    > **It makes API integration easier, reduces communication gaps between frontend and backend teams, and provides a clear contract for API consumers.**
+
+
+
 296. GraphQL subscriptions?
 297. Database connection pooling?
 298. Environment configuration?
