@@ -8964,6 +8964,98 @@ Browser automatically validation kar dega.
 
 
 293. Error monitoring tools?
+
+    ## Hinglish Explanation
+
+    **Error monitoring tools** production application me **runtime errors, exceptions aur crashes ko automatically capture, track aur analyze** karne ke liye use hote hain.
+
+    Common tools:
+
+    * **Sentry** ⭐
+    * **Datadog**
+    * **New Relic**
+    * **Rollbar**
+
+    Example:
+
+    ```text id="r4x3qz"
+    User Request
+        ↓
+    Node.js API
+        ↓
+    Error ❌
+        ↓
+    Sentry
+        ↓
+    Alert + Stack Trace + Request Context
+    ```
+
+    Sirf `console.log()` se production errors manage karna difficult hota hai. Error monitoring tool tumhe **stack trace, error frequency, affected endpoint/version aur context** de sakta hai.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Sentry ka basic idea:
+
+    ```javascript id="9z7y4x"
+    const Sentry = require("@sentry/node");
+
+    Sentry.init({
+    dsn: process.env.SENTRY_DSN
+    });
+
+    app.get("/users", async (req, res) => {
+    try {
+        // API logic
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+        message: "Internal Server Error"
+        });
+    }
+    });
+    ```
+
+    Production me sensitive data ko unnecessarily capture/log nahi karna chahiye.
+
+    ---
+
+    ## English Interview Answer
+
+    Error monitoring tools are used to automatically capture and track application errors and exceptions in production. They provide information such as stack traces, affected endpoints, error frequency, and request context. I can use tools like Sentry, Datadog, or New Relic to detect and investigate production issues quickly.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Logging aur error monitoring me difference?**
+
+    **Answer:**
+
+    > **Logging records application events and messages, while error monitoring specifically tracks application errors and provides debugging context, alerts, and error trends.**
+
+    ```text
+    Logging
+    → "Payment request started"
+
+    Error Monitoring
+    → "Payment failed: TimeoutError"
+    → Stack trace
+    → Endpoint
+    → Error frequency
+    ```
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche **"Production me error aaya to kaise debug karoge?"**
+
+    > **I would check the error monitoring dashboard first to identify the error and stack trace, then correlate it with application logs using the request ID. After identifying the root cause, I would fix it, test it, and monitor the deployment.**
+
+
+
+
+
 294. Health checks?
 295. API documentation?
 296. GraphQL subscriptions?
