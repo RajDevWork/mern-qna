@@ -8873,6 +8873,96 @@ Browser automatically validation kar dega.
 
 
 292. PM2 kya hai?
+
+    ## Hinglish Explanation
+
+    **PM2** ek **process manager for Node.js** hai. Iska use Node.js applications ko **production me run, monitor aur manage** karne ke liye kiya jata hai.
+
+    PM2 ke common features:
+
+    * Application ko background me run karna
+    * Application crash ho to **automatically restart**
+    * Multiple Node.js instances run karna
+    * CPU/Memory monitoring
+    * Logs manage karna
+    * Zero-downtime reload support
+
+    Example:
+
+    ```bash id="qzqly1"
+    pm2 start app.js
+    ```
+
+    Application crash ho gayi to PM2 usse restart kar sakta hai.
+
+    Multiple CPU cores use karne ke liye:
+
+    ```bash id="5m8a2p"
+    pm2 start app.js -i max
+    ```
+
+    ---
+
+    ## Small Coding Implementation
+
+    Basic commands:
+
+    ```bash id="t8h5a9"
+    pm2 start app.js
+    pm2 status
+    pm2 logs
+    pm2 restart app
+    pm2 reload app
+    pm2 stop app
+    ```
+
+    Production me application ko automatically restart karwana ho:
+
+    ```bash id="5k7n3p"
+    pm2 startup
+    pm2 save
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    PM2 is a process manager commonly used to run and manage Node.js applications in production. It provides features such as automatic process restart, monitoring, log management, and running multiple Node.js instances. It can also perform zero-downtime reloads when the application is running in cluster mode.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. PM2 cluster mode kya karta hai?**
+
+    **Answer:**
+
+    > **PM2 cluster mode multiple Node.js processes run karta hai, allowing the application to utilize multiple CPU cores and handle more concurrent requests.**
+
+    ```text id="f5k8c1"
+    PM2
+    ├── Node Process 1
+    ├── Node Process 2
+    ├── Node Process 3
+    └── Node Process 4
+    ```
+
+    ### ⭐ Important Distinction
+
+    PM2 **load balancer ka replacement nahi hai**.
+
+    ```text id="3y1q6x"
+    External Load Balancer / Nginx
+                ↓
+                PM2
+            /    |    \
+        Node Node Node
+    ```
+
+    PM2 processes ko manage karta hai; Nginx/load balancer external traffic distribution handle kar sakta hai.
+
+
+
 293. Error monitoring tools?
 294. Health checks?
 295. API documentation?
