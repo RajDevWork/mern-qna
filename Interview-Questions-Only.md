@@ -9626,6 +9626,189 @@ Browser automatically validation kar dega.
 
 
 300. Message queue (RabbitMQ/Kafka)?
+
+    ## Hinglish Explanation
+
+    **Message Queue** ka use services ke beech **asynchronous communication** ke liye hota hai.
+
+    Instead of:
+
+    ```text
+    Client → Node API → Email Service
+                        ↓
+                    Wait...
+    ```
+
+    Queue use karke:
+
+    ```text
+    Client → Node API → Queue → Email Worker
+                ↓
+            Response
+    ```
+
+    Node API message queue me job/message daal deta hai aur **immediately response** de sakta hai. Worker baad me us message ko process karta hai.
+
+    ---
+
+    ## RabbitMQ vs Kafka
+
+    Dono same nahi hain.
+
+    ### RabbitMQ
+
+    RabbitMQ ek traditional **message broker / queue system** hai.
+
+    ```text
+    Producer
+    ↓
+    Exchange
+    ↓
+    Queue
+    ↓
+    Consumer
+    ```
+
+    Good for:
+
+    * Background jobs
+    * Email processing
+    * Order processing
+    * Task distribution
+    * Retry / acknowledgement based workflows
+
+    Example:
+
+    ```text
+    Node API
+    ↓
+    RabbitMQ
+    ↓
+    Email Worker
+    ```
+
+    ---
+
+    ### Kafka
+
+    Kafka ek **distributed event streaming platform** hai.
+
+    ```text
+    Producer
+        ↓
+    Kafka Topic
+        ↓
+    Consumers
+    ```
+
+    Kafka messages ko retain bhi karta hai, aur multiple consumers same events ko independently consume kar sakte hain.
+
+    Good for:
+
+    * Event-driven architecture
+    * High-throughput data pipelines
+    * Activity/event streams
+    * Analytics
+    * Microservices event communication
+
+    ---
+
+    ## Simple Difference
+
+    | RabbitMQ                          | Kafka                                 |
+    | --------------------------------- | ------------------------------------- |
+    | Message broker / queue            | Event streaming platform              |
+    | Task/job processing               | Event streaming                       |
+    | Message acknowledgement important | Offset-based consumption              |
+    | Routing via exchanges             | Topics + partitions                   |
+    | Background jobs ke liye common    | High-throughput events ke liye common |
+
+    > **Interview me "Kafka is just a faster RabbitMQ" mat bolna.** Dono ka architecture aur primary use case different hai.
+
+    ---
+
+    ## Node.js Example — RabbitMQ
+
+    Producer:
+
+    ```javascript
+    const channel = await connection.createChannel();
+
+    await channel.assertQueue("emails");
+
+    channel.sendToQueue(
+    "emails",
+    Buffer.from(JSON.stringify({
+        to: "user@example.com",
+        subject: "Welcome"
+    }))
+    );
+    ```
+
+    Worker:
+
+    ```javascript
+    channel.consume("emails", (message) => {
+    const job = JSON.parse(message.content.toString());
+
+    sendEmail(job);
+
+    channel.ack(message);
+    });
+    ```
+
+    `ack()` consumer ke successful processing ko broker ko confirm karta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    A message queue enables asynchronous communication between services. Instead of making the API wait for a long-running operation, the application publishes a message to a broker and a consumer processes it asynchronously. RabbitMQ is commonly used for task and job processing with features such as acknowledgements and routing, while Kafka is primarily a distributed event streaming platform designed for high-throughput event processing and durable event consumption.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. When would you choose RabbitMQ vs Kafka?**
+
+    Answer:
+
+    > **For background jobs such as emails, notifications, and task processing, I would typically consider RabbitMQ. For high-volume event streaming, analytics pipelines, or event-driven architectures where multiple consumers need to process the same events independently, I would consider Kafka.**
+
+    ### ⭐ Important Connection
+
+    Tumhare previous topics ko connect karo:
+
+    ```text
+    Slow API
+    ↓
+    Heavy Operation
+    ↓
+    Message Queue
+    ↓
+    Background Worker
+    ↓
+    Process Job
+    ```
+
+    Example:
+
+    ```text
+    POST /send-email
+        ↓
+    Node.js API
+        ↓
+    RabbitMQ
+        ↓
+    Email Worker
+        ↓
+    Email Provider
+    ```
+
+    API ko email provider ke response ka wait nahi karna padta.
+
+
+
 301. Event sourcing?
 302. CQRS pattern?
 303. Rate limiting algorithms?
