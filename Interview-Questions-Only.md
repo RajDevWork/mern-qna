@@ -9370,6 +9370,80 @@ Browser automatically validation kar dega.
 
 
 297. Database connection pooling?
+
+    ## Hinglish Explanation
+
+    **Database connection pooling** ka matlab hai database connections ka ek **reusable pool maintain karna**, instead of har request ke liye naya connection create aur close karna.
+
+    Without pooling:
+
+    ```text
+    Request 1 → Create DB Connection → Query → Close
+    Request 2 → Create DB Connection → Query → Close
+    Request 3 → Create DB Connection → Query → Close
+    ```
+
+    Ye expensive ho sakta hai.
+
+    With pooling:
+
+    ```text
+                Connection Pool
+            ┌────┬────┬────┐
+    Request → │ C1 │ C2 │ C3 │
+            └────┴────┴────┘
+    ```
+
+    Request available connection use karti hai aur query complete hone ke baad connection **pool me return** kar deti hai.
+
+    > **Interview Point:** Connection pooling improves performance and prevents creating too many database connections.
+
+    ---
+
+    ## Small Coding Implementation
+
+    PostgreSQL me `pg` library:
+
+    ```javascript id="h3u1by"
+    const { Pool } = require("pg");
+
+    const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    database: "mydb",
+    max: 10
+    });
+
+    const result = await pool.query(
+    "SELECT * FROM users WHERE id = $1",
+    [1]
+    );
+    ```
+
+    Yahan `max: 10` ka matlab pool maximum **10 connections** maintain kar sakta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Database connection pooling is the practice of maintaining a pool of reusable database connections instead of creating a new connection for every request. When a request needs the database, it gets an available connection from the pool and returns it after the query is completed. This reduces connection overhead, improves performance, and prevents too many database connections from being created.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What happens if all connections in the pool are busy?**
+
+    **Answer:**
+
+    > **The new request waits for an available connection until the configured timeout is reached. If no connection becomes available within that time, the request can fail with a connection timeout.**
+
+    ### ⭐ Important Counter
+
+    **Q. Why not keep increasing the pool size?**
+
+    > **Because the database also has a maximum connection capacity. An unnecessarily large pool can overload the database and actually reduce performance.**
+
 298. Environment configuration?
 299. API gateway?
 300. Message queue (RabbitMQ/Kafka)?
