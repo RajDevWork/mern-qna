@@ -9536,6 +9536,95 @@ Browser automatically validation kar dega.
 
 
 299. API gateway?
+
+    ## Hinglish Explanation
+
+    **API Gateway** ek **single entry point** hota hai jo clients aur backend services ke beech kaam karta hai, especially **microservices architecture** me.
+
+    ```text
+                    ┌→ User Service
+    Client → API Gateway ─→ Order Service
+                    └→ Payment Service
+    ```
+
+    Client ko har microservice ka direct URL pata hone ki zarurat nahi hoti.
+
+    API Gateway commonly handle karta hai:
+
+    * **Routing** → request ko correct service tak bhejna
+    * **Authentication / Authorization**
+    * **Rate limiting**
+    * **Request/Response transformation**
+    * **Load balancing**
+    * **Logging & monitoring**
+    * Kabhi-kabhi **caching**
+
+    > **Interview Point:** API Gateway sirf reverse proxy nahi hai; ye API-level concerns jaise authentication, rate limiting aur routing bhi centralize kar sakta hai.
+
+    ---
+
+    ## Small Example
+
+    Suppose tumhare paas:
+
+    ```text
+    /api/users     → User Service :3001
+    /api/orders    → Order Service :3002
+    /api/payments  → Payment Service :3003
+    ```
+
+    Gateway:
+
+    ```text
+    Client
+    ↓
+    API Gateway :8000
+    ├── /users    → :3001
+    ├── /orders   → :3002
+    └── /payments → :3003
+    ```
+
+    Node.js/Express me conceptually:
+
+    ```javascript
+    app.use("/users", proxy("http://user-service:3001"));
+    app.use("/orders", proxy("http://order-service:3002"));
+    app.use("/payments", proxy("http://payment-service:3003"));
+    ```
+
+    Production me dedicated gateways bhi use hote hain, jaise **Kong, AWS API Gateway, NGINX**, etc.
+
+    ---
+
+    ## English Interview Answer
+
+    An API Gateway is a single entry point between clients and backend services, commonly used in microservices architecture. It handles concerns such as request routing, authentication, authorization, rate limiting, logging, and sometimes caching. It hides internal services from clients and provides a centralized layer for API management.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. API Gateway vs Reverse Proxy?**
+
+    Simple distinction:
+
+    > **Reverse proxy primarily forwards requests to backend servers, while an API Gateway provides additional API-level capabilities such as authentication, rate limiting, routing, request transformation, and API management.**
+
+    ```text
+    Reverse Proxy
+    → Forward traffic
+
+    API Gateway
+    → Forward + Manage APIs
+    ```
+
+    ### ⭐ Important Counter
+
+    **Q. Why not let the frontend directly call every microservice?**
+
+    > **It tightly couples the client to internal services and makes cross-cutting concerns like authentication, rate limiting, and routing harder to manage. An API Gateway provides a single controlled entry point.**
+
+
 300. Message queue (RabbitMQ/Kafka)?
 301. Event sourcing?
 302. CQRS pattern?
