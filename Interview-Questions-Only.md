@@ -9810,6 +9810,140 @@ Browser automatically validation kar dega.
 
 
 301. Event sourcing?
+
+    ## Hinglish Explanation
+
+    **Event Sourcing** ek architectural pattern hai jisme system ka **current state directly store karne ke bajay, state ko change karne wale events store kiye jaate hain**.
+
+    Simple example — bank account:
+
+    Normal approach:
+
+    ```text
+    Account Balance = ₹5,000
+    ```
+
+    Event Sourcing:
+
+    ```text
+    AccountCreated       → ₹10,000
+    MoneyDeposited       → +₹2,000
+    MoneyWithdrawn       → -₹7,000
+                            ↓
+                        Current = ₹5,000
+    ```
+
+    Yaani **events source of truth** hote hain. Current balance un events ko replay karke calculate kiya ja sakta hai.
+
+    ---
+
+    ## Small Example
+
+    Events table/topic:
+
+    ```json
+    [
+    {
+        "type": "MoneyDeposited",
+        "amount": 2000
+    },
+    {
+        "type": "MoneyWithdrawn",
+        "amount": 7000
+    }
+    ]
+    ```
+
+    Application events ko process karke current state bana sakti hai:
+
+    ```text
+    10000 + 2000 - 7000 = 5000
+    ```
+
+    Important property:
+
+    > **Past events ko normally modify/delete nahi karte; new event create karke state change represent karte hain.**
+
+    ---
+
+    ## Node.js me Conceptually
+
+    ```javascript
+    const events = [
+    { type: "DEPOSIT", amount: 2000 },
+    { type: "WITHDRAW", amount: 7000 }
+    ];
+
+    let balance = 10000;
+
+    for (const event of events) {
+    if (event.type === "DEPOSIT") {
+        balance += event.amount;
+    }
+
+    if (event.type === "WITHDRAW") {
+        balance -= event.amount;
+    }
+    }
+
+    console.log(balance); // 5000
+    ```
+
+    Production architecture me events database/event store, Kafka etc. me persist kiye ja sakte hain.
+
+    ---
+
+    ## English Interview Answer
+
+    Event Sourcing is an architectural pattern where we store the sequence of events that caused state changes instead of storing only the current state. The current state can then be reconstructed by replaying those events. It provides a complete history of changes and is useful in domains such as banking, payments, and audit-heavy systems.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Event Sourcing vs normal CRUD?**
+
+    Normal CRUD:
+
+    ```text
+    UPDATE account
+    balance = 5000
+    ```
+
+    Event Sourcing:
+
+    ```text
+    Deposit ₹2000
+    Withdraw ₹7000
+    ```
+
+    CRUD me mostly **current state** important hoti hai.
+
+    Event Sourcing me **state + history of how it reached that state** important hoti hai.
+
+    ---
+
+    ### ⭐ Event Sourcing ka drawback?
+
+    > **It increases system complexity. Event storage, event replay, schema evolution, and rebuilding current state need to be managed carefully.**
+
+    Large event history ke liye **snapshots** use kiye ja sakte hain:
+
+    ```text
+    Events 1 → 1000
+        ↓
+    Snapshot at 1000
+        ↓
+    Events 1001 → 1050
+        ↓
+    Current State
+    ```
+    **One-line memory trick:**
+
+    > **CRUD stores "what is"; Event Sourcing stores "what happened".**
+
+
+
 302. CQRS pattern?
 303. Rate limiting algorithms?
 304. API caching strategies?
