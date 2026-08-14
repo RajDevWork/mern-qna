@@ -9445,6 +9445,96 @@ Browser automatically validation kar dega.
     > **Because the database also has a maximum connection capacity. An unnecessarily large pool can overload the database and actually reduce performance.**
 
 298. Environment configuration?
+
+    ## Hinglish Explanation
+
+    **Environment configuration** ka matlab hai application ki **environment-specific settings** ko code se separate rakhna.
+
+    Example:
+
+    Development me:
+
+    ```text
+    Database → localhost
+    ```
+
+    Production me:
+
+    ```text
+    Database → Production DB
+    ```
+
+    Code same rahega, bas configuration change hogi.
+
+    Common environment variables:
+
+    ```text
+    DATABASE_URL
+    PORT
+    JWT_SECRET
+    REDIS_URL
+    API_KEY
+    NODE_ENV
+    ```
+
+    > **Interview Point:** Secrets aur environment-specific configuration ko source code me hardcode nahi karna chahiye.
+
+    ---
+
+    ## Small Coding Implementation
+
+    `.env`:
+
+    ```env
+    PORT=3000
+    DATABASE_URL=postgresql://localhost/mydb
+    JWT_SECRET=my-secret
+    NODE_ENV=development
+    ```
+
+    Node.js:
+
+    ```javascript
+    require("dotenv").config();
+
+    const port = process.env.PORT;
+    const dbUrl = process.env.DATABASE_URL;
+
+    app.listen(port);
+    ```
+
+    Production me actual secrets/configuration deployment platform ya **secret manager** se provide karna better hai.
+
+    ---
+
+    ## English Interview Answer
+
+    Environment configuration means keeping environment-specific settings and secrets separate from the application code. I commonly use environment variables for things like database URLs, ports, JWT secrets, and API keys. This allows the same codebase to run across development, staging, and production with different configurations.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why should we not hardcode secrets in the code?**
+
+    **Answer:**
+
+    > **Because secrets can accidentally be exposed through source control, logs, or application builds. I keep them in environment variables or a dedicated secret manager and make sure they are not committed to Git.**
+
+    Example:
+
+    ```gitignore id="o1nh9m"
+    .env
+    ```
+
+    ### ⭐ Important Counter
+
+    **Q. What is the difference between `.env` and a secret manager?**
+
+    > **`.env` is commonly convenient for local development, while production systems often use secret managers such as AWS Secrets Manager, Azure Key Vault, or Kubernetes Secrets for better security and centralized management.**
+
+
+
 299. API gateway?
 300. Message queue (RabbitMQ/Kafka)?
 301. Event sourcing?
