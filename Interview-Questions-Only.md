@@ -9271,6 +9271,104 @@ Browser automatically validation kar dega.
 
 
 296. GraphQL subscriptions?
+
+    ## Hinglish Explanation
+
+    **GraphQL Subscription** GraphQL ka feature hai jo **real-time updates** ke liye use hota hai.
+
+    Normal GraphQL query me client request karta hai:
+
+    ```text
+    Client → Server → Response
+    ```
+
+    Subscription me client ek baar subscribe karta hai, aur jab relevant data change hota hai to server **automatically update push** karta hai.
+
+    ```text
+    Client
+    ↕
+    Subscription Connection
+    ↕
+    Server
+    ↓
+    New Event → Client
+    ```
+
+    ### Example
+
+    Chat application me:
+
+    ```graphql
+    subscription {
+    messageAdded {
+        id
+        text
+        sender
+    }
+    }
+    ```
+
+    Ab jab new message aayega, subscribed client ko automatically data mil jayega.
+
+    > **Interview Point:** GraphQL **Query = fetch**, **Mutation = change**, **Subscription = real-time updates**.
+
+    ---
+
+    ## Small Coding Implementation
+
+    Apollo Server ka conceptual example:
+
+    ```javascript
+    const resolvers = {
+    Subscription: {
+        messageAdded: {
+        subscribe: () => pubsub.asyncIterator(["MESSAGE_ADDED"])
+        }
+    }
+    };
+    ```
+
+    Jab new message create hota hai:
+
+    ```javascript
+    pubsub.publish("MESSAGE_ADDED", {
+    messageAdded: newMessage
+    });
+    ```
+
+    Subscribed clients ko update mil jayega.
+
+    ---
+
+    ## English Interview Answer
+
+    GraphQL Subscriptions are used to provide real-time updates to clients. The client subscribes to a specific event, and whenever that event occurs, the server pushes the updated data to the subscribed clients. They are commonly used for chat messages, live notifications, and real-time dashboards.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. GraphQL Subscription vs WebSocket?**
+
+    **Answer:**
+
+    > **WebSocket is a communication protocol that provides a persistent bidirectional connection, while GraphQL Subscription is a GraphQL feature that uses a real-time transport, commonly WebSockets, to push updates to clients.**
+
+    Simple:
+
+    ```text
+    WebSocket     → Communication layer
+    Subscription  → GraphQL real-time feature
+    ```
+
+    ### ⭐ Interview Tip
+
+    Agar interviewer puche **"Subscription kab use karoge instead of polling?"**
+
+    > **I would use subscriptions when clients need immediate updates. Polling repeatedly sends requests and can create unnecessary traffic, while subscriptions allow the server to push updates when an event actually occurs.**
+
+
+
 297. Database connection pooling?
 298. Environment configuration?
 299. API gateway?
