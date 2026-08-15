@@ -10230,6 +10230,171 @@ Browser automatically validation kar dega.
 
 
 304. API caching strategies?
+
+    ## Hinglish Explanation
+
+    **API caching** ka matlab hai frequently requested data ko temporary storage me rakhna, taaki har request par database ya expensive operation repeat na karna pade.
+
+    Typical flow:
+
+    ```text
+    Client
+    ↓
+    API
+    ↓
+    Cache ──→ Data available? ──→ Return
+    ↓ No
+    Database
+    ↓
+    Cache
+    ↓
+    Response
+    ```
+
+    Node.js applications me **Redis** commonly use hota hai.
+
+    ---
+
+    ## Common API Caching Strategies
+
+    ### 1. Cache-Aside ⭐
+
+    Sabse common strategy.
+
+    ```text
+    Request
+    ↓
+    Check Cache
+    ↓
+    Hit → Return
+    ↓
+    Miss
+    ↓
+    Database
+    ↓
+    Store in Cache
+    ↓
+    Return
+    ```
+
+    Example:
+
+    ```javascript
+    const cached = await redis.get(`user:${id}`);
+
+    if (cached) {
+    return res.json(JSON.parse(cached));
+    }
+
+    const user = await User.findById(id);
+
+    await redis.set(
+    `user:${id}`,
+    JSON.stringify(user),
+    { EX: 300 }
+    );
+
+    res.json(user);
+    ```
+
+    ---
+
+    ### 2. Write-Through
+
+    Data write karte time **cache aur database dono update** hote hain.
+
+    ```text
+    Write
+    ↓
+    Cache
+    ↓
+    Database
+    ```
+
+    Benefit → cache generally fresh rehta hai.
+
+    ---
+
+    ### 3. Write-Behind / Write-Back
+
+    Pehle cache update hota hai aur database update **asynchronously later** ho sakta hai.
+
+    ```text
+    Write
+    ↓
+    Cache
+    ↓
+    Async → Database
+    ```
+
+    Performance better ho sakti hai, but data-loss/consistency considerations important hain.
+
+    ---
+
+    ### 4. TTL (Time To Live)
+
+    Cache entry ko expiry time dete hain:
+
+    ```text
+    Redis:
+    user:123 → 5 minutes
+    ```
+
+    5 minutes ke baad entry expire ho jayegi.
+
+    ---
+
+    ## Cache Invalidation ⭐
+
+    Sabse important problem:
+
+    > **"Cache ko kab remove/update karna hai?"**
+
+    Example:
+
+    ```text
+    User updated
+    ↓
+    Database updated
+    ↓
+    Delete user:123 from Redis
+    ```
+
+    Next request DB se fresh data lekar cache populate karegi.
+
+    ---
+
+    ## English Interview Answer
+
+    For API caching, I commonly use Redis. A common approach is cache-aside, where I first check the cache, return the cached response on a hit, and on a miss fetch the data from the database and store it in the cache with a TTL. For write operations, I also need an invalidation or update strategy to prevent stale data. Depending on the consistency requirements, write-through or write-behind caching can also be considered.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. What are the problems with caching?**
+
+    Answer:
+
+    > **The main challenges are stale data, cache invalidation, memory limits, cache stampede, and maintaining consistency between the cache and database.**
+
+    ### ⭐ Cache Stampede
+
+    Agar cache expire ho gaya aur **1000 requests simultaneously** aa gayi:
+
+    ```text
+    Cache expired
+        ↓
+    1000 requests
+        ↓
+    1000 DB queries 😱
+    ```
+
+    Database overload ho sakta hai.
+
+    Isko mitigate karne ke liye **locking/request coalescing, TTL jitter, stale-while-revalidate** jaise approaches use kiye ja sakte hain.
+
+
 305. Background job monitoring?
 306. Log aggregation?
 307. Distributed tracing?
