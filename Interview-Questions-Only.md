@@ -10108,6 +10108,127 @@ Browser automatically validation kar dega.
 
 
 303. Rate limiting algorithms?
+
+    ## Hinglish Explanation
+
+    **Rate limiting algorithms** ka use API par ek client/IP/user ko **limited number of requests** allow karne ke liye hota hai.
+
+    Example:
+
+    ```text
+    Limit: 100 requests / minute
+
+    Client
+    ↓
+    Request 1  ✅
+    Request 2  ✅
+    ...
+    Request 100 ✅
+    Request 101 ❌ → 429 Too Many Requests
+    ```
+
+    Common algorithms:
+
+    ### 1. Fixed Window
+
+    Ek fixed time window me limit set karte hain.
+
+    ```text
+    10 requests / 1 minute
+
+    12:00–12:01 → max 10
+    12:01–12:02 → max 10
+    ```
+
+    **Simple**, but window boundary par burst problem aa sakti hai.
+
+    ---
+
+    ### 2. Sliding Window ⭐
+
+    Last rolling time period ki requests count karta hai.
+
+    ```text
+    Last 60 seconds → max 100 requests
+    ```
+
+    Fixed window se zyada accurate hota hai, but implementation comparatively complex hai.
+
+    ---
+
+    ### 3. Token Bucket ⭐
+
+    Bucket me tokens hote hain. Har request ek token consume karti hai aur tokens fixed rate se refill hote hain.
+
+    ```text
+    Bucket: 10 tokens
+
+    Request → Token consume
+    No token → 429
+    ```
+
+    Iska advantage ye hai ki **controlled bursts** allow kar sakta hai.
+
+    ---
+
+    ### 4. Leaky Bucket
+
+    Requests ko ek controlled rate se process kiya jata hai.
+
+    ```text
+    Requests
+    ↓↓↓↓↓
+    [Queue]
+        ↓
+    Fixed processing rate
+    ```
+
+    Ye traffic ko smooth karne ke liye useful hai.
+
+    ---
+
+    ## Quick Comparison
+
+    | Algorithm      | Main Idea               | Burst Handling  |
+    | -------------- | ----------------------- | --------------- |
+    | Fixed Window   | Fixed time interval     | Weak            |
+    | Sliding Window | Rolling time interval   | Better          |
+    | Token Bucket   | Tokens refill hote hain | Good            |
+    | Leaky Bucket   | Fixed output rate       | Very controlled |
+
+    ---
+
+    ## English Interview Answer
+
+    Rate limiting algorithms control how many requests a client can make within a specific period. Common algorithms include Fixed Window, Sliding Window, Token Bucket, and Leaky Bucket. Fixed Window is simple but can allow bursts around window boundaries. Token Bucket allows controlled bursts while maintaining an average request rate, and Leaky Bucket processes requests at a more consistent rate.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Which one would you use for a Node.js API?**
+
+    > **It depends on the requirement. For a simple API, a fixed or sliding window can work. For APIs where controlled bursts are acceptable, I would consider Token Bucket. For distributed Node.js applications, I would store rate-limit state in Redis so that multiple instances share the same limit.**
+
+    ```text
+    Client
+    ↓
+    Load Balancer
+    ↓
+    Node 1 ──┐
+    Node 2 ──┼── Redis Rate Limit Counter
+    Node 3 ──┘
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Fixed Window = fixed interval**
+    > **Sliding Window = rolling interval**
+    > **Token Bucket = tokens**
+    > **Leaky Bucket = controlled flow**
+
+
+
 304. API caching strategies?
 305. Background job monitoring?
 306. Log aggregation?
