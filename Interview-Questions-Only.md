@@ -9945,6 +9945,168 @@ Browser automatically validation kar dega.
 
 
 302. CQRS pattern?
+
+    ## Hinglish Explanation
+
+    **CQRS = Command Query Responsibility Segregation**
+
+    Iska matlab hai **data read aur data write operations ko separate karna**.
+
+    Normal architecture:
+
+    ```text
+                API
+                ↓
+            Same Data Layer
+            ↙          ↘
+        Read          Write
+    ```
+
+    CQRS me:
+
+    ```text
+                    API
+                ↙       ↘
+            Query       Command
+            (Read)      (Write)
+                ↓           ↓
+            Read DB      Write DB
+    ```
+
+    ### Command = Write
+
+    Data ko **create/update/delete** karna.
+
+    ```text
+    POST /orders
+    PUT /orders/123
+    DELETE /orders/123
+    ```
+
+    ### Query = Read
+
+    Data ko sirf **retrieve** karna.
+
+    ```text
+    GET /orders
+    GET /orders/123
+    ```
+
+    > **Important:** CQRS ka matlab necessarily **do databases** hona nahi hai. Read aur write models separate karna core idea hai; separate databases optional hain.
+
+    ---
+
+    ## Small Example
+
+    Suppose e-commerce application hai.
+
+    **Write side:**
+
+    ```javascript
+    await Order.create({
+    userId,
+    items,
+    total
+    });
+    ```
+
+    **Read side:**
+
+    ```javascript
+    const orders = await OrderSummary.find({
+    userId
+    });
+    ```
+
+    Large systems me read side ko separately optimize/scale kiya ja sakta hai.
+
+    Example:
+
+    ```text
+                    API
+                /     \
+                ↓       ↓
+            Command     Query
+                ↓       ↓
+            Write DB   Read DB
+                        ↓
+                    Redis
+    ```
+
+    Agar **10,000 users orders read** kar rahe hain but relatively few orders create/update ho rahe hain, read side ko independently scale karna useful ho sakta hai.
+
+    ---
+
+    ## English Interview Answer
+
+    CQRS stands for Command Query Responsibility Segregation. It separates operations that modify state from operations that read state. Commands handle writes such as create, update, and delete, while queries handle read operations. This allows the read and write sides to be optimized and scaled independently. Separate databases or models can be used, but they are not mandatory.
+
+    ---
+
+    ## Interview Follow-up
+
+    ### Q. CQRS vs CRUD?
+
+    **CRUD:**
+
+    ```text
+    Create
+    Read
+    Update
+    Delete
+    ```
+
+    Generally same model/data layer se operations handle hote hain.
+
+    **CQRS:**
+
+    ```text
+    Command → Write
+    Query   → Read
+    ```
+
+    Read aur write responsibilities explicitly separate hoti hain.
+
+    ---
+
+    ### ⭐ CQRS + Event Sourcing
+
+    Ye dono aksar saath use kiye ja sakte hain, lekin **same thing nahi hain**.
+
+    ```text
+    Command
+    ↓
+    Write Model
+    ↓
+    Event
+    ↓
+    Event Store
+    ↓
+    Read Model
+    ↓
+    Query
+    ```
+
+    Example:
+
+    ```text
+    PlaceOrder
+        ↓
+    OrderCreated event
+        ↓
+    Event Store
+        ↓
+    Update Order Read Model
+        ↓
+    GET /orders
+    ```
+
+    **Event Sourcing** → state changes ko events ke form me store karta hai.
+
+    **CQRS** → read aur write responsibilities separate karta hai.
+
+
+
 303. Rate limiting algorithms?
 304. API caching strategies?
 305. Background job monitoring?
