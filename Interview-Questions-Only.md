@@ -10396,6 +10396,167 @@ Browser automatically validation kar dega.
 
 
 305. Background job monitoring?
+
+    ## Hinglish Explanation
+
+    **Background job monitoring** ka matlab hai background workers/queues me chalne wale jobs ko **track aur monitor** karna.
+
+    Example:
+
+    ```text id="f4r2hy"
+    Node.js API
+        ↓
+    Queue
+        ↓
+    Worker
+        ↓
+    Send Email
+    ```
+
+    Production me mujhe pata hona chahiye:
+
+    * Kitne jobs **pending** hain?
+    * Kitne **successfully complete** hue?
+    * Kitne **failed** hue?
+    * Job kitni der le rahi hai?
+    * Retry kitni baar ho rahi hai?
+    * Queue me backlog badh raha hai ya nahi?
+
+    ---
+
+    ## Example: BullMQ + Redis
+
+    Node.js applications me **BullMQ** commonly use kiya ja sakta hai.
+
+    ```javascript id="x4w1p8"
+    const worker = new Worker("emails", async (job) => {
+    await sendEmail(job.data);
+    });
+    ```
+
+    Monitoring me:
+
+    ```text id="z6m9k2"
+    Waiting     → 120
+    Active      → 5
+    Completed   → 10,500
+    Failed      → 23
+    Delayed     → 8
+    ```
+
+    Agar `Waiting` jobs continuously increase ho rahe hain:
+
+    ```text id="w5x3ne"
+    Jobs coming in
+        ↓
+    100/min
+        ↓
+    Worker processing
+        ↓
+    50/min
+        ↓
+    Queue backlog ↑
+    ```
+
+    To worker capacity insufficient ho sakti hai.
+
+    ---
+
+    ## Monitoring Strategy
+
+    Main generally ye metrics monitor karunga:
+
+    ### 1. Queue Depth
+
+    ```text
+    Pending jobs
+    ```
+
+    Backlog continuously increase ho raha hai → problem.
+
+    ### 2. Job Processing Time
+
+    ```text
+    Average: 200ms
+    P95:     800ms
+    ```
+
+    ### 3. Failure Rate
+
+    ```text
+    Processed → 10,000
+    Failed    → 500
+    Failure rate → 5%
+    ```
+
+    ### 4. Retry Count
+
+    Repeated retries dependency/service issue indicate kar sakti hain.
+
+    ### 5. Worker Health
+
+    CPU, memory, worker crashes, concurrency.
+
+    ---
+
+    ## Failed Jobs
+
+    Failed job ko automatically retry kar sakte hain:
+
+    ```text id="e7q1lp"
+    Job
+    ↓
+    Fail
+    ↓
+    Retry
+    ↓
+    Fail
+    ↓
+    Retry
+    ↓
+    Still Failed
+    ↓
+    Dead Letter Queue
+    ```
+
+    **Dead Letter Queue (DLQ)** me permanently failed jobs ko rakh sakte hain taaki later investigate/reprocess kiya ja sake.
+
+    ---
+
+    ## English Interview Answer
+
+    For background job monitoring, I monitor queue depth, active and completed jobs, failure rate, retry count, job processing latency, and worker health. I also configure alerts when the queue backlog or failure rate crosses a threshold. Failed jobs should have controlled retries, and permanently failed jobs can be moved to a dead-letter queue for investigation and reprocessing.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Queue backlog continuously increase ho raha hai. What will you check?**
+
+    Answer:
+
+    > **First, I would check whether job processing time has increased, whether workers are healthy, and whether there is a downstream bottleneck such as a database or external API. If the workload is genuinely higher, I would increase worker concurrency or scale workers horizontally.**
+
+    ```text id="6b4q0a"
+    Queue Backlog ↑
+        ↓
+    Check Worker
+        ↓
+    Check Processing Time
+        ↓
+    Check DB / External API
+        ↓
+    Fix Bottleneck
+        ↓
+    Scale Workers if needed
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Monitor the queue, monitor the workers, monitor the jobs, and alert on backlog/failures.**
+
+
+
 306. Log aggregation?
 307. Distributed tracing?
 308. Performance benchmarking?
