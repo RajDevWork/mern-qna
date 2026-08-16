@@ -10805,6 +10805,100 @@ Browser automatically validation kar dega.
 
 
 308. Performance benchmarking?
+
+    ## Hinglish Explanation
+
+    **Performance benchmarking** ka matlab hai application ki performance ko **measurable metrics ke through test karke baseline establish karna**, taaki different versions/configurations ke performance ko compare kar saken.
+
+    Example:
+
+    ```text
+    Before optimization
+    → 200 req/sec
+    → P95 latency = 500ms
+
+    After optimization
+    → 350 req/sec
+    → P95 latency = 250ms
+    ```
+
+    Ab objectively pata hai ki optimization se performance improve hui.
+
+    ### Main metrics:
+
+    * **Throughput** → requests/sec
+    * **Latency** → response time
+    * **P50 / P95 / P99 latency**
+    * **Error rate**
+    * **CPU usage**
+    * **Memory usage**
+    * **Database query time**
+
+    ---
+
+    ## Small Coding Implementation
+
+    Node.js API ko benchmark/load test karne ke liye **k6** jaisa tool use kar sakte ho:
+
+    ```javascript id="a4c9vz"
+    import http from "k6/http";
+
+    export const options = {
+    vus: 50,
+    duration: "30s"
+    };
+
+    export default function () {
+    http.get("http://localhost:3000/api/users");
+    }
+    ```
+
+    Phir results ko baseline ke saath compare karenge.
+
+    ---
+
+    ## English Interview Answer
+
+    Performance benchmarking is the process of measuring an application's performance using defined metrics and establishing a baseline. I typically measure throughput, latency such as P50, P95 and P99, error rate, CPU, memory, and database performance. After an optimization or infrastructure change, I run the same benchmark again and compare the results to verify the improvement.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why do you use P95/P99 instead of just average latency?**
+
+    Answer:
+
+    > **Average latency can hide slow requests. P95 tells us the latency experienced by the slowest 5% of requests, while P99 focuses on the slowest 1%, so they are more useful for understanding tail latency.**
+
+    Example:
+
+    ```text id="sgv8kr"
+    Average → 100ms
+    P95     → 400ms
+    P99     → 900ms
+    ```
+
+    Average dekhne par API fast lagegi, but **1% users ko 900ms** lag raha hai.
+
+    ### ⭐ Benchmarking vs Load Testing
+
+    ```text id="v0kg9x"
+    Load Testing
+    → Can the system handle expected traffic?
+
+    Benchmarking
+    → How does this version/configuration perform?
+    ```
+
+    Dono related hain, but exactly same nahi hain.
+
+    **One-line memory trick:**
+
+    > **Benchmarking = Measure → Baseline → Change → Measure again → Compare.**
+
+
+
 309. Security scanning?
 310. Compliance (GDPR, etc.)?
 
