@@ -11019,6 +11019,85 @@ Browser automatically validation kar dega.
 
 310. Compliance (GDPR, etc.)?
 
+    ## Hinglish Explanation
+
+    **Compliance** ka matlab hai application ko relevant **laws, regulations aur industry standards** ke according design aur operate karna.
+
+    Example:
+
+    * **GDPR** → EU users ke personal data/privacy ke rules
+    * **PCI DSS** → Payment card data security
+    * **HIPAA** → US healthcare information
+
+    Developer ke perspective se important hai ki application:
+
+    * Personal data unnecessarily collect na kare
+    * Data ko securely store/transmit kare
+    * Proper **access control** rakhe
+    * User data deletion/export jaise requirements support kare where applicable
+    * Audit logs maintain kare
+    * Data retention policies follow kare
+    * Sensitive data ko logs me expose na kare
+
+    > **Important:** Compliance sirf coding ka topic nahi hai. Legal, security, infrastructure aur business processes bhi involved hote hain.
+
+    ---
+
+    ## GDPR Example
+
+    Suppose application EU users ka data store karti hai:
+
+    ```text id="f4z6c1"
+    User
+    ↓
+    Personal Data
+    ↓
+    Database
+    ```
+
+    Application ko privacy requirements ke according data handling karni hogi.
+
+    For example, user ke personal data ko unnecessarily forever store nahi karna chahiye.
+
+    Sensitive data:
+
+    ```text id="9r4h1q"
+    Password ❌ plaintext
+    API Token ❌ logs me
+    Personal Data → controlled access
+    ```
+
+    Passwords ko properly **hash** karna chahiye, aur sensitive communication ke liye HTTPS use karna chahiye.
+
+    ---
+
+    ## English Interview Answer
+
+    Compliance means ensuring that an application follows applicable laws, regulations, and industry standards related to areas such as privacy, security, and data handling. For example, GDPR focuses on protection and privacy of personal data for applicable individuals. From a development perspective, I focus on data minimization, secure storage and transmission, access control, auditability, retention and deletion requirements, and avoiding sensitive data in logs. Compliance also requires organizational and legal processes beyond just application code.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. As a Node.js developer, how would you help make an application GDPR-aware?**
+
+    Answer:
+
+    > **I would minimize the personal data we collect, implement proper access controls, encrypt data in transit and appropriately at rest, avoid sensitive data in logs, support required data deletion or export workflows, and follow defined retention policies. I would also work with security and legal teams because compliance requirements are not purely technical.**
+
+    ### ⭐ Important Counter
+
+    **Q. Is encrypting the database enough for GDPR?**
+
+    > **No. Encryption is only one security measure. GDPR compliance also involves data collection, consent/legal basis where applicable, access control, retention, deletion, user rights, breach procedures, and organizational processes.**
+
+    ### 🎯 One-line memory trick
+
+    > **Compliance = Data ko securely handle karna + required privacy/legal processes follow karna.**
+
+
+
+
 **Additional Important Questions**
 
 1. Explain middleware and the types of middleware in Express.
