@@ -10661,6 +10661,149 @@ Browser automatically validation kar dega.
 
 
 307. Distributed tracing?
+
+    ## Hinglish Explanation
+
+    **Distributed tracing** ka use **distributed system / microservices** me ek single request ka **complete journey trace karne** ke liye hota hai.
+
+    Example:
+
+    ```text
+    Client
+    ↓
+    API Gateway
+    ↓
+    Order Service
+    ↓
+    Payment Service
+    ↓
+    Database
+    ```
+
+    Agar total request **3 seconds** le rahi hai, tracing se pata chal sakta hai:
+
+    ```text
+    Total Request → 3.0 sec
+    ├─ Gateway       → 100ms
+    ├─ Order Service → 400ms
+    ├─ Payment       → 2.0 sec  ← Bottleneck
+    └─ Database      → 500ms
+    ```
+
+    Yaani distributed tracing sirf **error** nahi batati, balki request **kahaan kitna time spend kar rahi hai** ye bhi batati hai.
+
+    ---
+
+    ## Trace aur Span
+
+    Ye interview me important hai.
+
+    ### Trace
+
+    **Complete request ka journey.**
+
+    ```text
+    Trace ID: abc123
+    ```
+
+    ### Span
+
+    Us request ke andar ek individual operation/service ka work.
+
+    ```text
+    Trace
+    ├── Span: API Gateway
+    ├── Span: Order Service
+    ├── Span: Payment Service
+    └── Span: Database
+    ```
+
+    ```text
+    Trace = Complete Journey
+    Span  = Individual Operation
+    ```
+
+    ---
+
+    ## Small Example
+
+    Node.js application me **OpenTelemetry** jaise standard/tooling ka use karke tracing implement ki ja sakti hai.
+
+    Conceptually:
+
+    ```javascript
+    const span = tracer.startSpan("process-order");
+
+    try {
+    await processOrder();
+    } finally {
+    span.end();
+    }
+    ```
+
+    Production me trace data ko tracing backend me send kiya ja sakta hai.
+
+    Common tools/platforms:
+
+    * **Jaeger**
+    * **Grafana Tempo**
+    * **Datadog**
+    * **New Relic**
+    * **OpenTelemetry** → instrumentation/observability standard
+
+    ---
+
+    ## English Interview Answer
+
+    Distributed tracing is an observability technique used to track a request across multiple services in a distributed system. A trace represents the complete request journey, while spans represent individual operations or services within that trace. It helps identify latency bottlenecks, failures, and dependencies across microservices.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Logging vs Metrics vs Tracing?**
+
+    Ye **bahut important** interview question hai:
+
+    | Tool        | Batata hai                        |
+    | ----------- | --------------------------------- |
+    | **Logs**    | What happened?                    |
+    | **Metrics** | How is the system performing?     |
+    | **Tracing** | Where did the request spend time? |
+
+    Example:
+
+    ```text
+    Logs:
+    "Payment service timeout"
+
+    Metrics:
+    "Payment API P95 latency = 2.5 sec"
+
+    Tracing:
+    "2.1 sec spent inside Payment Service"
+    ```
+
+    ### ⭐ Important Connection
+
+    Tumhare previous topics ko ek saath dekho:
+
+    ```text
+                    Observability
+                        ↓
+        ┌─────────────┼─────────────┐
+        ↓             ↓             ↓
+        Logs         Metrics        Traces
+        ↓             ↓             ↓
+    What happened?  How bad?     Where/Why?
+    ```
+
+    **One-line memory trick:**
+
+    > **Logs tell you what happened, metrics tell you how the system is doing, and traces tell you where a request spent its time.**
+
+
+
 308. Performance benchmarking?
 309. Security scanning?
 310. Compliance (GDPR, etc.)?
