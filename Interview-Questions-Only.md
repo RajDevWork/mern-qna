@@ -10558,6 +10558,108 @@ Browser automatically validation kar dega.
 
 
 306. Log aggregation?
+
+    ## Hinglish Explanation
+
+    **Log aggregation** ka matlab hai multiple servers, Node.js instances, containers aur services ke logs ko **ek centralized system me collect karke store/search/analyze karna**.
+
+    Agar production me 10 Node.js instances hain:
+
+    ```text
+    Node 1 ──┐
+    Node 2 ──┤
+    Node 3 ──┤
+    Node 4 ──┤──→ Centralized Log System
+    Node 5 ──┤
+    Node 6 ──┘
+    ```
+
+    Instead of har server me manually logs check karne ke, ek jagah se search kar sakte ho.
+
+    ### Common tools
+
+    * **ELK Stack** → Elasticsearch + Logstash + Kibana
+    * **EFK** → Elasticsearch + Fluentd + Kibana
+    * **Loki + Grafana**
+    * **Datadog**
+    * **CloudWatch** (AWS)
+
+    ---
+
+    ## Real-world Example
+
+    Suppose API request `requestId = abc123` ke saath aayi:
+
+    ```text
+    API Gateway
+    ↓
+    Node Instance 2
+    ↓
+    Database
+    ```
+
+    Teeno layers ke logs centralized system me aa sakte hain:
+
+    ```text
+    requestId=abc123
+    API request received
+
+    requestId=abc123
+    DB query started
+
+    requestId=abc123
+    DB query completed in 450ms
+
+    requestId=abc123
+    Response 200
+    ```
+
+    Ab tum **`abc123` search karke complete request flow trace** kar sakte ho.
+
+    ---
+
+    ## English Interview Answer
+
+    Log aggregation is the process of collecting logs from multiple application instances, servers, containers, and services into a centralized system. This makes logs easier to search, correlate, monitor, and analyze. In a Node.js production environment, I can use tools such as ELK, Loki, Datadog, or CloudWatch, along with structured logs and request IDs for tracing.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. Why is centralized logging important in a distributed system?**
+
+    > **Because requests can pass through multiple services or instances. Centralized logging allows us to correlate those logs using identifiers such as request IDs and investigate production issues from a single place.**
+
+    ### ⭐ Logging vs Log Aggregation
+
+    ```text
+    Logging
+    → Application events ko record karna
+
+    Log Aggregation
+    → Multiple sources ke logs ko ek centralized system me collect karna
+    ```
+
+    Aur tumhare previous **logging strategy + error monitoring** topics ko connect karo:
+
+    ```text
+    Node.js Apps
+        ↓
+    Structured Logs
+        ↓
+    Log Aggregation
+        ↓
+    Search / Dashboard / Alerts
+        ↓
+    Production Debugging
+    ```
+
+    **One-line memory trick:**
+
+    > **Logging = logs banana; Log Aggregation = sab logs ko ek jagah lana.**
+
+
+
 307. Distributed tracing?
 308. Performance benchmarking?
 309. Security scanning?
