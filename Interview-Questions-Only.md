@@ -10900,6 +10900,123 @@ Browser automatically validation kar dega.
 
 
 309. Security scanning?
+
+    ## Hinglish Explanation
+
+    **Security scanning** ka matlab hai application, dependencies aur infrastructure ko automatically scan karke **known vulnerabilities aur security misconfigurations** identify karna.
+
+    Node.js project me main generally multiple layers scan karunga:
+
+    ```text
+    Source Code
+        ↓
+    SAST
+        ↓
+    Dependencies
+        ↓
+    SCA / npm audit
+        ↓
+    Docker Image
+        ↓
+    Container Scan
+        ↓
+    Production / Infrastructure
+    ```
+
+    ### Common types
+
+    **1. SAST — Static Application Security Testing**
+
+    Source code ko run kiye bina vulnerabilities detect karta hai.
+
+    Example:
+
+    * SQL injection patterns
+    * Hardcoded secrets
+    * Unsafe code patterns
+
+    Tools: **Semgrep, SonarQube, CodeQL**
+
+    ---
+
+    **2. Dependency Scanning / SCA**
+
+    Third-party packages me known vulnerabilities check karta hai.
+
+    Node.js:
+
+    ```bash id="u7j9r4"
+    npm audit
+    ```
+
+    Example:
+
+    ```text
+    express
+    lodash
+    jsonwebtoken
+    ```
+
+    Agar kisi package ka vulnerable version hai to report mil sakti hai.
+
+    ---
+
+    **3. Container Scanning**
+
+    Docker image me vulnerabilities check karna.
+
+    Common tool:
+
+    ```bash id="6l1w4x"
+    trivy image my-node-app:latest
+    ```
+
+    ---
+
+    **4. Secret Scanning**
+
+    Accidentally committed:
+
+    ```text
+    API_KEY
+    JWT_SECRET
+    AWS_ACCESS_KEY
+    ```
+
+    jaise secrets detect karna.
+
+    ---
+
+    ## English Interview Answer
+
+    Security scanning is the process of automatically checking application code, dependencies, containers, and infrastructure for security vulnerabilities and misconfigurations. In a Node.js project, I would use SAST for source code, dependency scanning such as `npm audit`, secret scanning, and container scanning tools such as Trivy. I would integrate these checks into CI/CD so vulnerable builds can be detected before production deployment.
+
+    ---
+
+    ## Interview Follow-up
+
+    **Q. `npm audit` kya karta hai?**
+
+    > **It checks installed npm dependencies against known security vulnerabilities reported in the npm advisory database and shows affected packages and recommended fixes where available.**
+
+    ```bash
+    npm audit
+    npm audit fix
+    ```
+
+    ### ⭐ Important Counter
+
+    **Q. Is security scanning enough to make an application secure?**
+
+    **Answer:**
+
+    > **No. Security scanning is one layer of security. We still need secure coding practices, input validation, authentication and authorization, dependency updates, secrets management, HTTPS, proper configuration, and regular security testing.**
+
+    ### 🎯 One-line memory trick
+
+    > **Scan code + dependencies + secrets + containers + infrastructure, and automate it in CI/CD.**
+
+
 310. Compliance (GDPR, etc.)?
 
 **Additional Important Questions**
