@@ -11228,6 +11228,161 @@ Browser automatically validation kar dega.
 
 
 2. How does request and response flow in Express?
+
+    ## Express Request-Response Flow
+
+    Express me request ek **middleware/handler pipeline** se pass hoti hai. Har middleware request ko process karke `next()` ke through aage bhej sakta hai, ya wahi response return kar sakta hai.
+
+    ### Basic Flow
+
+    ```text id="z4q0ks"
+    Client
+    ↓
+    HTTP Request
+    ↓
+    Express Server
+    ↓
+    Application Middleware
+    ↓
+    Router Middleware
+    ↓
+    Route Handler / Controller
+    ↓
+    Business Logic
+    ↓
+    Database / External API
+    ↓
+    Response
+    ↓
+    Client
+    ```
+
+    ### Example
+
+    ```javascript id="8q4w2e"
+    app.use(express.json());
+
+    app.use((req, res, next) => {
+    console.log("Middleware 1");
+    next();
+    });
+
+    app.use((req, res, next) => {
+    console.log("Middleware 2");
+    next();
+    });
+
+    app.get("/users", async (req, res) => {
+    const users = await getUsers();
+
+    res.status(200).json(users);
+    });
+    ```
+
+    Request:
+
+    ```http id="1f7n4b"
+    GET /users
+    ```
+
+    Flow:
+
+    ```text id="8v7y0m"
+    GET /users
+        ↓
+    express.json()
+        ↓
+    Middleware 1
+        ↓ next()
+    Middleware 2
+        ↓ next()
+    GET /users route
+        ↓
+    getUsers()
+        ↓
+    res.json()
+        ↓
+    Client
+    ```
+
+    ### ⭐ Important: Error Flow
+
+    Agar kisi middleware/controller me error aata hai:
+
+    ```javascript id="h9d3qp"
+    next(error);
+    ```
+
+    to Express error-handling middleware ko control de sakta hai:
+
+    ```javascript id="4q0r8v"
+    app.use((err, req, res, next) => {
+    res.status(500).json({
+        message: err.message
+    });
+    });
+    ```
+
+    So overall:
+
+    ```text id="x3j6vn"
+    Request
+    ↓
+    Middleware
+    ↓
+    Middleware
+    ↓
+    Route
+    ↓
+    Controller
+    ↓
+    Service
+    ↓
+    DB
+    ↓
+    Response
+    ↓
+    Client
+
+            Error
+            ↓
+    Error Middleware
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **When a request reaches an Express application, it passes through the registered middleware stack in order. Each middleware can modify the request or response, terminate the request by sending a response, or call `next()` to pass control to the next middleware. Eventually, the request reaches the matching route handler, which performs the business logic and sends the response. If an error occurs, it can be passed to Express's error-handling middleware.**
+
+    ### Interview Follow-up: **Middleware order important hai?**
+
+    **Yes, absolutely.**
+
+    ```javascript id="4y9v2x"
+    app.use(authMiddleware);
+
+    app.get("/profile", getProfile);
+    ```
+
+    `authMiddleware` pehle registered hai, isliye `/profile` se pehle execute hoga.
+
+    Agar:
+
+    ```javascript id="g8m2kp"
+    app.get("/profile", getProfile);
+
+    app.use(authMiddleware);
+    ```
+
+    to `authMiddleware` **already matched `/profile` ko protect nahi karega**.
+
+    > **Express middleware execution is order-dependent.**
+
+
+
+
+
 3. What is the use of next() in Express?
 4. How do you implement global error handling?
 5. How do you structure a scalable Express application?
