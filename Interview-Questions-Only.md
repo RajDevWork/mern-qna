@@ -11101,6 +11101,132 @@ Browser automatically validation kar dega.
 **Additional Important Questions**
 
 1. Explain middleware and the types of middleware in Express.
+
+    ## Middleware in Express
+
+    **Middleware** ek function hota hai jo **request aur response ke beech execute hota hai**. Ye request ko inspect/modify kar sakta hai, response bhej sakta hai, ya `next()` call karke request ko next middleware/route handler tak pass kar sakta hai.
+
+    Basic flow:
+
+    ```text
+    Client Request
+        ↓
+    Middleware 1
+        ↓
+    Middleware 2
+        ↓
+    Route Handler
+        ↓
+    Response
+    ```
+
+    Basic syntax:
+
+    ```javascript
+    app.use((req, res, next) => {
+    console.log(req.method, req.url);
+    next();
+    });
+    ```
+
+    ### Types of Express Middleware
+
+    **1. Application-level middleware**
+
+    Pure application par apply hota hai:
+
+    ```javascript
+    app.use((req, res, next) => {
+    console.log("Request received");
+    next();
+    });
+    ```
+
+    **2. Router-level middleware**
+
+    Specific router par apply hota hai:
+
+    ```javascript
+    router.use(authMiddleware);
+
+    router.get("/profile", getProfile);
+    ```
+
+    **3. Built-in middleware**
+
+    Express ke built-in middleware:
+
+    ```javascript
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.static("public"));
+    ```
+
+    **4. Third-party middleware**
+
+    External packages se milta hai:
+
+    ```javascript
+    const cors = require("cors");
+    const helmet = require("helmet");
+
+    app.use(cors());
+    app.use(helmet());
+    ```
+
+    Examples: `cors`, `helmet`, `morgan`.
+
+    **5. Error-handling middleware**
+
+    Isme **4 parameters** hote hain:
+
+    ```javascript
+    app.use((err, req, res, next) => {
+    console.error(err);
+
+    res.status(500).json({
+        message: "Internal Server Error"
+    });
+    });
+    ```
+
+    Important:
+
+    ```javascript
+    (err, req, res, next)
+    ```
+
+    ---
+
+    ## ⭐ Interview Answer
+
+    > **Middleware in Express is a function that executes during the request-response lifecycle. It can access and modify the request and response objects, perform tasks such as authentication, logging, validation, or parsing, and either send a response or call `next()` to pass control to the next middleware.**
+    >
+    > **The main types are application-level, router-level, built-in, third-party, and error-handling middleware.**
+
+    ### Interview Follow-up: `next()` kya karta hai?
+
+    > **`next()` control ko current middleware se next middleware or route handler tak pass karta hai. Agar middleware `next()` call nahi karta aur response bhi send nahi karta, request hang ho sakti hai.**
+
+    ```text
+    Request
+    ↓
+    authMiddleware
+    ↓ next()
+    validationMiddleware
+    ↓ next()
+    controller
+    ↓
+    Response
+    ```
+
+    **One-line memory trick:**
+
+    > **Middleware = Request ke beech ka processing layer.**
+
+
+
+
 2. How does request and response flow in Express?
 3. What is the use of next() in Express?
 4. How do you implement global error handling?
