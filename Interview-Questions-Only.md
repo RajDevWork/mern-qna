@@ -11384,6 +11384,100 @@ Browser automatically validation kar dega.
 
 
 3. What is the use of next() in Express?
+
+    ## `next()` in Express
+
+    `next()` ka use **current middleware se control ko next middleware/handler tak pass karne ke liye** hota hai.
+
+    Simple:
+
+    ```text
+    Request
+    ↓
+    Middleware 1
+    ↓ next()
+    Middleware 2
+    ↓ next()
+    Route Handler
+    ↓
+    Response
+    ```
+
+    ### Example
+
+    ```javascript
+    app.use((req, res, next) => {
+    console.log("Middleware executed");
+
+    next();
+    });
+
+    app.get("/users", (req, res) => {
+    res.json({ message: "Users" });
+    });
+    ```
+
+    Yahan `next()` call hone ke baad request `/users` route handler tak pahunchti hai.
+
+    ---
+
+    ### Agar `next()` nahi call kiya?
+
+    ```javascript
+    app.use((req, res, next) => {
+    console.log("Middleware executed");
+    // next() nahi hai
+    });
+    ```
+
+    Aur response bhi nahi bheja:
+
+    ```text
+    Request
+    ↓
+    Middleware
+    ↓
+    ❌ STOP / request hangs
+    ```
+
+    ---
+
+    ### `next(error)` bhi important hai
+
+    Agar middleware me error aaye:
+
+    ```javascript
+    app.use((req, res, next) => {
+    try {
+        // logic
+    } catch (error) {
+        next(error);
+    }
+    });
+    ```
+
+    `next(error)` Express ko **error-handling middleware** ki taraf bhejta hai:
+
+    ```javascript
+    app.use((err, req, res, next) => {
+    res.status(500).json({
+        message: "Something went wrong"
+    });
+    });
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **`next()` is a function in Express that passes control from the current middleware to the next middleware or route handler in the middleware chain. If we don't call `next()` and don't send a response, the request can remain hanging. We can also call `next(error)` to pass an error to the error-handling middleware.**
+
+    ### One-line memory trick:
+
+    > **`next()` = "Current middleware ka kaam ho gaya, ab next ko control do."**
+
+    ---
+
 4. How do you implement global error handling?
 5. How do you structure a scalable Express application?
 6. How do you secure an Express API (rate limiting, headers)?
