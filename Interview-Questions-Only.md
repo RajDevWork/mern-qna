@@ -12028,12 +12028,110 @@ Browser automatically validation kar dega.
 
     > **Secure API = Rate Limit + Headers + HTTPS + CORS + Validation + Auth + Authorization + Secure Secrets + Safe Errors.**
 
-    **Interview duration:** ~60–90 seconds.
-
 
 
 
 7. Explain route parameter vs. query parameter.
+
+    ## Route Parameter vs Query Parameter
+
+    Dono URL se data receive karne ke liye use hote hain, but **purpose different** hota hai.
+
+    ### 1. Route Parameter
+
+    Route parameter URL ke **path ka part** hota hai aur generally kisi **specific resource ko identify** karta hai.
+
+    ```http
+    GET /users/123
+    ```
+
+    Yahan `123` route parameter hai.
+
+    Express:
+
+    ```javascript
+    app.get("/users/:id", (req, res) => {
+    console.log(req.params.id);
+    });
+    ```
+
+    ```text
+    /users/:id
+        ↑
+    req.params
+    ```
+
+    Common use:
+
+    ```text
+    /users/123
+    /products/456
+    /orders/789
+    ```
+
+    ---
+
+    ### 2. Query Parameter
+
+    Query parameter URL ke **`?` ke baad** aata hai aur generally **filtering, sorting, searching, pagination** ke liye use hota hai.
+
+    ```http
+    GET /users?page=2&limit=10&sort=name
+    ```
+
+    Express:
+
+    ```javascript
+    app.get("/users", (req, res) => {
+    const { page, limit, sort } = req.query;
+
+    console.log(page);
+    console.log(limit);
+    console.log(sort);
+    });
+    ```
+
+    ```text
+    /users?page=2&limit=10
+        ↑
+        req.query
+    ```
+
+    ---
+
+    ## Quick Comparison
+
+    | Route Parameter             | Query Parameter               |
+    | --------------------------- | ----------------------------- |
+    | `req.params`                | `req.query`                   |
+    | Resource identify karta hai | Result ko control karta hai   |
+    | Usually required            | Usually optional              |
+    | `/users/123`                | `/users?page=2`               |
+    | Specific resource           | Filter/search/sort/pagination |
+
+    ### ⭐ Easy Rule
+
+    > **Route parameter = "Which resource?"**
+    > **Query parameter = "How do you want the resources?"**
+
+    Example:
+
+    ```http
+    GET /products/123?reviews=true
+    ```
+
+    ```text
+    123           → req.params.id
+    reviews=true  → req.query.reviews
+    ```
+
+    **English interview answer:**
+
+    > **Route parameters are part of the URL path and are typically used to identify a specific resource, while query parameters are appended after `?` and are commonly used for filtering, sorting, searching, or pagination. In Express, route parameters are accessed through `req.params` and query parameters through `req.query`.**
+
+
+
+
 8. What’s the role of CORS in Express and how to configure it?
 9. How do you handle file uploads?
 10. How would you implement logging in Express?
