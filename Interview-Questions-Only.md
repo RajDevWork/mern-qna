@@ -11827,6 +11827,212 @@ Browser automatically validation kar dega.
 
 
 6. How do you secure an Express API (rate limiting, headers)?
+
+    ## Express API ko kaise secure karoge?
+
+    Production Express API ko secure karne ke liye **multiple layers** use karta hoon. Sirf authentication enough nahi hoti.
+
+    Typical flow:
+
+    ```text
+    Client
+    ↓
+    HTTPS
+    ↓
+    Reverse Proxy / Load Balancer
+    ↓
+    Rate Limiting
+    ↓
+    Security Headers
+    ↓
+    Authentication
+    ↓
+    Authorization
+    ↓
+    Validation + Sanitization
+    ↓
+    Controller
+    ↓
+    Database
+    ```
+
+    ### 1. Rate Limiting
+
+    Ek IP/user ko excessive requests karne se prevent karta hai.
+
+    ```javascript
+    const rateLimit = require("express-rate-limit");
+
+    const limiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 100
+    });
+
+    app.use("/api", limiter);
+    ```
+
+    Agar 1 minute me limit cross hui:
+
+    ```text
+    HTTP 429 → Too Many Requests
+    ```
+
+    Distributed application me rate-limit state ko Redis jaise shared store me rakhna useful ho sakta hai.
+
+    ---
+
+    ### 2. Security Headers — Helmet ⭐
+
+    `helmet` commonly used Express middleware hai jo security-related HTTP headers configure karta hai.
+
+    ```javascript
+    const helmet = require("helmet");
+
+    app.use(helmet());
+    ```
+
+    Ye browser ko kuch common attacks ke against safer security policies apply karne me help karta hai.
+
+    ---
+
+    ### 3. CORS
+
+    Sirf trusted origins ko API access dena:
+
+    ```javascript
+    const cors = require("cors");
+
+    app.use(cors({
+    origin: "https://myapp.com"
+    }));
+    ```
+
+    Production me unnecessarily:
+
+    ```javascript
+    origin: "*"
+    ```
+
+    use nahi karna chahiye, especially credentialed requests ke saath.
+
+    ---
+
+    ### 4. Input Validation
+
+    Client input par blindly trust nahi karna:
+
+    ```javascript
+    const schema = z.object({
+    email: z.string().email(),
+    age: z.number().positive()
+    });
+    ```
+
+    Validation libraries:
+
+    * Zod
+    * Joi
+    * express-validator
+
+    ---
+
+    ### 5. Authentication + Authorization
+
+    Authentication:
+
+    > **Who are you?**
+
+    Authorization:
+
+    > **What are you allowed to do?**
+
+    Example:
+
+    ```text
+    JWT
+    ↓
+    Authentication
+    ↓
+    User = Admin
+    ↓
+    Authorization
+    ↓
+    Allowed?
+    ```
+
+    ---
+
+    ### 6. HTTPS
+
+    Production API ko HTTPS ke through serve karna chahiye, taaki credentials/tokens/data network par plaintext me transmit na hon.
+
+    Usually:
+
+    ```text
+    Client
+    ↓ HTTPS
+    Nginx / Load Balancer
+    ↓
+    Express
+    ```
+
+    ---
+
+    ### 7. Secure Cookies
+
+    Agar authentication cookies use kar rahe ho:
+
+    ```javascript
+    res.cookie("session", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict"
+    });
+    ```
+
+    `httpOnly` client-side JavaScript access ko prevent karta hai.
+
+    ---
+
+    ### 8. Don't Expose Sensitive Information
+
+    Bad:
+
+    ```json
+    {
+    "error": "MongoDB password xyz123 is invalid..."
+    }
+    ```
+
+    Better:
+
+    ```json
+    {
+    "message": "Internal Server Error"
+    }
+    ```
+
+    Actual error details server-side logs/error monitoring me rakho.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I secure an Express API using multiple layers. I use rate limiting to prevent abuse and brute-force attacks, Helmet for security-related HTTP headers, strict CORS configuration, HTTPS for encrypted communication, input validation and sanitization, authentication and authorization, and secure cookie settings where applicable. I also avoid exposing sensitive information in error responses and keep secrets in environment variables or a secret manager. For distributed applications, I use a shared rate-limit store such as Redis when required.**
+
+    ### ⭐ Interview Follow-up: "Rate limiting aur Helmet ka role kya hai?"
+
+    > **Rate limiting controls how frequently clients can access the API, while Helmet helps configure security-related HTTP headers. They solve different security concerns and are typically used together.**
+
+    ### One-line memory trick
+
+    > **Secure API = Rate Limit + Headers + HTTPS + CORS + Validation + Auth + Authorization + Secure Secrets + Safe Errors.**
+
+    **Interview duration:** ~60–90 seconds.
+
+
+
+
 7. Explain route parameter vs. query parameter.
 8. What’s the role of CORS in Express and how to configure it?
 9. How do you handle file uploads?
