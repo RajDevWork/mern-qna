@@ -11479,6 +11479,148 @@ Browser automatically validation kar dega.
     ---
 
 4. How do you implement global error handling?
+
+    ## Global Error Handling in Express
+
+    **Global error handling** ka matlab hai application ke different routes/middlewares se aane wale errors ko **ek centralized error-handling middleware** me handle karna.
+
+    Instead of har route me:
+
+    ```javascript
+    try {
+    // ...
+    } catch (error) {
+    res.status(500).json(...);
+    }
+    ```
+
+    repeat karne ke bajay ek central handler rakhte hain.
+
+    ### Flow
+
+    ```text
+    Request
+    ↓
+    Middleware
+    ↓
+    Route / Controller
+    ↓
+    Error ❌
+    ↓
+    next(error)
+    ↓
+    Global Error Handler
+    ↓
+    Response
+    ```
+
+    ---
+
+    ## Implementation
+
+    ### 1. Custom Error Class
+
+    ```javascript
+    class AppError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+    }
+    ```
+
+    Controller:
+
+    ```javascript
+    app.get("/users/:id", async (req, res, next) => {
+    try {
+        const user = await getUser(req.params.id);
+
+        if (!user) {
+        throw new AppError("User not found", 404);
+        }
+
+        res.json(user);
+    } catch (error) {
+        next(error);
+    }
+    });
+    ```
+
+    ### 2. Global Error Middleware
+
+    **Ye middleware routes ke baad register karna important hai.**
+
+    ```javascript
+    app.use((err, req, res, next) => {
+    console.error(err);
+
+    const statusCode = err.statusCode || 500;
+
+    res.status(statusCode).json({
+        success: false,
+        message: err.message || "Internal Server Error"
+    });
+    });
+    ```
+
+    ```text
+    app.use(routes)
+        ↓
+    app.use(globalErrorHandler)  ← last
+    ```
+
+    ---
+
+    ## Production me
+
+    Production me internal details expose nahi karni chahiye:
+
+    ```javascript
+    app.use((err, req, res, next) => {
+    console.error(err);
+
+    res.status(err.statusCode || 500).json({
+        success: false,
+        message:
+        process.env.NODE_ENV === "production"
+            ? "Internal Server Error"
+            : err.message
+    });
+    });
+    ```
+
+    Aur actual error ko centralized logging/error-monitoring system me log kar sakte hain.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I implement global error handling using a centralized error-handling middleware in Express. Controllers pass errors using `next(error)`, and the global middleware handles them consistently by setting the appropriate HTTP status code and response format. I also log the actual error for debugging while avoiding exposing sensitive internal details to clients in production.**
+
+    ### ⭐ Interview Follow-up: `next(error)` vs `next()`
+
+    ```text
+    next()
+    → Next normal middleware
+
+    next(error)
+    → Error-handling middleware
+    ```
+
+    Error middleware ki signature **4 parameters** ki hoti hai:
+
+    ```javascript
+    (err, req, res, next)
+    ```
+
+    **One-line memory trick:**
+
+    > **Controller error → `next(error)` → Global Error Handler → Consistent Response.**
+
+
+
+
 5. How do you structure a scalable Express application?
 6. How do you secure an Express API (rate limiting, headers)?
 7. Explain route parameter vs. query parameter.
