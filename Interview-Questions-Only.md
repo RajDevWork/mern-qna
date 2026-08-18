@@ -12133,6 +12133,162 @@ Browser automatically validation kar dega.
 
 
 8. What’s the role of CORS in Express and how to configure it?
+
+    ## CORS kya hai?
+
+    **CORS = Cross-Origin Resource Sharing**
+
+    Browser security policy ke according, ek origin ki web application normally kisi **different origin** par API ko freely access nahi kar sakti.
+
+    Example:
+
+    ```text
+    Frontend
+    https://myapp.com
+        ↓
+        ↓ API Request
+        ↓
+    Backend
+    https://api.myapp.com
+    ```
+
+    Ye different **origins** hain, isliye browser CORS rules check karega.
+
+    > **Important:** CORS primarily **browser-side access control** hai. Ye server ko Postman/curl jaise clients se protect nahi karta.
+
+    ---
+
+    ## Express me CORS configure kaise karte hain?
+
+    `cors` package use kar sakte ho:
+
+    ```bash
+    npm install cors
+    ```
+
+    Basic:
+
+    ```javascript
+    const cors = require("cors");
+
+    app.use(cors());
+    ```
+
+    Ye broad access allow kar sakta hai, lekin production me specific origins configure karna better hai.
+
+    ### Production-style configuration
+
+    ```javascript
+    app.use(cors({
+    origin: "https://myapp.com",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+    }));
+    ```
+
+    Ab browser se `https://myapp.com` ko API access allow hoga.
+
+    ---
+
+    ## Multiple Origins
+
+    ```javascript
+    const allowedOrigins = [
+    "https://myapp.com",
+    "https://admin.myapp.com"
+    ];
+
+    app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        } else {
+        callback(new Error("Not allowed by CORS"));
+        }
+    }
+    }));
+    ```
+
+    ---
+
+    ## Credentials ka important point ⭐
+
+    Agar cookies/session authentication use kar rahe ho:
+
+    ```javascript
+    app.use(cors({
+    origin: "https://myapp.com",
+    credentials: true
+    }));
+    ```
+
+    Frontend:
+
+    ```javascript
+    fetch("https://api.myapp.com/users", {
+    credentials: "include"
+    });
+    ```
+
+    Aur credentialed requests ke saath:
+
+    ```text
+    Access-Control-Allow-Origin: *
+    ```
+
+    use nahi kar sakte.
+
+    ---
+
+    ## Preflight Request
+
+    Complex cross-origin requests se pehle browser **OPTIONS** request bhej sakta hai.
+
+    ```text
+    Browser
+    ↓
+    OPTIONS /api/users
+    ↓
+    Server
+    ↓
+    CORS permission?
+    ↓
+    Actual POST /api/users
+    ```
+
+    CORS middleware generally preflight handling me help karta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **CORS stands for Cross-Origin Resource Sharing. It controls whether a browser is allowed to make cross-origin requests to an Express API. In Express, I configure it using the `cors` middleware and explicitly allow trusted origins, methods, and credentials where required. In production, I avoid allowing all origins unnecessarily.**
+
+    ### ⭐ Interview Follow-up
+
+    **Q. CORS vs Authentication?**
+
+    > **CORS controls which browser origins are allowed to access the API, while authentication determines who the user is. CORS is not a replacement for authentication or authorization.**
+
+    ```text
+    CORS
+    → Which browser origins can access?
+
+    Authentication
+    → Who are you?
+
+    Authorization
+    → What are you allowed to do?
+    ```
+
+    **One-line memory trick:**
+
+    > **CORS = Browser ko batana ki kaunse origins se API request allowed hai.**
+
+
+
+
+
 9. How do you handle file uploads?
 10. How would you implement logging in Express?
 11. What is the use of express-validator?
