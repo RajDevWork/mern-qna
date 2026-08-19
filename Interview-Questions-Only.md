@@ -12290,6 +12290,174 @@ Browser automatically validation kar dega.
 
 
 9. How do you handle file uploads?
+
+    ## File Upload Express me kaise handle karte ho?
+
+    Express me file upload ke liye commonly **Multer** middleware use karte hain. Client usually file ko `multipart/form-data` ke through send karta hai.
+
+    Basic flow:
+
+    ```text
+    Client
+    ↓ multipart/form-data
+    Express
+    ↓
+    Multer
+    ↓
+    Validate file
+    ↓
+    Storage
+    ↓
+    Response
+    ```
+
+    ### 1. Multer install
+
+    ```bash
+    npm install multer
+    ```
+
+    ### 2. Basic upload
+
+    ```javascript
+    const multer = require("multer");
+
+    const upload = multer({
+    dest: "uploads/"
+    });
+
+    app.post("/upload", upload.single("file"), (req, res) => {
+    console.log(req.file);
+
+    res.json({
+        message: "File uploaded successfully"
+    });
+    });
+    ```
+
+    Frontend/Postman me field name:
+
+    ```text
+    file
+    ```
+
+    Multer uploaded file ko:
+
+    ```javascript
+    req.file
+    ```
+
+    me provide karta hai.
+
+    ---
+
+    ## Multiple Files
+
+    ```javascript
+    app.post(
+    "/upload",
+    upload.array("files", 5),
+    (req, res) => {
+        console.log(req.files);
+        res.json({ message: "Files uploaded" });
+    }
+    );
+    ```
+
+    ---
+
+    ## ⭐ Production me sirf upload karna enough nahi hai
+
+    File upload security important hai.
+
+    ### File size limit
+
+    ```javascript
+    const upload = multer({
+    dest: "uploads/",
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    }
+    });
+    ```
+
+    Yahan maximum **5 MB**.
+
+    ### File type validation
+
+    ```javascript
+    const upload = multer({
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith("image/")) {
+        cb(null, true);
+        } else {
+        cb(new Error("Only images are allowed"));
+        }
+    }
+    });
+    ```
+
+    Production me sirf `Content-Type` par blindly trust nahi karna chahiye; uploaded content ko appropriately validate/inspect bhi karna chahiye.
+
+    ---
+
+    ## Where should files be stored?
+
+    Small/local development:
+
+    ```text
+    Express Server
+        ↓
+    uploads/
+    ```
+
+    Production me generally object storage better hota hai:
+
+    ```text
+    Client
+    ↓
+    Express
+    ↓
+    S3 / Cloudinary / ImageKit
+    ```
+
+    Database me usually **file itself nahi**, balki metadata/URL store karte hain:
+
+    ```json
+    {
+    "name": "profile.jpg",
+    "url": "https://storage.example.com/profile.jpg"
+    }
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I handle file uploads in Express using multipart/form-data and middleware such as Multer. I validate file size and type, and for production applications I generally store files in object storage such as S3 rather than keeping them on the application server. I store the file URL and metadata in the database. I also apply authentication, authorization, upload limits, and appropriate file validation to prevent malicious uploads.**
+
+    ### Interview Follow-up
+
+    **Q. Why not store uploaded files directly on the Node.js server?**
+
+    > **Because in a horizontally scaled application, different instances may have different local filesystems, and files can be lost when containers are replaced. Object storage provides durable, centralized storage that can be shared across instances.**
+
+    ```text
+                        ┌→ Node 1
+    Client → Load Balancer ├→ Node 2
+                        └→ Node 3
+                            ↓
+                        S3
+    ```
+
+    ### One-line memory trick
+
+    > **Multer handles the upload → validate it → store in S3/object storage → save URL/metadata in DB.**
+
+
+
+
+
 10. How would you implement logging in Express?
 11. What is the use of express-validator?
 12. How do you prevent SQL/NoSQL injection in Express?
