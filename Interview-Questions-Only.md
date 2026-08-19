@@ -12773,6 +12773,186 @@ Browser automatically validation kar dega.
 
 
 12. How do you prevent SQL/NoSQL injection in Express?
+
+    ## Hinglish Explanation
+
+    **SQL/NoSQL Injection** tab hota hai jab attacker malicious input ke through tumhari database query ka **meaning manipulate** karne ki koshish karta hai.
+
+    Example:
+
+    ```text id="q2y4n7"
+    User Input
+    ↓
+    Directly Query me concatenate
+    ↓
+    Malicious Input
+    ↓
+    Database Query Manipulation ❌
+    ```
+
+    Express khud injection prevent nahi karta. Prevention ke liye **safe query practices + validation + least privilege** use karte hain.
+
+    ---
+
+    ## 1. SQL Injection Prevent Karna
+
+    ❌ Bad:
+
+    ```javascript id="k0q2pg"
+    const email = req.body.email;
+
+    const query =
+    `SELECT * FROM users WHERE email = '${email}'`;
+
+    db.query(query);
+    ```
+
+    User input directly SQL string me concatenate ho raha hai.
+
+    ### ✅ Parameterized Query
+
+    ```javascript id="1b4j7k"
+    const query =
+    "SELECT * FROM users WHERE email = $1";
+
+    db.query(query, [req.body.email]);
+    ```
+
+    Database input ko **query structure se separate** treat karta hai.
+
+    ORM/query builders bhi help karte hain:
+
+    ```javascript id="5f5j3c"
+    await prisma.user.findUnique({
+    where: {
+        email: req.body.email
+    }
+    });
+    ```
+
+    ---
+
+    ## 2. NoSQL Injection Prevent Karna
+
+    MongoDB me blindly user-controlled objects query me pass nahi karne chahiye.
+
+    ❌ Risky:
+
+    ```javascript id="c8o3dz"
+    const user = await User.findOne({
+    email: req.body.email
+    });
+    ```
+
+    Agar API `email` ko object ke form me accept kar leti hai, unexpected query operators inject karne ki possibility ho sakti hai.
+
+    ### ✅ Validate Input Shape
+
+    ```javascript id="9sl4qf"
+    const schema = z.object({
+    email: z.string().email()
+    });
+    ```
+
+    Ab expected input:
+
+    ```json id="1yd7xw"
+    {
+    "email": "raj@gmail.com"
+    }
+    ```
+
+    not:
+
+    ```json id="i0g5yv"
+    {
+    "email": {
+        "$ne": null
+    }
+    }
+    ```
+
+    MongoDB/Mongoose side par operator injection ke against appropriate configuration/version-specific protections bhi use kar sakte ho.
+
+    ---
+
+    ## 3. Input Validation
+
+    Request ko database tak bhejne se pehle validate karo:
+
+    ```javascript id="2ovh2d"
+    body("email")
+    .isEmail()
+    ```
+
+    Important:
+
+    > **Validation alone injection prevention ka complete solution nahi hai.**
+
+    Safe query construction bhi zaroori hai.
+
+    ---
+
+    ## 4. Don't Trust Client Input
+
+    Never assume:
+
+    ```javascript id="q8omk5"
+    req.body
+    req.query
+    req.params
+    ```
+
+    safe hain.
+
+    Har external input ko untrusted treat karo.
+
+    ---
+
+    ## 5. Least Privilege
+
+    Application ka database user unnecessarily powerful nahi hona chahiye.
+
+    Example:
+
+    ```text id="w0d7j1"
+    API User
+    ↓
+    Only required DB permissions
+    ```
+
+    Agar SQL injection vulnerability somehow exploit bhi ho jaye, attacker ke capabilities limited rahengi.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I prevent SQL injection by using parameterized queries, prepared statements, or ORM/query-builder methods instead of concatenating user input into SQL strings. For NoSQL injection, I strictly validate the expected input types and schemas and avoid passing uncontrolled objects directly into database queries. I also apply input validation, least-privilege database permissions, and keep database libraries updated.**
+
+    ### Interview Follow-up
+
+    **Q. Is input validation enough to prevent SQL injection?**
+
+    > **No. Validation is an additional security layer, but the primary protection for SQL injection is parameterized queries or prepared statements. For NoSQL, strict schema/type validation and safe query construction are important.**
+
+    ```text id="0ql8wl"
+    SQL Injection
+    → Parameterized Queries ⭐
+
+    NoSQL Injection
+    → Validate input shape/types
+    → Safe query construction
+    → Avoid uncontrolled operators
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Never concatenate user input into queries; use parameterized/safe queries and validate the input shape.**
+
+
+
+
+
 13. What is Helmet and how does it help with security?
 14. How do you handle role-based authorization in Express?
 15. What are virtual routes and when are they useful?
