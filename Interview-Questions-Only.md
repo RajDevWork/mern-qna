@@ -13083,6 +13083,211 @@ Browser automatically validation kar dega.
 
 
 14. How do you handle role-based authorization in Express?
+
+    ## Hinglish Explanation
+
+    **Role-Based Authorization (RBAC)** ka matlab hai user ke **role ke according decide karna ki usko kaunsa resource/action allowed hai**.
+
+    Example:
+
+    ```text id="3qz8jk"
+    User
+    ↓
+    Authentication
+    ↓
+    Role
+    ↓
+    Authorization
+    ↓
+    Allowed / Denied
+    ```
+
+    Suppose roles hain:
+
+    ```text id="9q2v7m"
+    admin
+    manager
+    user
+    ```
+
+    Rules:
+
+    ```text id="j8t4xk"
+    admin   → Create / Read / Update / Delete
+    manager → Read / Update
+    user    → Read
+    ```
+
+    ---
+
+    ## 1. Authentication Pehle
+
+    Pehle identify karna hai user kaun hai.
+
+    JWT example:
+
+    ```javascript id="9n7f3p"
+    req.user = {
+    id: 123,
+    role: "admin"
+    };
+    ```
+
+    Ye authentication middleware set kar sakta hai.
+
+    ---
+
+    ## 2. Authorization Middleware
+
+    Ek reusable middleware bana sakte ho:
+
+    ```javascript id="q7m3fs"
+    const authorize = (...allowedRoles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+        return res.status(401).json({
+            message: "Authentication required"
+        });
+        }
+
+        if (!allowedRoles.includes(req.user.role)) {
+        return res.status(403).json({
+            message: "Access denied"
+        });
+        }
+
+        next();
+    };
+    };
+    ```
+
+    Route:
+
+    ```javascript id="b5z2pu"
+    router.delete(
+    "/users/:id",
+    authenticate,
+    authorize("admin"),
+    deleteUser
+    );
+    ```
+
+    Flow:
+
+    ```text id="5w8z4k"
+    Request
+    ↓
+    authenticate
+    ↓
+    req.user.role
+    ↓
+    authorize("admin")
+    ↓
+    Admin?
+    ↙     ↘
+    No      Yes
+    ↓        ↓
+    403    Controller
+    ```
+
+    ---
+
+    ## Multiple Roles
+
+    ```javascript id="4z5v3n"
+    router.put(
+    "/users/:id",
+    authenticate,
+    authorize("admin", "manager"),
+    updateUser
+    );
+    ```
+
+    Ab `admin` **ya** `manager` access kar sakta hai.
+
+    ---
+
+    ## ⭐ RBAC vs Authentication
+
+    Important interview distinction:
+
+    ```text id="9f3bqk"
+    Authentication
+    → Who are you?
+
+    Authorization
+    → What are you allowed to do?
+    ```
+
+    Example:
+
+    ```text id="w8r1cs"
+    JWT valid
+        ↓
+    User = Raj
+        ↓
+    Role = user
+        ↓
+    DELETE /users/10
+        ↓
+    ❌ 403 Forbidden
+    ```
+
+    JWT valid hone ka matlab automatically permission hona nahi hai.
+
+    ---
+
+    ## Production Application me
+
+    Large application me sirf roles check karna enough nahi hota.
+
+    Example:
+
+    ```text id="v5h7mn"
+    Authentication
+        ↓
+    Role Authorization
+        ↓
+    Resource Ownership
+        ↓
+    Permission Check
+    ```
+
+    Example:
+
+    ```text id="c2f6qs"
+    Admin → Can edit any user
+
+    User → Can edit only own profile
+    ```
+
+    Isko kabhi-kabhi **RBAC + resource-level authorization** ke combination se handle karte hain.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I implement role-based authorization using middleware. First, an authentication middleware verifies the user's identity and attaches the user and role to `req.user`. Then an authorization middleware checks whether the user's role is allowed to perform the requested action. If the user is not authenticated, I return 401, and if they are authenticated but don't have permission, I return 403. For larger applications, I may combine RBAC with resource-level permissions or ownership checks.**
+
+    ### ⭐ Interview Follow-up
+
+    **Q. 401 vs 403?**
+
+    ```text id="1c0f5x"
+    401 Unauthorized
+    → User is not authenticated / valid credentials missing
+
+    403 Forbidden
+    → User is authenticated but doesn't have permission
+    ```
+
+    ### One-line memory trick:
+
+    > **Authenticate → Identify user → Check role/permission → Allow or return 403.**
+
+
+
+
 15. What are virtual routes and when are they useful?
 16. Difference between synchronous and asynchronous middleware.
 17. How do you optimize performance in Express apps?
