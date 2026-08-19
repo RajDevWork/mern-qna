@@ -12609,6 +12609,169 @@ Browser automatically validation kar dega.
 
 
 11. What is the use of express-validator?
+
+    ## Hinglish Explanation
+
+    **`express-validator`** Express applications me **request data ko validate aur sanitize** karne ke liye use hone wali library hai.
+
+    Suppose registration API hai:
+
+    ```text
+    POST /register
+
+    {
+    "email": "raj@gmail.com",
+    "password": "123456"
+    }
+    ```
+
+    Hume check karna hai:
+
+    * Email valid hai?
+    * Password minimum length ka hai?
+    * Required fields present hain?
+    * Input ko sanitize karna hai?
+
+    Ye kaam `express-validator` se kar sakte hain.
+
+    ---
+
+    ## Basic Example
+
+    ```javascript
+    const { body, validationResult } = require("express-validator");
+
+    app.post(
+    "/register",
+
+    body("email")
+        .isEmail()
+        .withMessage("Invalid email"),
+
+    body("password")
+        .isLength({ min: 8 })
+        .withMessage("Password must be at least 8 characters"),
+
+    (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+        }
+
+        res.json({
+        message: "User registered"
+        });
+    }
+    );
+    ```
+
+    Flow:
+
+    ```text
+    Request
+    ↓
+    Validation Middleware
+    ↓
+    Valid?
+    ↙     ↘
+    No      Yes
+    ↓        ↓
+    400     Controller
+    ```
+
+    ---
+
+    ## Sanitization
+
+    Validation ke saath input ko normalize/sanitize bhi kar sakte hain:
+
+    ```javascript
+    body("email")
+    .trim()
+    .normalizeEmail()
+    .isEmail()
+    ```
+
+    Example:
+
+    ```text
+    "  RAJ@GMAIL.COM  "
+            ↓
+    "raj@gmail.com"
+    ```
+
+    ---
+
+    ## Middleware ko Separate Rakhna
+
+    Large project me validation ko controller ke andar nahi rakhunga.
+
+    ```text
+    routes/
+    ↓
+    validators/
+    ↓
+    controller/
+    ↓
+    service/
+    ```
+
+    Example:
+
+    ```javascript
+    const registerValidation = [
+    body("email").isEmail(),
+    body("password").isLength({ min: 8 })
+    ];
+
+    router.post(
+    "/register",
+    registerValidation,
+    registerUser
+    );
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    > **`express-validator` is a middleware-based validation and sanitization library for Express applications. It allows us to validate request body, query parameters, and route parameters before the request reaches the controller. It helps ensure that incoming data has the expected format and allows us to return consistent validation errors.**
+
+    ### Interview Follow-up
+
+    **Q. Validation aur sanitization me difference?**
+
+    > **Validation checks whether the input is acceptable, while sanitization transforms or cleans the input into a safer or normalized format.**
+
+    ```text
+    Validation
+    "Is this email valid?" → Yes/No
+
+    Sanitization
+    "  RAJ@GMAIL.COM  "
+            ↓
+    "raj@gmail.com"
+    ```
+
+    ### ⭐ Important Point
+
+    `express-validator` **authentication ya authorization ka replacement nahi hai**.
+
+    ```text
+    Validation     → Is input valid?
+    Authentication → Who is the user?
+    Authorization  → What can the user do?
+    ```
+
+    **One-line memory trick:**
+
+    > **express-validator = Validate + Sanitize incoming Express request data.**
+
+
+
 12. How do you prevent SQL/NoSQL injection in Express?
 13. What is Helmet and how does it help with security?
 14. How do you handle role-based authorization in Express?
