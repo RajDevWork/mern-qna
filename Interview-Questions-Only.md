@@ -12954,6 +12954,134 @@ Browser automatically validation kar dega.
 
 
 13. What is Helmet and how does it help with security?
+
+    ## Helmet kya hai?
+
+    **Helmet** Express.js ke liye middleware hai jo application me **security-related HTTP headers** configure karta hai.
+
+    Simple words me:
+
+    > **Helmet browser ko security-related instructions bhejne me help karta hai, jisse kuch common web vulnerabilities ka risk reduce hota hai.**
+
+    Install:
+
+    ```bash id="8q6c4m"
+    npm install helmet
+    ```
+
+    Use:
+
+    ```javascript id="m0f5h7"
+    const helmet = require("helmet");
+
+    app.use(helmet());
+    ```
+
+    ---
+
+    ## Helmet kya karta hai?
+
+    Helmet multiple HTTP security headers configure karta hai.
+
+    For example:
+
+    ```text id="2n7f3c"
+    Browser
+    ↑
+    Security Headers
+    ↑
+    Express + Helmet
+    ```
+
+    Common protections include:
+
+    ### 1. Content Security Policy (CSP)
+
+    Browser ko restrict kar sakta hai ki scripts/resources **kahaan se load** ho sakte hain.
+
+    XSS risk reduce karne me help karta hai.
+
+    ---
+
+    ### 2. `X-Content-Type-Options`
+
+    Browser ko MIME type ko unnecessarily guess karne se rokta hai.
+
+    ```http
+    X-Content-Type-Options: nosniff
+    ```
+
+    ---
+
+    ### 3. `Strict-Transport-Security` (HSTS)
+
+    Browser ko HTTPS use karne ke liye instruct karta hai.
+
+    ```http
+    Strict-Transport-Security: ...
+    ```
+
+    ---
+
+    ### 4. Clickjacking Protection
+
+    Helmet appropriate headers ke through page ko unauthorized framing se protect karne me help kar sakta hai.
+
+    ---
+
+    ## Important ⭐
+
+    Helmet **complete security solution nahi hai**.
+
+    ```text id="6i8n8w"
+    Helmet
+    +
+    HTTPS
+    +
+    Authentication
+    +
+    Authorization
+    +
+    Rate Limiting
+    +
+    Input Validation
+    +
+    Secure Cookies
+    +
+    Safe Database Queries
+    ```
+
+    Sab milkar API/application security improve karte hain.
+
+    Also, Helmet ka default configuration use karne ke baad bhi **CSP jaise policies ko application requirements ke according configure/test** karna important hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Helmet is a security middleware for Express that sets and configures various HTTP security headers. It helps reduce the risk of common web vulnerabilities by providing protections such as Content Security Policy, MIME-sniffing protection, HSTS, and clickjacking-related protections. I typically use `app.use(helmet())` and customize specific policies based on the application's requirements. Helmet is one layer of security and does not replace authentication, authorization, input validation, HTTPS, or rate limiting.**
+
+    ### ⭐ Interview Follow-up
+
+    **Q. Helmet vs CORS?**
+
+    ```text id="9r4b6j"
+    Helmet
+    → Security-related HTTP headers
+
+    CORS
+    → Which browser origins can access the API
+    ```
+
+    Dono ka purpose different hai aur production Express application me **dono use kiye ja sakte hain**.
+
+    ### One-line memory trick:
+
+    > **Helmet = Express application ke security headers ka protection layer.**
+
+
+
+
 14. How do you handle role-based authorization in Express?
 15. What are virtual routes and when are they useful?
 16. Difference between synchronous and asynchronous middleware.
