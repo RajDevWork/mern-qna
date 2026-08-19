@@ -12459,6 +12459,155 @@ Browser automatically validation kar dega.
 
 
 10. How would you implement logging in Express?
+
+    ## Hinglish Explanation
+
+    **Express me logging** ka use application ke important events, requests, errors aur performance information ko record karne ke liye hota hai.
+
+    Common approach:
+
+    ```text
+    Client Request
+        ↓
+    Logging Middleware
+        ↓
+    Controller
+        ↓
+    Response
+        ↓
+    Logs
+    ```
+
+    Development me `console.log()` use kar sakte hain, but production me structured logging ke liye **Winston** ya **Pino** jaise libraries better hain. HTTP request logging ke liye **Morgan** bhi commonly use hota hai.
+
+    ### 1. Morgan — HTTP Request Logging
+
+    ```javascript
+    const morgan = require("morgan");
+
+    app.use(morgan("combined"));
+    ```
+
+    Example log:
+
+    ```text
+    GET /api/users 200 45ms
+    ```
+
+    Ye mainly request method, URL, status code aur response time jaise details log karta hai.
+
+    ---
+
+    ### 2. Winston / Pino — Application Logging
+
+    Example with Winston:
+
+    ```javascript
+    const winston = require("winston");
+
+    const logger = winston.createLogger({
+    level: "info",
+    format: winston.format.json(),
+    transports: [
+        new winston.transports.Console()
+    ]
+    });
+    ```
+
+    Then:
+
+    ```javascript
+    logger.info("User created", {
+    userId: 123
+    });
+    ```
+
+    Error:
+
+    ```javascript
+    logger.error("Database connection failed", {
+    error: error.message
+    });
+    ```
+
+    ---
+
+    ### 3. Structured Logging ⭐
+
+    Production me plain text ke bajay structured JSON logs useful hote hain:
+
+    ```json
+    {
+    "level": "error",
+    "message": "Payment failed",
+    "requestId": "abc123",
+    "userId": 45
+    }
+    ```
+
+    Isse logs ko Elasticsearch, Datadog, CloudWatch, Loki etc. me easily search/filter kiya ja sakta hai.
+
+    ---
+
+    ### 4. Request ID
+
+    Har request ko unique ID dena distributed systems me bahut useful hai:
+
+    ```text
+    Request ID: abc123
+
+    API Gateway
+        ↓
+    Order Service
+        ↓
+    Payment Service
+        ↓
+    Database
+    ```
+
+    Sab services me same `requestId` log karoge to ek complete request ko trace karna easier hota hai.
+
+    ---
+
+    ### 5. Sensitive Data Avoid Karna
+
+    Logs me ye directly nahi log karna chahiye:
+
+    ```text
+    ❌ Password
+    ❌ JWT / access token
+    ❌ API keys
+    ❌ Credit card information
+    ```
+
+    ---
+
+    ## English Interview Answer
+
+    > **I implement logging at multiple levels in an Express application. I use Morgan or similar middleware for HTTP request logging and a structured logging library such as Pino or Winston for application and error logs. In production, I prefer JSON-based structured logs with useful fields such as timestamp, log level, request ID, endpoint, status code, and response time. I centralize these logs using platforms such as ELK, CloudWatch, or Datadog, and I make sure sensitive information like passwords, tokens, and API keys is never logged.**
+
+    ### Interview Follow-up
+
+    **Q. What would you log for a production API request?**
+
+    > **I would typically log the request ID, HTTP method, route, status code, response time, timestamp, and relevant non-sensitive context. For errors, I would also capture the error type and stack trace in the logging/monitoring system.**
+
+    Example:
+
+    ```text
+    requestId=abc123
+    method=POST
+    route=/api/orders
+    status=201
+    duration=145ms
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Morgan → HTTP logs | Winston/Pino → Application logs | Request ID → Correlation | Centralized logging → Production debugging.**
+
+
+
 11. What is the use of express-validator?
 12. How do you prevent SQL/NoSQL injection in Express?
 13. What is Helmet and how does it help with security?
