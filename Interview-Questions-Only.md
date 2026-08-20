@@ -13289,6 +13289,104 @@ Browser automatically validation kar dega.
 
 
 15. What are virtual routes and when are they useful?
+
+    ## Hinglish Explanation
+
+    **Virtual routes** Express ka official built-in term nahi hai. Usually iska use aise **logical/dynamic routes** ke liye kiya jata hai jinke peeche koi physical file/resource nahi hota. Route directly application logic se response generate karta hai.
+
+    Example:
+
+    ```javascript
+    app.get("/health", (req, res) => {
+    res.json({
+        status: "OK",
+        uptime: process.uptime()
+    });
+    });
+    ```
+
+    Yahan `/health` ke naam ki koi file nahi hai. Express directly response generate kar raha hai.
+
+    ### Dynamic Route bhi similar concept hai
+
+    ```javascript
+    app.get("/users/:id", (req, res) => {
+    res.json({
+        userId: req.params.id
+    });
+    });
+    ```
+
+    Same route multiple resources handle karta hai:
+
+    ```text
+    /users/101
+    /users/102
+    /users/103
+    ```
+
+    ---
+
+    ## Kab useful hote hain?
+
+    ### 1. Health Check
+
+    ```text
+    GET /health
+    ```
+
+    Load balancer ya monitoring system is endpoint ko check kar sakta hai.
+
+    ### 2. API Endpoints
+
+    ```text
+    GET /api/users
+    POST /api/users
+    GET /api/users/:id
+    ```
+
+    In routes ke liye physical HTML files ki requirement nahi hoti.
+
+    ### 3. Computed Responses
+
+    ```javascript
+    app.get("/stats", async (req, res) => {
+    const stats = await calculateStats();
+
+    res.json(stats);
+    });
+    ```
+
+    Response dynamically calculate hota hai.
+
+    ---
+
+    ## ⚠️ Interview me Important
+
+    Agar interviewer **"virtual routes"** bole, to clarify karna smart hai:
+
+    > **"Do you mean a dynamic/logical Express route, or are you referring to virtual hosts?"**
+
+    Because **virtual host** different concept hai.
+
+    ```text
+    Virtual/Logical Route
+    → Application-level dynamic endpoint
+
+    Virtual Host
+    → Same server/IP par multiple domains/applications
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **Express doesn't have an official feature specifically called virtual routes. If by virtual route we mean a logical or dynamic endpoint, it is a route that generates a response through application logic instead of mapping to a physical resource. They are useful for APIs, health checks, computed responses, and dynamic resources.**
+
+    ### One-line memory trick:
+
+    > **Virtual/logical route = URL exists, but there doesn't have to be a physical file behind it.**
+
+
+
 16. Difference between synchronous and asynchronous middleware.
 17. How do you optimize performance in Express apps?
 18. What is a proxy in Express and how to set it?
