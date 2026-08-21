@@ -13713,6 +13713,134 @@ Browser automatically validation kar dega.
 
 
 18. What is a proxy in Express and how to set it?
+
+    ## Hinglish Explanation
+
+    Express me **proxy** ka matlab hai ki Express application ke saamne ek **intermediary server** ho jo client requests ko backend tak forward kare.
+
+    Typical production setup:
+
+    ```text
+    Client
+    ↓
+    Nginx / Load Balancer
+    ↓
+    Express App
+    ↓
+    Database
+    ```
+
+    Proxy commonly use hota hai:
+
+    * HTTPS termination
+    * Load balancing
+    * Static files serve karne ke liye
+    * Multiple backend services ko route karne ke liye
+    * Client IP/protocol information forward karne ke liye
+
+    ---
+
+    ### `trust proxy` in Express ⭐
+
+    Express me specifically `trust proxy` setting important hai jab application **Nginx, AWS Load Balancer, Cloudflare** jaise reverse proxy ke peeche run ho.
+
+    ```javascript id="x7q2kd"
+    app.set("trust proxy", 1);
+    ```
+
+    Ab Express forwarded proxy headers jaise `X-Forwarded-For` ko appropriately trust kar sakta hai.
+
+    Example:
+
+    ```javascript id="3m6g9p"
+    app.set("trust proxy", 1);
+
+    app.get("/", (req, res) => {
+    console.log(req.ip);
+    res.send("Hello");
+    });
+    ```
+
+    Without proper proxy configuration, `req.ip` me actual client IP ke bajay proxy ka IP mil sakta hai.
+
+    ---
+
+    ### Nginx + Express Example
+
+    Nginx:
+
+    ```nginx id="q7j4mz"
+    location / {
+        proxy_pass http://localhost:3000;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    ```
+
+    Express:
+
+    ```javascript id="p8v2hc"
+    app.set("trust proxy", 1);
+    ```
+
+    Flow:
+
+    ```text id="n6t3rx"
+    Browser
+    ↓ HTTPS
+    Nginx
+    ↓ HTTP
+    Express :3000
+    ```
+
+    Nginx client information ko forwarded headers me pass karta hai, aur Express `trust proxy` configuration ke through un headers ko interpret kar sakta hai.
+
+    ---
+
+    ## ⚠️ Security Point
+
+    `trust proxy` ko blindly enable nahi karna chahiye.
+
+    ```javascript
+    app.set("trust proxy", true);
+    ```
+
+    Ye environment ke according safe ho sakta hai ya nahi. Agar untrusted clients directly forwarded headers control kar sakte hain, to IP-based security/rate limiting jaise mechanisms manipulate ho sakte hain.
+
+    Production me proxy topology ke according specific configuration better hai:
+
+    ```javascript id="q0g4tc"
+    app.set("trust proxy", 1);
+    ```
+
+    ya trusted proxy IP/subnet configuration.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **A proxy is an intermediary server that sits between the client and the Express application. In production, Express is commonly deployed behind a reverse proxy such as Nginx or a cloud load balancer. In Express, I configure `trust proxy` when the application is behind a trusted proxy so that values such as the client IP, protocol, and secure-cookie behavior are handled correctly. The setting should match the actual proxy topology rather than blindly trusting all forwarded headers.**
+
+    ### Interview Follow-up
+
+    **Q. Reverse proxy vs Express `trust proxy`?**
+
+    ```text
+    Reverse Proxy
+    → Nginx / Load Balancer
+    → Actually forwards the request
+
+    trust proxy
+    → Express configuration
+    → Tells Express which proxies it can trust
+    ```
+
+
+
+
 19. What is the use of app.locals and res.locals?
 20. How can you implement request tracing in Express?
 21. What is the event loop in Node.js and how does it work?
