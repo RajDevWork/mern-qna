@@ -13842,6 +13842,153 @@ Browser automatically validation kar dega.
 
 
 19. What is the use of app.locals and res.locals?
+
+    ## Hinglish Explanation
+
+    Express me **`app.locals`** aur **`res.locals`** dono application/request ke context me data store karne ke liye use hote hain, but **scope different** hota hai.
+
+    ### 1. `app.locals`
+
+    `app.locals` par rakha data **poori Express application ke liye available** hota hai.
+
+    ```javascript id="q4k7vz"
+    app.locals.appName = "My API";
+    app.locals.version = "1.0.0";
+    ```
+
+    Kahin bhi access kar sakte ho:
+
+    ```javascript id="x7p2dc"
+    console.log(req.app.locals.appName);
+    ```
+
+    Ye **application-level data** ke liye useful hai.
+
+    Examples:
+
+    * App configuration
+    * Application name/version
+    * Shared constants
+    * Reusable functions
+
+    ```text id="9y3w4m"
+    Express App
+        ↓
+    app.locals
+        ↓
+    Available across requests
+    ```
+
+    ---
+
+    ### 2. `res.locals`
+
+    `res.locals` ka data **sirf current request-response cycle** ke liye available hota hai.
+
+    ```javascript id="v4s8nk"
+    app.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
+    });
+    ```
+
+    Next middleware/route me:
+
+    ```javascript id="2j6m8q"
+    app.get("/profile", (req, res) => {
+    console.log(res.locals.user);
+    res.json(res.locals.user);
+    });
+    ```
+
+    Request complete hone ke baad ye data next request ke liye available nahi hota.
+
+    ```text id="p5r8cx"
+    Request 1
+    ↓
+    res.locals
+    ↓
+    Response
+    ↓
+    Destroyed
+
+    Request 2
+    ↓
+    New res.locals
+    ```
+
+    Common uses:
+
+    * Current authenticated user
+    * Request-specific data
+    * Template rendering variables
+    * Request-scoped flags/data
+
+    ---
+
+    ## Quick Comparison
+
+    | `app.locals`                        | `res.locals`           |
+    | ----------------------------------- | ---------------------- |
+    | Application-level                   | Request-level          |
+    | Multiple requests ke liye available | Sirf current request   |
+    | `req.app.locals` se access          | `res.locals` se access |
+    | Shared configuration/data           | Request-specific data  |
+
+    Example:
+
+    ```javascript id="7f5p2n"
+    app.locals.appName = "My API";
+
+    app.use((req, res, next) => {
+    res.locals.requestId = req.headers["x-request-id"];
+    next();
+    });
+    ```
+
+    ```text id="4z6h1w"
+    app.locals
+    → "My API"
+    → Application-wide
+
+    res.locals
+    → "requestId"
+    → Current request only
+    ```
+
+    ---
+
+    ## ⚠️ Important
+
+    `app.locals` me **user-specific ya request-specific data** store nahi karna chahiye.
+
+    ❌ Bad:
+
+    ```javascript id="j5v7yc"
+    app.locals.currentUser = req.user;
+    ```
+
+    Multiple users ki concurrent requests me data incorrectly share ho sakta hai.
+
+    Instead:
+
+    ```javascript id="9q2m5s"
+    res.locals.currentUser = req.user;
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **`app.locals` is used for application-wide data that should be accessible across requests, such as configuration values or shared utilities. `res.locals` is request-scoped and is used for data that should only be available during the current request-response cycle, such as the authenticated user or request-specific variables.**
+
+    ### ⭐ One-line memory trick
+
+    > **`app.locals` = Application-wide | `res.locals` = Current request only.**
+
+
+
+
 20. How can you implement request tracing in Express?
 21. What is the event loop in Node.js and how does it work?
 22. Explain the difference between process.nextTick() and setImmediate().
