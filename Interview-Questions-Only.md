@@ -14402,6 +14402,167 @@ Browser automatically validation kar dega.
 
 
 22. Explain the difference between process.nextTick() and setImmediate().
+
+    ## Hinglish Explanation
+
+    `process.nextTick()` aur `setImmediate()` dono Node.js me callback ko **later execute** karte hain, but unki **priority aur execution timing different** hoti hai.
+
+    ### 1. `process.nextTick()`
+
+    `process.nextTick()` ka callback current operation complete hone ke **immediately baad**, next event-loop phase se pehle execute hota hai.
+
+    ```javascript id="v9k2mx"
+    console.log("Start");
+
+    process.nextTick(() => {
+    console.log("nextTick");
+    });
+
+    console.log("End");
+    ```
+
+    Output:
+
+    ```text id="x4n7qp"
+    Start
+    End
+    nextTick
+    ```
+
+    Flow:
+
+    ```text id="r2m8ka"
+    Current JavaScript execution
+            ↓
+    process.nextTick queue
+            ↓
+    Event Loop
+    ```
+
+    Isliye `nextTick()` ki priority high hoti hai.
+
+    ---
+
+    ### 2. `setImmediate()`
+
+    `setImmediate()` callback ko Node.js event loop ke **Check phase** me execute karta hai.
+
+    ```javascript id="h6q3pw"
+    console.log("Start");
+
+    setImmediate(() => {
+    console.log("setImmediate");
+    });
+
+    console.log("End");
+    ```
+
+    Output:
+
+    ```text id="m3k7zs"
+    Start
+    End
+    setImmediate
+    ```
+
+    Flow:
+
+    ```text id="y5n8vc"
+    Current execution
+        ↓
+    Event Loop
+        ↓
+    Check phase
+        ↓
+    setImmediate callback
+    ```
+
+    ---
+
+    ## Main Difference ⭐
+
+    | `process.nextTick()`                      | `setImmediate()`                   |
+    | ----------------------------------------- | ---------------------------------- |
+    | Current operation ke immediately baad     | Event loop ke Check phase me       |
+    | `nextTick` queue                          | Check phase                        |
+    | Higher priority                           | Lower priority than `nextTick()`   |
+    | Event loop ke next phase se pehle execute | Event loop phase me execute        |
+    | Overuse starvation cause kar sakta hai    | Generally safer for deferring work |
+
+    ---
+
+    ## Example
+
+    ```javascript id="k8v2mz"
+    console.log("Start");
+
+    process.nextTick(() => {
+    console.log("nextTick");
+    });
+
+    setImmediate(() => {
+    console.log("setImmediate");
+    });
+
+    console.log("End");
+    ```
+
+    Output:
+
+    ```text id="r7q3xp"
+    Start
+    End
+    nextTick
+    setImmediate
+    ```
+
+    Normally:
+
+    ```text id="b5n9qc"
+    Synchronous code
+        ↓
+    process.nextTick()
+        ↓
+    setImmediate()
+    ```
+
+    ---
+
+    ## ⚠️ Important Interview Point
+
+    `process.nextTick()` ko recursively bahut zyada schedule karoge:
+
+    ```javascript id="f2k6mv"
+    function run() {
+    process.nextTick(run);
+    }
+
+    run();
+    ```
+
+    to `nextTick` queue continuously execute hoti rahegi aur event loop ke other phases ko starve kar sakti hai.
+
+    Isliye `process.nextTick()` ko unnecessarily use nahi karna chahiye.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **`process.nextTick()` schedules a callback to run immediately after the current JavaScript operation completes and before the event loop continues to its next phase. `setImmediate()` schedules a callback for the check phase of the event loop. Therefore, `process.nextTick()` generally has higher priority, while `setImmediate()` is used to defer work to a later event-loop phase. Excessive use of `process.nextTick()` can starve the event loop.**
+
+    ### ⭐ Interview Follow-up
+
+    **Q. Which one executes first?**
+
+    > **In normal execution, `process.nextTick()` runs before `setImmediate()`. However, the exact ordering between `setImmediate()` and timers can depend on where they are scheduled, especially inside I/O callbacks.**
+
+    ### ⭐ One-line memory trick
+
+    > **`nextTick()` → current operation ke baad, event-loop phase se pehle | `setImmediate()` → Check phase.**
+
+
+
+
 23. How does Node.js handle asynchronous I/O?
 24. What are streams and how do you use them?
 25. How does clustering work in Node.js?
