@@ -13990,6 +13990,186 @@ Browser automatically validation kar dega.
 
 
 20. How can you implement request tracing in Express?
+
+    ## Hinglish Explanation
+
+    **Request tracing** ka matlab hai har incoming request ko ek **unique Request ID / Correlation ID** dena aur us ID ko request ke complete flow me carry karna.
+
+    Ye especially distributed systems me useful hai:
+
+    ```text id="b8v2xk"
+    Client
+    ↓
+    API Gateway
+    ↓
+    Express
+    ↓
+    Order Service
+    ↓
+    Payment Service
+    ↓
+    Database
+    ```
+
+    Agar request ka `requestId = abc123` hai, to sab services ke logs me:
+
+    ```text id="4z7p9m"
+    requestId=abc123
+    ```
+
+    Isse production me ek particular request ka complete journey trace kar sakte ho.
+
+    ---
+
+    ### 1. Request ID Middleware
+
+    Simple implementation:
+
+    ```javascript id="x2f7km"
+    const crypto = require("crypto");
+
+    app.use((req, res, next) => {
+    const requestId =
+        req.headers["x-request-id"] || crypto.randomUUID();
+
+    req.requestId = requestId;
+    res.setHeader("X-Request-ID", requestId);
+
+    next();
+    });
+    ```
+
+    Ab request ke andar:
+
+    ```javascript id="k5m8qz"
+    console.log(req.requestId);
+    ```
+
+    available hoga.
+
+    ---
+
+    ### 2. Logging ke saath use karna
+
+    ```javascript id="7c3n9x"
+    app.use((req, res, next) => {
+    const requestId = req.requestId;
+
+    logger.info("Request received", {
+        requestId,
+        method: req.method,
+        path: req.path
+    });
+
+    next();
+    });
+    ```
+
+    Response ke time bhi:
+
+    ```javascript id="m1v6qa"
+    res.on("finish", () => {
+    logger.info("Request completed", {
+        requestId: req.requestId,
+        statusCode: res.statusCode
+    });
+    });
+    ```
+
+    Example logs:
+
+    ```text id="h4w8pk"
+    requestId=abc123
+    GET /orders
+
+    requestId=abc123
+    Order service started
+
+    requestId=abc123
+    Payment service called
+
+    requestId=abc123
+    GET /orders → 200 → 245ms
+    ```
+
+    ---
+
+    ### 3. Async Context Maintain Karna ⭐
+
+    Agar application me bahut saare asynchronous operations hain, request ID ko manually har function me pass karna inconvenient ho sakta hai.
+
+    Node.js me **AsyncLocalStorage** use kar sakte ho:
+
+    ```javascript id="c7r2nx"
+    const {
+    AsyncLocalStorage
+    } = require("node:async_hooks");
+
+    const asyncLocalStorage = new AsyncLocalStorage();
+
+    app.use((req, res, next) => {
+    const requestId = crypto.randomUUID();
+
+    asyncLocalStorage.run(
+        { requestId },
+        () => next()
+    );
+    });
+    ```
+
+    Ab application ke different async operations me current request context retrieve kiya ja sakta hai.
+
+    ---
+
+    ### 4. Distributed Tracing
+
+    Agar multiple microservices hain, sirf request ID se basic correlation ho sakti hai. Full distributed tracing ke liye **OpenTelemetry** jaise tooling ka use kar sakte ho.
+
+    ```text id="6h3w8q"
+    Trace
+    ├── Express API        120ms
+    ├── Order Service      80ms
+    ├── Payment Service    300ms
+    └── Database           40ms
+    ```
+
+    Isse sirf **kaunsi request thi** nahi, balki **request ne kahaan kitna time spend kiya** ye bhi identify kar sakte ho.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I implement request tracing by assigning a unique request ID to every incoming request. I store it in the request context, return it in the response headers, and include it in all application logs. For asynchronous operations, I can use Node.js `AsyncLocalStorage` to preserve the request context. In a microservices environment, I would use OpenTelemetry for distributed tracing so I can track the request across multiple services and identify latency bottlenecks.**
+
+    ### Interview Follow-up
+
+    **Q. Request ID aur Trace ID me difference?**
+
+    ```text id="q9r3mz"
+    Request ID
+    → Primarily request/log correlation ke liye
+
+    Trace ID
+    → Distributed trace ke complete lifecycle ko identify karta hai
+
+    Span ID
+    → Trace ke individual operation ko identify karta hai
+    ```
+
+    Example:
+
+    ```text id="n2x7kp"
+    Trace ID:  abc123
+    ├── Span: Express
+    ├── Span: Order Service
+    └── Span: Payment Service
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Request ID = request ko identify karo | Trace ID = complete distributed journey ko trace karo | Span ID = individual operation ko identify karo.**
+
+
 21. What is the event loop in Node.js and how does it work?
 22. Explain the difference between process.nextTick() and setImmediate().
 23. How does Node.js handle asynchronous I/O?
