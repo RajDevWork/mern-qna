@@ -14171,6 +14171,236 @@ Browser automatically validation kar dega.
 
 
 21. What is the event loop in Node.js and how does it work?
+
+    ## Hinglish Explanation
+
+    **Event Loop Node.js ka core mechanism hai jo asynchronous operations ko efficiently handle karta hai without blocking the main JavaScript thread.**
+
+    Node.js JavaScript code ko primarily **single JavaScript thread** par execute karta hai, lekin I/O operations ko efficiently handle karne ke liye **event loop + OS/libuv** ka use karta hai.
+
+    Simple flow:
+
+    ```text id="p8n4k2"
+    JavaScript Code
+        ↓
+    Call Stack
+        ↓
+    Async Operation
+        ↓
+    ┌─────────────────────┐
+    │ OS / libuv          │
+    │                     │
+    │ File / Network / DB │
+    └─────────────────────┘
+        ↓
+    Callback / Promise
+        ↓
+    Event Loop
+        ↓
+    Call Stack
+    ```
+
+    ---
+
+    ### Simple Example
+
+    ```javascript id="z4c7qa"
+    console.log("Start");
+
+    setTimeout(() => {
+    console.log("Timer");
+    }, 0);
+
+    console.log("End");
+    ```
+
+    Output:
+
+    ```text id="k3x8wp"
+    Start
+    End
+    Timer
+    ```
+
+    Why?
+
+    ```text id="0r7v5m"
+    console.log("Start")
+        ↓
+    Call Stack
+        ↓
+    Print Start
+
+    setTimeout()
+        ↓
+    Timer registered
+        ↓
+    Call Stack se remove
+
+    console.log("End")
+        ↓
+    Print End
+
+    Event Loop
+        ↓
+    Timer callback ready
+        ↓
+    Print Timer
+    ```
+
+    `setTimeout(..., 0)` ka matlab **immediately execute** nahi hota. It means callback ko minimum delay ke baad eligible banaya jayega.
+
+    ---
+
+    ## Event Loop ke Important Phases
+
+    Node.js ka event loop broadly phases me kaam karta hai:
+
+    ```text id="h4m9tx"
+    Timers
+    ↓
+    Pending Callbacks
+    ↓
+    Idle / Prepare
+    ↓
+    Poll
+    ↓
+    Check
+    ↓
+    Close Callbacks
+    ↓
+    Repeat
+    ```
+
+    Important:
+
+    ### Timers
+
+    `setTimeout()` aur `setInterval()` ke callbacks.
+
+    ### Poll
+
+    I/O events handle karta hai, jaise network/file-related callbacks.
+
+    ### Check
+
+    `setImmediate()` callbacks execute hote hain.
+
+    ### Close Callbacks
+
+    Closed resources ke callbacks.
+
+    ---
+
+    ## Microtasks ⭐
+
+    Promises ke callbacks aur `process.nextTick()` ko samajhna interviews me important hai.
+
+    ```javascript id="9s5v1e"
+    console.log("Start");
+
+    setTimeout(() => {
+    console.log("Timeout");
+    }, 0);
+
+    Promise.resolve().then(() => {
+    console.log("Promise");
+    });
+
+    console.log("End");
+    ```
+
+    Typical output:
+
+    ```text id="0q6j2m"
+    Start
+    End
+    Promise
+    Timeout
+    ```
+
+    Reason:
+
+    ```text id="7x3k9p"
+    Synchronous code
+        ↓
+    Microtasks
+        ↓
+    Macrotask / Event Loop callbacks
+    ```
+
+    Node.js me `process.nextTick()` ki priority Promise microtasks se bhi special/higher hoti hai.
+
+    ---
+
+    ## ⭐ Important Misconception
+
+    **"Node.js single-threaded hai, toh asynchronous kaise hai?"**
+
+    Node.js ka **JavaScript execution** primarily single thread par hota hai.
+
+    But:
+
+    ```text id="r6p2nd"
+    JavaScript Thread
+        +
+    Event Loop
+        +
+    libuv
+        +
+    OS / Thread Pool
+    ```
+
+    milkar asynchronous behavior provide karte hain.
+
+    CPU-heavy JavaScript work agar main thread ko block kare:
+
+    ```javascript id="5k8zq1"
+    while (true) {
+    // CPU-heavy work
+    }
+    ```
+
+    to event loop bhi block ho jayega aur other requests wait karengi.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **The Node.js event loop is the mechanism that allows Node.js to handle asynchronous I/O without blocking the main JavaScript execution thread. JavaScript code runs on the call stack, while asynchronous operations such as network or file I/O are handled through the operating system and libuv. Once the operation completes, its callback becomes eligible to execute, and the event loop coordinates when it gets back onto the call stack. The event loop processes different phases such as timers, poll, check, and close callbacks, while microtasks such as Promise callbacks are processed between turns according to Node.js scheduling rules.**
+
+    ### Interview Follow-up
+
+    **Q. `setTimeout(0)` immediately execute hota hai?**
+
+    > **No. `0` means the callback has no additional minimum delay once it becomes eligible, but it still has to wait for the current synchronous code and relevant microtasks/event-loop scheduling before it can execute.**
+
+    Example:
+
+    ```javascript id="u4x8pn"
+    console.log("A");
+
+    setTimeout(() => console.log("B"), 0);
+
+    Promise.resolve().then(() => console.log("C"));
+
+    console.log("D");
+    ```
+
+    Output:
+
+    ```text id="e7k3qm"
+    A
+    D
+    C
+    B
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Call Stack executes JS → libuv/OS handles async work → completed callbacks become eligible → Event Loop schedules them back to the JS thread.**
+
+
 22. Explain the difference between process.nextTick() and setImmediate().
 23. How does Node.js handle asynchronous I/O?
 24. What are streams and how do you use them?
