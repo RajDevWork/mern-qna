@@ -14712,6 +14712,192 @@ Browser automatically validation kar dega.
 
 
 24. What are streams and how do you use them?
+
+    ## Hinglish Explanation
+
+    **Streams** Node.js ka mechanism hai jo data ko **chhote chunks me process/transfer** karta hai, instead of poora data ek saath memory me load karne ke.
+
+    Example: 5 GB file ko read karna.
+
+    Without stream:
+
+    ```text id="zq4v8m"
+    5 GB File
+    ↓
+    Load entire file into RAM
+    ↓
+    Process
+    ```
+
+    Problem → bahut memory consume ho sakti hai.
+
+    With stream:
+
+    ```text id="h8k2qp"
+    5 GB File
+    ↓
+    Chunk 1 → Process
+    Chunk 2 → Process
+    Chunk 3 → Process
+    Chunk 4 → Process
+    ↓
+    Done
+    ```
+
+    Isliye streams **large files, HTTP requests/responses, uploads/downloads** ke liye useful hain.
+
+    ---
+
+    ### Types of Streams ⭐
+
+    Node.js me mainly 4 types:
+
+    **1. Readable**
+
+    Data read karta hai.
+
+    ```javascript id="p5v9sx"
+    const fs = require("fs");
+
+    const stream = fs.createReadStream("large.txt");
+
+    stream.on("data", (chunk) => {
+    console.log(chunk);
+    });
+    ```
+
+    **2. Writable**
+
+    Data write karta hai.
+
+    ```javascript id="3y7m1k"
+    const stream = fs.createWriteStream("output.txt");
+
+    stream.write("Hello\n");
+    stream.end("World");
+    ```
+
+    **3. Duplex**
+
+    Read + write dono kar sakta hai.
+
+    Example:
+
+    ```text id="8q2m5c"
+    TCP Socket
+    → Read + Write
+    ```
+
+    **4. Transform**
+
+    Data ko read karke transform karta hai aur output generate karta hai.
+
+    Example:
+
+    ```text id="7v4n2x"
+    Input
+    ↓
+    Transform
+    ↓
+    Output
+    ```
+
+    Compression streams iska common example hain.
+
+    ---
+
+    ## `pipe()` ⭐
+
+    Streams ka bahut important concept hai **`pipe()`**.
+
+    ```javascript id="j6f3ps"
+    const fs = require("fs");
+
+    const readable = fs.createReadStream("large.txt");
+    const writable = fs.createWriteStream("copy.txt");
+
+    readable.pipe(writable);
+    ```
+
+    Flow:
+
+    ```text id="1m9q7r"
+    large.txt
+    ↓
+    Readable Stream
+    ↓ pipe()
+    Writable Stream
+    ↓
+    copy.txt
+    ```
+
+    `pipe()` data ko automatically readable stream se writable stream tak flow karne me help karta hai.
+
+    ---
+
+    ## HTTP Response me Stream
+
+    Large file ko response me stream kar sakte hain:
+
+    ```javascript id="k8x5pq"
+    app.get("/video", (req, res) => {
+    const stream = fs.createReadStream("movie.mp4");
+
+    stream.pipe(res);
+    });
+    ```
+
+    Isme poori file memory me load karne ki zarurat nahi hoti.
+
+    ---
+
+    ## ⭐ Backpressure
+
+    Streams ka important interview concept hai **backpressure**.
+
+    Agar readable stream data **fast produce** kar rahi hai aur writable stream **slow consume** kar rahi hai:
+
+    ```text id="t4m8yc"
+    Producer
+    ↓↓↓↓↓↓↓
+    Fast
+    ↓
+    Writable
+    ↓
+    Slow
+    ```
+
+    To system ko producer ko temporarily slow/pause karna padta hai, otherwise memory continuously increase ho sakti hai.
+
+    Node.js streams `pipe()` ke through backpressure handling ko simplify karte hain.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Streams in Node.js allow us to process or transfer data incrementally in chunks instead of loading the entire data into memory. They are useful for large files, HTTP requests and responses, uploads, downloads, and data processing. Node.js provides Readable, Writable, Duplex, and Transform streams. We can use `pipe()` to connect streams, and streams also provide backpressure handling when the producer is faster than the consumer.**
+
+    ### Interview Follow-up
+
+    **Q. Why would you use a stream instead of `fs.readFile()` for a large file?**
+
+    > **`fs.readFile()` loads the entire file into memory, whereas a stream processes the file in chunks. This reduces memory usage and is more suitable for large files or continuous data.**
+
+    ```text id="0y5k3n"
+    readFile()
+    → Entire file → RAM
+
+    Stream
+    → Small chunks → Process incrementally
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Stream = Data ko chunk-by-chunk process karo instead of entire data ek saath memory me load karna.**
+
+
+
+
 25. How does clustering work in Node.js?
 26. Explain how you’d implement a caching layer in Node.
 27. How do you handle large file uploads efficiently?
