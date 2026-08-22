@@ -15266,6 +15266,229 @@ Browser automatically validation kar dega.
 
 
 27. How do you handle large file uploads efficiently?
+
+    ## Hinglish Explanation
+
+    Large file uploads efficiently handle karne ke liye main **poori file ko Node.js memory me load nahi karunga**. Main **streaming + direct object storage upload + validation** approach prefer karunga.
+
+    Typical architecture:
+
+    ```text id="w3k7pq"
+    Client
+    ↓
+    Node.js API
+    ↓
+    Stream
+    ↓
+    S3 / Object Storage
+    ```
+
+    Large file ke case me:
+
+    ```text id="q8m2vx"
+    1 GB File
+    ↓
+    Chunk 1 → Upload
+    Chunk 2 → Upload
+    Chunk 3 → Upload
+    ...
+    ↓
+    S3
+    ```
+
+    Isse Node.js server ki memory unnecessarily consume nahi hoti.
+
+    ---
+
+    ### 1. Use Streams ⭐
+
+    Instead of:
+
+    ```javascript id="k5n8wy"
+    const file = await fs.promises.readFile("large.zip");
+    ```
+
+    large file ko stream karna better hai:
+
+    ```javascript id="v7r2mc"
+    const stream = fs.createReadStream("large.zip");
+    ```
+
+    Stream data ko chunks me process karta hai.
+
+    ```text id="m4q9xs"
+    Large File
+        ↓
+    Readable Stream
+        ↓↓↓↓↓
+    Small Chunks
+        ↓
+    Storage
+    ```
+
+    ---
+
+    ### 2. Direct Upload to S3
+
+    Agar possible ho to file ko Node.js server ke through unnecessarily pass nahi karunga.
+
+    Better:
+
+    ```text id="p6x3ka"
+    Client
+    ↓
+    Request upload URL
+    ↓
+    Node.js
+    ↓
+    Presigned URL
+    ↓
+    Client ─────────→ S3
+    ```
+
+    Node.js sirf upload authorization/presigned URL provide karta hai.
+
+    Isse:
+
+    * Node.js bandwidth load reduce hota hai
+    * Memory usage reduce hoti hai
+    * Application servers scale karna easier hota hai
+
+    ---
+
+    ### 3. Multipart / Resumable Upload
+
+    Bahut large files ke liye multipart upload use kar sakte hain:
+
+    ```text id="r9w4tc"
+    1 GB File
+    ↓
+    Part 1
+    Part 2
+    Part 3
+    Part 4
+    ↓
+    Upload independently
+    ↓
+    S3 combines parts
+    ```
+
+    Agar Part 3 fail hua:
+
+    ```text id="h5q2nm"
+    Part 1 ✅
+    Part 2 ✅
+    Part 3 ❌ → Retry
+    Part 4 ✅
+    ```
+
+    Poora 1 GB dobara upload nahi karna padta.
+
+    ---
+
+    ### 4. Validate Upload
+
+    Large upload ko blindly accept nahi karna chahiye.
+
+    Check:
+
+    ```text id="x6n3qp"
+    File Size
+    File Type
+    Authentication
+    Authorization
+    File Content
+    Filename
+    ```
+
+    Example size limit:
+
+    ```javascript id="c7m5rx"
+    const upload = multer({
+    limits: {
+        fileSize: 500 * 1024 * 1024
+    }
+    });
+    ```
+
+    But for very large files, **direct-to-S3/multipart upload** is generally preferable to buffering through Multer/Node.
+
+    ---
+
+    ### 5. Don't Store Large Files in Database
+
+    Generally:
+
+    ```text id="n8q4mz"
+    ❌ Database
+    → 1 GB video
+
+    ✅ Object Storage
+    → S3
+
+    Database
+    → file URL / key / metadata
+    ```
+
+    Example:
+
+    ```json id="p4m8yc"
+    {
+    "fileName": "video.mp4",
+    "storageKey": "uploads/video.mp4",
+    "size": 1048576000
+    }
+    ```
+
+    ---
+
+    ### 6. Handle Timeouts & Failures
+
+    Large uploads me:
+
+    * Retry failed chunks
+    * Resumable uploads
+    * Upload progress
+    * Request timeouts
+    * Storage errors
+    * Cleanup incomplete uploads
+
+    handle karna important hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **For large file uploads, I avoid loading the entire file into Node.js memory. I prefer streaming and, when possible, direct client-to-object-storage uploads using presigned URLs. For very large files, I use multipart or resumable uploads so failed parts can be retried independently. I also enforce authentication, authorization, file-size and content validation, and store the file in object storage such as S3 while keeping only the file key and metadata in the database.**
+
+    ### Interview Follow-up
+
+    **Q. Why is direct-to-S3 upload better for large files?**
+
+    > **It removes the Node.js server from the actual file-data path, reducing application server memory, CPU, bandwidth, and connection pressure. It also makes horizontal scaling easier because multiple API instances don't need to handle the file stream.**
+
+    ```text id="s7k2vn"
+    Traditional:
+
+    Client → Node → S3
+            ↑
+        Server handles
+        entire upload
+
+    Better:
+
+    Client → S3
+    ↑
+    Presigned URL from Node
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Large file = Stream/Direct-to-S3 + Multipart + Validation + Resumable upload.**
+
+
+
+
 28. What are child processes and how are they used?
 29. What is the role of buffers in Node.js?
 30. How do you monitor and debug Node.js performance?
