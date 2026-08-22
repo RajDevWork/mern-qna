@@ -14899,6 +14899,162 @@ Browser automatically validation kar dega.
 
 
 25. How does clustering work in Node.js?
+
+    ## Hinglish Explanation
+
+    **Node.js clustering** ka use multiple **Node.js processes** run karke multiple CPU cores utilize karne aur application ko horizontally scale karne ke liye hota hai.
+
+    Node.js ka JavaScript execution primarily ek process ke main thread par hota hai. Agar machine me multiple CPU cores hain, to cluster multiple Node.js processes run kar sakta hai.
+
+    ```text id="4j8m2x"
+                Incoming Requests
+                        ↓
+                Cluster / Load Distribution
+                    ↙    ↓    ↘
+            Worker 1 Worker 2 Worker 3
+                ↓        ↓       ↓
+            Event Loop Event Loop Event Loop
+    ```
+
+    Har worker:
+
+    * Apna **process** hota hai
+    * Apna **event loop** hota hai
+    * Apni **memory space** hoti hai
+    * Same application code run karta hai
+
+    ---
+
+    ### Basic Implementation
+
+    Node.js ka built-in `cluster` module:
+
+    ```javascript id="c8v5nq"
+    const cluster = require("cluster");
+    const os = require("os");
+
+    if (cluster.isPrimary) {
+    const cpuCount = os.cpus().length;
+
+    for (let i = 0; i < cpuCount; i++) {
+        cluster.fork();
+    }
+    } else {
+    const http = require("http");
+
+    http.createServer((req, res) => {
+        res.end(`Handled by ${process.pid}`);
+    }).listen(3000);
+    }
+    ```
+
+    Flow:
+
+    ```text id="p2q7rm"
+    Primary Process
+        ↓
+    cluster.fork()
+    ↙   ↓   ↘
+    Worker Worker Worker
+    ↓     ↓     ↓
+    Node  Node  Node
+    ```
+
+    ---
+
+    ### Worker Crash Handling
+
+    Production me worker crash ho to primary process new worker create kar sakta hai:
+
+    ```javascript id="f6x3wd"
+    cluster.on("exit", (worker) => {
+    console.log(`Worker ${worker.process.pid} died`);
+
+    cluster.fork();
+    });
+    ```
+
+    ---
+
+    ## ⭐ Clustering vs Worker Threads
+
+    Ye common interview counter-question hai:
+
+    ```text id="v9k4ps"
+    Cluster
+    → Multiple processes
+    → Separate memory
+    → Scale Node.js server
+    → Multiple CPU cores
+
+    Worker Threads
+    → Multiple threads
+    → Same process ke andar
+    → CPU-intensive task offload
+    ```
+
+    Example:
+
+    ```text id="h3n7qc"
+    Cluster:
+    Node Process 1
+    Node Process 2
+    Node Process 3
+
+    Worker Threads:
+    Node Process
+    ├── Main Thread
+    ├── Worker Thread
+    └── Worker Thread
+    ```
+
+    ---
+
+    ## Important Production Point
+
+    Aajkal applications ko scale karne ke liye manually Node.js `cluster` module use karna **mandatory nahi hai**.
+
+    Production me commonly:
+
+    ```text id="b8m2vy"
+    Load Balancer
+        ↓
+    ┌────┼────┐
+    ↓    ↓    ↓
+    Node  Node  Node
+    1     2     3
+    ```
+
+    ya Docker/Kubernetes/PM2 cluster mode use kiya ja sakta hai.
+
+    Aur agar multiple workers ke beech shared state chahiye, to in-memory variables par depend nahi karna chahiye:
+
+    ```javascript id="j6q9wf"
+    // ❌ Worker-specific
+    let sessions = {};
+    ```
+
+    Instead Redis/database jaise shared storage use kar sakte hain.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Node.js clustering allows us to run multiple Node.js processes, called workers, so that we can utilize multiple CPU cores and handle more concurrent traffic. Each worker has its own event loop and memory space but runs the same application. The primary process manages the workers, and incoming connections can be distributed among them. If a worker fails, the primary process can also create a replacement worker. In modern production environments, similar scaling is often achieved using process managers, containers, or orchestration platforms behind a load balancer.**
+
+    ### Interview Follow-up
+
+    **Q. Why does clustering improve Node.js performance?**
+
+    > **Because a single Node.js process primarily executes JavaScript on one main thread. Clustering allows multiple processes to run across multiple CPU cores, increasing the application's ability to handle concurrent requests.**
+
+    ### ⭐ One-line memory trick
+
+    > **Cluster = Multiple Node.js processes → multiple event loops → multiple CPU cores.**
+
+
+
+
 26. Explain how you’d implement a caching layer in Node.
 27. How do you handle large file uploads efficiently?
 28. What are child processes and how are they used?
