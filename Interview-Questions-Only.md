@@ -14564,6 +14564,153 @@ Browser automatically validation kar dega.
 
 
 23. How does Node.js handle asynchronous I/O?
+
+    ## Hinglish Explanation
+
+    Node.js asynchronous I/O ko **event loop + libuv + OS/kernel + thread pool** ki help se handle karta hai, jisse JavaScript thread ko I/O operation ke liye block nahi karna padta.
+
+    Example:
+
+    ```javascript
+    const fs = require("fs");
+
+    console.log("Start");
+
+    fs.readFile("data.txt", "utf8", (err, data) => {
+    console.log("File read complete");
+    });
+
+    console.log("End");
+    ```
+
+    Output:
+
+    ```text
+    Start
+    End
+    File read complete
+    ```
+
+    ### Flow
+
+    ```text
+    JavaScript Thread
+        ↓
+    fs.readFile()
+        ↓
+    I/O operation delegated
+        ↓
+    OS / libuv
+        ↓
+    JavaScript thread FREE
+        ↓
+    Other code execute hota hai
+        ↓
+    I/O complete
+        ↓
+    Callback becomes ready
+        ↓
+    Event Loop
+        ↓
+    Callback → Call Stack
+    ```
+
+    Yaani Node.js **I/O complete hone tak JavaScript thread ko wait nahi karwata**.
+
+    ---
+
+    ### libuv ka role ⭐
+
+    Node.js ke asynchronous I/O model me **libuv** important component hai.
+
+    Ye Node.js ko event-driven, non-blocking I/O capabilities provide karta hai.
+
+    Depending on the operation:
+
+    ```text
+    Network I/O
+        ↓
+    OS async mechanisms
+
+    Some file system / DNS / CPU-ish operations
+        ↓
+    libuv Thread Pool
+    ```
+
+    Thread pool ka size by default limited hota hai aur `UV_THREADPOOL_SIZE` se configure kiya ja sakta hai.
+
+    ---
+
+    ### Example: Multiple Requests
+
+    Suppose 3 users simultaneously API hit karte hain:
+
+    ```text
+    Request 1 → Database/I/O ─┐
+    Request 2 → File I/O     ├→ handled asynchronously
+    Request 3 → API call     ┘
+
+    JavaScript Thread
+        ↓
+    Doesn't wait
+        ↓
+    Processes other work
+    ```
+
+    Jab operations complete hote hain, corresponding callbacks/promises ko event loop execution ke liye schedule karta hai.
+
+    ---
+
+    ## ⭐ Important Interview Point
+
+    **Asynchronous ka matlab ye nahi hai ki JavaScript multiple threads par simultaneously execute ho rahi hai.**
+
+    Node.js ka JavaScript execution primarily **single main thread** par hota hai.
+
+    ```text
+                Node.js
+                    ↓
+            JavaScript Thread
+                    ↓
+            Event Loop
+                    ↓
+            ┌───────┴────────┐
+            ↓                ↓
+        OS            libuv Thread Pool
+        Network          File/DNS/etc.
+    ```
+
+    Isi architecture ki wajah se Node.js **I/O-heavy applications** ke liye efficient hai.
+
+    Lekin agar tum main thread par heavy CPU calculation karoge:
+
+    ```javascript
+    while (true) {
+    // CPU-heavy work
+    }
+    ```
+
+    to event loop block ho jayega aur doosri requests wait karengi.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Node.js handles asynchronous I/O using its event-driven architecture, primarily through the event loop and libuv. When an I/O operation such as file or network I/O is initiated, Node.js doesn't block the JavaScript thread waiting for it to complete. The operation is handled by the operating system or, for certain operations, libuv's thread pool. Once it completes, the associated callback or promise continuation becomes eligible for execution, and the event loop schedules it on the JavaScript thread. This allows Node.js to efficiently handle many concurrent I/O operations.**
+
+    ### Interview Follow-up
+
+    **Q. Is every asynchronous operation handled by the libuv thread pool?**
+
+    > **No. That's an important distinction. Network I/O is generally handled using OS-level asynchronous mechanisms, while certain operations such as file system operations and some DNS operations use libuv's thread pool.**
+
+    ### ⭐ One-line memory trick
+
+    > **Node.js doesn't wait for I/O → libuv/OS handles it → event loop schedules the result → JavaScript thread processes the callback.**
+
+
+
+
 24. What are streams and how do you use them?
 25. How does clustering work in Node.js?
 26. Explain how you’d implement a caching layer in Node.
