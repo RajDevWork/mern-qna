@@ -15490,6 +15490,183 @@ Browser automatically validation kar dega.
 
 
 28. What are child processes and how are they used?
+
+    ## Hinglish Explanation
+
+    **Child Process** Node.js me ek mechanism hai jisse tum apne main Node.js process se **ek separate OS process start** kar sakte ho.
+
+    Iska use especially tab hota hai jab tumhe:
+
+    * External command/program run karna ho
+    * CPU-heavy ya long-running task ko separate process me execute karna ho
+    * Another script/process ke saath communicate karna ho
+
+    Basic architecture:
+
+    ```text id="v8n3qm"
+    Main Node.js Process
+            ↓
+        Child Process
+            ↓
+    External Command / Script
+    ```
+
+    Child process ka **apna memory space aur process ID** hota hai.
+
+    ---
+
+    ### 1. `exec()`
+
+    Shell command execute karne ke liye.
+
+    ```javascript id="q5m8rx"
+    const { exec } = require("child_process");
+
+    exec("ls -la", (error, stdout, stderr) => {
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    console.log(stdout);
+    });
+    ```
+
+    Windows par example:
+
+    ```javascript id="h4k2zp"
+    exec("dir", (error, stdout) => {
+    console.log(stdout);
+    });
+    ```
+
+    `exec()` output ko memory me collect karta hai, isliye **large output** ke liye careful rehna chahiye.
+
+    ---
+
+    ### 2. `spawn()`
+
+    Large/continuous output ke liye `spawn()` useful hota hai because output ko stream ki tarah handle kar sakte ho.
+
+    ```javascript id="w7n4kc"
+    const { spawn } = require("child_process");
+
+    const child = spawn("node", ["worker.js"]);
+
+    child.stdout.on("data", (data) => {
+    console.log(data.toString());
+    });
+
+    child.on("close", (code) => {
+    console.log("Process exited:", code);
+    });
+    ```
+
+    Flow:
+
+    ```text id="m3q8vy"
+    Node.js
+    ↓
+    spawn()
+    ↓
+    Child Process
+    ↓
+    stdout/stderr streams
+    ```
+
+    ---
+
+    ### 3. `fork()` ⭐
+
+    `fork()` specifically **another Node.js process** run karne ke liye useful hai.
+
+    ```javascript id="k6p2xm"
+    const { fork } = require("child_process");
+
+    const child = fork("./worker.js");
+
+    child.send({
+    task: "process-data"
+    });
+
+    child.on("message", (message) => {
+    console.log(message);
+    });
+    ```
+
+    Child process:
+
+    ```javascript id="c9r5wd"
+    process.on("message", (message) => {
+    console.log(message);
+
+    process.send({
+        status: "completed"
+    });
+    });
+    ```
+
+    Parent aur child Node.js processes **IPC (Inter-Process Communication)** ke through messages exchange kar sakte hain.
+
+    ---
+
+    ## `exec()` vs `spawn()` vs `fork()`
+
+    | Method    | Use                                     |
+    | --------- | --------------------------------------- |
+    | `exec()`  | Shell command, output memory me collect |
+    | `spawn()` | Long-running process / streaming output |
+    | `fork()`  | Another Node.js process + IPC           |
+
+    ---
+
+    ## Child Process vs Worker Thread ⭐
+
+    Ye interview me commonly poocha ja sakta hai.
+
+    ```text id="x5q8nz"
+    Child Process
+    → Separate OS process
+    → Separate memory
+    → Strong isolation
+
+    Worker Thread
+    → Same Node.js process
+    → Separate thread
+    → Shared memory possibilities
+    → CPU-intensive JS work ke liye useful
+    ```
+
+    Agar tum external command run karna chahte ho:
+
+    ```text id="r8m4pk"
+    Child Process
+    ```
+
+    Agar CPU-heavy JavaScript calculation ko main event loop se offload karna hai:
+
+    ```text id="q7n2vx"
+    Worker Thread
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **A child process is a separate operating-system process created by a Node.js application. Node.js provides APIs such as `exec`, `spawn`, and `fork` to create and communicate with child processes. I use `exec` for simple shell commands, `spawn` when I need to handle long-running processes or streaming output, and `fork` when I want to run another Node.js process and communicate with it using IPC. Child processes have separate memory and provide stronger isolation than worker threads.**
+
+    ### Interview Follow-up
+
+    **Q. When would you use a child process instead of a Worker Thread?**
+
+    > **I would use a child process when I need to execute an external program or want process-level isolation. For CPU-intensive JavaScript work within the Node.js ecosystem, I would generally consider Worker Threads.**
+
+    ### ⭐ One-line memory trick
+
+    > **`exec` → command | `spawn` → process + streams | `fork` → Node.js process + IPC.**
+
+
+
 29. What is the role of buffers in Node.js?
 30. How do you monitor and debug Node.js performance?
 31. What are worker threads and when would you use them?
