@@ -15056,6 +15056,215 @@ Browser automatically validation kar dega.
 
 
 26. Explain how you’d implement a caching layer in Node.
+
+    ## Hinglish Explanation
+
+    Node.js application me **caching layer** ka purpose frequently requested data ko temporary fast storage me rakhna hai, taaki har request par database ya expensive operation repeat na karna pade.
+
+    Production me **Redis** commonly use hota hai.
+
+    Typical architecture:
+
+    ```text id="5y3n8m"
+    Client
+    ↓
+    Node.js API
+    ↓
+    Redis Cache
+    ↓
+    Cache Hit → Return Data
+    ↓ Cache Miss
+    Database
+    ↓
+    Store in Redis
+    ↓
+    Return Data
+    ```
+
+    Main commonly **Cache-Aside pattern** use karunga.
+
+    ---
+
+    ### 1. Redis Setup
+
+    ```javascript id="v7k2pq"
+    const { createClient } = require("redis");
+
+    const redis = createClient({
+    url: process.env.REDIS_URL
+    });
+
+    await redis.connect();
+    ```
+
+    ---
+
+    ### 2. Cache-Aside Implementation
+
+    ```javascript id="q4m8sx"
+    app.get("/users/:id", async (req, res) => {
+    const key = `user:${req.params.id}`;
+
+    // 1. Check cache
+    const cachedUser = await redis.get(key);
+
+    if (cachedUser) {
+        return res.json(JSON.parse(cachedUser));
+    }
+
+    // 2. Cache miss → Database
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+        return res.status(404).json({
+        message: "User not found"
+        });
+    }
+
+    // 3. Store in cache with TTL
+    await redis.set(
+        key,
+        JSON.stringify(user),
+        {
+        EX: 300
+        }
+    );
+
+    // 4. Return response
+    res.json(user);
+    });
+    ```
+
+    Yahan:
+
+    ```text id="q8r1wd"
+    Cache Hit
+    → Redis → Fast Response
+
+    Cache Miss
+    → Redis → DB → Redis → Response
+    ```
+
+    `EX: 300` ka matlab **300 seconds TTL**.
+
+    ---
+
+    ### 3. Cache Invalidation ⭐
+
+    Caching ka sabse important challenge hai **stale data**.
+
+    Suppose:
+
+    ```text id="w5p7na"
+    Redis:
+    user:123 → Old Data
+    ```
+
+    User update hua:
+
+    ```javascript id="n8c4vz"
+    await User.findByIdAndUpdate(id, update);
+
+    await redis.del(`user:${id}`);
+    ```
+
+    Ab next GET:
+
+    ```text id="f6m2qk"
+    GET /users/123
+        ↓
+    Cache Miss
+        ↓
+    Database
+        ↓
+    Fresh Data
+        ↓
+    Redis
+    ```
+
+    ---
+
+    ### 4. TTL
+
+    Har cached item ko appropriate expiry dena useful hai:
+
+    ```text id="x3q8mf"
+    user profile → 5 min
+    product catalog → 30 min
+    configuration → 1 hour
+    ```
+
+    TTL stale data ko indefinitely serve hone se prevent karta hai.
+
+    ---
+
+    ### 5. Distributed Application
+
+    Agar multiple Node.js instances hain:
+
+    ```text id="b9k5rx"
+                Load Balancer
+                /     |     \
+            Node 1 Node 2 Node 3
+                \      |      /
+                    Redis
+                        ↓
+                    Database
+    ```
+
+    Redis shared cache hone ki wajah se teeno instances same cached data access kar sakte hain.
+
+    ---
+
+    ### ⚠️ Cache Stampede
+
+    Agar cache expire hote hi 1000 requests aa gayi:
+
+    ```text id="c7m2qp"
+    Cache expired
+        ↓
+    1000 requests
+        ↓
+    1000 DB queries 😱
+    ```
+
+    Database overload ho sakta hai.
+
+    Isko mitigate karne ke liye:
+
+    * Request coalescing/locking
+    * TTL jitter
+    * Stale-while-revalidate
+    * Appropriate cache warming
+
+    jaise techniques use kar sakte hain.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I would typically implement a caching layer using Redis and the cache-aside pattern. On a request, I first check Redis using a predictable cache key. If the data exists, I return it immediately. On a cache miss, I fetch the data from the database, store it in Redis with an appropriate TTL, and return it. For write operations, I invalidate or update the corresponding cache entry to prevent stale data. In a distributed Node.js application, Redis provides a shared cache across multiple instances. I would also consider cache stampede protection and monitor cache hit rate, memory usage, and latency.**
+
+    ### Interview Follow-up
+
+    **Q. What would you monitor for your caching layer?**
+
+    > **I would monitor cache hit/miss ratio, cache latency, memory usage, eviction rate, connection errors, and the impact of caching on database load.**
+
+    ```text id="r5x8nc"
+    Cache
+    ↓
+    Hit Rate ↑
+    DB Load ↓
+    API Latency ↓
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Check Redis → Hit = return → Miss = DB → Store with TTL → Return → Invalidate on update.**
+
+
+
 27. How do you handle large file uploads efficiently?
 28. What are child processes and how are they used?
 29. What is the role of buffers in Node.js?
