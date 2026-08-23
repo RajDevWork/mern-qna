@@ -15668,6 +15668,155 @@ Browser automatically validation kar dega.
 
 
 29. What is the role of buffers in Node.js?
+
+    ## Hinglish Explanation
+
+    **Buffer** Node.js ka built-in data structure hai jo **raw binary data ko memory me temporarily store/process** karne ke liye use hota hai.
+
+    JavaScript traditionally strings aur objects ke saath kaam karta hai, lekin Node.js ko files, images, videos, TCP packets, network data jaise **binary data** handle karna padta hai. Wahan `Buffer` useful hota hai.
+
+    Simple:
+
+    ```text id="w7m3kx"
+    File / Network / Stream
+            ↓
+        Buffer
+            ↓
+    Process / Write
+    ```
+
+    ### Example
+
+    ```javascript id="q5n8rx"
+    const buffer = Buffer.from("Hello");
+
+    console.log(buffer);
+    console.log(buffer.toString());
+    ```
+
+    Output conceptually:
+
+    ```text id="c8v2pq"
+    <Buffer 48 65 6c 6c 6f>
+
+    Hello
+    ```
+
+    `Buffer.from("Hello")` string ko **bytes** me convert karta hai.
+
+    ---
+
+    ### File ke saath Buffer
+
+    ```javascript id="m4k8zs"
+    const fs = require("fs");
+
+    fs.readFile("image.jpg", (err, data) => {
+    console.log(data); // Buffer
+    });
+    ```
+
+    `data` yahan binary file ka Buffer hota hai.
+
+    ```text id="r6p2vn"
+    image.jpg
+    ↓
+    fs.readFile()
+    ↓
+    Buffer
+    ↓
+    Process / Send / Save
+    ```
+
+    ---
+
+    ### Buffer + Streams ⭐
+
+    Streams aur Buffers commonly saath me kaam karte hain.
+
+    ```javascript id="x9q4mb"
+    const fs = require("fs");
+
+    const stream = fs.createReadStream("large-file.zip");
+
+    stream.on("data", (chunk) => {
+    console.log(chunk); // Buffer
+    });
+    ```
+
+    Large file ko:
+
+    ```text id="j3m7qc"
+    Large File
+    ↓
+    Chunk 1 → Buffer
+    Chunk 2 → Buffer
+    Chunk 3 → Buffer
+    ...
+    ```
+
+    me process kiya ja sakta hai.
+
+    Isse poori file ko ek saath memory me load karne ki zarurat nahi hoti.
+
+    ---
+
+    ### Buffer vs String
+
+    ```text id="v5n8rx"
+    String
+    → Text data
+
+    Buffer
+    → Raw binary data / bytes
+    ```
+
+    Example:
+
+    ```javascript id="p7k2mz"
+    const buffer = Buffer.from("Hello");
+
+    console.log(buffer.length);
+    console.log(buffer.toString("utf8"));
+    ```
+
+    Buffer encoding ke saath bhi work karta hai:
+
+    ```javascript id="y4c6qp"
+    Buffer.from("Hello", "utf8");
+    ```
+
+    Common encodings:
+
+    * `utf8`
+    * `base64`
+    * `hex`
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **A Buffer in Node.js is a data structure used to work with raw binary data directly in memory. It is especially useful for handling files, images, network packets, streams, and other data that isn't necessarily plain text. Node.js streams commonly provide data as Buffer chunks, allowing us to process large amounts of binary data incrementally without loading the entire resource into memory.**
+
+    ### Interview Follow-up
+
+    **Q. Buffer aur Stream me difference?**
+
+    > **A Buffer is a container for binary data in memory, whereas a Stream is a mechanism for continuously reading or writing data, usually in chunks. A stream can use Buffers to represent those chunks.**
+
+    ```text id="n8q3wf"
+    Buffer
+    → Binary data ka chunk
+
+    Stream
+    → Chunks ko continuously read/write karne ka mechanism
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Buffer = raw bytes in memory | Stream = data ko chunks me move/process karne ka mechanism.**
+
+
 30. How do you monitor and debug Node.js performance?
 31. What are worker threads and when would you use them?
 32. Explain how you’d secure a Node.js application.
