@@ -15818,6 +15818,266 @@ Browser automatically validation kar dega.
 
 
 30. How do you monitor and debug Node.js performance?
+
+
+    ## Hinglish Explanation
+
+    Node.js performance monitor/debug karte time main **guess nahi karta — pehle metrics collect karke bottleneck identify karta hoon**, phir optimization karta hoon.
+
+    Main generally 4 areas check karta hoon:
+
+    ```text
+    id="5x9k2m"
+    Node.js Performance
+        ↓
+    ┌─────┼────────┬─────────┐
+    ↓     ↓        ↓         ↓
+    CPU  Memory  Event Loop   I/O
+                Lag
+        ↓
+        Database
+        ↓
+    External APIs
+    ```
+
+    ### 1. Application Metrics
+
+    Production me monitor karunga:
+
+    * Request latency
+    * Throughput / requests per second
+    * Error rate
+    * P50 / P95 / P99 latency
+    * CPU usage
+    * Memory usage
+    * Event loop lag
+    * Active connections
+
+    Example:
+
+    ```text
+    id="8m3q7p"
+    P95 latency → 850ms
+    CPU         → 90%
+    Memory      → 75%
+    Errors      → 2%
+    ```
+
+    Isse pata chalega ki performance issue actually hai kahan.
+
+    ---
+
+    ### 2. Event Loop Monitoring ⭐
+
+    Node.js me **event loop blocking** serious performance issue ho sakta hai.
+
+    Agar CPU-heavy synchronous code chal raha hai:
+
+    ```javascript
+    id="4n7w2x"
+    while (true) {
+    // Heavy CPU work
+    }
+    ```
+
+    to other requests process nahi ho paayengi.
+
+    Event loop delay monitor karne ke liye Node.js ka `perf_hooks` use kar sakte hain:
+
+    ```javascript
+    id="r6p8mz"
+    const {
+    monitorEventLoopDelay
+    } = require("perf_hooks");
+
+    const histogram = monitorEventLoopDelay();
+
+    histogram.enable();
+
+    setInterval(() => {
+    console.log({
+        mean: histogram.mean,
+        max: histogram.max
+    });
+    }, 5000);
+    ```
+
+    ---
+
+    ### 3. CPU Profiling
+
+    Agar CPU usage high hai, profiler se identify kar sakte hain ki kaunsa function CPU consume kar raha hai.
+
+    Node.js tools:
+
+    ```text
+    id="w5k9qv"
+    node --inspect app.js
+    ```
+
+    Phir Chrome DevTools me:
+
+    ```text
+    Performance
+        ↓
+    CPU Profile
+        ↓
+    Hot Functions
+        ↓
+    Bottleneck
+    ```
+
+    Production systems me APM tools bhi use kiye ja sakte hain:
+
+    * Datadog
+    * New Relic
+    * Dynatrace
+    * Elastic APM
+
+    ---
+
+    ### 4. Memory / Memory Leak Detection ⭐
+
+    Agar memory continuously increase ho rahi hai:
+
+    ```text
+    id="u2m7rx"
+    100 MB
+    ↓
+    250 MB
+    ↓
+    500 MB
+    ↓
+    900 MB
+    ↓
+    💥 OOM
+    ```
+
+    to memory leak investigate karunga.
+
+    Useful tools:
+
+    ```text
+    id="p4q8vn"
+    Chrome DevTools
+    Node.js Inspector
+    Heap Snapshots
+    --inspect
+    ```
+
+    Heap snapshots compare karke dekh sakte hain ki kaunse objects unnecessarily memory me retained hain.
+
+    ---
+
+    ### 5. Database Performance
+
+    Kabhi Node.js slow nahi hota — **database slow hota hai**.
+
+    Check:
+
+    ```text
+    id="c8x3mp"
+    API
+    ↓
+    DB Query → 1.8 sec ❌
+    ```
+
+    Then:
+
+    * Slow queries
+    * Missing indexes
+    * Connection pool
+    * Query execution plan
+    * N+1 queries
+
+    check karunga.
+
+    ---
+
+    ### 6. Logging + Distributed Tracing
+
+    Structured logs aur request IDs use karunga:
+
+    ```text
+    id="m7q2nz"
+    requestId=abc123
+    route=/orders
+    status=200
+    duration=1250ms
+    ```
+
+    Distributed application me OpenTelemetry/Jaeger jaise tools se trace kar sakte hain:
+
+    ```text
+    id="h5r8qx"
+    API Gateway      50ms
+    Order Service   100ms
+    Payment Service 900ms  ← Bottleneck
+    Database        200ms
+    ```
+
+    ---
+
+    ## Performance Debugging Process ⭐
+
+    Agar user bole:
+
+    > **"API slow hai."**
+
+    Main directly caching add nahi karunga.
+
+    ```text
+    id="v9k4mc"
+    Slow API
+    ↓
+    Measure
+    ↓
+    Check latency
+    ↓
+    Profile
+    ↓
+    Identify bottleneck
+    ↓
+    ┌────────┬─────────┬──────────┐
+    ↓        ↓         ↓
+    CPU      Memory     DB/API
+    ↓        ↓         ↓
+    Fix      Fix       Optimize
+    ↓
+    Benchmark Again
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I monitor Node.js performance using application metrics such as throughput, latency, P95/P99 latency, error rate, CPU and memory usage, event-loop lag, and database performance. For debugging, I use Node.js Inspector and Chrome DevTools for CPU profiling and heap snapshots, and APM tools for production monitoring. I also use structured logging and distributed tracing to identify slow services or external dependencies. My approach is to measure first, identify the actual bottleneck, optimize it, and then benchmark again to verify the improvement.**
+
+    ### Interview Follow-up
+
+    **Q. CPU high hai aur API slow hai. What will you check?**
+
+    > **First I would profile the application to identify CPU-intensive functions and check for synchronous/blocking operations. If the workload is genuinely CPU-intensive, I would consider Worker Threads or moving the workload to background workers rather than blocking the main event loop.**
+
+    ```text
+    id="x6p3wm"
+    CPU High
+    ↓
+    CPU Profile
+    ↓
+    Blocking Code?
+    ↓
+    Yes → Optimize / Worker Thread
+    No  → Check workload / Scaling
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Monitor → Measure → Profile → Find bottleneck → Fix → Benchmark again.**
+
+
+
+
 31. What are worker threads and when would you use them?
 32. Explain how you’d secure a Node.js application.
 33. How do you manage environment variables securely?
