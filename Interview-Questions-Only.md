@@ -16597,6 +16597,223 @@ Browser automatically validation kar dega.
 
 
 33. How do you manage environment variables securely?
+
+    ## Hinglish Explanation
+
+    Environment variables ka use **configuration aur sensitive secrets** ko application code se separate rakhne ke liye hota hai.
+
+    Example:
+
+    ```text id="8v4m2q"
+    Application Code
+        ↓
+    process.env
+        ↓
+    Environment Variables
+        ↓
+    JWT_SECRET / DB_URL / API_KEY
+    ```
+
+    ### 1. `.env` for Local Development
+
+    Local development me:
+
+    ```env id="k7m3xp"
+    PORT=3000
+    DATABASE_URL=postgresql://localhost:5432/mydb
+    JWT_SECRET=super-secret-value
+    ```
+
+    Node.js me:
+
+    ```javascript id="p4q8nz"
+    const port = process.env.PORT;
+    const jwtSecret = process.env.JWT_SECRET;
+    ```
+
+    Agar `dotenv` use kar rahe ho:
+
+    ```javascript id="w6r2mc"
+    require("dotenv").config();
+    ```
+
+    ---
+
+    ### 2. `.env` ko Git me Commit nahi karna ⭐
+
+    `.gitignore`:
+
+    ```gitignore id="c8n5vy"
+    .env
+    .env.*
+    !.env.example
+    ```
+
+    Repository me actual secret nahi hona chahiye.
+
+    Instead:
+
+    ```env id="m3q7xp"
+    # .env.example
+
+    PORT=
+    DATABASE_URL=
+    JWT_SECRET=
+    ```
+
+    `.env.example` sirf required variables/documentation show karta hai, actual values nahi.
+
+    ---
+
+    ### 3. Production me Secret Manager Use Karna
+
+    Production me main secrets ko source code ya Git repository me store nahi karunga.
+
+    Cloud/platform ke according:
+
+    ```text id="r5k8mz"
+    AWS Secrets Manager
+    AWS Parameter Store
+    Google Secret Manager
+    Azure Key Vault
+    Kubernetes Secrets
+    ```
+
+    Example architecture:
+
+    ```text id="v7n2qx"
+    Production
+        ↓
+    Secret Manager
+        ↓
+    Node.js Application
+        ↓
+    process.env.JWT_SECRET
+    ```
+
+    ---
+
+    ### 4. Environment Variables Validate Karna ⭐
+
+    Application start hote hi required variables validate karna useful hai.
+
+    ```javascript id="x3m9qp"
+    const required = [
+    "DATABASE_URL",
+    "JWT_SECRET"
+    ];
+
+    for (const key of required) {
+    if (!process.env[key]) {
+        throw new Error(`${key} is missing`);
+    }
+    }
+    ```
+
+    Production me `JWT_SECRET` missing ho to application ko incorrectly start karne dene ke bajay **fail fast** karna better hai.
+
+    ---
+
+    ### 5. Secrets Logs me Mat Print Karo
+
+    ❌
+
+    ```javascript id="j8q4mv"
+    console.log(process.env.JWT_SECRET);
+    ```
+
+    Aur error/logging systems me bhi:
+
+    ```text id="n5m7xz"
+    ❌ JWT_SECRET
+    ❌ DATABASE_PASSWORD
+    ❌ API_KEY
+    ❌ Access Token
+    ```
+
+    leak nahi hona chahiye.
+
+    ---
+
+    ### 6. Environment Variables vs Config Management
+
+    Large application me main directly har jagah:
+
+    ```javascript id="q2v6mc"
+    process.env.DATABASE_URL
+    process.env.JWT_SECRET
+    process.env.REDIS_URL
+    ```
+
+    use karne ke bajay centralized configuration layer rakh sakta hoon:
+
+    ```javascript id="h8m3qp"
+    const config = {
+    port: process.env.PORT,
+    databaseUrl: process.env.DATABASE_URL,
+    jwtSecret: process.env.JWT_SECRET
+    };
+
+    module.exports = config;
+    ```
+
+    Phir application me:
+
+    ```javascript id="w4k9nx"
+    config.jwtSecret
+    ```
+
+    use kar sakte hain.
+
+    Isse configuration management easier hota hai.
+
+    ---
+
+    ## ⚠️ Important Security Point
+
+    Environment variable ka matlab automatically **secure** nahi hota.
+
+    Agar koi secret:
+
+    ```text id="p6r2mz"
+    .env
+    ↓
+    GitHub
+    ↓
+    Public Repository
+    ```
+
+    me chala gaya, to secret compromised maana jaana chahiye aur **rotate/revoke** karna chahiye.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I keep configuration and secrets outside the application source code. For local development, I use environment variables, typically loaded from a `.env` file that is excluded from Git. In production, I prefer a managed secret store such as AWS Secrets Manager, Azure Key Vault, or Google Secret Manager. I validate required environment variables at application startup, never log sensitive values, and use a centralized configuration module rather than accessing `process.env` throughout the application. If a secret is accidentally exposed, I immediately rotate or revoke it.**
+
+    ### Interview Follow-up
+
+    **Q. `.env` file secure hai?**
+
+    > **It's acceptable for local development if properly protected, but I wouldn't treat `.env` as a production secret-management solution. Production secrets should preferably come from a managed secret store or secure deployment environment.**
+
+    ```text id="v8m4qc"
+    Local
+    → .env
+
+    Production
+    → Secret Manager / Secure Environment
+
+    Both
+    → Never commit secrets to Git
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Local → `.env` | Production → Secret Manager | Never commit/log secrets | Validate on startup | Rotate if exposed.**
+
+
+
 34. What’s the difference between CommonJS and ES modules?
 35. How do you handle rate limiting in Node.js?
 36. How do you implement JWT authentication in Node.js?
