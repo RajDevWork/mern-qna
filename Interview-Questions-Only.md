@@ -16079,6 +16079,222 @@ Browser automatically validation kar dega.
 
 
 31. What are worker threads and when would you use them?
+
+    ## Hinglish Explanation
+
+    **Worker Threads** Node.js me ek mechanism hai jisse tum **CPU-intensive JavaScript work ko separate thread par run** kar sakte ho, taaki main thread ka **event loop block na ho**.
+
+    Normally:
+
+    ```text id="q5n8rx"
+    Main Thread
+        ↓
+    Event Loop
+        ↓
+    Requests
+    ```
+
+    Agar CPU-heavy task aa gaya:
+
+    ```text id="m7k2vp"
+    Request
+    ↓
+    CPU-heavy calculation
+    ↓
+    Main Thread BLOCKED ❌
+    ↓
+    Other requests wait
+    ```
+
+    Worker Threads me:
+
+    ```text id="x8p4mc"
+                Node.js Process
+                        ↓
+            ┌───────────┴───────────┐
+            ↓                       ↓
+    Main Thread             Worker Thread
+            ↓                       ↓
+    Event Loop             CPU-heavy task
+            ↓                       ↓
+    Other Requests          Result
+    ```
+
+    ---
+
+    ### Basic Example
+
+    Main file:
+
+    ```javascript id="k4q7mz"
+    const {
+    Worker
+    } = require("worker_threads");
+
+    const worker = new Worker("./worker.js");
+
+    worker.on("message", (result) => {
+    console.log("Result:", result);
+    });
+
+    worker.postMessage(10);
+    ```
+
+    Worker:
+
+    ```javascript id="v3m8qx"
+    const {
+    parentPort
+    } = require("worker_threads");
+
+    parentPort.on("message", (number) => {
+    const result = number * number;
+
+    parentPort.postMessage(result);
+    });
+    ```
+
+    Flow:
+
+    ```text id="n6p2wc"
+    Main Thread
+        ↓
+    postMessage(10)
+        ↓
+    Worker Thread
+        ↓
+    CPU Calculation
+        ↓
+    postMessage(result)
+        ↓
+    Main Thread
+    ```
+
+    ---
+
+    ## When Would You Use Worker Threads?
+
+    Worker Threads mainly **CPU-bound JavaScript operations** ke liye useful hain.
+
+    Examples:
+
+    * Image/video processing
+    * Large JSON parsing/transformation
+    * Encryption/hashing
+    * Complex mathematical calculations
+    * Data processing
+    * CPU-heavy algorithms
+
+    Example:
+
+    ```text id="z9r4kp"
+    HTTP Request
+        ↓
+    Need heavy image processing
+        ↓
+    Worker Thread
+        ↓
+    Result
+        ↓
+    HTTP Response
+    ```
+
+    ---
+
+    ## When NOT to Use Them?
+
+    Normal asynchronous I/O ke liye Worker Threads ki zarurat usually nahi hoti.
+
+    For example:
+
+    ```javascript id="c7m2vx"
+    await database.query();
+    await fetch(url);
+    await fs.promises.readFile(file);
+    ```
+
+    Node.js already asynchronous I/O efficiently handle karta hai.
+
+    ```text id="g5n8qw"
+    I/O-bound
+    → Normal async/await
+
+    CPU-bound
+    → Worker Threads
+    ```
+
+    ---
+
+    ## ⭐ Worker Threads vs Child Processes
+
+    Important interview question:
+
+    | Worker Threads            | Child Processes                       |
+    | ------------------------- | ------------------------------------- |
+    | Same Node.js process      | Separate OS process                   |
+    | Separate execution thread | Separate process                      |
+    | Lower overhead generally  | More isolated                         |
+    | CPU-intensive JS          | External programs / process isolation |
+    | Can use SharedArrayBuffer | Separate memory space                 |
+
+    Simple rule:
+
+    ```text id="r3v7mx"
+    CPU-heavy JavaScript
+            ↓
+    Worker Thread
+
+    External program / strong isolation
+            ↓
+    Child Process
+    ```
+
+    ---
+
+    ## ⚠️ Important
+
+    Worker Threads automatically application ko faster nahi banate.
+
+    Agar task CPU-intensive nahi hai, worker use karne se unnecessary overhead aa sakta hai.
+
+    Aur bahut saare workers blindly create nahi karne chahiye:
+
+    ```text id="j8q2nc"
+    100 Requests
+    ↓
+    100 Workers ❌
+    ```
+
+    Worker pool use karna generally better approach hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Worker Threads allow Node.js applications to execute JavaScript code in separate threads within the same process. I use them primarily for CPU-intensive tasks such as image processing, encryption, complex calculations, or large data transformations, so that the main event loop remains responsive. I wouldn't use Worker Threads for normal asynchronous I/O because Node.js already handles I/O efficiently through its event-driven architecture. For CPU-heavy workloads, I would also consider using a worker pool rather than creating a new worker for every request.**
+
+    ### Interview Follow-up
+
+    **Q. Why do Worker Threads improve Node.js performance?**
+
+    > **They move CPU-intensive JavaScript execution away from the main event-loop thread. This allows the main thread to continue handling other requests instead of being blocked by the CPU-heavy operation.**
+
+    ```text id="q4m8sv"
+    Main Thread
+        ↓
+    Requests continue ✅
+
+    Worker Thread
+        ↓
+    CPU-heavy calculation
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Worker Threads = CPU-heavy JavaScript ko main event loop se separate thread par execute karna.**
+
+
+
 32. Explain how you’d secure a Node.js application.
 33. How do you manage environment variables securely?
 34. What’s the difference between CommonJS and ES modules?
