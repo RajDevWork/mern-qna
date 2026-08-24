@@ -16815,6 +16815,187 @@ Browser automatically validation kar dega.
 
 
 34. What’s the difference between CommonJS and ES modules?
+
+    ## Hinglish Explanation
+
+    **CommonJS (CJS)** aur **ES Modules (ESM)** Node.js me modules ko **export/import** karne ke do different systems hain.
+
+    Simple:
+
+    ```text
+    CommonJS
+    → require()
+    → module.exports
+
+    ES Modules
+    → import
+    → export
+    ```
+
+    ---
+
+    ### 1. CommonJS
+
+    CommonJS Node.js ka traditional module system hai.
+
+    **Export:**
+
+    ```javascript id="j6x3pq"
+    const add = (a, b) => a + b;
+
+    module.exports = add;
+    ```
+
+    **Import:**
+
+    ```javascript id="m8q4vz"
+    const add = require("./math");
+
+    console.log(add(2, 3));
+    ```
+
+    Flow:
+
+    ```text id="w5n2kc"
+    math.js
+    ↓
+    module.exports
+    ↓
+    require("./math")
+    ↓
+    app.js
+    ```
+
+    ---
+
+    ### 2. ES Modules ⭐
+
+    ESM JavaScript ka standardized module system hai.
+
+    **Export:**
+
+    ```javascript id="q7m4xp"
+    export const add = (a, b) => a + b;
+    ```
+
+    **Import:**
+
+    ```javascript id="v9k2mc"
+    import { add } from "./math.js";
+
+    console.log(add(2, 3));
+    ```
+
+    Default export bhi:
+
+    ```javascript id="c5r8nz"
+    export default add;
+    ```
+
+    Import:
+
+    ```javascript id="x3m7qp"
+    import add from "./math.js";
+    ```
+
+    ---
+
+    ## Node.js me ESM enable kaise karte hain?
+
+    `package.json` me:
+
+    ```json id="h4q8mv"
+    {
+    "type": "module"
+    }
+    ```
+
+    Then:
+
+    ```javascript id="p6n3xz"
+    import express from "express";
+    ```
+
+    Ya `.mjs` extension use kar sakte ho:
+
+    ```text id="r8m2qk"
+    server.mjs
+    ```
+
+    CommonJS ke liye `.cjs` use kar sakte ho:
+
+    ```text id="k5v7nx"
+    server.cjs
+    ```
+
+    ---
+
+    ## Main Differences
+
+    | CommonJS                                     | ES Modules                        |
+    | -------------------------------------------- | --------------------------------- |
+    | `require()`                                  | `import`                          |
+    | `module.exports`                             | `export`                          |
+    | Traditional Node.js approach                 | JavaScript standard module system |
+    | `.cjs` supported                             | `.mjs` supported                  |
+    | `require()` can be used dynamically          | Static `import` syntax            |
+    | `__dirname`, `__filename` available directly | Equivalent handling differs       |
+
+    ### Example
+
+    **CommonJS:**
+
+    ```javascript id="s4q9mz"
+    const express = require("express");
+
+    module.exports = router;
+    ```
+
+    **ESM:**
+
+    ```javascript id="v2m7cx"
+    import express from "express";
+
+    export default router;
+    ```
+
+    ---
+
+    ## ⭐ Important Interview Point
+
+    ES Modules ka `import` syntax **statically analyzable** hai, which helps tooling such as bundlers and tree-shaking.
+
+    Dynamic loading bhi possible hai:
+
+    ```javascript id="n8p4qy"
+    const module = await import("./math.js");
+    ```
+
+    CommonJS me dynamic loading naturally:
+
+    ```javascript id="z6m3vx"
+    const moduleName = "./math";
+
+    const module = require(moduleName);
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **CommonJS and ES Modules are two module systems supported by Node.js. CommonJS uses `require()` for importing and `module.exports` for exporting, while ES Modules use `import` and `export`. CommonJS is the traditional Node.js module system, whereas ES Modules are the standardized JavaScript module system. In modern Node.js applications, I generally prefer ESM when the project and dependency ecosystem support it consistently.**
+
+    ### Interview Follow-up
+
+    **Q. Can CommonJS and ESM be used together?**
+
+    > **Yes, but there are interoperability rules. CommonJS can generally load ESM through dynamic `import()`, while loading CommonJS from ESM is supported with appropriate import semantics. Mixing both systems can introduce complexity, so for a project I'd generally keep the module system consistent unless interoperability is required.**
+
+    ### ⭐ One-line memory trick
+
+    > **CommonJS → `require()` / `module.exports` | ESM → `import` / `export`.**
+
+
 35. How do you handle rate limiting in Node.js?
 36. How do you implement JWT authentication in Node.js?
 37. How does dependency injection work in Node?
