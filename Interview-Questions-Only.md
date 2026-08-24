@@ -17827,6 +17827,278 @@ Browser automatically validation kar dega.
 
 
 39. How can you prevent memory leaks?
+
+    ## Hinglish Explanation
+
+    **Memory leak** tab hota hai jab application ko kisi object ki zarurat nahi rahi, lekin uska reference abhi bhi kahin retained hai, isliye **Garbage Collector us memory ko release nahi kar pata**.
+
+    Example:
+
+    ```text id="k8m3qx"
+    Request
+    ↓
+    Object created
+    ↓
+    Request complete
+    ↓
+    Object should be garbage collected
+    ↓
+    ❌ Reference still exists
+    ↓
+    Memory keeps increasing
+    ```
+
+    Node.js application me memory leaks prevent karne ke liye main **memory usage monitor + leak identify + unnecessary references remove** karunga.
+
+    ---
+
+    ### 1. Global Variables Avoid Karna
+
+    ❌:
+
+    ```javascript id="m4q7vx"
+    const users = [];
+
+    app.get("/users", async (req, res) => {
+    const data = await getUsers();
+
+    users.push(data);
+
+    res.json(data);
+    });
+    ```
+
+    Agar `users` continuously grow hota rahe, memory release nahi hogi.
+
+    Better:
+
+    ```javascript id="x7n2mc"
+    app.get("/users", async (req, res) => {
+    const data = await getUsers();
+
+    res.json(data);
+    });
+    ```
+
+    ---
+
+    ### 2. Event Listeners Properly Remove Karna ⭐
+
+    Repeated listeners memory leak create kar sakte hain.
+
+    ```javascript id="q5m8rz"
+    const handler = () => {
+    // logic
+    };
+
+    emitter.on("data", handler);
+
+    // When no longer needed
+    emitter.off("data", handler);
+    ```
+
+    Especially long-lived objects/services ke saath event listeners carefully manage karne chahiye.
+
+    ---
+
+    ### 3. Timers Clean Up Karna
+
+    Agar `setInterval()` create kiya hai aur kabhi stop nahi kiya:
+
+    ```javascript id="v3k9xp"
+    const interval = setInterval(() => {
+    // work
+    }, 1000);
+    ```
+
+    Jab required nahi ho:
+
+    ```javascript id="p6m2qw"
+    clearInterval(interval);
+    ```
+
+    Similarly:
+
+    ```javascript id="r8x4mz"
+    clearTimeout(timeout);
+    ```
+
+    ---
+
+    ### 4. Unbounded Caches Avoid Karna
+
+    ❌:
+
+    ```javascript id="h7q3vn"
+    const cache = new Map();
+
+    cache.set(key, value);
+    ```
+
+    Agar cache kabhi expire/remove nahi hota:
+
+    ```text id="n5m8qc"
+    Requests
+    ↓
+    Cache
+    ↓
+    1000 entries
+    ↓
+    10000
+    ↓
+    100000
+    ↓
+    Memory ↑
+    ```
+
+    Better:
+
+    ```text id="w4q7mp"
+    TTL
+    +
+    Maximum size
+    +
+    LRU eviction
+    ```
+
+    Redis jaise external cache me TTL use karna bhi useful hai.
+
+    ---
+
+    ### 5. Large Data ko Memory me Load Mat Karo
+
+    ❌:
+
+    ```javascript id="c9m2vx"
+    const data = await fs.promises.readFile("10GB-file.zip");
+    ```
+
+    Poora data memory me load ho sakta hai.
+
+    Better:
+
+    ```javascript id="z6q4pn"
+    const stream = fs.createReadStream("10GB-file.zip");
+    ```
+
+    ```text id="b3m8rx"
+    Large File
+    ↓
+    Stream
+    ↓
+    Small chunks
+    ↓
+    Process
+    ```
+
+    ---
+
+    ### 6. Heap Snapshots ⭐
+
+    Agar production me memory continuously grow ho rahi hai, Node.js Inspector/Chrome DevTools se **heap snapshots** le sakte ho.
+
+    ```bash id="q8m4ny"
+    node --inspect app.js
+    ```
+
+    Phir snapshots compare:
+
+    ```text id="v5r7mc"
+    Heap Snapshot 1
+        ↓
+    Traffic
+        ↓
+    Heap Snapshot 2
+        ↓
+    Compare
+        ↓
+    Objects retained?
+    ```
+
+    Agar same objects repeatedly retained mil rahe hain, leak ka source identify kar sakte hain.
+
+    ---
+
+    ### 7. Memory Monitoring
+
+    Production me monitor karunga:
+
+    ```javascript id="n4x8qp"
+    console.log(process.memoryUsage());
+    ```
+
+    Important metrics:
+
+    ```text id="m7q2vz"
+    heapUsed
+    heapTotal
+    rss
+    external
+    arrayBuffers
+    ```
+
+    Agar `heapUsed` continuously increase ho raha hai aur normal workload ke baad bhi release nahi ho raha:
+
+    ```text id="c8p5mx"
+    Memory
+    ↑
+    ↑
+    ↑
+    ↑
+    ```
+
+    investigate karunga.
+
+    ---
+
+    ## ⭐ Common Memory Leak Sources
+
+    ```text id="r6m3qx"
+    Memory Leak
+    ↓
+    ├── Global references
+    ├── Unremoved event listeners
+    ├── Uncleared timers
+    ├── Unbounded caches
+    ├── Large objects retained
+    ├── Long-lived closures
+    └── Improper resource cleanup
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I prevent memory leaks by avoiding unnecessary global references, cleaning up event listeners and timers, putting limits and TTLs on in-memory caches, and using streams instead of loading very large data into memory. In production, I monitor Node.js memory metrics and investigate abnormal growth using heap snapshots and profiling tools. If memory usage keeps increasing under a stable workload, I compare heap snapshots to identify objects that are unexpectedly being retained.**
+
+    ### Interview Follow-up
+
+    **Q. Memory continuously increase ho rahi hai. What will you do?**
+
+    > **First, I would confirm the issue using memory metrics and check whether the growth correlates with traffic or a particular endpoint. Then I would take multiple heap snapshots under similar conditions and compare retained objects. I would inspect event listeners, timers, caches, global references, and long-lived objects. After fixing the suspected leak, I would reproduce the workload and verify that memory stabilizes.**
+
+    ```text id="p9m4kx"
+    Memory ↑
+    ↓
+    Confirm with Metrics
+    ↓
+    Heap Snapshots
+    ↓
+    Find Retained Objects
+    ↓
+    Fix Reference / Resource
+    ↓
+    Load Test Again
+    ↓
+    Memory Stable ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Memory leak prevent = Don't retain unnecessary references + cleanup resources + bound caches + monitor heap.**
+
+
+
 40. How would you implement logging and metrics?
 
 ---
