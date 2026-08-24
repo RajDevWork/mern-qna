@@ -18101,6 +18101,306 @@ Browser automatically validation kar dega.
 
 40. How would you implement logging and metrics?
 
+    ## Hinglish Explanation
+
+    **Logging aur metrics dono observability ka part hain**, but dono ka purpose different hai.
+
+    ```text id="x7m3qp"
+    Node.js Application
+        ↓
+    ┌─────┴─────┐
+    ↓           ↓
+    Logs       Metrics
+    ↓           ↓
+    What       How is the
+    happened?  system performing?
+    ```
+
+    Main production Node.js app me **structured logging + application/system metrics + centralized monitoring** implement karunga.
+
+    ---
+
+    ### 1. Structured Logging
+
+    HTTP requests ke liye Morgan ya application logging ke liye Pino/Winston use kar sakte hain.
+
+    Example with Pino:
+
+    ```javascript id="m4q8vz"
+    const pino = require("pino");
+
+    const logger = pino();
+
+    logger.info({
+    requestId: req.requestId,
+    method: req.method,
+    path: req.path,
+    statusCode: res.statusCode
+    }, "Request completed");
+    ```
+
+    Structured JSON logs:
+
+    ```json id="p8n3mx"
+    {
+    "level": 30,
+    "requestId": "abc123",
+    "method": "GET",
+    "path": "/api/users",
+    "statusCode": 200
+    }
+    ```
+
+    Isse centralized logging systems me easily search/filter kar sakte hain.
+
+    ---
+
+    ### 2. Request Logging Middleware
+
+    ```javascript id="q5r7kc"
+    app.use((req, res, next) => {
+    const start = Date.now();
+
+    res.on("finish", () => {
+        logger.info({
+        method: req.method,
+        path: req.originalUrl,
+        statusCode: res.statusCode,
+        duration: Date.now() - start
+        }, "HTTP request");
+    });
+
+    next();
+    });
+    ```
+
+    Ab pata chalega:
+
+    ```text id="v9m2qp"
+    GET /users
+    200
+    145ms
+    ```
+
+    ---
+
+    ### 3. Request ID ⭐
+
+    Har request ko unique ID dena:
+
+    ```javascript id="k3x8mw"
+    const crypto = require("crypto");
+
+    app.use((req, res, next) => {
+    const requestId =
+        req.headers["x-request-id"] ||
+        crypto.randomUUID();
+
+    req.requestId = requestId;
+
+    res.setHeader("X-Request-ID", requestId);
+
+    next();
+    });
+    ```
+
+    Phir same ID logs me include karunga:
+
+    ```text id="r6q4mx"
+    requestId=abc123
+    API request
+
+    requestId=abc123
+    DB query
+
+    requestId=abc123
+    Response 200
+    ```
+
+    Distributed systems me debugging kaafi easier ho jati hai.
+
+    ---
+
+    ## 4. Metrics
+
+    Metrics numerical measurements hoti hain.
+
+    Main generally ye metrics collect karunga:
+
+    ```text id="c8m5nv"
+    HTTP Requests
+    Request Rate
+    Error Rate
+    Latency
+    P50 / P95 / P99
+    CPU
+    Memory
+    Event Loop Lag
+    DB Latency
+    Active Connections
+    Cache Hit Rate
+    Queue Depth
+    ```
+
+    Example:
+
+    ```text id="n4q7xz"
+    Requests/sec → 850
+    Error rate   → 0.8%
+    P95 latency  → 320ms
+    CPU          → 65%
+    Memory       → 70%
+    ```
+
+    ---
+
+    ### 5. Prometheus-style Metrics
+
+    Node.js me `prom-client` use kar sakte hain.
+
+    ```javascript id="w7p2mc"
+    const client = require("prom-client");
+
+    const httpRequests = new client.Counter({
+    name: "http_requests_total",
+    help: "Total HTTP requests"
+    });
+
+    httpRequests.inc();
+    ```
+
+    Histogram se latency measure kar sakte hain:
+
+    ```javascript id="z3m8qp"
+    const httpDuration = new client.Histogram({
+    name: "http_request_duration_seconds",
+    help: "HTTP request duration"
+    });
+    ```
+
+    Metrics endpoint expose kar sakte hain:
+
+    ```javascript id="q6v4mx"
+    app.get("/metrics", async (req, res) => {
+    res.set("Content-Type", client.register.contentType);
+
+    res.end(await client.register.metrics());
+    });
+    ```
+
+    Architecture:
+
+    ```text id="m8r2kp"
+    Node.js App
+        ↓
+    /metrics
+        ↓
+    Prometheus
+        ↓
+    Grafana
+        ↓
+    Dashboard + Alerts
+    ```
+
+    ---
+
+    ## 6. Logs + Metrics + Traces ⭐
+
+    Production observability me main teenon ko combine karunga:
+
+    ```text id="p5x9mz"
+                Observability
+                    ↓
+        ┌───────────┼───────────┐
+        ↓           ↓           ↓
+        Logs       Metrics      Traces
+        ↓           ↓           ↓
+    What happened?  How bad?   Where/Why?
+    ```
+
+    Example:
+
+    ```text id="h7q3vn"
+    Metric:
+    P95 latency = 2 seconds
+
+        ↓
+
+    Trace:
+    Payment Service = 1.6 seconds
+
+        ↓
+
+    Logs:
+    Payment API timeout
+    requestId=abc123
+    ```
+
+    Ab actual root cause identify karna easier ho jata hai.
+
+    ---
+
+    ## 7. Centralized Monitoring
+
+    Production me logs/metrics ko centralized system me send karunga:
+
+    ```text id="x4m8qz"
+    Node Instances
+    ├── Node 1
+    ├── Node 2
+    └── Node 3
+        ↓
+    Centralized Observability
+        ↓
+    Logs + Metrics + Traces
+        ↓
+    Dashboards + Alerts
+    ```
+
+    Tools/platforms:
+
+    * Prometheus + Grafana
+    * ELK
+    * Loki
+    * Datadog
+    * New Relic
+    * CloudWatch
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I would implement structured logging and metrics as part of the application's observability layer. For logging, I would use Pino or Winston and include structured fields such as timestamp, log level, request ID, route, status code, and duration while ensuring sensitive data is never logged. For metrics, I would collect request rate, error rate, latency including P95/P99, CPU, memory, event-loop lag, database latency, and other domain-specific metrics. I could expose Prometheus metrics and visualize them with Grafana. In a distributed system, I would combine logs and metrics with distributed tracing and centralized dashboards and alerts.**
+
+    ### Interview Follow-up
+
+    **Q. What alerts would you configure?**
+
+    > **I would alert on sustained high error rates, high P95/P99 latency, unusual traffic, high CPU or memory usage, event-loop lag, database latency, queue backlog, and service health-check failures. I would avoid alerting on every small fluctuation and instead use meaningful thresholds and sustained conditions.**
+
+    Example:
+
+    ```text id="v6q2mx"
+    Error Rate > 5% for 5 min
+            ↓
+            Alert 🚨
+
+    P95 > 1 sec for 5 min
+            ↓
+            Alert 🚨
+
+    Memory > 90%
+            ↓
+            Alert 🚨
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Logs = What happened | Metrics = How the system is performing | Traces = Where the request spent time.**
+
+
+
+
 ---
 
 ## 🍃 MongoDB (311-360)
