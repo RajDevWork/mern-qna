@@ -17655,6 +17655,177 @@ Browser automatically validation kar dega.
 
 
 38. What is the role of fs/promises in Node?
+
+    ## Hinglish Explanation
+
+    `fs/promises` Node.js ka **Promise-based file system API** hai. Iska use files aur directories ke saath **asynchronous operations** perform karne ke liye hota hai.
+
+    Traditional callback-based:
+
+    ```javascript id="p4n7mx"
+    const fs = require("fs");
+
+    fs.readFile("data.txt", "utf8", (err, data) => {
+    console.log(data);
+    });
+    ```
+
+    `fs/promises` ke saath:
+
+    ```javascript id="x8q3vz"
+    const fs = require("fs/promises");
+
+    const data = await fs.readFile("data.txt", "utf8");
+
+    console.log(data);
+    ```
+
+    Isse `async/await` ke saath code cleaner aur easier to maintain ho jata hai.
+
+    ---
+
+    ### Common Operations
+
+    ### 1. Read File
+
+    ```javascript id="m5k9qp"
+    const data = await fs.readFile("data.txt", "utf8");
+    ```
+
+    ### 2. Write File
+
+    ```javascript id="r7x2mc"
+    await fs.writeFile("data.txt", "Hello Node.js");
+    ```
+
+    ### 3. Append File
+
+    ```javascript id="v3n8kw"
+    await fs.appendFile("data.txt", "\nNew line");
+    ```
+
+    ### 4. Delete File
+
+    ```javascript id="q6m4pz"
+    await fs.unlink("data.txt");
+    ```
+
+    ### 5. Create Directory
+
+    ```javascript id="t8y3mx"
+    await fs.mkdir("uploads", {
+    recursive: true
+    });
+    ```
+
+    ### 6. Check File/Directory
+
+    ```javascript id="k5q7vn"
+    const stats = await fs.stat("data.txt");
+
+    console.log(stats.size);
+    ```
+
+    ---
+
+    ## Error Handling ⭐
+
+    Since these methods return Promises, `try/catch` use kar sakte ho:
+
+    ```javascript id="w4m9xc"
+    const fs = require("fs/promises");
+
+    try {
+    const data = await fs.readFile("data.txt", "utf8");
+
+    console.log(data);
+    } catch (error) {
+    console.error("File operation failed:", error);
+    }
+    ```
+
+    ---
+
+    ## `fs/promises` vs `fs`
+
+    ```text id="z7q2mp"
+    fs
+    → Callback APIs
+    → Synchronous APIs bhi available
+
+    fs/promises
+    → Promise-based APIs
+    → async/await friendly
+    ```
+
+    Example:
+
+    ```javascript id="n8v3qx"
+    // Promise-based
+    const fs = require("fs/promises");
+
+    await fs.readFile("file.txt");
+    ```
+
+    ---
+
+    ## ⚠️ Large Files ke liye
+
+    `fs/promises.readFile()` poori file ko memory me load karta hai:
+
+    ```text id="c5m8rz"
+    Large File
+    ↓
+    readFile()
+    ↓
+    Entire file → RAM
+    ```
+
+    Very large files ke liye stream better ho sakta hai:
+
+    ```javascript id="h4q9vx"
+    const fs = require("fs");
+
+    const stream = fs.createReadStream("large-file.zip");
+
+    stream.on("data", (chunk) => {
+    // Process chunk
+    });
+    ```
+
+    ```text id="s6p2mk"
+    fs/promises.readFile()
+    → Entire file in memory
+
+    createReadStream()
+    → Chunk-by-chunk
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **`fs/promises` provides Promise-based APIs for performing asynchronous file-system operations in Node.js. It allows us to use `async/await` for operations such as reading, writing, deleting files, creating directories, and retrieving file metadata. It makes asynchronous file-system code cleaner than callback-based APIs. For very large files, however, I would generally use Node.js streams instead of loading the entire file into memory with `readFile()`.**
+
+    ### Interview Follow-up
+
+    **Q. Does `fs/promises` make file operations non-blocking?**
+
+    > **Its APIs are asynchronous and return Promises, so they allow the JavaScript thread to continue while the file-system operation is handled asynchronously. However, you should still avoid synchronous filesystem APIs such as `readFileSync()` in request-handling paths because they can block the event loop.**
+
+    ```text id="u3n7mx"
+    readFileSync()
+    → Blocks ❌
+
+    fs/promises.readFile()
+    → Async ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **`fs/promises` = File system operations with Promises + async/await.**
+
+
 39. How can you prevent memory leaks?
 40. How would you implement logging and metrics?
 
