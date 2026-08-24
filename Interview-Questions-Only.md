@@ -16997,6 +16997,179 @@ Browser automatically validation kar dega.
 
 
 35. How do you handle rate limiting in Node.js?
+
+    ## Hinglish Explanation
+
+    **Rate limiting** ka use API ko excessive requests, brute-force attempts aur abuse se protect karne ke liye hota hai.
+
+    Example:
+
+    ```text id="f8k3qp"
+    Client
+    ↓
+    100 requests/minute allowed
+    ↓
+    101st request
+    ↓
+    429 Too Many Requests
+    ```
+
+    Node.js/Express me simple implementation ke liye `express-rate-limit` use kar sakte ho.
+
+    ### 1. Basic Rate Limiting
+
+    ```javascript id="m7q2vx"
+    const rateLimit = require("express-rate-limit");
+
+    const limiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 100,
+    message: {
+        message: "Too many requests"
+    }
+    });
+
+    app.use("/api", limiter);
+    ```
+
+    Iska meaning:
+
+    ```text id="r5n8mc"
+    1 minute
+    ↓
+    Maximum 100 requests
+    ↓
+    Exceeded → 429
+    ```
+
+    ---
+
+    ### 2. Login ke liye Stricter Limit ⭐
+
+    Har endpoint ke liye same limit rakhna ideal nahi hota.
+
+    Example:
+
+    ```javascript id="q4m8zp"
+    const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5
+    });
+
+    app.use("/api/login", loginLimiter);
+    ```
+
+    Login endpoint par brute-force attempts ko aggressively limit kar sakte ho.
+
+    ```text id="x8v3km"
+    Normal API
+    → 100 req/min
+
+    Login
+    → 5 req/15 min
+    ```
+
+    ---
+
+    ### 3. Distributed Node.js Application
+
+    Agar multiple Node.js instances hain:
+
+    ```text id="n6q2rx"
+                Load Balancer
+                /      |      \
+                ↓       ↓       ↓
+            Node 1   Node 2   Node 3
+                \      |      /
+                        ↓
+                    Redis
+    ```
+
+    Agar rate-limit state sirf local memory me rakhi:
+
+    ```text id="w3m7kp"
+    Node 1 → 100 requests
+    Node 2 → 100 requests
+    Node 3 → 100 requests
+    ```
+
+    To actual global limit enforce nahi ho sakti.
+
+    Isliye distributed environment me **Redis-backed/shared rate-limit store** use karna better hai.
+
+    ---
+
+    ## 4. Rate Limiting Algorithms
+
+    Common algorithms:
+
+    ```text id="c5q9mz"
+    Fixed Window
+    Sliding Window
+    Token Bucket
+    Leaky Bucket
+    ```
+
+    For example:
+
+    ```text id="p8m2vx"
+    Token Bucket
+
+    Tokens → 10
+    ↓
+    Request → consume token
+    ↓
+    No token → 429
+    ↓
+    Tokens refill over time
+    ```
+
+    ---
+
+    ## 5. What Should You Rate Limit By?
+
+    Rate limit key requirement ke according ho sakti hai:
+
+    ```text id="k7x4np"
+    IP address
+    User ID
+    API Key
+    Tenant ID
+    IP + User
+    ```
+
+    For authenticated APIs, **user/API-key based limiting** can be more meaningful than only IP-based limiting, while IP-based limits are still useful as an additional protection layer.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I implement rate limiting at the API layer using middleware such as `express-rate-limit`. I configure limits based on the endpoint—for example, a general limit for normal APIs and a much stricter limit for authentication endpoints to reduce brute-force attacks. For distributed Node.js applications, I use a shared store such as Redis so that all instances enforce a consistent limit. Depending on the requirements, I can use fixed-window, sliding-window, or token-bucket strategies, and I return HTTP 429 when the limit is exceeded.**
+
+    ### Interview Follow-up
+
+    **Q. Why isn't in-memory rate limiting ideal for a production cluster?**
+
+    > **Because each Node.js instance maintains its own counter. Requests distributed across multiple instances can bypass the intended global limit. A shared store like Redis allows all instances to maintain consistent rate-limit state.**
+
+    ```text id="v6p3mq"
+    ❌ In-memory
+    Node 1 → Counter A
+    Node 2 → Counter B
+    Node 3 → Counter C
+
+    ✅ Redis
+    Node 1 ─┐
+    Node 2 ─┼→ Shared Counter
+    Node 3 ─┘
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Rate limiting = Control requests → protect API → 429 on excess → Redis for distributed apps.**
+
+
+
 36. How do you implement JWT authentication in Node.js?
 37. How does dependency injection work in Node?
 38. What is the role of fs/promises in Node?
