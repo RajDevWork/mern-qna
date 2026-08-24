@@ -17171,6 +17171,263 @@ Browser automatically validation kar dega.
 
 
 36. How do you implement JWT authentication in Node.js?
+
+    ## Hinglish Explanation
+
+    Node.js me **JWT authentication** implement karne ke liye main generally 2 parts rakhta hoon:
+
+    ```text id="a7k3pq"
+    Login
+    ↓
+    Verify credentials
+    ↓
+    Generate JWT
+    ↓
+    Send token to client
+    ```
+
+    Then protected API:
+
+    ```text id="m8q4vx"
+    Client
+    ↓
+    JWT
+    ↓
+    Authentication Middleware
+    ↓
+    Verify Token
+    ↓
+    req.user
+    ↓
+    Controller
+    ```
+
+    ### 1. Install `jsonwebtoken`
+
+    ```bash id="x5n2kc"
+    npm install jsonwebtoken
+    ```
+
+    ---
+
+    ### 2. Login par JWT Generate Karna
+
+    ```javascript id="q9v4mz"
+    const jwt = require("jsonwebtoken");
+
+    const token = jwt.sign(
+    {
+        userId: user.id,
+        role: user.role
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn: "15m"
+    }
+    );
+    ```
+
+    JWT ke andar generally **identity/authorization-related claims** rakhte hain, sensitive information nahi.
+
+    Example payload conceptually:
+
+    ```json id="w6m2px"
+    {
+    "userId": 123,
+    "role": "admin"
+    }
+    ```
+
+    ---
+
+    ### 3. Token Client ko Send Karna
+
+    Common approach:
+
+    ```javascript id="r3q8vn"
+    res.json({
+    accessToken: token
+    });
+    ```
+
+    Ya browser-based application me secure cookie strategy use kar sakte ho:
+
+    ```javascript id="p7m4kx"
+    res.cookie("accessToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict"
+    });
+    ```
+
+    Choice application architecture aur security requirements par depend karti hai.
+
+    ---
+
+    ### 4. Authentication Middleware ⭐
+
+    Protected route ke liye:
+
+    ```javascript id="c8x5mq"
+    const authenticate = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader?.startsWith("Bearer ")) {
+        return res.status(401).json({
+        message: "Authentication required"
+        });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+        const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET
+        );
+
+        req.user = decoded;
+
+        next();
+    } catch (error) {
+        return res.status(401).json({
+        message: "Invalid or expired token"
+        });
+    }
+    };
+    ```
+
+    Protected route:
+
+    ```javascript id="n4m8qp"
+    app.get("/profile", authenticate, (req, res) => {
+    res.json({
+        user: req.user
+    });
+    });
+    ```
+
+    Flow:
+
+    ```text id="v5q9mx"
+    GET /profile
+        ↓
+    Authorization: Bearer JWT
+        ↓
+    authenticate()
+        ↓
+    jwt.verify()
+        ↓
+    Valid?
+    ↙       ↘
+    No        Yes
+    ↓          ↓
+    401      req.user
+                ↓
+            Controller
+    ```
+
+    ---
+
+    ### 5. Authorization
+
+    JWT valid hone ka matlab user ko **har operation ka permission** hai, aisa nahi hai.
+
+    Example RBAC:
+
+    ```javascript id="k2p7vc"
+    const authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+        return res.status(403).json({
+            message: "Forbidden"
+        });
+        }
+
+        next();
+    };
+    };
+    ```
+
+    Route:
+
+    ```javascript id="x6m3qz"
+    app.delete(
+    "/users/:id",
+    authenticate,
+    authorize("admin"),
+    deleteUser
+    );
+    ```
+
+    ```text id="r8v4np"
+    JWT Valid
+    ↓
+    User = Admin?
+    ↓
+    Yes → Allow
+    No  → 403
+    ```
+
+    ---
+
+    ## ⭐ Access Token + Refresh Token
+
+    Production applications me short-lived access token + refresh token pattern common hai:
+
+    ```text id="m7q2kx"
+    Login
+    ↓
+    Access Token → short expiry
+    Refresh Token → longer expiry
+    ```
+
+    Access token expire hone par refresh token se new access token obtain kiya ja sakta hai.
+
+    Isse access token ko long-lived rakhne ki need reduce hoti hai.
+
+    ---
+
+    ## Security Points
+
+    JWT implementation me:
+
+    * Strong secret/private key use karo
+    * Secret ko environment/secret manager me rakho
+    * Short-lived access tokens consider karo
+    * HTTPS use karo
+    * Token me passwords/secrets mat store karo
+    * Proper authorization checks rakho
+    * Refresh-token lifecycle/revocation strategy rakho
+    * Browser cookies use kar rahe ho to `HttpOnly`, `Secure`, appropriate `SameSite` settings consider karo
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I implement JWT authentication by first verifying the user's credentials during login and then issuing a signed, short-lived access token containing minimal claims such as the user ID and role. Protected routes use authentication middleware that extracts the token, verifies its signature and claims, and attaches the decoded user information to `req.user`. Authorization middleware then checks whether the authenticated user has permission to perform the requested action. For longer sessions, I can use a refresh-token mechanism with appropriate rotation and revocation controls. Secrets are kept outside source code, and tokens are transmitted securely over HTTPS.**
+
+    ### Interview Follow-up
+
+    **Q. `jwt.decode()` vs `jwt.verify()`?**
+
+    > **`decode()` only reads the JWT payload and does not establish that the token is authentic. `verify()` validates the token's signature and relevant claims such as expiration, so authentication decisions should use `verify()`, not just `decode()`.**
+
+    ```text id="p3m8qx"
+    decode()
+    → Read payload
+
+    verify()
+    → Validate signature + claims
+    → Use for authentication
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Login → Sign JWT → Client sends JWT → Middleware verifies → `req.user` → Authorization → Controller.**
+
+
+
 37. How does dependency injection work in Node?
 38. What is the role of fs/promises in Node?
 39. How can you prevent memory leaks?
