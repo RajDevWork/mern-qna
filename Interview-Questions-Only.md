@@ -17429,6 +17429,231 @@ Browser automatically validation kar dega.
 
 
 37. How does dependency injection work in Node?
+
+    ## Hinglish Explanation
+
+    **Dependency Injection (DI)** ka simple meaning hai:
+
+    > **Class/function apni dependencies khud create na kare; dependencies bahar se provide ki jayein.**
+
+    Without DI:
+
+    ```javascript id="m7q2vx"
+    class UserService {
+    constructor() {
+        this.userRepository = new UserRepository();
+    }
+    }
+    ```
+
+    `UserService` khud `UserRepository` create kar raha hai.
+
+    Problem:
+
+    ```text id="q4n8kc"
+    UserService
+        ↓
+    Creates UserRepository
+        ↓
+    Tightly Coupled ❌
+    ```
+
+    DI me:
+
+    ```javascript id="x5r9pm"
+    class UserService {
+    constructor(userRepository) {
+        this.userRepository = userRepository;
+    }
+    }
+    ```
+
+    Ab dependency bahar se provide kar sakte hain:
+
+    ```javascript id="c8m3vq"
+    const repository = new UserRepository();
+
+    const service = new UserService(repository);
+    ```
+
+    Flow:
+
+    ```text id="v6p2nx"
+    UserService
+        ↑
+    Dependency provided from outside
+        ↑
+    UserRepository
+    ```
+
+    ---
+
+    ### Why is DI useful?
+
+    ### 1. Loose Coupling
+
+    Service ko ye care nahi karna ki repository **kaise create** hui.
+
+    ```text id="n9q4mw"
+    UserService
+        ↓
+    Repository Interface/Contract
+        ↓
+    Implementation
+    ```
+
+    ---
+
+    ### 2. Testing ⭐
+
+    Production:
+
+    ```javascript id="p5x7kc"
+    const service = new UserService(realRepository);
+    ```
+
+    Test:
+
+    ```javascript id="r3m8vq"
+    const mockRepository = {
+    findUser: async () => ({
+        id: 1,
+        name: "Test User"
+    })
+    };
+
+    const service = new UserService(mockRepository);
+    ```
+
+    Database ke bina service test kar sakte ho.
+
+    ---
+
+    ### 3. Configuration / Implementation Change
+
+    Suppose initially:
+
+    ```text id="w8q2mz"
+    UserService
+    ↓
+    MongoRepository
+    ```
+
+    Later PostgreSQL:
+
+    ```text id="k6v3xp"
+    UserService
+    ↓
+    PostgresRepository
+    ```
+
+    Service ka business logic change nahi karna padta.
+
+    ---
+
+    ## Node.js me DI kaise implement karte hain?
+
+    Node.js me DI ke liye **constructor injection** manually implement kar sakte ho.
+
+    ```javascript id="y4m8qz"
+    class UserRepository {
+    findById(id) {
+        return { id };
+    }
+    }
+
+    class UserService {
+    constructor(userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    getUser(id) {
+        return this.userRepository.findById(id);
+    }
+    }
+
+    const repository = new UserRepository();
+    const service = new UserService(repository);
+    ```
+
+    Ye **manual dependency injection** hai.
+
+    ---
+
+    ## DI Container
+
+    Large applications me dependencies manually create karna difficult ho sakta hai, so DI container use kiya ja sakta hai.
+
+    Conceptually:
+
+    ```text id="t7n3mp"
+    DI Container
+        ↓
+    Creates dependencies
+        ↓
+    Repository
+        ↓
+    Service
+        ↓
+    Controller
+    ```
+
+    Node.js ecosystem me libraries/frameworks such as **Awilix, TSyringe**, etc. DI container functionality provide karte hain.
+
+    ---
+
+    ## ⭐ NestJS Connection
+
+    Tum NestJS bhi practice kar rahe ho, so ye concept particularly important hai.
+
+    NestJS me:
+
+    ```typescript id="z5q8mc"
+    @Injectable()
+    export class UserService {
+    constructor(
+        private readonly userRepository: UserRepository,
+    ) {}
+    }
+    ```
+
+    NestJS ka DI container automatically `UserRepository` resolve karke `UserService` ko provide karta hai.
+
+    ```text id="c4m7vx"
+    NestJS DI Container
+        ↓
+    UserRepository
+        ↓
+    UserService
+        ↓
+    Controller
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Dependency Injection is a design pattern where a component receives its dependencies from outside instead of creating them internally. In Node.js, I can implement DI manually using constructor injection, or use a dependency injection container in larger applications. DI reduces coupling, improves testability, and makes it easier to replace implementations, such as using a mock repository during testing or switching database implementations.**
+
+    ### Interview Follow-up
+
+    **Q. Why is DI useful for unit testing?**
+
+    > **Because I can inject mocks or stubs instead of real dependencies. For example, a service can receive a mock repository instead of connecting to the actual database, allowing the business logic to be tested in isolation.**
+
+    ```text id="h8q2vz"
+    Without DI
+    Service → Real DB ❌
+
+    With DI
+    Service → Mock DB ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **DI = Dependency ko khud create mat karo, bahar se inject karo.**
+
+
 38. What is the role of fs/promises in Node?
 39. How can you prevent memory leaks?
 40. How would you implement logging and metrics?
