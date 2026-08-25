@@ -18579,6 +18579,144 @@ Browser automatically validation kar dega.
 
 
 312. NoSQL kya hai?
+
+    ## Hinglish Explanation
+
+    **NoSQL** ka full form commonly **"Not Only SQL"** maana jata hai. Ye databases ka ek category hai jo traditional relational databases (SQL databases) se different data models use karta hai.
+
+    SQL database me generally:
+
+    ```text
+    Database
+    ↓
+    Tables
+    ↓
+    Rows + Columns
+    ↓
+    Relationships
+    ```
+
+    NoSQL me data model database ke according different ho sakta hai:
+
+    ```text
+    NoSQL
+    ├── Document      → MongoDB
+    ├── Key-Value     → Redis
+    ├── Wide-Column   → Cassandra
+    └── Graph         → Neo4j
+    ```
+
+    ---
+
+    ### MongoDB Example
+
+    MongoDB me data document ke form me hota hai:
+
+    ```json
+    {
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "skills": ["Node.js", "React"]
+    }
+    ```
+
+    Yahan traditional table/row structure ki jagah **document** hai.
+
+    ---
+
+    ### SQL vs NoSQL ⭐
+
+    | SQL                                    | NoSQL                                  |
+    | -------------------------------------- | -------------------------------------- |
+    | Tables                                 | Different data models                  |
+    | Rows/Columns                           | Documents/Key-value/etc.               |
+    | Schema generally structured            | Often more flexible                    |
+    | Relationships/joins strong             | Embedding/other approaches common      |
+    | SQL queries                            | Database-specific APIs/query languages |
+    | Vertical + horizontal scaling possible | Horizontal scaling commonly emphasized |
+
+    Example:
+
+    ```text
+    SQL:
+
+    users
+    -------------------------
+    id | name | email
+    1  | Raj  | raj@...
+
+
+    NoSQL:
+
+    users
+    -------------------------
+    {
+    id: 1,
+    name: "Raj",
+    email: "raj@..."
+    }
+    ```
+
+    ---
+
+    ### NoSQL ka matlab "No SQL" nahi hai
+
+    Ye important interview point hai.
+
+    **NoSQL ka matlab ye nahi ki database SQL bilkul support nahi karta.**
+
+    Better interpretation:
+
+    > **NoSQL = Not Only SQL**
+
+    NoSQL databases different data models aur access patterns provide karte hain.
+
+    ---
+
+    ### NoSQL kab useful hai?
+
+    NoSQL useful ho sakta hai jab:
+
+    * Data naturally document-oriented ho
+    * Schema frequently evolve ho raha ho
+    * Very large scale data handle karna ho
+    * Horizontal scaling important ho
+    * High-throughput workloads ho
+    * Relationships relatively simple hon ya document embedding suitable ho
+
+    Example:
+
+    ```text
+    Product Catalog
+        ↓
+    Product
+    ├── name
+    ├── price
+    ├── images[]
+    ├── variants[]
+    └── specifications{}
+    ```
+
+    Aise nested/document-oriented data ko MongoDB me naturally represent karna convenient ho sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **NoSQL refers to a category of non-relational databases, commonly interpreted as "Not Only SQL." Instead of relying primarily on tables and rows like relational databases, NoSQL databases can use document, key-value, wide-column, or graph data models. They are often useful for flexible data models, high-throughput workloads, and horizontal scaling. MongoDB is an example of a document-oriented NoSQL database.**
+
+    ### Interview Follow-up
+
+    **Q. Kya NoSQL always better than SQL hai?**
+
+    > **No. The choice depends on the application's data model and access patterns. SQL is often better when strong relationships, joins, transactions, and relational constraints are central. NoSQL can be a better fit for flexible document-oriented data or certain large-scale distributed workloads.**
+
+    ### ⭐ One-line memory trick
+
+    > **SQL = relational tables | NoSQL = non-relational models like documents, key-value, wide-column, and graphs.**
+
+
+
 313. Document model?
 314. CRUD operations?
 315. Index kya hai?
