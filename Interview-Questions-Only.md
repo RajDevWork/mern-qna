@@ -18923,6 +18923,245 @@ Browser automatically validation kar dega.
 
 
 314. CRUD operations?
+
+    ## Hinglish Explanation
+
+    **CRUD** ka full form hai:
+
+    ```text
+    C → Create
+    R → Read
+    U → Update
+    D → Delete
+    ```
+
+    MongoDB me CRUD operations ka use documents ko **create, retrieve, modify aur remove** karne ke liye hota hai.
+
+    Example collection:
+
+    ```text
+    users
+    ```
+
+    ---
+
+    ### 1. Create
+
+    Naya document insert karna.
+
+    #### `insertOne()`
+
+    ```javascript id="x7m2qp"
+    db.users.insertOne({
+    name: "Raj",
+    email: "raj@gmail.com",
+    age: 29
+    });
+    ```
+
+    Multiple documents:
+
+    ```javascript id="p4n8vz"
+    db.users.insertMany([
+    {
+        name: "Raj",
+        email: "raj@gmail.com"
+    },
+    {
+        name: "Amit",
+        email: "amit@gmail.com"
+    }
+    ]);
+    ```
+
+    Flow:
+
+    ```text id="m8q3kc"
+    Application
+        ↓
+    insertOne()
+        ↓
+    MongoDB
+        ↓
+    New Document
+    ```
+
+    ---
+
+    ### 2. Read
+
+    Documents retrieve karna.
+
+    #### All users
+
+    ```javascript id="v6r2mx"
+    db.users.find();
+    ```
+
+    #### Specific user
+
+    ```javascript id="q9k5wp"
+    db.users.findOne({
+    email: "raj@gmail.com"
+    });
+    ```
+
+    #### Filter
+
+    ```javascript id="c3m8vz"
+    db.users.find({
+    age: { $gte: 25 }
+    });
+    ```
+
+    ---
+
+    ### 3. Update
+
+    Existing document modify karna.
+
+    #### `updateOne()`
+
+    ```javascript id="h7p4qn"
+    db.users.updateOne(
+    { email: "raj@gmail.com" },
+    {
+        $set: {
+        age: 30
+        }
+    }
+    );
+    ```
+
+    #### Multiple documents
+
+    ```javascript id="n5x8mr"
+    db.users.updateMany(
+    { age: { $lt: 18 } },
+    {
+        $set: {
+        status: "minor"
+        }
+    }
+    );
+    ```
+
+    Important:
+
+    ```text id="w2m6kp"
+    $set
+    → Specific fields update
+
+    $inc
+    → Numeric value increment
+
+    $push
+    → Array me value add
+
+    $pull
+    → Array se value remove
+    ```
+
+    Example:
+
+    ```javascript id="r4q7mz"
+    db.users.updateOne(
+    { name: "Raj" },
+    {
+        $inc: {
+        age: 1
+        }
+    }
+    );
+    ```
+
+    ---
+
+    ### 4. Delete
+
+    Document remove karna.
+
+    #### `deleteOne()`
+
+    ```javascript id="z8m3vx"
+    db.users.deleteOne({
+    email: "raj@gmail.com"
+    });
+    ```
+
+    #### Multiple documents
+
+    ```javascript id="k5q9np"
+    db.users.deleteMany({
+    status: "inactive"
+    });
+    ```
+
+    ---
+
+    ## CRUD Summary
+
+    | Operation | MongoDB Method                |
+    | --------- | ----------------------------- |
+    | Create    | `insertOne()`, `insertMany()` |
+    | Read      | `find()`, `findOne()`         |
+    | Update    | `updateOne()`, `updateMany()` |
+    | Delete    | `deleteOne()`, `deleteMany()` |
+
+    ---
+
+    ## Express + MongoDB Example ⭐
+
+    Typical API:
+
+    ```text id="y6p2mq"
+    POST   /users       → Create
+    GET    /users       → Read
+    GET    /users/:id   → Read one
+    PUT    /users/:id   → Update
+    DELETE /users/:id   → Delete
+    ```
+
+    Flow:
+
+    ```text id="f3n8vx"
+    Client
+    ↓
+    Express Route
+    ↓
+    Controller
+    ↓
+    Service
+    ↓
+    MongoDB
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **CRUD stands for Create, Read, Update, and Delete. In MongoDB, create operations use methods such as `insertOne()` and `insertMany()`, read operations use `find()` and `findOne()`, update operations use `updateOne()` and `updateMany()`, and delete operations use `deleteOne()` and `deleteMany()`. In an Express application, these operations are typically exposed through REST endpoints such as POST, GET, PUT/PATCH, and DELETE.**
+
+    ### Interview Follow-up
+
+    **Q. PUT vs PATCH?**
+
+    > **PUT generally represents replacing the resource with a new representation, while PATCH is intended for partial updates. In practice, I use PATCH when only specific fields need to be changed.**
+
+    ```text id="q7m4xz"
+    POST   → Create
+    GET    → Read
+    PUT    → Replace/Update
+    PATCH  → Partial Update
+    DELETE → Delete
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **CRUD = Create → Read → Update → Delete = Insert → Find → Update → Delete.**
+
+
+
 315. Index kya hai?
 316. Compound index?
 317. Text index?
