@@ -18718,6 +18718,210 @@ Browser automatically validation kar dega.
 
 
 313. Document model?
+
+    ## Hinglish Explanation
+
+    **Document Model** ek database data-modeling approach hai jisme data ko **documents** ke form me store kiya jata hai, usually JSON-like structure me.
+
+    MongoDB iska popular example hai.
+
+    ```text id="p7m3qx"
+    Database
+    ↓
+    Collection
+    ↓
+    Documents
+    ↓
+    Fields
+    ```
+
+    Example:
+
+    ```json id="x4n8vm"
+    {
+    "_id": 101,
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "address": {
+        "city": "Ahmedabad",
+        "country": "India"
+    },
+    "skills": [
+        "Node.js",
+        "React",
+        "MongoDB"
+    ]
+    }
+    ```
+
+    Yahan ek **user ka complete related data ek document** me represent kiya ja sakta hai.
+
+    ---
+
+    ### SQL Model vs Document Model
+
+    SQL me:
+
+    ```text id="m5q2vk"
+    users
+    ----------------
+    id | name | email
+
+    addresses
+    ----------------
+    id | user_id | city
+    ```
+
+    Related data ke liye relationship/join use kar sakte hain.
+
+    Document model me:
+
+    ```json id="q8r4mz"
+    {
+    "_id": 101,
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "address": {
+        "city": "Ahmedabad"
+    }
+    }
+    ```
+
+    Related data ko **embed** kar sakte hain.
+
+    ---
+
+    ### 1. Embedding ⭐
+
+    Related data ko same document ke andar store karna.
+
+    ```json id="c6m9xp"
+    {
+    "name": "Raj",
+    "orders": [
+        {
+        "product": "Laptop",
+        "price": 70000
+        },
+        {
+        "product": "Mouse",
+        "price": 1000
+        }
+    ]
+    }
+    ```
+
+    Useful when:
+
+    * Data closely related hai
+    * Together read hota hai
+    * Child data ka size manageable hai
+
+    ```text id="v3q7kn"
+    User
+    └── Orders
+        ├── Order 1
+        └── Order 2
+    ```
+
+    ---
+
+    ### 2. Referencing
+
+    Kabhi related data ko separate collection me rakhna better hota hai.
+
+    ```json id="n8m2qx"
+    {
+    "_id": 101,
+    "name": "Raj",
+    "departmentId": 5
+    }
+    ```
+
+    Aur:
+
+    ```json id="r4p7mc"
+    {
+    "_id": 5,
+    "name": "Engineering"
+    }
+    ```
+
+    ```text id="y6k3vz"
+    users
+    ↓
+    departmentId
+    ↓
+    departments
+    ```
+
+    Referencing useful ho sakta hai jab related data:
+
+    * Bahut large ho
+    * Independently access/update hota ho
+    * Multiple documents ke saath shared ho
+
+    ---
+
+    ### ⭐ Important Concept
+
+    Document modeling ka main rule:
+
+    > **Schema ko application ke query/access patterns ke according design karo.**
+
+    Suppose application frequently user ke saath uske address ko read karti hai:
+
+    ```text id="w5q8nx"
+    GET user
+    ↓
+    User + Address
+    ```
+
+    To embedding convenient ho sakti hai.
+
+    Lekin agar address independently bahut jagah reuse/update hota hai, referencing better ho sakti hai.
+
+    ---
+
+    ### Document Model ke Benefits
+
+    ```text id="z2m7kp"
+    Document Model
+        ↓
+    ├── Natural JSON-like structure
+    ├── Nested data
+    ├── Flexible schema
+    ├── Related data embedding
+    └── Query-oriented modeling
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **The document model stores data as self-contained documents, typically in a JSON-like BSON structure in MongoDB. Documents can contain nested objects and arrays, allowing related data to be embedded rather than normalized into multiple tables. When data is large, shared, or independently accessed, we can use references instead. The key principle is to design the document structure around the application's query and access patterns.**
+
+    ### Interview Follow-up
+
+    **Q. Embedding vs Referencing?**
+
+    > **I use embedding when related data is small, tightly coupled, and usually read together. I use referencing when the related data is large, shared across multiple documents, or needs independent lifecycle and updates.**
+
+    ```text id="h9q3mv"
+    Embedding
+    User
+    └── Address
+
+    Referencing
+    User
+    └── addressId → Address
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Document Model = Data ko JSON-like documents me model karo, aur embedding vs referencing query pattern ke according choose karo.**
+
+
 314. CRUD operations?
 315. Index kya hai?
 316. Compound index?
