@@ -19163,6 +19163,209 @@ Browser automatically validation kar dega.
 
 
 315. Index kya hai?
+
+    ## Hinglish Explanation
+
+    **Index database ka ek data structure hai jo queries ko faster banane ke liye use hota hai.**
+
+    Simple example:
+
+    Agar `users` collection me **10 lakh documents** hain aur tum baar-baar email se user search karte ho:
+
+    ```javascript
+    db.users.findOne({
+    email: "raj@gmail.com"
+    });
+    ```
+
+    Without index, MongoDB ko potentially bahut saare documents check karne pad sakte hain:
+
+    ```text id="k7m2qx"
+    10 Lakh Documents
+        ↓
+    Scan one by one
+        ↓
+    ❌ Slow
+    ```
+
+    Agar `email` par index hai:
+
+    ```javascript
+    db.users.createIndex({
+    email: 1
+    });
+    ```
+
+    MongoDB index ka use karke matching document much faster locate kar sakta hai:
+
+    ```text id="p4n8vz"
+    Query
+    ↓
+    Email Index
+    ↓
+    Matching Document
+    ↓
+    ✅ Faster
+    ```
+
+    ---
+
+    ### Real-life Example
+
+    Book me agar tumhe **"MongoDB"** topic find karna hai:
+
+    ```text id="x8q3mc"
+    Without Index
+    → Har page check karo
+
+    With Index
+    → Index page dekho
+    → Direct relevant page par jao
+    ```
+
+    Database index bhi roughly isi idea par kaam karta hai.
+
+    ---
+
+    ### MongoDB me Index
+
+    ```javascript id="m6r2qp"
+    db.users.createIndex({
+    email: 1
+    });
+    ```
+
+    `1` ka matlab ascending order hai.
+
+    Descending:
+
+    ```javascript id="v9k4mx"
+    db.users.createIndex({
+    createdAt: -1
+    });
+    ```
+
+    ---
+
+    ### Unique Index ⭐
+
+    Agar email duplicate nahi hona chahiye:
+
+    ```javascript id="c5n8qx"
+    db.users.createIndex(
+    { email: 1 },
+    { unique: true }
+    );
+    ```
+
+    Ab:
+
+    ```text id="r3m7vz"
+    raj@gmail.com
+    raj@gmail.com
+        ↓
+    ❌ Duplicate key error
+    ```
+
+    ---
+
+    ### Compound Index
+
+    Multiple fields par index:
+
+    ```javascript id="q7x4mp"
+    db.users.createIndex({
+    tenantId: 1,
+    email: 1
+    });
+    ```
+
+    Useful when queries frequently dono fields ke saath hoti hain:
+
+    ```javascript id="n8m3qc"
+    db.users.find({
+    tenantId: "tenant1",
+    email: "raj@gmail.com"
+    });
+    ```
+
+    ---
+
+    ### Index ka Disadvantage ⚠️
+
+    Index free nahi hota.
+
+    Har index:
+
+    ```text id="w6p2mz"
+    Extra Disk Space
+        +
+    Write Overhead
+    ```
+
+    Insert/update ke time database ko indexes bhi maintain karne padte hain.
+
+    Isliye **har field par blindly index nahi banana chahiye**.
+
+    ---
+
+    ### Query Performance Check
+
+    MongoDB me query plan dekhne ke liye:
+
+    ```javascript id="h4q9vx"
+    db.users
+    .find({ email: "raj@gmail.com" })
+    .explain("executionStats");
+    ```
+
+    Important metrics:
+
+    ```text id="s5m8qn"
+    totalDocsExamined
+    totalKeysExamined
+    executionTimeMillis
+    ```
+
+    Agar query index effectively use kar rahi hai, generally `IXSCAN` jaise stage dekh sakte ho.
+
+    ```text id="z3m7kp"
+    IXSCAN
+    → Index Scan
+
+    COLLSCAN
+    → Collection Scan
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **An index is a data structure maintained by the database to make queries faster by allowing it to locate matching records without scanning the entire collection or table. In MongoDB, I create indexes based on actual query patterns, for example an index on `email` for frequent email lookups. Indexes improve read performance but consume additional storage and add overhead to writes, so I avoid creating unnecessary indexes and verify query plans using `explain()`.**
+
+    ### Interview Follow-up
+
+    **Q. Index ka disadvantage kya hai?**
+
+    > **Indexes consume memory and disk space and increase the cost of insert, update, and delete operations because the indexes also need to be maintained. Therefore, indexes should be designed based on real query patterns.**
+
+    ```text id="j8q2vx"
+    Index
+    ↓
+    Read Performance ↑
+    ↓
+    But
+    ↓
+    Storage ↑
+    Write Cost ↑
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Index = Faster reads, but extra storage + write overhead.**
+
+
+
 316. Compound index?
 317. Text index?
 318. Aggregation pipeline?
