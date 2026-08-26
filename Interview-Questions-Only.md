@@ -19367,6 +19367,255 @@ Browser automatically validation kar dega.
 
 
 316. Compound index?
+
+    ## Hinglish Explanation
+
+    **Compound Index** ek aisa index hai jo **2 ya usse zyada fields** ko combine karke banaya jata hai.
+
+    Example:
+
+    ```javascript id="v7m2qx"
+    db.users.createIndex({
+    tenantId: 1,
+    email: 1
+    });
+    ```
+
+    Yahan ek hi index me:
+
+    ```text id="p4n8kc"
+    tenantId
+    +
+    email
+    ↓
+    Compound Index
+    ```
+
+    use ho raha hai.
+
+    ---
+
+    ### Real-world Example ⭐
+
+    Suppose tumhari **multi-tenant application** hai:
+
+    ```json id="x8q3mz"
+    {
+    "tenantId": "companyA",
+    "email": "raj@gmail.com",
+    "name": "Raj"
+    }
+    ```
+
+    Aur frequently query hoti hai:
+
+    ```javascript id="m5r9qp"
+    db.users.find({
+    tenantId: "companyA",
+    email: "raj@gmail.com"
+    });
+    ```
+
+    To compound index useful hoga:
+
+    ```javascript id="q3n7vx"
+    db.users.createIndex({
+    tenantId: 1,
+    email: 1
+    });
+    ```
+
+    Flow:
+
+    ```text id="k6p2mz"
+    Query
+    ↓
+    tenantId + email
+    ↓
+    Compound Index
+    ↓
+    Matching Document
+    ```
+
+    ---
+
+    ### ⭐ Field Order Bahut Important Hai
+
+    Suppose:
+
+    ```javascript id="r8x4mc"
+    db.users.createIndex({
+    tenantId: 1,
+    email: 1
+    });
+    ```
+
+    Iska **prefix rule** important hai.
+
+    Ye index generally useful ho sakta hai:
+
+    ```javascript id="z5m9qn"
+    { tenantId: "companyA" }
+    ```
+
+    and:
+
+    ```javascript id="h7q3vx"
+    {
+    tenantId: "companyA",
+    email: "raj@gmail.com"
+    }
+    ```
+
+    But sirf:
+
+    ```javascript id="c4p8mz"
+    { email: "raj@gmail.com" }
+    ```
+
+    ke liye ye compound index generally effective nahi hota in the same way, because `email` index ka first field nahi hai.
+
+    Isliye index ka order **query patterns ke according** choose karna important hai.
+
+    ---
+
+    ### Example
+
+    Agar common queries hain:
+
+    ```javascript id="n6m2qx"
+    { tenantId: "companyA" }
+
+    { tenantId: "companyA", status: "active" }
+    ```
+
+    To:
+
+    ```javascript id="w4r7mc"
+    db.users.createIndex({
+    tenantId: 1,
+    status: 1
+    });
+    ```
+
+    logical choice ho sakti hai.
+
+    ---
+
+    ### Sort ke saath bhi useful
+
+    Suppose query:
+
+    ```javascript id="p8k3vz"
+    db.orders
+    .find({ tenantId: "companyA" })
+    .sort({ createdAt: -1 });
+    ```
+
+    Index:
+
+    ```javascript id="m9q5rx"
+    db.orders.createIndex({
+    tenantId: 1,
+    createdAt: -1
+    });
+    ```
+
+    MongoDB ko filtering + sorting efficiently perform karne me help mil sakti hai.
+
+    ---
+
+    ### Compound Index vs Multiple Single Indexes
+
+    Suppose:
+
+    ```javascript id="x7m4kp"
+    db.users.createIndex({ tenantId: 1 });
+    db.users.createIndex({ email: 1 });
+    ```
+
+    vs:
+
+    ```javascript id="q5n8mz"
+    db.users.createIndex({
+    tenantId: 1,
+    email: 1
+    });
+    ```
+
+    Dono same nahi hain.
+
+    Agar application frequently query karti hai:
+
+    ```javascript id="r3v6qx"
+    {
+    tenantId: "companyA",
+    email: "raj@gmail.com"
+    }
+    ```
+
+    to compound index query pattern ke liye better fit ho sakta hai.
+
+    ---
+
+    ## ⚠️ Important
+
+    Compound index blindly nahi banana chahiye.
+
+    Pehle actual query patterns dekho:
+
+    ```text id="j8m2qp"
+    Query Pattern
+        ↓
+    Index Design
+        ↓
+    explain()
+        ↓
+    Performance Verify
+    ```
+
+    Check:
+
+    ```javascript id="c6r9vx"
+    db.users
+    .find({
+        tenantId: "companyA",
+        email: "raj@gmail.com"
+    })
+    .explain("executionStats");
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **A compound index is an index built on multiple fields. For example, if an application frequently queries users by `tenantId` and `email`, I can create `{ tenantId: 1, email: 1 }`. The order of fields is important because MongoDB can efficiently use the index based on its prefix fields. I design compound indexes according to actual query and sorting patterns and verify their effectiveness using `explain()`.**
+
+    ### Interview Follow-up
+
+    **Q. Compound index me field order kyun important hai?**
+
+    > **Because MongoDB uses the index according to its field order and prefix. An index `{ tenantId: 1, email: 1 }` is useful for queries involving `tenantId` and `tenantId + email`, but it is generally not an effective replacement for an index starting with `email` when the query filters only by `email`.**
+
+    ```text id="s4q7mx"
+    Index:
+    { tenantId, email }
+
+    Good:
+    { tenantId }
+    { tenantId, email }
+
+    Not ideal:
+    { email }
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Compound Index = Multiple fields in one index + field order matters + design according to query pattern.**
+
+
+
+
 317. Text index?
 318. Aggregation pipeline?
 319. $match kya hai?
