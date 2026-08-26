@@ -19617,6 +19617,214 @@ Browser automatically validation kar dega.
 
 
 317. Text index?
+
+    ## Hinglish Explanation
+
+    **Text Index** MongoDB ka special index hai jo **text-based search** ke liye use hota hai.
+
+    Agar tumhe kisi field ke andar words search karne hain, jaise:
+
+    ```text id="q8m3vx"
+    "Node.js developer"
+    "React developer"
+    "MongoDB developer"
+    ```
+
+    to text index useful ho sakta hai.
+
+    ---
+
+    ### 1. Text Index Create Karna
+
+    Suppose collection:
+
+    ```json id="m5q7nz"
+    {
+    "title": "Node.js Backend Developer",
+    "description": "Looking for an experienced Node.js developer"
+    }
+    ```
+
+    Index:
+
+    ```javascript id="v4r8mc"
+    db.jobs.createIndex({
+    title: "text",
+    description: "text"
+    });
+    ```
+
+    Ab MongoDB text search kar sakta hai:
+
+    ```javascript id="x7n2qp"
+    db.jobs.find({
+    $text: {
+        $search: "Node.js developer"
+    }
+    });
+    ```
+
+    Flow:
+
+    ```text id="p6m9vx"
+    Search Text
+        ↓
+    $text
+        ↓
+    Text Index
+        ↓
+    Matching Documents
+    ```
+
+    ---
+
+    ### 2. Multiple Fields
+
+    Ek text index multiple fields par bhi bana sakte ho:
+
+    ```javascript id="k3q8mz"
+    db.products.createIndex({
+    name: "text",
+    description: "text",
+    category: "text"
+    });
+    ```
+
+    Then:
+
+    ```javascript id="w5r2px"
+    db.products.find({
+    $text: {
+        $search: "wireless headphones"
+    }
+    });
+    ```
+
+    ---
+
+    ### 3. Search Score ⭐
+
+    MongoDB relevance score bhi provide kar sakta hai:
+
+    ```javascript id="n8m4qc"
+    db.jobs.find(
+    {
+        $text: {
+        $search: "Node.js developer"
+        }
+    },
+    {
+        score: {
+        $meta: "textScore"
+        }
+    }
+    );
+    ```
+
+    Higher score generally means document search terms ke according more relevant hai.
+
+    ---
+
+    ### 4. Exact Phrase Search
+
+    Phrase ko quotes ke saath search kar sakte ho:
+
+    ```javascript id="r7x3mv"
+    db.jobs.find({
+    $text: {
+        $search: "\"Node.js developer\""
+    }
+    });
+    ```
+
+    ---
+
+    ### Text Index vs Normal Index ⭐
+
+    Normal index:
+
+    ```javascript id="c6m9qp"
+    db.users.createIndex({
+    email: 1
+    });
+    ```
+
+    Good for:
+
+    ```javascript id="h4q8mz"
+    {
+    email: "raj@gmail.com"
+    }
+    ```
+
+    Text index:
+
+    ```javascript id="z3n7vx"
+    db.jobs.createIndex({
+    description: "text"
+    });
+    ```
+
+    Good for:
+
+    ```text id="y5p2mc"
+    Search:
+    "Node developer with MongoDB experience"
+    ```
+
+    ```text id="v8q4nx"
+    Normal Index
+    → Exact/range lookups
+
+    Text Index
+    → Text search
+    ```
+
+    ---
+
+    ## ⚠️ Important Limitation
+
+    MongoDB ka built-in text index **full search-engine replacement nahi hai**.
+
+    Agar application me advanced search chahiye:
+
+    ```text
+    Autocomplete
+    Fuzzy Search
+    Typo Tolerance
+    Advanced Relevance
+    Faceting
+    Complex Search
+    ```
+
+    to dedicated search solutions, such as **MongoDB Atlas Search**, Elasticsearch/OpenSearch, etc., better fit ho sakte hain depending on the architecture.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **A text index in MongoDB is a specialized index used for text search across one or more string fields. I can create a text index using `{ field: "text" }` and query it with the `$text` operator. MongoDB can also provide a text relevance score using `textScore`. For advanced requirements such as fuzzy matching, autocomplete, and sophisticated relevance ranking, I would consider a dedicated search solution such as MongoDB Atlas Search.**
+
+    ### Interview Follow-up
+
+    **Q. Normal index aur text index me difference?**
+
+    > **A normal index is primarily designed for equality, range, sorting, and similar structured queries, while a text index is designed for searching words across text fields.**
+
+    ```text id="q9m3vx"
+    Normal Index
+    → email = "raj@gmail.com"
+
+    Text Index
+    → "Node.js developer MongoDB"
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Text Index = MongoDB me word-based text search ke liye special index.**
+
+
+
 318. Aggregation pipeline?
 319. $match kya hai?
 320. $group kya hai?
