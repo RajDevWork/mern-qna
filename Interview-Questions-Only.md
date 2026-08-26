@@ -20382,6 +20382,292 @@ Browser automatically validation kar dega.
 
 
 320. $group kya hai?
+
+    ## Hinglish Explanation
+
+    `$group` MongoDB **Aggregation Pipeline ka grouping aur calculation stage** hai.
+
+    Simple words me:
+
+    > **`$group` documents ko kisi field/value ke basis par groups me divide karta hai aur har group par calculations perform karne deta hai.**
+
+    SQL me iska closest equivalent:
+
+    ```sql
+    GROUP BY
+    ```
+
+    ---
+
+    ### Basic Example
+
+    Suppose `orders` collection:
+
+    ```json
+    { "customer": "Raj", "amount": 1000 }
+    { "customer": "Raj", "amount": 2000 }
+    { "customer": "Amit", "amount": 1500 }
+    ```
+
+    Hume customer-wise total amount chahiye:
+
+    ```javascript
+    db.orders.aggregate([
+    {
+        $group: {
+        _id: "$customer",
+        totalAmount: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Result:
+
+    ```json
+    { "_id": "Raj", "totalAmount": 3000 }
+    { "_id": "Amit", "totalAmount": 1500 }
+    ```
+
+    Flow:
+
+    ```text
+    Orders
+    ↓
+    $group by customer
+    ↓
+    Raj   → 1000 + 2000 = 3000
+    Amit  → 1500
+    ```
+
+    ---
+
+    ### `$group` me `_id` ⭐
+
+    `$group` me `_id` define karta hai ki **kis basis par grouping karni hai**.
+
+    ```javascript
+    {
+    $group: {
+        _id: "$customer"
+    }
+    }
+    ```
+
+    Meaning:
+
+    ```text
+    customer ke basis par group karo
+    ```
+
+    Agar:
+
+    ```javascript
+    {
+    $group: {
+        _id: "$status"
+    }
+    }
+    ```
+
+    to:
+
+    ```text
+    active
+    inactive
+    pending
+    ```
+
+    ke separate groups banenge.
+
+    ---
+
+    ## Common Accumulators
+
+    ### `$sum`
+
+    Total/count calculate karne ke liye:
+
+    ```javascript
+    {
+    $group: {
+        _id: "$customer",
+        total: {
+        $sum: "$amount"
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ### `$avg`
+
+    Average:
+
+    ```javascript
+    {
+    $group: {
+        _id: "$department",
+        averageSalary: {
+        $avg: "$salary"
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ### `$min`
+
+    Minimum:
+
+    ```javascript
+    {
+    $group: {
+        _id: "$department",
+        minimumSalary: {
+        $min: "$salary"
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ### `$max`
+
+    Maximum:
+
+    ```javascript
+    {
+    $group: {
+        _id: "$department",
+        maximumSalary: {
+        $max: "$salary"
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ### `$count` / `$sum: 1`
+
+    Group ke andar documents count karne ke liye:
+
+    ```javascript
+    {
+    $group: {
+        _id: "$status",
+        count: {
+        $sum: 1
+        }
+    }
+    }
+    ```
+
+    Example:
+
+    ```text
+    active   → 50
+    inactive → 20
+    pending  → 10
+    ```
+
+    ---
+
+    ## `$match` + `$group` ⭐
+
+    Real-world aggregation me dono commonly saath use hote hain.
+
+    ```javascript
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customer",
+        totalAmount: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Flow:
+
+    ```text
+    All Orders
+        ↓
+    $match
+    completed only
+        ↓
+    $group
+    customer-wise
+        ↓
+    $sum
+    total amount
+        ↓
+    Result
+    ```
+
+    ---
+
+    ## `$group` vs `$project`
+
+    ```text
+    $group
+    → Documents ko group karta hai
+    → Calculations/aggregations
+
+    $project
+    → Fields ko select/reshape karta hai
+    ```
+
+    Example:
+
+    ```javascript
+    {
+    $project: {
+        name: 1,
+        email: 1
+    }
+    }
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **`$group` is an aggregation pipeline stage used to group documents based on a specified expression and perform calculations on each group. It is similar to `GROUP BY` in SQL. It uses accumulator operators such as `$sum`, `$avg`, `$min`, `$max`, and `$push` to calculate or collect values for each group. The `_id` field in `$group` defines the grouping key.**
+
+    ### Interview Follow-up
+
+    **Q. `$group` me `_id` ka kya role hai?**
+
+    > **`_id` defines the grouping key. For example, `{ _id: "$customerId" }` groups all documents belonging to the same customer into one group.**
+
+    ```text
+    _id: "$customerId"
+
+    Customer 1 → Group 1
+    Customer 2 → Group 2
+    Customer 3 → Group 3
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **`$group` = GROUP BY + calculations (`$sum`, `$avg`, `$min`, `$max`).**
+
+
+
 321. $lookup kya hai?
 322. Sharding kya hai?
 323. Replication kya hai?
