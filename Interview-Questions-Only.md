@@ -20169,6 +20169,218 @@ Browser automatically validation kar dega.
 
 
 319. $match kya hai?
+
+    ## Hinglish Explanation
+
+    `$match` MongoDB **Aggregation Pipeline ka filtering stage** hai.
+
+    Simple words me:
+
+    > **`$match` sirf wahi documents pipeline me aage bhejta hai jo given condition satisfy karte hain.**
+
+    SQL me iska closest equivalent **`WHERE`** hai.
+
+    ---
+
+    ### Basic Example
+
+    Suppose `users` collection:
+
+    ```json id="p7m3qx"
+    { "name": "Raj", "age": 29, "status": "active" }
+    ```
+
+    ```json id="x4n8vm"
+    { "name": "Amit", "age": 25, "status": "inactive" }
+    ```
+
+    Agar sirf active users chahiye:
+
+    ```javascript id="m5q2vk"
+    db.users.aggregate([
+    {
+        $match: {
+        status: "active"
+        }
+    }
+    ]);
+    ```
+
+    Flow:
+
+    ```text id="q8r4mz"
+    All Documents
+        ↓
+    $match
+        ↓
+    status = active?
+    ↙       ↘
+    Yes        No
+    ↓          ↓
+    Output     Discard
+    ```
+
+    Result:
+
+    ```json id="c6n9xp"
+    {
+    "name": "Raj",
+    "age": 29,
+    "status": "active"
+    }
+    ```
+
+    ---
+
+    ### Multiple Conditions
+
+    ```javascript id="v3k7mx"
+    db.users.aggregate([
+    {
+        $match: {
+        status: "active",
+        age: { $gte: 25 }
+        }
+    }
+    ]);
+    ```
+
+    Meaning:
+
+    ```text id="r5m8qz"
+    status = active
+    AND
+    age >= 25
+    ```
+
+    ---
+
+    ### Operators ke saath
+
+    ```javascript id="n4q9vp"
+    {
+    $match: {
+        age: {
+        $gte: 25
+        }
+    }
+    }
+    ```
+
+    Common operators:
+
+    ```text id="w6m2kc"
+    $eq   → equal
+    $ne   → not equal
+    $gt   → greater than
+    $gte  → greater than or equal
+    $lt   → less than
+    $lte  → less than or equal
+    $in   → values ke andar
+    $nin  → values ke bahar
+    ```
+
+    ---
+
+    ### `$match` + `$group` ⭐
+
+    Real aggregation me commonly:
+
+    ```javascript id="k8p3mx"
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customerId",
+        total: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Flow:
+
+    ```text id="z7q4nv"
+    All Orders
+        ↓
+    $match
+    completed orders only
+        ↓
+    $group
+    customer-wise total
+        ↓
+    Result
+    ```
+
+    ---
+
+    ### `$match` ko Early Stage me kyun rakhte hain?
+
+    Suppose:
+
+    ```text id="p3m9qx"
+    10 Million Documents
+    ```
+
+    Agar pehle `$group` kar diya:
+
+    ```text id="v8n4mc"
+    10M
+    ↓
+    $group
+    ↓
+    $match
+    ```
+
+    Unnecessarily bahut data process hoga.
+
+    Better:
+
+    ```text id="x5q7mz"
+    10M
+    ↓
+    $match
+    ↓
+    100K relevant docs
+    ↓
+    $group
+    ```
+
+    Isse processing reduce ho sakti hai.
+
+    Aur agar `$match` indexed field par based hai, MongoDB suitable situations me index ka benefit le sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **`$match` is an aggregation pipeline stage used to filter documents based on specified conditions. It is similar to the `WHERE` clause in SQL. Only documents that satisfy the `$match` condition continue to the next pipeline stage. I generally place selective `$match` stages as early as practical to reduce the amount of data processed by subsequent stages.**
+
+    ### Interview Follow-up
+
+    **Q. `$match` vs `find()`?**
+
+    > **Both can filter documents, but `$match` is specifically an aggregation pipeline stage and allows filtering as part of a larger pipeline containing stages such as `$group`, `$project`, `$sort`, and `$lookup`. `find()` is primarily used for directly querying and retrieving documents.**
+
+    ```text id="h6m2qv"
+    find()
+    → Query documents
+
+    $match
+    → Filter documents inside aggregation pipeline
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **`$match` = Aggregation pipeline ka `WHERE` clause.**
+
+
 320. $group kya hai?
 321. $lookup kya hai?
 322. Sharding kya hai?
