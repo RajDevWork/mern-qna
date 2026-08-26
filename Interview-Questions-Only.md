@@ -19826,6 +19826,348 @@ Browser automatically validation kar dega.
 
 
 318. Aggregation pipeline?
+
+    ## Hinglish Explanation
+
+    **MongoDB Aggregation Pipeline** ek framework hai jisme documents ko **multiple stages ke through process, filter, transform aur calculate** kiya jata hai.
+
+    Simple:
+
+    ```text id="q7m3vx"
+    Collection
+        ↓
+    $match
+        ↓
+    $group
+        ↓
+    $sort
+        ↓
+    $project
+        ↓
+    Result
+    ```
+
+    Har stage previous stage ka output lekar next stage ko deta hai.
+
+    ---
+
+    ### Example
+
+    Suppose `orders` collection:
+
+    ```json id="m5q8nz"
+    {
+    "customer": "Raj",
+    "amount": 1000,
+    "status": "completed"
+    }
+    ```
+
+    ```json id="v4r7mc"
+    {
+    "customer": "Amit",
+    "amount": 2000,
+    "status": "completed"
+    }
+    ```
+
+    ```json id="x8n2qp"
+    {
+    "customer": "Raj",
+    "amount": 500,
+    "status": "pending"
+    }
+    ```
+
+    Hume completed orders ka **total amount per customer** chahiye.
+
+    ```javascript id="p6m9vx"
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customer",
+        totalAmount: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Result:
+
+    ```json id="r3q7mz"
+    {
+    "_id": "Raj",
+    "totalAmount": 1000
+    }
+    ```
+
+    ```json id="k8m4xc"
+    {
+    "_id": "Amit",
+    "totalAmount": 2000
+    }
+    ```
+
+    ---
+
+    ## Important Pipeline Stages ⭐
+
+    ### `$match`
+
+    Documents filter karta hai.
+
+    ```javascript id="c5n8qp"
+    {
+    $match: {
+        status: "completed"
+    }
+    }
+    ```
+
+    Conceptually SQL ke `WHERE` jaisa.
+
+    ---
+
+    ### `$group`
+
+    Documents ko group karke calculations karta hai.
+
+    ```javascript id="h7m3vx"
+    {
+    $group: {
+        _id: "$customer",
+        total: {
+        $sum: "$amount"
+        }
+    }
+    }
+    ```
+
+    SQL:
+
+    ```sql
+    GROUP BY customer
+    ```
+
+    ---
+
+    ### `$project`
+
+    Fields select/reshape karta hai.
+
+    ```javascript id="z4q9mc"
+    {
+    $project: {
+        customer: "$_id",
+        total: 1,
+        _id: 0
+    }
+    }
+    ```
+
+    ---
+
+    ### `$sort`
+
+    Sorting:
+
+    ```javascript id="n6p2rx"
+    {
+    $sort: {
+        total: -1
+    }
+    }
+    ```
+
+    `-1` → descending
+
+    `1` → ascending
+
+    ---
+
+    ### `$limit`
+
+    Result count limit karta hai.
+
+    ```javascript id="w8m4qz"
+    {
+    $limit: 10
+    }
+    ```
+
+    ---
+
+    ### `$skip`
+
+    Documents skip karta hai.
+
+    ```javascript id="y3r7mc"
+    {
+    $skip: 20
+    }
+    ```
+
+    ---
+
+    ### `$unwind` ⭐
+
+    Array ko individual documents me expand karta hai.
+
+    Suppose:
+
+    ```json id="p5q8nx"
+    {
+    "name": "Raj",
+    "skills": ["Node", "React", "MongoDB"]
+    }
+    ```
+
+    ```javascript id="m7x2vz"
+    {
+    $unwind: "$skills"
+    }
+    ```
+
+    Conceptually:
+
+    ```text id="k4n9qp"
+    Raj + Node
+    Raj + React
+    Raj + MongoDB
+    ```
+
+    ---
+
+    ### `$lookup`
+
+    MongoDB me collections ke beech join-like operation ke liye:
+
+    ```javascript id="r8m3xc"
+    {
+    $lookup: {
+        from: "orders",
+        localField: "_id",
+        foreignField: "userId",
+        as: "orders"
+    }
+    }
+    ```
+
+    SQL ke `JOIN` ke similar concept hai.
+
+    ---
+
+    ## Pipeline Example
+
+    Real-world example:
+
+    ```javascript id="q6v9mz"
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customer",
+        total: {
+            $sum: "$amount"
+        }
+        }
+    },
+    {
+        $sort: {
+        total: -1
+        }
+    },
+    {
+        $limit: 5
+    }
+    ]);
+    ```
+
+    Flow:
+
+    ```text id="v5m8qx"
+    All Orders
+        ↓
+    Completed only
+        ↓
+    Group by customer
+        ↓
+    Calculate total
+        ↓
+    Sort highest → lowest
+        ↓
+    Top 5
+    ```
+
+    ---
+
+    ## ⭐ Performance Point
+
+    Aggregation me **early `$match`** useful hota hai.
+
+    Instead of:
+
+    ```text id="x7q3mn"
+    10 Million Documents
+        ↓
+    $group
+        ↓
+    $match
+    ```
+
+    Better:
+
+    ```text id="j4m8pz"
+    10 Million Documents
+        ↓
+    $match
+        ↓
+    Only relevant Documents
+        ↓
+    $group
+    ```
+
+    Isse unnecessary documents process nahi karne padte.
+
+    Aur `$match` agar suitable indexed fields par early stage me ho, to MongoDB query ko optimize karne ke liye index ka benefit mil sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **MongoDB's aggregation pipeline is a framework for processing documents through a sequence of stages. Each stage transforms or filters the output from the previous stage. Common stages include `$match` for filtering, `$group` for aggregation, `$project` for reshaping fields, `$sort`, `$limit`, `$unwind`, and `$lookup` for join-like operations. I generally place selective `$match` stages as early as practical and use appropriate indexes to improve performance.**
+
+    ### Interview Follow-up
+
+    **Q. `find()` vs Aggregation Pipeline?**
+
+    > **`find()` is mainly used for retrieving documents with filtering, projection, sorting, and similar operations. Aggregation is used when I need multi-stage data processing, grouping, calculations, transformations, joins, or reporting-style queries.**
+
+    ```text id="n9q4vx"
+    find()
+    → Fetch documents
+
+    aggregate()
+    → Process + transform + calculate documents
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Aggregation Pipeline = Documents ko stage-by-stage process karo → `$match` → `$group` → `$project` → `$sort` → result.**
+
+
+
 319. $match kya hai?
 320. $group kya hai?
 321. $lookup kya hai?
