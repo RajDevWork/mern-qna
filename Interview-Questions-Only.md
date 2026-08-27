@@ -20990,6 +20990,218 @@ Browser automatically validation kar dega.
 
 
 322. Sharding kya hai?
+
+    ## Hinglish Explanation
+
+    **Sharding** MongoDB me **horizontal scaling** ka technique hai jisme large dataset ko **multiple servers (shards)** me distribute kiya jata hai.
+
+    Simple example:
+
+    Agar ek MongoDB server par bahut zyada data aa gaya:
+
+    ```text id="x7m3qp"
+    1 Billion Documents
+        ↓
+    Single Server
+        ↓
+    ❌ Bottleneck
+    ```
+
+    Sharding ke baad:
+
+    ```text id="m4q8vz"
+                MongoDB Cluster
+                        ↓
+            ┌───────────┼───────────┐
+            ↓           ↓           ↓
+        Shard 1     Shard 2     Shard 3
+        Data A      Data B      Data C
+    ```
+
+    Har shard dataset ka **ek portion** store karta hai.
+
+    ---
+
+    ### Real-world Example ⭐
+
+    Suppose `users` collection me 300 million users hain.
+
+    Sharding:
+
+    ```text id="q5n8rx"
+    Shard 1 → User IDs 1–100M
+    Shard 2 → User IDs 100M–200M
+    Shard 3 → User IDs 200M–300M
+    ```
+
+    Actual distribution MongoDB **shard key** aur configured sharding strategy ke according karta hai; simple ranges sirf concept samajhne ke liye example hain.
+
+    ---
+
+    ## Shard Key ⭐
+
+    Sharding ka sabse important concept **shard key** hai.
+
+    Example:
+
+    ```javascript id="v8m2kc"
+    {
+    userId: 12345,
+    name: "Raj"
+    }
+    ```
+
+    Suppose:
+
+    ```text id="p6q4mz"
+    shardKey = userId
+    ```
+
+    MongoDB shard key ke basis par documents ko shards me distribute karta hai.
+
+    ```text id="r3x7vn"
+    userId
+    ↓
+    Shard Key
+    ↓
+    MongoDB decides
+    ↓
+    Shard 1 / 2 / 3
+    ```
+
+    ### Good Shard Key
+
+    Good shard key ideally:
+
+    * Data ko evenly distribute kare
+    * High cardinality ho
+    * Query patterns ke saath align kare
+    * Write/read hotspots avoid kare
+
+    ---
+
+    ## Sharding vs Replication ⭐
+
+    Ye dono confuse nahi karna.
+
+    ### Sharding
+
+    **Data ko distribute karta hai.**
+
+    ```text id="k8m3qx"
+    Data
+    ↓
+    Shard 1
+    Shard 2
+    Shard 3
+    ```
+
+    Purpose:
+
+    ```text id="w4n7mc"
+    Horizontal scaling
+    +
+    Large datasets
+    +
+    Higher throughput
+    ```
+
+    ### Replication
+
+    **Data ki copies banata hai.**
+
+    ```text id="z5q8vp"
+    Primary
+    ↓
+    Secondary
+    ↓
+    Secondary
+    ```
+
+    Purpose:
+
+    ```text id="n6m2rx"
+    High Availability
+    +
+    Fault Tolerance
+    +
+    Read Scaling (where appropriate)
+    ```
+
+    Dono ek saath bhi use ho sakte hain:
+
+    ```text id="c7p4mz"
+                Cluster
+            /            \
+        Shard 1         Shard 2
+        /    \           /    \
+    Primary Secondary   Primary Secondary
+    ```
+
+    ---
+
+    ## MongoDB Sharded Cluster ke Components
+
+    Basic architecture:
+
+    ```text id="v8q3nm"
+                    Application
+                        ↓
+                    mongos
+                        ↓
+                Config Servers
+                        ↓
+            ┌──────────┼──────────┐
+            ↓          ↓          ↓
+        Shard 1    Shard 2    Shard 3
+    ```
+
+    ### `mongos`
+
+    Router ki tarah kaam karta hai aur request ko appropriate shard(s) tak route karta hai.
+
+    ### Config Servers
+
+    Cluster metadata/configuration maintain karte hain.
+
+    ### Shards
+
+    Actual sharded data store karte hain.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Sharding is MongoDB's horizontal scaling mechanism where data is distributed across multiple servers called shards. A shard key determines how documents are distributed across the cluster. This allows MongoDB to handle datasets and workloads that may exceed the capacity of a single server. A sharded cluster typically uses `mongos` routers and config servers to manage routing and cluster metadata. Sharding is different from replication: sharding distributes data for scalability, while replication maintains copies for high availability and fault tolerance.**
+
+    ### Interview Follow-up
+
+    **Q. Shard key choose karte waqt kya consider karoge?**
+
+    > **I would consider cardinality, frequency of values, query patterns, write distribution, and the risk of hotspots. A poor shard key can cause uneven distribution and overload one shard even when the cluster has multiple servers.**
+
+    ```text id="h4m9qx"
+    Good Shard Key
+        ↓
+    Even Distribution
+        ↓
+    Balanced Load
+        ↓
+    Better Scaling
+
+    Bad Shard Key
+        ↓
+    Hotspot
+        ↓
+    One Shard overloaded ❌
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Sharding = Data ko multiple servers me distribute karke horizontally scale karna.**
+
+
+
 323. Replication kya hai?
 324. CAP theorem?
 325. ACID properties?
