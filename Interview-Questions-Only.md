@@ -21833,6 +21833,236 @@ Browser automatically validation kar dega.
 
 
 326. Transactions?
+
+    ## Hinglish Explanation
+
+    **Transaction** database operations ka ek **logical unit of work** hai.
+
+    Simple words me:
+
+    > **Ya to transaction ke saare operations successfully complete honge, ya failure hone par changes rollback ho jayenge.**
+
+    Example: **Bank transfer**
+
+    ```text
+    Raj → Amit ₹1000
+
+    1. Raj ke account se ₹1000 minus
+    2. Amit ke account me ₹1000 plus
+    ```
+
+    Dono operations ko ek transaction me rakh sakte hain:
+
+    ```text
+    BEGIN
+    ↓
+    Raj - ₹1000
+    ↓
+    Amit + ₹1000
+    ↓
+    COMMIT ✅
+    ```
+
+    Agar second operation fail ho:
+
+    ```text
+    BEGIN
+    ↓
+    Raj - ₹1000 ✅
+    ↓
+    Amit + ₹1000 ❌
+    ↓
+    ROLLBACK
+    ↓
+    Raj ka ₹1000 वापस
+    ```
+
+    ---
+
+    ## Transaction ke Main Operations
+
+    ### `BEGIN`
+
+    Transaction start:
+
+    ```sql
+    BEGIN;
+    ```
+
+    ### `COMMIT`
+
+    Saare changes permanently save:
+
+    ```sql
+    COMMIT;
+    ```
+
+    ### `ROLLBACK`
+
+    Failure par changes undo:
+
+    ```sql
+    ROLLBACK;
+    ```
+
+    Flow:
+
+    ```text
+    BEGIN
+    ↓
+    Operation 1
+    ↓
+    Operation 2
+    ↓
+    Success?
+    ↙      ↘
+    Yes      No
+    ↓        ↓
+    COMMIT   ROLLBACK
+    ```
+
+    ---
+
+    ## Transactions + ACID ⭐
+
+    Transactions ko reliable banane ke liye **ACID properties** important hain:
+
+    ```text
+    Transaction
+        ↓
+    ┌───────────────┐
+    │ Atomicity     │ → All or nothing
+    │ Consistency   │ → Valid state
+    │ Isolation     │ → Concurrent transactions controlled
+    │ Durability    │ → Commit survives failure
+    └───────────────┘
+    ```
+
+    ---
+
+    ## MongoDB Transaction Example
+
+    MongoDB multiple operations ko transaction me execute kar sakta hai.
+
+    Node.js driver me conceptually:
+
+    ```javascript
+    const session = client.startSession();
+
+    try {
+    session.startTransaction();
+
+    await accounts.updateOne(
+        { _id: fromAccount },
+        { $inc: { balance: -1000 } },
+        { session }
+    );
+
+    await accounts.updateOne(
+        { _id: toAccount },
+        { $inc: { balance: 1000 } },
+        { session }
+    );
+
+    await session.commitTransaction();
+
+    } catch (error) {
+    await session.abortTransaction();
+    throw error;
+
+    } finally {
+    await session.endSession();
+    }
+    ```
+
+    Yahan:
+
+    ```text
+    Both updates successful
+            ↓
+        COMMIT
+
+    Any update fails
+            ↓
+        ABORT
+            ↓
+    Changes rollback
+    ```
+
+    ---
+
+    ## SQL vs MongoDB Transactions
+
+    SQL databases me transactions traditionally core feature hain:
+
+    ```sql
+    BEGIN;
+
+    UPDATE accounts
+    SET balance = balance - 1000
+    WHERE id = 1;
+
+    UPDATE accounts
+    SET balance = balance + 1000
+    WHERE id = 2;
+
+    COMMIT;
+    ```
+
+    MongoDB me bhi **multi-document transactions** available hain, although document modeling often lets you keep related changes within a single document and avoid a multi-document transaction where appropriate.
+
+    ---
+
+    ## ⚠️ Har jagah Transaction use nahi karna
+
+    Transaction ka overhead hota hai.
+
+    Agar simple operation hai:
+
+    ```text
+    Create User
+    ```
+
+    to transaction ki zarurat nahi ho sakti.
+
+    But:
+
+    ```text
+    Create Order
+    +
+    Reduce Inventory
+    +
+    Create Payment Record
+    ```
+
+    jaise operations me consistency requirements ke according transaction useful ho sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **A database transaction is a logical unit of work containing one or more operations that should be treated as a single unit. The transaction either commits all its changes or rolls them back if something fails. Transactions are used when multiple related operations must maintain consistency, such as transferring money between accounts or creating an order while updating inventory. They are closely associated with the ACID properties.**
+
+    ### Interview Follow-up
+
+    **Q. COMMIT aur ROLLBACK me difference?**
+
+    > **COMMIT permanently applies the changes made by the transaction, while ROLLBACK discards the transaction's changes and returns the database to its previous state.**
+
+    ```text
+    COMMIT
+    → Save changes ✅
+
+    ROLLBACK
+    → Undo transaction changes ❌
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Transaction = Multiple DB operations ko ek unit banao → success = COMMIT, failure = ROLLBACK.**
+
+
+
 327. Schema design?
 328. Embedding vs referencing?
 329. Data consistency?
