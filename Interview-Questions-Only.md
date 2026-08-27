@@ -21638,6 +21638,200 @@ Browser automatically validation kar dega.
 
 
 325. ACID properties?
+
+    ## Hinglish Explanation
+
+    **ACID properties** database transactions ki 4 important properties hain, jo ensure karti hain ki transaction **reliable aur predictable** way me execute ho.
+
+    ACID:
+
+    ```text id="m7q2vx"
+    A → Atomicity
+    C → Consistency
+    I → Isolation
+    D → Durability
+    ```
+
+    Example: **Bank transfer**
+
+    ```text id="x8n4mq"
+    Raj → ₹1000 → Amit
+
+    Raj balance -₹1000
+            +
+    Amit balance +₹1000
+    ```
+
+    Dono operations ko ek transaction ka part maana ja sakta hai.
+
+    ---
+
+    ### 1. Atomicity ⭐
+
+    **All or Nothing.**
+
+    Transaction ke saare operations successful hone chahiye, warna poora transaction rollback ho.
+
+    ```text id="q5m8vz"
+    ₹1000 transfer
+
+    Raj -₹1000       ✅
+    Amit +₹1000      ❌
+
+        ↓
+
+    ROLLBACK
+        ↓
+    Raj ka balance restore
+    ```
+
+    Matlab half transaction nahi hona chahiye.
+
+    ---
+
+    ### 2. Consistency
+
+    Transaction ke baad database **valid state** me hona chahiye.
+
+    Example:
+
+    ```text id="c7r3mx"
+    Before:
+    Total money = ₹10,000
+
+    Transaction:
+    Transfer ₹2,000
+
+    After:
+    Total money = ₹10,000
+    ```
+
+    Database constraints/business rules violate nahi hone chahiye.
+
+    ```text
+    Valid State
+    ↓
+    Transaction
+    ↓
+    Valid State
+    ```
+
+    ---
+
+    ### 3. Isolation
+
+    Agar multiple transactions simultaneously execute ho rahe hain, to ek transaction ka intermediate state doosre transaction ko improperly visible nahi hona chahiye.
+
+    Example:
+
+    ```text id="v9m2qp"
+    Transaction A
+    ↓
+    Updating balance
+
+    Transaction B
+    ↓
+    Reading balance
+    ```
+
+    Isolation ensure karta hai ki concurrent transactions controlled way me interact karein.
+
+    Different isolation levels different concurrency/consistency trade-offs provide karte hain.
+
+    ---
+
+    ### 4. Durability ⭐
+
+    Transaction successfully commit hone ke baad data **persist** rehna chahiye, even if system crash/restart ho.
+
+    ```text id="n6q4mx"
+    Transaction
+    ↓
+    COMMIT ✅
+    ↓
+    Server crashes 💥
+    ↓
+    Server restarts
+    ↓
+    Committed data still exists ✅
+    ```
+
+    ---
+
+    ## Complete Example
+
+    Bank transfer:
+
+    ```text id="p8m3vz"
+    BEGIN TRANSACTION
+        ↓
+    Raj - ₹1000
+        ↓
+    Amit + ₹1000
+        ↓
+    COMMIT
+    ```
+
+    ACID:
+
+    ```text id="r4q7nx"
+    Atomicity
+    → Dono operations together
+
+    Consistency
+    → Database rules maintain
+
+    Isolation
+    → Concurrent transactions controlled
+
+    Durability
+    → Commit ke baad data safe
+    ```
+
+    ---
+
+    ## ACID vs CAP ⭐
+
+    Dono ko confuse mat karna.
+
+    ```text id="w5m8qp"
+    ACID
+    → Database Transactions
+
+    CAP
+    → Distributed Systems
+    ```
+
+    **ACID** ka focus transaction correctness/reliability par hai.
+
+    **CAP** ka focus distributed system me network partition ke time consistency vs availability trade-off par hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **ACID represents Atomicity, Consistency, Isolation, and Durability. Atomicity means a transaction is all-or-nothing. Consistency ensures a transaction moves the database from one valid state to another. Isolation controls how concurrent transactions interact with each other. Durability guarantees that once a transaction is committed, its changes persist even after failures or restarts. These properties are fundamental for reliable transactional systems such as banking and order processing.**
+
+    ### Interview Follow-up
+
+    **Q. Atomicity aur Consistency me difference?**
+
+    > **Atomicity is about whether all operations in a transaction succeed or none do. Consistency is about whether the transaction preserves the database's defined rules and constraints.**
+
+    ```text id="z3n7mc"
+    Atomicity
+    → "Sab hoga ya kuch nahi hoga"
+
+    Consistency
+    → "Database invalid state me nahi jayega"
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **ACID = All or nothing + Valid state + Controlled concurrency + Permanently saved.**
+
+
+
 326. Transactions?
 327. Schema design?
 328. Embedding vs referencing?
