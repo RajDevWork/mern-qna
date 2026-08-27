@@ -20669,6 +20669,326 @@ Browser automatically validation kar dega.
 
 
 321. $lookup kya hai?
+
+    ## Hinglish Explanation
+
+    `$lookup` MongoDB **Aggregation Pipeline ka stage** hai jo **do collections ke documents ko combine** karne ke liye use hota hai.
+
+    Simple words me:
+
+    > **`$lookup` MongoDB me SQL ke `JOIN` jaisa kaam karta hai.**
+
+    Suppose tumhare paas 2 collections hain:
+
+    ```text id="w7m3qx"
+    users
+                        orders
+    ┌─────────────┐      ┌──────────────────┐
+    │ _id         │      │ userId           │
+    │ name        │      │ product          │
+    └─────────────┘      │ amount           │
+                        └──────────────────┘
+    ```
+
+    User:
+
+    ```json id="p4n8vz"
+    {
+    "_id": 101,
+    "name": "Raj"
+    }
+    ```
+
+    Order:
+
+    ```json id="x8q2mc"
+    {
+    "_id": 501,
+    "userId": 101,
+    "product": "Laptop",
+    "amount": 70000
+    }
+    ```
+
+    Yahan `orders.userId` aur `users._id` related hain.
+
+    ---
+
+    ### Basic `$lookup`
+
+    ```javascript id="m5r9qx"
+    db.users.aggregate([
+    {
+        $lookup: {
+        from: "orders",
+        localField: "_id",
+        foreignField: "userId",
+        as: "orders"
+        }
+    }
+    ]);
+    ```
+
+    Meaning:
+
+    ```text id="q7k3vp"
+    users._id
+    ↓
+    orders.userId
+    ↓
+    Matching Orders
+    ```
+
+    Result:
+
+    ```json id="c6n8mz"
+    {
+    "_id": 101,
+    "name": "Raj",
+    "orders": [
+        {
+        "_id": 501,
+        "userId": 101,
+        "product": "Laptop",
+        "amount": 70000
+        }
+    ]
+    }
+    ```
+
+    Notice:
+
+    ```text id="v3m7qx"
+    User document
+        +
+    Matching orders
+        ↓
+    orders: [...]
+    ```
+
+    ---
+
+    ### `$lookup` ke Important Fields ⭐
+
+    ```javascript id="r8q4mc"
+    {
+    $lookup: {
+        from: "orders",
+        localField: "_id",
+        foreignField: "userId",
+        as: "orders"
+    }
+    }
+    ```
+
+    #### `from`
+
+    Kis collection ke saath join karna hai.
+
+    ```text id="n6p2vx"
+    from: "orders"
+    ```
+
+    #### `localField`
+
+    Current collection ka field.
+
+    ```text id="j4m8qz"
+    localField: "_id"
+    ```
+
+    #### `foreignField`
+
+    Dusri collection ka matching field.
+
+    ```text id="w5q9mc"
+    foreignField: "userId"
+    ```
+
+    #### `as`
+
+    Matching documents kis field ke andar store honge.
+
+    ```text id="z3r7pn"
+    as: "orders"
+    ```
+
+    ---
+
+    ## `$lookup` + `$unwind`
+
+    `$lookup` normally matching documents ko **array** me deta hai.
+
+    Agar tumhe individual order document chahiye:
+
+    ```javascript id="k8m4qx"
+    db.users.aggregate([
+    {
+        $lookup: {
+        from: "orders",
+        localField: "_id",
+        foreignField: "userId",
+        as: "orders"
+        }
+    },
+    {
+        $unwind: "$orders"
+    }
+    ]);
+    ```
+
+    Flow:
+
+    ```text id="p5q8vx"
+    User
+    ↓
+    $lookup
+    ↓
+    orders: [Order1, Order2]
+    ↓
+    $unwind
+    ↓
+    Order1
+    Order2
+    ```
+
+    ---
+
+    ## `$lookup` + `$match` ⭐
+
+    Suppose sirf completed orders chahiye:
+
+    ```javascript id="x7m3qz"
+    db.users.aggregate([
+    {
+        $lookup: {
+        from: "orders",
+        let: {
+            userId: "$_id"
+        },
+        pipeline: [
+            {
+            $match: {
+                $expr: {
+                $and: [
+                    { $eq: ["$userId", "$$userId"] },
+                    { $eq: ["$status", "completed"] }
+                ]
+                }
+            }
+            }
+        ],
+        as: "completedOrders"
+        }
+    }
+    ]);
+    ```
+
+    Ye advanced `$lookup` hai jisme lookup ke andar **pipeline** run kar sakte ho.
+
+    ---
+
+    ## `$lookup` vs SQL JOIN
+
+    Conceptually:
+
+    ```text id="q4m8nz"
+    MongoDB
+
+    $lookup
+    ↓
+    JOIN
+
+
+    SQL
+
+    JOIN
+    ↓
+    Combine related rows
+    ```
+
+    Example SQL:
+
+    ```sql id="h8r2mx"
+    SELECT *
+    FROM users
+    LEFT JOIN orders
+    ON users.id = orders.user_id;
+    ```
+
+    MongoDB:
+
+    ```javascript id="m9v3qx"
+    {
+    $lookup: {
+        from: "orders",
+        localField: "_id",
+        foreignField: "userId",
+        as: "orders"
+    }
+    }
+    ```
+
+    ---
+
+    ## ⚠️ Important Interview Point
+
+    MongoDB me `$lookup` available hai, iska matlab ye nahi ki **har relationship ko `$lookup` se model karna chahiye**.
+
+    Agar related data:
+
+    ```text id="n5q8mz"
+    Small
+    +
+    Tightly coupled
+    +
+    Usually together read hota hai
+    ```
+
+    to **embedding** better ho sakti hai.
+
+    Agar data:
+
+    ```text id="r7m3vx"
+    Large
+    +
+    Shared
+    +
+    Independently accessed/updated
+    ```
+
+    to **referencing + `$lookup`** appropriate ho sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **`$lookup` is an aggregation pipeline stage in MongoDB that combines documents from two collections based on matching fields. It is conceptually similar to a SQL JOIN. The `from` field specifies the foreign collection, `localField` and `foreignField` define the matching fields, and `as` specifies where the matched documents are placed. `$lookup` returns the matching documents as an array, which can be flattened using `$unwind` when required.**
+
+    ### Interview Follow-up
+
+    **Q. `$lookup` kab avoid karoge?**
+
+    > **I would avoid unnecessary `$lookup` operations when the related data can be efficiently embedded and is usually accessed together. For frequently executed or performance-sensitive queries, I would design the document model around access patterns and verify the aggregation performance using `explain()`.**
+
+    ```text id="c8m5qx"
+    Small + tightly coupled data
+            ↓
+    Embedding
+
+    Large/shared/independent data
+            ↓
+    Referencing
+            ↓
+    $lookup when needed
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **`$lookup` = MongoDB Aggregation me collections ke beech JOIN.**
+
+
+
 322. Sharding kya hai?
 323. Replication kya hai?
 324. CAP theorem?
