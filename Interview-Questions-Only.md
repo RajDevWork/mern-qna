@@ -21424,6 +21424,219 @@ Browser automatically validation kar dega.
 
 
 324. CAP theorem?
+
+    ## Hinglish Explanation
+
+    **CAP Theorem** distributed systems ka ek fundamental concept hai.
+
+    CAP ka full form:
+
+    ```text
+    C → Consistency
+    A → Availability
+    P → Partition Tolerance
+    ```
+
+    CAP theorem ke according:
+
+    > **Distributed system me network partition hone par system ko simultaneously perfect Consistency aur perfect Availability dono guarantee karna possible nahi hota.**
+
+    Isliye commonly bola jata hai:
+
+    ```text
+            CAP
+        / | \
+        C  A  P
+
+    Network partition ke time:
+        C + P  OR  A + P
+    ```
+
+    ---
+
+    ### 1. Consistency (C)
+
+    Consistency ka matlab:
+
+    > **Har successful read ko latest committed write ka same result mile.**
+
+    Example:
+
+    ```text
+    User balance = ₹1000
+
+    Write:
+    balance = ₹500
+
+    Immediately Read:
+    → ₹500
+    ```
+
+    Sabhi relevant nodes latest value agree karte hain.
+
+    ---
+
+    ### 2. Availability (A)
+
+    Availability ka matlab:
+
+    > **Har request ko non-error response mile, even if some nodes unavailable hain.**
+
+    Example:
+
+    ```text
+    Node 1 ❌
+    Node 2 ❌
+
+    But another healthy node:
+    → Request ka response deta hai
+    ```
+
+    System response dena continue karta hai.
+
+    ---
+
+    ### 3. Partition Tolerance (P) ⭐
+
+    Network partition ka matlab:
+
+    ```text
+    Node A
+    X
+    Node B
+    ```
+
+    Nodes ke beech network communication temporarily fail ho gayi.
+
+    Partition tolerance ka matlab:
+
+    > **System network communication fail hone ke bawajood operate karne ki ability maintain kare.**
+
+    Distributed system me network partition realistically possible hai, isliye practical systems ko generally **P** choose karna hi padta hai.
+
+    ---
+
+    ## ⭐ CAP ka Real Meaning
+
+    Suppose:
+
+    ```text
+        Network Partition
+                ↓
+        ┌──────┴──────┐
+        ↓             ↓
+    Node A         Node B
+    ```
+
+    Node A aur B communicate nahi kar pa rahe.
+
+    Ab tumhe choice karni padegi:
+
+    ### CP
+
+    ```text
+    Consistency + Partition Tolerance
+    ```
+
+    System stale/conflicting data dene ke bajay kuch requests reject/delay kar sakta hai.
+
+    ```text
+    Partition
+    ↓
+    Can't guarantee latest data
+    ↓
+    Request fail/wait
+    ```
+
+    ### AP
+
+    ```text
+    Availability + Partition Tolerance
+    ```
+
+    System response deta rahega, lekin temporarily different/stale data mil sakta hai.
+
+    ```text
+    Partition
+    ↓
+    Continue responding
+    ↓
+    Possibly stale data
+    ```
+
+    ---
+
+    ## MongoDB ke Context me ⭐
+
+    MongoDB replica sets me consistency/availability behavior **read concern, write concern, elections, and deployment configuration** par depend karta hai.
+
+    Interview me simply:
+
+    ```text
+    MongoDB
+    → Strong consistency options available
+    → High availability through replica sets
+    → Partition handling through replica-set behavior
+    ```
+
+    keh sakte ho.
+
+    CAP ko database ke naam se blindly label karna avoid karo; **configuration aur failure scenario matter karta hai**.
+
+    ---
+
+    ## Real-world Example
+
+    Banking system:
+
+    ```text
+    ₹10,000 balance
+    ```
+
+    Agar network partition hai aur system uncertain hai ki latest balance kya hai:
+
+    ```text
+    CP approach:
+    → Transaction temporarily reject/wait
+    → Incorrect balance avoid
+    ```
+
+    Social media likes/count:
+
+    ```text
+    AP approach:
+    → User ko response continue
+    → Count temporarily stale ho sakta hai
+    → Later reconcile
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **CAP theorem states that in a distributed system, when a network partition occurs, you cannot guarantee both perfect consistency and perfect availability simultaneously. CAP stands for Consistency, Availability, and Partition Tolerance. Since network partitions are a reality in distributed systems, practical systems generally choose how to trade off consistency and availability during a partition. CP systems prioritize consistency, while AP systems prioritize availability.**
+
+    ### Interview Follow-up
+
+    **Q. CAP me "3 me se 2 choose karo" bolna correct hai?**
+
+    > **It's a useful simplification, but technically misleading. Partition tolerance is generally required for distributed systems. The important trade-off happens during a partition: do you prioritize consistency or availability?**
+
+    ```text
+    Normal operation
+    → C + A possible
+
+    Network Partition
+    → C + P
+        OR
+    → A + P
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **CAP = Partition ke time decide karo: stale/missing response tolerate karna hai (AP) ya availability sacrifice karke consistency protect karni hai (CP).**
+
+
 325. ACID properties?
 326. Transactions?
 327. Schema design?
