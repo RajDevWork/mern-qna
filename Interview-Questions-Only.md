@@ -22820,6 +22820,297 @@ Browser automatically validation kar dega.
 
 
 330. Query optimization?
+
+    ## Hinglish Explanation
+
+    **Query Optimization** ka matlab hai database query ko aise improve karna ki woh **kam resources me faster execute ho**, especially jab data bahut large ho.
+
+    Simple:
+
+    ```text id="m7q2vx"
+    Slow Query
+        ↓
+    Analyze
+        ↓
+    Query Plan
+        ↓
+    Index / Query / Schema Optimization
+        ↓
+    Fast Query
+    ```
+
+    ---
+
+    ### 1. First Query Measure Karo ⭐
+
+    MongoDB me `explain()` use karunga:
+
+    ```javascript id="x8n4mq"
+    db.users
+    .find({
+        email: "raj@gmail.com"
+    })
+    .explain("executionStats");
+    ```
+
+    Important metrics:
+
+    ```text id="q5m8vz"
+    executionTimeMillis
+    totalDocsExamined
+    totalKeysExamined
+    ```
+
+    Example:
+
+    ```text id="c7r3mx"
+    totalDocsExamined → 1,000,000
+    nReturned         → 1
+    ```
+
+    Ye indicate kar sakta hai ki query bahut documents scan kar rahi hai.
+
+    ---
+
+    ### 2. Proper Index ⭐⭐⭐
+
+    Suppose frequent query:
+
+    ```javascript id="v9m2qp"
+    db.users.find({
+    email: "raj@gmail.com"
+    });
+    ```
+
+    Index:
+
+    ```javascript id="n6q4mx"
+    db.users.createIndex({
+    email: 1
+    });
+    ```
+
+    Conceptually:
+
+    ```text id="p8m3vz"
+    Without Index
+    → Collection Scan
+    → Many documents check
+
+    With Index
+    → Index lookup
+    → Matching documents
+    ```
+
+    ---
+
+    ### 3. Compound Index
+
+    Agar query:
+
+    ```javascript id="r4q7nx"
+    db.orders.find({
+    tenantId: "t1",
+    status: "completed"
+    });
+    ```
+
+    To query pattern ke according:
+
+    ```javascript id="w5m8qp"
+    db.orders.createIndex({
+    tenantId: 1,
+    status: 1
+    });
+    ```
+
+    Field order important hota hai.
+
+    ---
+
+    ### 4. Sirf Required Fields Fetch Karo
+
+    Agar complete document ki zarurat nahi hai:
+
+    ```javascript id="z3n7mc"
+    db.users.find(
+    { status: "active" },
+    { name: 1, email: 1 }
+    );
+    ```
+
+    Isse unnecessary fields transfer/process karne se bach sakte ho.
+
+    ---
+
+    ### 5. Large Result Sets ko Limit/Paginate Karo
+
+    ❌:
+
+    ```javascript id="k8m4qz"
+    db.users.find({});
+    ```
+
+    Agar millions of documents hain.
+
+    Better:
+
+    ```javascript id="q7v3mx"
+    db.users
+    .find({})
+    .limit(20);
+    ```
+
+    Production APIs me pagination use karna better hai.
+
+    ```text id="h4m9qx"
+    GET /users?page=1&limit=20
+    ```
+
+    Large datasets ke liye **cursor/range-based pagination** often `skip`-based pagination se better scale karti hai.
+
+    ---
+
+    ### 6. Aggregation Optimize Karo
+
+    Agar aggregation hai:
+
+    ```javascript id="m5n8qp"
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customerId",
+        total: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Selective `$match` ko early stage me rakhna useful hota hai:
+
+    ```text id="v6q2rx"
+    10 Million Documents
+        ↓
+    $match
+        ↓
+    Relevant Documents
+        ↓
+    $group
+    ```
+
+    Unnecessarily huge dataset ko later stages tak carry nahi karna chahiye.
+
+    ---
+
+    ### 7. Avoid N+1 Queries ⭐
+
+    Bad pattern:
+
+    ```text id="x4m9vz"
+    Get 100 users
+        ↓
+    100 separate order queries
+        ↓
+    101 queries ❌
+    ```
+
+    Better:
+
+    ```text id="p6q2mc"
+    Get users
+        +
+    Single optimized query / $lookup
+        ↓
+    Required data
+    ```
+
+    Exact solution access pattern par depend karega.
+
+    ---
+
+    ### 8. Schema Design
+
+    Query optimization sirf indexes ka naam nahi hai.
+
+    Schema bhi important hai.
+
+    ```text id="n8r3qx"
+    Query Pattern
+        ↓
+    Schema Design
+        ↓
+    Embedding / Referencing
+        ↓
+    Indexes
+    ```
+
+    Agar data frequently ek saath read hota hai, appropriate embedding extra joins/lookups avoid kar sakti hai.
+
+    ---
+
+    ## ⭐ Query Optimization Process
+
+    Agar interviewer bole:
+
+    > **"Query slow hai. What will you do?"**
+
+    Main ye process follow karunga:
+
+    ```text id="w7m4pz"
+    Slow Query
+        ↓
+    Measure
+        ↓
+    explain()
+        ↓
+    Check Query Plan
+        ↓
+    Docs/Keys Examined?
+        ↓
+    Index Missing?
+        ↓
+    Query/Schema Problem?
+        ↓
+    Optimize
+        ↓
+    Run explain() Again
+        ↓
+    Benchmark
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **For query optimization, I first measure the query instead of making assumptions. In MongoDB, I use `explain("executionStats")` to inspect the query plan and metrics such as execution time, documents examined, and index keys examined. Based on the access pattern, I create appropriate single or compound indexes, return only required fields, paginate large result sets, optimize aggregation pipelines, avoid N+1 queries, and review the schema design when necessary. After the change, I run the query again and benchmark it to verify the improvement.**
+
+    ### Interview Follow-up
+
+    **Q. `COLLSCAN` vs `IXSCAN`?**
+
+    > **`COLLSCAN` means MongoDB is scanning documents in the collection, while `IXSCAN` indicates that an index is being scanned. A `COLLSCAN` isn't automatically bad—small collections or certain queries may legitimately use it—but for large collections and selective queries, an appropriate index can significantly reduce the amount of data examined.**
+
+    ```text id="k3m8vx"
+    COLLSCAN
+    → Collection scan
+
+    IXSCAN
+    → Index scan
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Query Optimization = Measure → `explain()` → Index/Query/Schema optimize → Measure again.**
+
+
+
 331. Index tuning?
 332. Write concern?
 333. Read preference?
