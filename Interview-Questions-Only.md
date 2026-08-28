@@ -22619,6 +22619,206 @@ Browser automatically validation kar dega.
 
 
 329. Data consistency?
+
+    ## Hinglish Explanation
+
+    **Data consistency** ka matlab hai ki database me data **correct, valid aur expected state me** rahe, especially jab multiple operations ya multiple users same data ko access/update kar rahe hon.
+
+    Simple example:
+
+    ```text id="m7q2vx"
+    Account A = ₹10,000
+    Account B = ₹5,000
+
+    Transfer ₹2,000
+            ↓
+    A = ₹8,000
+    B = ₹7,000
+    ```
+
+    Total balance:
+
+    ```text
+    Before → ₹15,000
+    After  → ₹15,000
+    ```
+
+    Data consistent raha.
+
+    ---
+
+    ### 1. Constraints se Consistency
+
+    Database rules invalid data ko prevent kar sakte hain.
+
+    Example:
+
+    ```text id="x8n4mq"
+    email → unique
+    age   → >= 18
+    price → >= 0
+    ```
+
+    Agar duplicate email allowed nahi hai:
+
+    ```text id="q5m8vz"
+    raj@gmail.com
+    raj@gmail.com
+        ↓
+    ❌ Invalid
+    ```
+
+    ---
+
+    ### 2. Transactions ⭐
+
+    Multiple related operations ko transaction me rakhna consistency maintain karne ka important way hai.
+
+    ```text id="c7r3mx"
+    BEGIN
+    ↓
+    Debit Account A
+    ↓
+    Credit Account B
+    ↓
+    COMMIT
+    ```
+
+    Agar credit operation fail:
+
+    ```text id="v9m2qp"
+    Debit ✅
+    Credit ❌
+    ↓
+    ROLLBACK
+    ↓
+    Debit bhi undo
+    ```
+
+    ---
+
+    ### 3. Concurrent Updates
+
+    Suppose two requests simultaneously same balance update kar rahe hain:
+
+    ```text id="n6q4mx"
+    Request A → Balance - ₹100
+    Request B → Balance - ₹200
+    ```
+
+    Agar concurrency properly handle nahi ki:
+
+    ```text
+    Wrong final balance ❌
+    ```
+
+    Database transactions, atomic operations, appropriate isolation/concurrency controls etc. use karke consistency maintain ki ja sakti hai.
+
+    ---
+
+    ### 4. Embedding vs Referencing me Consistency ⭐
+
+    Ye tumhare previous question se directly related hai.
+
+    Suppose product ka price multiple documents me duplicate kar diya:
+
+    ```text id="p8m3vz"
+    Order 1 → price: ₹70,000
+    Order 2 → price: ₹70,000
+    Product → price: ₹70,000
+    ```
+
+    Agar product price update hua:
+
+    ```text id="r4q7nx"
+    Product → ₹75,000
+
+    Order 1 → ₹70,000
+    Order 2 → ₹70,000
+    ```
+
+    Ye necessarily **inconsistent** nahi hai if those orders intentionally preserve historical purchase price.
+
+    Lekin agar duplicated field current state represent karta hai, to multiple copies synchronize karna consistency problem create kar sakta hai.
+
+    ---
+
+    ## Strong vs Eventual Consistency
+
+    Distributed systems me ye terms important hain.
+
+    ### Strong Consistency
+
+    Write ke baad subsequent read latest value de.
+
+    ```text id="w5m8qp"
+    Write → ₹500
+    ↓
+    Read → ₹500
+    ```
+
+    ### Eventual Consistency
+
+    Temporary stale value mil sakti hai, but eventually replicas same state par converge karte hain.
+
+    ```text id="z3n7mc"
+    Write → ₹500
+
+    Replica A → ₹500
+    Replica B → ₹100  ← temporarily stale
+
+    Later:
+    Replica B → ₹500
+    ```
+
+    ---
+
+    ## Consistency vs Availability ⭐
+
+    CAP theorem ke context me:
+
+    ```text id="k8m4qz"
+    Network Partition
+        ↓
+    Consistency OR Availability
+        ↓
+    Trade-off
+    ```
+
+    Important: **Consistency ka meaning yahan transaction-level "valid data" se thoda different context me use hota hai.**
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Data consistency means ensuring that data remains correct, valid, and follows the application's defined rules across operations and concurrent access. I maintain consistency using database constraints, atomic operations, transactions, appropriate concurrency controls, and careful schema design. In distributed systems, I also consider the required consistency model, such as strong or eventual consistency, depending on the application's requirements.**
+
+    ### Interview Follow-up
+
+    **Q. Data consistency kaise maintain karoge in MongoDB?**
+
+    > **I would use schema validation and unique indexes for data constraints, atomic single-document updates where possible, multi-document transactions when multiple documents must change together, and appropriate read/write concerns depending on the consistency and availability requirements.**
+
+    ```text id="q7v3mx"
+    Consistency
+        ↓
+    Validation
+    +
+    Indexes / Constraints
+    +
+    Atomic Operations
+    +
+    Transactions
+    +
+    Proper Read/Write Concerns
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Data consistency = Database hamesha expected, valid state me rahe.**
+
+
+
 330. Query optimization?
 331. Index tuning?
 332. Write concern?
