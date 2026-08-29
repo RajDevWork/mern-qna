@@ -23901,6 +23901,295 @@ Browser automatically validation kar dega.
 
 
 334. Backup & restore?
+
+    ## Hinglish Explanation
+
+    **Backup & Restore** ka matlab hai database ke data ki **safe copy create karna** aur failure/data-loss ke time us copy se database ko **recover karna**.
+
+    Simple:
+
+    ```text id="m7q2vx"
+    Production MongoDB
+        ↓
+        Backup
+        ↓
+    Backup Storage
+        ↓
+    Database Failure / Data Loss
+        ↓
+        Restore
+        ↓
+    Recovered Database
+    ```
+
+    ---
+
+    ## 1. Backup ⭐
+
+    MongoDB me backup ke multiple approaches hain.
+
+    ### `mongodump`
+
+    Small/medium deployments ya logical backup ke liye:
+
+    ```bash id="x8n4mq"
+    mongodump --uri="mongodb://localhost:27017/mydb" --out=./backup
+    ```
+
+    Ye database ke documents/indexes etc. ka dump create karta hai.
+
+    Result conceptually:
+
+    ```text id="q5m8vz"
+    backup/
+    └── mydb/
+        ├── users.bson
+        ├── users.metadata.json
+        ├── orders.bson
+        └── ...
+    ```
+
+    ---
+
+    ## 2. Restore
+
+    `mongorestore` se backup restore kar sakte hain:
+
+    ```bash id="c7r3mx"
+    mongorestore --uri="mongodb://localhost:27017/mydb" ./backup/mydb
+    ```
+
+    Flow:
+
+    ```text id="v9m2qp"
+    mongodump
+    ↓
+    Backup
+    ↓
+    Data Loss
+    ↓
+    mongorestore
+    ↓
+    Database Recovered
+    ```
+
+    ---
+
+    ## 3. MongoDB Atlas Backup ⭐
+
+    Production me managed MongoDB/Atlas use kar rahe ho to managed backup capabilities use karna generally easier hota hai.
+
+    Conceptually:
+
+    ```text id="n6q4mx"
+    MongoDB Atlas
+        ↓
+    Automated Backups
+        ↓
+    Restore
+        ↓
+    Previous Database State
+    ```
+
+    Production requirements ke according **point-in-time recovery (PITR)** bhi important ho sakta hai.
+
+    ---
+
+    ## 4. Backup Strategy
+
+    Production me main sirf backup create karke nahi chhodunga.
+
+    Important concepts:
+
+    ### RPO
+
+    **Recovery Point Objective**
+
+    > Maximum kitna recent data loss acceptable hai?
+
+    Example:
+
+    ```text id="p8m3vz"
+    RPO = 15 minutes
+    ```
+
+    Matlab failure ki situation me approximately last 15 minutes tak ka data loss acceptable hai.
+
+    ### RTO
+
+    **Recovery Time Objective**
+
+    > System ko kitne time ke andar restore karna hai?
+
+    Example:
+
+    ```text id="r4q7nx"
+    RTO = 1 hour
+    ```
+
+    Matlab system ko approximately 1 hour ke andar recover karna target hai.
+
+    ---
+
+    ## 5. Backup Testing ⭐⭐⭐
+
+    Sabse important interview point:
+
+    > **Backup successful hona enough nahi hai; restore successfully hona verify karna bhi zaroori hai.**
+
+    ```text id="w5m8qp"
+    Backup
+    ↓
+    Restore in Test Environment
+    ↓
+    Verify Data
+    ↓
+    Application Test
+    ↓
+    Backup Strategy Valid ✅
+    ```
+
+    Agar backup file hai but restore hi nahi hota:
+
+    ```text id="z3n7mc"
+    Backup exists ✅
+    Restore fails ❌
+    ```
+
+    to practical recovery capability nahi hai.
+
+    ---
+
+    ## 6. Backup ko Same Server par Mat Rakho
+
+    Bad:
+
+    ```text id="k8m4qz"
+    MongoDB Server
+    ├── Production Data
+    └── Backup
+    ```
+
+    Agar server/disk fail hua:
+
+    ```text id="q7v3mx"
+    Production ❌
+    Backup ❌
+    ```
+
+    Better:
+
+    ```text id="h4m9qx"
+    MongoDB
+    ↓
+    Backup
+    ↓
+    Separate Storage
+    ↓
+    Different failure domain
+    ```
+
+    Cloud object storage/offsite storage use kiya ja sakta hai.
+
+    ---
+
+    ## 7. Encryption & Access Control
+
+    Backups me sensitive data ho sakta hai, isliye:
+
+    ```text id="m5n8qp"
+    Backup
+    ↓
+    Encryption
+    ↓
+    Access Control
+    ↓
+    Secure Storage
+    ```
+
+    Backup credentials ko application source code me hardcode nahi karna chahiye.
+
+    ---
+
+    ## Backup vs Replication ⭐
+
+    Ye bahut important hai:
+
+    ### Replication
+
+    ```text id="v6q2rx"
+    Primary
+    ↓
+    Secondary
+    ↓
+    Secondary
+    ```
+
+    Purpose:
+
+    > **High availability + failover**
+
+    ### Backup
+
+    ```text id="x4m9vz"
+    Database
+    ↓
+    Backup
+    ↓
+    Separate Storage
+    ```
+
+    Purpose:
+
+    > **Data recovery**
+
+    Agar accidentally:
+
+    ```text id="p6q2mc"
+    DELETE users
+    ```
+
+    replica set me delete replicate ho sakta hai.
+
+    ```text
+    Primary
+    ↓ DELETE
+    Secondary
+    ↓ DELETE
+    ```
+
+    Isliye **replication backup ka replacement nahi hai**.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **For MongoDB backup and recovery, I would use logical backups such as `mongodump` for appropriate deployments or managed backup solutions such as MongoDB Atlas backups for production environments. I would store backups separately from the production database, encrypt them, restrict access, define RPO and RTO requirements, and periodically test restoration in a separate environment. Replication provides high availability and failover, but it is not a replacement for backups because accidental changes or deletions can also be replicated.**
+
+    ### Interview Follow-up
+
+    **Q. Backup hai but restore test kabhi nahi kiya. Is that enough?**
+
+    > **No. A backup is only useful if it can actually be restored. I would regularly perform restore drills, verify data integrity, and measure the recovery time against the required RTO.**
+
+    ```text id="r8v4np"
+    Backup
+    ↓
+    Restore Test
+    ↓
+    Data Validation
+    ↓
+    Recovery Time Check
+    ↓
+    Production-ready Recovery ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Backup = Data recovery | Replication = High availability | Restore testing = Backup actually works.**
+
+
+
 335. Atlas kya hai?
 336. Scaling MongoDB?
 337. Performance issues fix?
