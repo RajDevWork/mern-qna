@@ -23656,6 +23656,250 @@ Browser automatically validation kar dega.
 
 
 333. Read preference?
+
+    ## Hinglish Explanation
+
+    **Read Preference** MongoDB me decide karta hai ki **read/query kis member se serve honi chahiye** — Primary se ya Secondary se.
+
+    Replica Set:
+
+    ```text id="m7q2vx"
+                Application
+                    ↓
+            MongoDB Replica Set
+            /       |       \
+            ↓        ↓        ↓
+        Primary   Secondary  Secondary
+    ```
+
+    Read preference decide karega:
+
+    ```text id="x8n4mq"
+    Read Request
+        ↓
+    Primary?
+    Secondary?
+    Nearest?
+    ```
+
+    ---
+
+    ## Main Read Preference Modes ⭐
+
+    MongoDB me commonly ye modes hote hain:
+
+    ```text id="q5m8vz"
+    primary
+    primaryPreferred
+    secondary
+    secondaryPreferred
+    nearest
+    ```
+
+    ### 1. `primary` — Default
+
+    Reads **Primary** se hoti hain.
+
+    ```text id="c7r3mx"
+    Read
+    ↓
+    Primary
+    ↓
+    Response
+    ```
+
+    Strong consistency requirements ke liye commonly preferred choice hai.
+
+    ---
+
+    ### 2. `primaryPreferred`
+
+    Normally Primary se read karega.
+
+    Agar Primary available nahi hai, to eligible Secondary se read kar sakta hai.
+
+    ```text id="v9m2qp"
+    Primary
+    ↓
+    Available → Read Primary
+
+    Unavailable
+    ↓
+    Read Secondary
+    ```
+
+    ---
+
+    ### 3. `secondary`
+
+    Reads **Secondary** members se hoti hain.
+
+    ```text id="n6q4mx"
+    Read
+    ↓
+    Secondary
+    ```
+
+    Primary ke read load ko reduce kar sakta hai.
+
+    But replication lag ki wajah se **stale data** mil sakta hai.
+
+    ---
+
+    ### 4. `secondaryPreferred` ⭐
+
+    Normally Secondary se read karega.
+
+    Agar suitable Secondary available nahi hai:
+
+    ```text id="p8m3vz"
+    Secondary available?
+    ↙          ↘
+    Yes           No
+    ↓              ↓
+    Secondary     Primary
+    ```
+
+    Read scaling ke liye useful ho sakta hai.
+
+    ---
+
+    ### 5. `nearest`
+
+    Network latency ke according **lowest-latency suitable member** choose karne ki koshish karta hai.
+
+    ```text id="r4q7nx"
+    Client
+    ↓
+    ┌────────┬────────┬────────┐
+    ↓        ↓        ↓
+    P: 80ms  S1: 20ms S2: 60ms
+                ↓
+            S1 selected
+    ```
+
+    Useful ho sakta hai geographically distributed deployments me.
+
+    ---
+
+    ## Read Preference vs Read Concern ⭐
+
+    Ye dono different hain.
+
+    ### Read Preference
+
+    > **Read kahan se karni hai?**
+
+    ```text id="w5m8qp"
+    Primary?
+    Secondary?
+    Nearest?
+    ```
+
+    ### Read Concern
+
+    > **Read me kis consistency/isolation level ka data chahiye?**
+
+    ```text id="z3n7mc"
+    local
+    majority
+    snapshot
+    ...
+    ```
+
+    So:
+
+    ```text id="k8m4qz"
+    Read Preference
+    → WHERE to read?
+
+    Read Concern
+    → WHAT consistency guarantees?
+    ```
+
+    ---
+
+    ## Real-world Example
+
+    Suppose tumhari application me:
+
+    ```text id="q7v3mx"
+    1000 Reads/sec
+    100 Writes/sec
+    ```
+
+    Aur replica set hai:
+
+    ```text id="h4m9qx"
+    Primary
+    Secondary 1
+    Secondary 2
+    ```
+
+    Read-heavy workload me kuch suitable reads ko secondaries par distribute karna possible hai:
+
+    ```text id="m5n8qp"
+    Writes
+    ↓
+    Primary
+
+    Reads
+    ↓
+    Secondary 1
+    Secondary 2
+    ```
+
+    But ye tabhi appropriate hai jab application **replication lag/stale reads tolerate** kar sakti ho.
+
+    ---
+
+    ## ⚠️ Important Interview Point
+
+    **Secondary par read karne ka matlab automatically better performance nahi hai.**
+
+    Secondary:
+
+    ```text id="v6q2rx"
+    Replication Lag
+    +
+    Network Latency
+    +
+    Extra Load
+    ```
+
+    ki wajah se sometimes slower bhi ho sakti hai.
+
+    Read preference workload aur consistency requirements ke according choose karni chahiye.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Read preference in MongoDB determines which replica-set members should serve read operations. The main modes are `primary`, `primaryPreferred`, `secondary`, `secondaryPreferred`, and `nearest`. By default, reads use the primary. Secondary-based preferences can help distribute read load, but they may return stale data because of replication lag. I choose the read preference based on the application's consistency requirements, latency, and read-scaling needs.**
+
+    ### Interview Follow-up
+
+    **Q. `secondaryPreferred` kab use karoge?**
+
+    > **I would use it when the application can tolerate potentially stale data and I want to offload read traffic from the primary. If the application requires the latest data, I would generally prefer reading from the primary or use an appropriate consistency strategy.**
+
+    ```text id="p3m8vx"
+    Latest data critical
+    → primary
+
+    Stale data acceptable
+    → secondaryPreferred
+
+    Lowest network latency important
+    → nearest
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Read Preference = "MongoDB replica set me read kis node se karni hai?"**
+
+
+
 334. Backup & restore?
 335. Atlas kya hai?
 336. Scaling MongoDB?
