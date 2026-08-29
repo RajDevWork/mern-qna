@@ -23112,6 +23112,298 @@ Browser automatically validation kar dega.
 
 
 331. Index tuning?
+
+    ## Hinglish Explanation
+
+    **Index tuning** ka matlab hai existing indexes ko analyze karke unhe **query performance ke according optimize** karna.
+
+    Simple:
+
+    ```text
+    Queries
+    ↓
+    Analyze with explain()
+    ↓
+    Existing Indexes Check
+    ↓
+    Missing / Wrong / Unused Index?
+    ↓
+    Create / Modify / Remove
+    ↓
+    Benchmark Again
+    ```
+
+    ---
+
+    ### 1. Query Pattern Identify Karo ⭐
+
+    Suppose frequently query hai:
+
+    ```javascript
+    db.orders.find({
+    tenantId: "t1",
+    status: "completed"
+    });
+    ```
+
+    Aur sorting bhi hoti hai:
+
+    ```javascript
+    .sort({
+    createdAt: -1
+    });
+    ```
+
+    To query pattern ko dekhkar compound index consider kar sakte ho:
+
+    ```javascript
+    db.orders.createIndex({
+    tenantId: 1,
+    status: 1,
+    createdAt: -1
+    });
+    ```
+
+    Index **query pattern ke according** design hona chahiye, randomly nahi.
+
+    ---
+
+    ### 2. `explain()` Use Karo ⭐⭐⭐
+
+    ```javascript
+    db.orders
+    .find({
+        tenantId: "t1",
+        status: "completed"
+    })
+    .sort({
+        createdAt: -1
+    })
+    .explain("executionStats");
+    ```
+
+    Important cheezein:
+
+    ```text
+    executionTimeMillis
+    totalDocsExamined
+    totalKeysExamined
+    nReturned
+    ```
+
+    Agar:
+
+    ```text
+    Documents Examined → 1,000,000
+    Returned           → 20
+    ```
+
+    to query/index ko investigate karna chahiye.
+
+    ---
+
+    ### 3. Compound Index ka Order
+
+    Suppose:
+
+    ```javascript
+    {
+    tenantId: 1,
+    status: 1,
+    createdAt: -1
+    }
+    ```
+
+    Field order important hai.
+
+    Generally index ko query ke:
+
+    ```text
+    Equality
+    ↓
+    Sort
+    ↓
+    Range
+    ```
+
+    patterns ke according design karne ka principle useful hota hai, but exact ordering workload aur MongoDB query planner ke behavior par depend karti hai.
+
+    Example:
+
+    ```javascript
+    {
+    tenantId: "t1",
+    status: "completed"
+    }
+    ```
+
+    ke saath sorting:
+
+    ```javascript
+    {
+    createdAt: -1
+    }
+    ```
+
+    frequently hoti hai, to combined index useful ho sakta hai.
+
+    ---
+
+    ### 4. Unnecessary Indexes Remove Karo ⚠️
+
+    Har field par index banana:
+
+    ```javascript
+    email
+    name
+    age
+    status
+    city
+    phone
+    ...
+    ```
+
+    necessarily good nahi hai.
+
+    Indexes:
+
+    ```text
+    Read Performance ↑
+    ```
+
+    but:
+
+    ```text
+    Disk Usage ↑
+    Write Cost ↑
+    ```
+
+    Insert/update/delete ke time indexes bhi maintain karne padte hain.
+
+    ---
+
+    ### 5. Duplicate / Overlapping Indexes
+
+    Suppose:
+
+    ```javascript
+    { tenantId: 1 }
+    ```
+
+    already hai aur:
+
+    ```javascript
+    { tenantId: 1, email: 1 }
+    ```
+
+    bhi hai.
+
+    Dono indexes ka usefulness query workload par depend karega. Compound index ke prefix ki wajah se first index kuch queries ke liye redundant ho sakta hai, but blindly delete nahi karna chahiye.
+
+    Pehle usage aur query patterns analyze karunga.
+
+    ---
+
+    ### 6. Index Usage Monitor Karo
+
+    MongoDB me index statistics dekhne ke liye:
+
+    ```javascript
+    db.orders.aggregate([
+    {
+        $indexStats: {}
+    }
+    ]);
+    ```
+
+    Isse index usage ke baare me information mil sakti hai.
+
+    Agar koi index practically use nahi ho raha:
+
+    ```text
+    Index
+    ↓
+    Almost never used
+    ↓
+    Candidate for review/removal
+    ```
+
+    But production me remove karne se pehle workload aur deployment impact verify karna important hai.
+
+    ---
+
+    ## ⭐ Index Tuning Example
+
+    Initial query:
+
+    ```javascript
+    db.orders.find({
+    tenantId: "t1",
+    status: "completed"
+    });
+    ```
+
+    `explain()`:
+
+    ```text
+    COLLSCAN
+    totalDocsExamined → 5,000,000
+    ```
+
+    Index:
+
+    ```javascript
+    db.orders.createIndex({
+    tenantId: 1,
+    status: 1
+    });
+    ```
+
+    Again:
+
+    ```text
+    IXSCAN
+    totalDocsExamined → much lower
+    ```
+
+    Then benchmark:
+
+    ```text
+    Before → 850ms
+    After  → 40ms
+    ```
+
+    Tab optimization validate hui.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Index tuning is the process of analyzing query patterns and existing indexes to ensure that the database has the right indexes without maintaining unnecessary ones. I use `explain("executionStats")` to understand the query plan and look at metrics such as documents examined, keys examined, and execution time. I then design single or compound indexes based on actual filtering, sorting, and range patterns, monitor index usage, remove redundant indexes when appropriate, and benchmark the workload again after changes.**
+
+    ### Interview Follow-up
+
+    **Q. Kya more indexes = better performance?**
+
+    > **No. Indexes can improve read performance, but they consume storage and add overhead to inserts, updates, and deletes. Too many indexes can therefore hurt overall performance. I create indexes based on real query patterns and verify their value with execution plans and workload measurements.**
+
+    ```text
+    Too Few Indexes
+    → Slow Reads ❌
+
+    Too Many Indexes
+    → Slow Writes + More Storage ❌
+
+    Right Indexes
+    → Balanced Performance ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Index Tuning = Query pattern → `explain()` → Right index → Remove unnecessary indexes → Benchmark again.**
+
+
+
 332. Write concern?
 333. Read preference?
 334. Backup & restore?
