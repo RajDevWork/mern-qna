@@ -23405,6 +23405,256 @@ Browser automatically validation kar dega.
 
 
 332. Write concern?
+
+    ## Hinglish Explanation
+
+    **Write Concern** MongoDB me define karta hai ki **write operation successful maanane se pehle MongoDB ko kitni confirmation chahiye**.
+
+    Simple words me:
+
+    > **"Data write hone ke baad mujhe kitni guarantee chahiye ki write accept/persist ho gayi hai?"**
+
+    Example:
+
+    ```text id="m7q2vx"
+    Application
+        ↓
+    Write
+        ↓
+    Primary
+        ↓
+    Secondaries
+    ```
+
+    Write concern decide karta hai ki application ko response **kab milega**.
+
+    ---
+
+    ### 1. `w: 1` ⭐
+
+    ```javascript id="x8n4mq"
+    {
+    writeConcern: {
+        w: 1
+    }
+    }
+    ```
+
+    Meaning:
+
+    > Primary ne write accept kar li → success response.
+
+    ```text id="q5m8vz"
+    Application
+        ↓
+    Primary
+        ↓
+    ACK ✅
+        ↓
+    Application
+    ```
+
+    Ye generally good balance provide karta hai between performance and durability, but it does **not** mean that a majority of replica-set members have acknowledged the write.
+
+    ---
+
+    ### 2. `w: "majority"` ⭐⭐⭐
+
+    ```javascript id="c7r3mx"
+    {
+    writeConcern: {
+        w: "majority"
+    }
+    }
+    ```
+
+    Meaning:
+
+    > Required majority of voting data-bearing members ne write acknowledge kar diya.
+
+    Example:
+
+    ```text id="v9m2qp"
+    3-node Replica Set
+
+    Primary      → ACK ✅
+    Secondary 1  → ACK ✅
+    Secondary 2  → not required
+
+    Majority achieved
+            ↓
+    Success
+    ```
+
+    Ye stronger durability/consistency guarantees ke liye useful hai, but `w:1` se latency potentially higher ho sakti hai.
+
+    ---
+
+    ### 3. `w: 0`
+
+    ```javascript id="n6q4mx"
+    {
+    writeConcern: {
+        w: 0
+    }
+    }
+    ```
+
+    Meaning:
+
+    > Application write acknowledgement ka wait nahi karti.
+
+    ```text id="p8m3vz"
+    Application
+        ↓
+    Write
+        ↓
+    No ACK wait
+        ↓
+    Continue
+    ```
+
+    Isme acknowledgement guarantee nahi hoti, so important data ke liye generally appropriate nahi hota.
+
+    ---
+
+    ## `j: true` ⭐
+
+    Write concern me `j` ka matlab **journaling acknowledgement** hai.
+
+    ```javascript id="r4q7nx"
+    {
+    writeConcern: {
+        w: "majority",
+        j: true
+    }
+    }
+    ```
+
+    Conceptually:
+
+    ```text id="w5m8qp"
+    Write
+    ↓
+    Journal acknowledged
+    ↓
+    Success
+    ```
+
+    Lekin modern MongoDB versions me `w: "majority"` ke journaling behavior ko version/deployment configuration ke context me samajhna important hai; interview me simply **`j: true` = journal acknowledgement request** kehna safe hai.
+
+    ---
+
+    ## `wtimeout`
+
+    Agar acknowledgement required time ke andar nahi milti:
+
+    ```javascript id="z3n7mc"
+    {
+    writeConcern: {
+        w: "majority",
+        wtimeout: 5000
+    }
+    }
+    ```
+
+    Matlab:
+
+    ```text id="k8m4qz"
+    Wait for required acknowledgement
+            ↓
+    5 seconds
+            ↓
+    Not achieved
+            ↓
+    Write concern timeout
+    ```
+
+    Important: **write concern timeout ka matlab automatically ye nahi hai ki write definitely fail/rollback ho gayi.** It means required acknowledgement time limit me receive nahi hui.
+
+    ---
+
+    ## Write Concern vs Read Concern ⭐
+
+    Dono ko confuse mat karna:
+
+    ```text id="q7v3mx"
+    Write Concern
+    → Write ko kitni acknowledgement chahiye?
+
+    Read Concern
+    → Read karte waqt data ki consistency/isolation
+    kis level ki chahiye?
+    ```
+
+    Example:
+
+    ```text id="h4m9qx"
+    Write Concern
+    w: "majority"
+
+    Read Concern
+    "majority"
+    ```
+
+    Ye dono independent settings hain aur together use kiye ja sakte hain.
+
+    ---
+
+    ## Real-world Example
+
+    ### Banking / Critical Data
+
+    ```text id="m5n8qp"
+    Write Concern
+    → w: "majority"
+
+    Goal
+    → Stronger acknowledgement/durability
+    ```
+
+    ### Less Critical / High Throughput Data
+
+    ```text id="v6q2rx"
+    Write Concern
+    → w: 1
+
+    Goal
+    → Lower latency
+    ```
+
+    Exact choice application ke durability, latency aur availability requirements par depend karegi.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Write concern in MongoDB defines the level of acknowledgement required before a write operation is considered successful. For example, `w: 1` waits for acknowledgement from the primary, while `w: "majority"` waits for acknowledgement from the required majority of voting data-bearing replica-set members. `w: 0` doesn't wait for an acknowledgement. Write concern can also include options such as `j` for journal acknowledgement and `wtimeout` to limit how long the client waits for the required acknowledgement.**
+
+    ### Interview Follow-up
+
+    **Q. `w: 1` vs `w: "majority"`?**
+
+    > **`w: 1` acknowledges once the primary accepts the write, giving lower latency. `w: "majority"` waits for the required majority acknowledgement, providing stronger durability guarantees at the potential cost of additional latency.**
+
+    ```text id="p3m8vx"
+    w: 1
+    → Primary ACK
+    → Lower latency
+
+    w: "majority"
+    → Majority ACK
+    → Stronger durability
+    → Potentially higher latency
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Write Concern = "Write ko successful bolne se pehle kitni acknowledgement chahiye?"**
+
+
+
+
 333. Read preference?
 334. Backup & restore?
 335. Atlas kya hai?
