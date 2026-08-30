@@ -25670,6 +25670,466 @@ Browser automatically validation kar dega.
 
 
 340. Aggregation pipeline optimization?
+
+    ## Hinglish Explanation
+
+    **Aggregation Pipeline Optimization** ka matlab hai MongoDB aggregation ko aise optimize karna ki **kam documents/data process ho, fewer resources use hon, aur query faster execute ho.**
+
+    Simple flow:
+
+    ```text id="m7q2vx"
+    Aggregation Pipeline
+        ↓
+    Analyze with explain()
+        ↓
+    Reduce Data Early
+        ↓
+    Optimize Stages
+        ↓
+    Indexes
+        ↓
+    Benchmark Again
+    ```
+
+    ---
+
+    ### 1. `$match` ko Early Rakho ⭐⭐⭐
+
+    Suppose collection me **10 lakh orders** hain aur sirf completed orders chahiye.
+
+    ❌ Poor approach:
+
+    ```javascript id="x8n4mq"
+    db.orders.aggregate([
+    {
+        $group: {
+        _id: "$customerId",
+        total: { $sum: "$amount" }
+        }
+    },
+    {
+        $match: {
+        status: "completed"
+        }
+    }
+    ]);
+    ```
+
+    Yahan unnecessary documents pehle `$group` ho rahe hain.
+
+    Better:
+
+    ```javascript id="q5m8vz"
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customerId",
+        total: { $sum: "$amount" }
+        }
+    }
+    ]);
+    ```
+
+    Flow:
+
+    ```text id="c7r3mx"
+    1,000,000 orders
+        ↓
+        $match
+        ↓
+    200,000 completed
+        ↓
+        $group
+    ```
+
+    Later stages ko kam data process karna padega.
+
+    ---
+
+    ### 2. `$project` se Unnecessary Fields Avoid Karo
+
+    Agar document bahut large hai:
+
+    ```json id="v9m2qp"
+    {
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "address": {...},
+    "profile": {...},
+    "history": [...],
+    "documents": [...]
+    }
+    ```
+
+    Aur aggregation me sirf:
+
+    ```text id="n6q4mx"
+    name
+    email
+    amount
+    ```
+
+    chahiye, to unnecessary fields ko pipeline me carry na karna useful ho sakta hai.
+
+    ```javascript id="p8m3vz"
+    {
+    $project: {
+        name: 1,
+        email: 1,
+        amount: 1
+    }
+    }
+    ```
+
+    **Note:** `$project` ko blindly pipeline ke start me rakhna optimization nahi hota. MongoDB kuch projection optimizations automatically kar sakta hai. Isliye actual execution plan verify karna better hai.
+
+    ---
+
+    ### 3. Proper Indexes ⭐⭐⭐
+
+    Agar pipeline ka first stage:
+
+    ```javascript id="r4q7nx"
+    {
+    $match: {
+        tenantId: "t1",
+        status: "completed"
+    }
+    }
+    ```
+
+    hai, to suitable index consider kar sakte ho:
+
+    ```javascript id="w5m8qp"
+    db.orders.createIndex({
+    tenantId: 1,
+    status: 1
+    });
+    ```
+
+    Index design actual query pattern par depend karega.
+
+    ```text id="z3n7mc"
+    $match
+    ↓
+    Index
+    ↓
+    Fewer documents
+    ↓
+    Aggregation
+    ```
+
+    ---
+
+    ### 4. `$sort` Optimize Karo
+
+    Suppose:
+
+    ```javascript id="k8m4qz"
+    {
+    $match: {
+        tenantId: "t1"
+    }
+    },
+    {
+    $sort: {
+        createdAt: -1
+    }
+    }
+    ```
+
+    Suitable index:
+
+    ```javascript id="q7v3mx"
+    db.orders.createIndex({
+    tenantId: 1,
+    createdAt: -1
+    });
+    ```
+
+    appropriate query shape me filtering aur sorting ko efficiently support kar sakta hai.
+
+    ---
+
+    ### 5. `$limit` ko Useful Places par Use Karo
+
+    Suppose sirf top 10 orders chahiye:
+
+    ```javascript id="h4m9qx"
+    {
+    $sort: {
+        amount: -1
+    }
+    },
+    {
+    $limit: 10
+    }
+    ```
+
+    Instead of unnecessarily processing a huge result set.
+
+    Lekin `$limit` ko **incorrectly early** rakhoge to result change ho sakta hai:
+
+    ```text id="m5n8qp"
+    $limit → $sort
+    ```
+
+    aur:
+
+    ```text id="v6q2rx"
+    $sort → $limit
+    ```
+
+    same nahi hain.
+
+    ---
+
+    ### 6. `$lookup` Carefully Use Karo ⭐
+
+    `$lookup` expensive ho sakta hai, especially jab bahut large datasets join ho rahe hon.
+
+    ```text id="x4m9vz"
+    Collection A
+        ↓
+    $lookup
+        ↓
+    Collection B
+        ↓
+    Large amount of data
+    ```
+
+    Isliye:
+
+    * Foreign field par appropriate index rakho
+    * Lookup ke andar unnecessary documents filter karo
+    * Sirf required fields/project karo
+    * `$lookup` ko unnecessary cases me avoid karo
+    * Schema design me embedding consider karo
+
+    ---
+
+    ### 7. `$unwind` ka Carefully Use
+
+    Suppose:
+
+    ```json id="p6q2mc"
+    {
+    "name": "Raj",
+    "skills": ["Node", "React", "MongoDB"]
+    }
+    ```
+
+    `$unwind`:
+
+    ```javascript id="n8r3qx"
+    {
+    $unwind: "$skills"
+    }
+    ```
+
+    3 documents produce kar sakta hai.
+
+    Agar array bahut large hai:
+
+    ```text id="w7m4pz"
+    1 document
+    ↓
+    $unwind
+    ↓
+    10,000 documents
+    ```
+
+    Pipeline ka workload dramatically increase ho sakta hai.
+
+    ---
+
+    ### 8. `$group` ko Large Dataset par Carefully Use Karo
+
+    `$group` computationally expensive ho sakta hai.
+
+    Better:
+
+    ```text id="q3v8mx"
+    $match
+    ↓
+    Reduce documents
+    ↓
+    $group
+    ```
+
+    instead of:
+
+    ```text id="r9m4qx"
+    All documents
+    ↓
+    $group
+    ```
+
+    ---
+
+    ## 9. `explain()` ⭐⭐⭐
+
+    Aggregation performance check karne ke liye:
+
+    ```javascript id="m2q7vx"
+    db.orders.explain("executionStats").aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customerId",
+        total: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Check:
+
+    ```text id="h6m2vx"
+    executionTimeMillis
+    totalDocsExamined
+    totalKeysExamined
+    queryPlanner
+    execution stages
+    ```
+
+    Goal:
+
+    ```text id="c6r8qz"
+    Less unnecessary data
+        ↓
+    Efficient stages
+        ↓
+    Appropriate index
+        ↓
+    Lower execution time
+    ```
+
+    ---
+
+    ## ⭐ Practical Optimization Example
+
+    Initial pipeline:
+
+    ```javascript id="x9m4vz"
+    db.orders.aggregate([
+    {
+        $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user"
+        }
+    },
+    {
+        $unwind: "$user"
+    },
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$user._id",
+        total: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Better approach can be:
+
+    ```javascript id="p5q8mx"
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user"
+        }
+    },
+    {
+        $unwind: "$user"
+    },
+    {
+        $group: {
+        _id: "$user._id",
+        total: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Because:
+
+    ```text id="n7r3qx"
+    All Orders
+        ↓
+    $match
+        ↓
+    Completed Orders only
+        ↓
+    $lookup
+        ↓
+    $group
+    ```
+
+    Instead of joining **all orders** and filtering afterward.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I optimize MongoDB aggregation pipelines by reducing the amount of data processed as early as possible. I place selective `$match` stages early, use appropriate indexes for filtering and sorting, avoid unnecessary fields and large `$lookup` or `$unwind` operations, and use `$limit` and other stages appropriately. I analyze the pipeline using `explain("executionStats")` and look at documents examined, index usage, execution time, and execution stages. After making changes, I benchmark the workload again to verify the improvement.**
+
+    ### Interview Follow-up
+
+    **Q. Aggregation slow hai — sabse pehle kya karoge?**
+
+    > **I would first run `explain("executionStats")` on the aggregation and identify which stage is consuming the most work. Then I would check whether selective `$match` stages and suitable indexes can reduce the amount of data processed before expensive stages such as `$group`, `$lookup`, or `$unwind`.**
+
+    ```text id="k4m8qp"
+    Slow Aggregation
+        ↓
+    explain()
+        ↓
+    Find expensive stage
+        ↓
+    $match / Index / $lookup / $group / $unwind
+        ↓
+    Optimize
+        ↓
+    Benchmark
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Aggregation Optimization = Filter early → Process less data → Index appropriately → Avoid expensive stages → `explain()` → Benchmark.**
+
+
+
 341. Data modeling patterns?
 342. Time series data?
 343. Geospatial queries?
