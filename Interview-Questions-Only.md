@@ -25028,6 +25028,270 @@ Browser automatically validation kar dega.
 
 
 338. Change streams?
+
+    ## Hinglish Explanation
+
+    **MongoDB Change Streams** ek feature hai jisse application **database me hone wale real-time changes ko listen/monitor** kar sakti hai.
+
+    Simple words me:
+
+    > **Change Stream = MongoDB ke changes ka real-time event listener.**
+
+    Example:
+
+    ```text id="m7q2vx"
+    MongoDB
+    ↓
+    Document Inserted
+    ↓
+    Change Stream
+    ↓
+    Node.js Application
+    ↓
+    Event received ⚡
+    ```
+
+    ---
+
+    ### Example
+
+    Suppose `users` collection me new user create hua:
+
+    ```javascript id="x8n4mq"
+    db.users.insertOne({
+    name: "Raj",
+    email: "raj@gmail.com"
+    });
+    ```
+
+    Change Stream us change ko detect kar sakta hai.
+
+    Node.js:
+
+    ```javascript id="q5m8vz"
+    const changeStream = db.collection("users").watch();
+
+    changeStream.on("change", (change) => {
+    console.log(change);
+    });
+    ```
+
+    Jab user insert hoga:
+
+    ```text id="c7r3mx"
+    User Created
+        ↓
+    MongoDB
+        ↓
+    Change Stream
+        ↓
+    Node.js
+        ↓
+    Event received
+    ```
+
+    ---
+
+    ## Kaunse Changes Track Kar Sakte Ho?
+
+    Common operations:
+
+    ```text id="v9m2qp"
+    insert
+    update
+    replace
+    delete
+    invalidate
+    ```
+
+    Example:
+
+    ```javascript id="n6q4mx"
+    changeStream.on("change", (change) => {
+    switch (change.operationType) {
+        case "insert":
+        console.log("User created");
+        break;
+
+        case "update":
+        console.log("User updated");
+        break;
+
+        case "delete":
+        console.log("User deleted");
+        break;
+    }
+    });
+    ```
+
+    ---
+
+    ## Real-world Use Cases ⭐
+
+    ### 1. Real-time Notifications
+
+    ```text id="p8m3vz"
+    Order Created
+        ↓
+    Change Stream
+        ↓
+    Notification Service
+        ↓
+    "Your order has been placed" 🔔
+    ```
+
+    ---
+
+    ### 2. Cache Invalidation
+
+    Suppose user update hua:
+
+    ```text id="r4q7nx"
+    MongoDB
+    ↓
+    User Updated
+    ↓
+    Change Stream
+    ↓
+    Redis Cache
+    ↓
+    Invalidate old cache
+    ```
+
+    ---
+
+    ### 3. Search Index Synchronization
+
+    ```text id="w5m8qp"
+    MongoDB
+    ↓
+    Product Updated
+    ↓
+    Change Stream
+    ↓
+    Search Index
+    ↓
+    Update document
+    ```
+
+    ---
+
+    ### 4. Event-driven Architecture ⭐
+
+    Change Streams ko event-driven systems me use kar sakte ho:
+
+    ```text id="z3n7mc"
+    MongoDB
+    ↓
+    Change Stream
+    ↓
+    Event Handler
+    ├── Send Email
+    ├── Update Cache
+    ├── Update Search
+    └── Trigger Another Service
+    ```
+
+    ---
+
+    ## Filtering Changes
+
+    Agar sirf specific changes chahiye, pipeline use kar sakte ho:
+
+    ```javascript id="k8m4qz"
+    const changeStream = db.collection("orders").watch([
+    {
+        $match: {
+        operationType: "insert"
+        }
+    }
+    ]);
+    ```
+
+    Ab sirf `insert` events receive honge.
+
+    ---
+
+    ## Change Stream vs Polling ⭐
+
+    ### Polling
+
+    Application repeatedly database ko puchti hai:
+
+    ```text id="q7v3mx"
+    "Anything changed?"
+        ↓
+    DB
+        ↓
+    "No"
+        ↓
+    "Anything changed?"
+        ↓
+    DB
+    ```
+
+    Unnecessary queries generate ho sakti hain.
+
+    ### Change Stream
+
+    ```text id="h4m9qx"
+    Application
+        ↓
+    Listen
+        ↓
+    MongoDB
+        ↓
+    Change happens
+        ↓
+    Event automatically delivered
+    ```
+
+    Real-time event handling ke liye more appropriate.
+
+    ---
+
+    ## ⚠️ Important
+
+    Change Streams **MongoDB deployment architecture** par depend karte hain. In practice, they are intended for deployments with the required replication/oplog infrastructure, such as replica sets and sharded clusters.
+
+    Also, Change Stream ko blindly message queue ka replacement nahi samajhna chahiye.
+
+    ```text id="m5n8qp"
+    Change Stream
+    → MongoDB changes observe karna
+
+    Kafka/RabbitMQ
+    → Application/service messaging
+    ```
+
+    Agar durable, complex event-processing architecture chahiye, dedicated message broker better fit ho sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **MongoDB Change Streams allow applications to subscribe to real-time changes occurring in a MongoDB deployment. They can monitor operations such as inserts, updates, replacements, and deletes and react to those events without continuously polling the database. They are useful for real-time notifications, cache invalidation, search-index synchronization, and event-driven workflows. Change Streams are commonly used with replica sets and sharded clusters and should be distinguished from dedicated message brokers such as Kafka or RabbitMQ.**
+
+    ### Interview Follow-up
+
+    **Q. Change Streams vs Polling?**
+
+    > **Polling repeatedly queries the database to detect changes, which can introduce unnecessary queries and latency. Change Streams provide an event-driven mechanism where the application listens for database changes and receives events when changes occur.**
+
+    ```text id="v6q2rx"
+    Polling
+    → Keep asking DB
+
+    Change Stream
+    → Listen for changes
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Change Streams = MongoDB changes ko real-time me listen karo → event receive karo → action trigger karo.**
+
+
+
 339. MongoDB vs SQL?
 340. Aggregation pipeline optimization?
 341. Data modeling patterns?
