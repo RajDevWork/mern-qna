@@ -24419,6 +24419,262 @@ Browser automatically validation kar dega.
 
 
 336. Scaling MongoDB?
+
+    ## Hinglish Explanation
+
+    **MongoDB scaling** ka matlab hai application ka **increasing data, traffic aur read/write load** handle karne ke liye database capacity increase karna.
+
+    MongoDB ko mainly 2 ways se scale kar sakte ho:
+
+    ```text id="m7q2vx"
+    MongoDB Scaling
+        ↓
+    ┌────┴────┐
+    ↓         ↓
+    Vertical  Horizontal
+    Scaling   Scaling
+    ```
+
+    ---
+
+    ### 1. Vertical Scaling ⭐
+
+    Ek hi MongoDB server ki resources increase karna:
+
+    ```text id="x8n4mq"
+    Existing Server
+    CPU   → 4 → 8 cores
+    RAM   → 16 → 32 GB
+    Disk  → Bigger/Faster
+    ```
+
+    ```text id="q5m8vz"
+    Before
+    ↓
+    4 CPU + 16 GB RAM
+
+    After
+    ↓
+    8 CPU + 32 GB RAM
+    ```
+
+    **Advantages:**
+
+    * Simple
+    * Application changes minimum
+    * Easy to implement initially
+
+    **Limitation:**
+
+    > Hardware ki ek maximum capacity hoti hai.
+
+    ---
+
+    ### 2. Horizontal Scaling ⭐⭐⭐
+
+    Multiple servers/nodes use karke workload distribute karna.
+
+    MongoDB me large datasets ke liye **sharding** use ki ja sakti hai.
+
+    ```text id="c7r3mx"
+                    Application
+                        ↓
+                        mongos
+                        ↓
+            ┌───────────┼───────────┐
+            ↓           ↓           ↓
+        Shard 1     Shard 2     Shard 3
+        Data A      Data B      Data C
+    ```
+
+    Isse data aur workload multiple machines me distribute ho sakta hai.
+
+    ---
+
+    ## 3. Read Scaling
+
+    Replica Set ke through:
+
+    ```text id="v9m2qp"
+                Primary
+                /       \
+                ↓         ↓
+        Secondary   Secondary
+    ```
+
+    Writes generally primary par jaati hain.
+
+    Workload ke according some reads secondary members se serve ki ja sakti hain using appropriate **read preference**.
+
+    ```text id="n6q4mx"
+    Writes
+    ↓
+    Primary
+
+    Some Reads
+    ↓
+    Secondaries
+    ```
+
+    ⚠️ Secondary reads me **replication lag** ki wajah se stale data mil sakta hai.
+
+    ---
+
+    ## 4. Indexing ⭐
+
+    Scaling ka matlab sirf servers add karna nahi hai.
+
+    Agar query slow hai:
+
+    ```javascript id="p8m3vz"
+    db.users.find({
+    email: "raj@gmail.com"
+    });
+    ```
+
+    to appropriate index:
+
+    ```javascript id="r4q7nx"
+    db.users.createIndex({
+    email: 1
+    });
+    ```
+
+    query performance significantly improve kar sakta hai.
+
+    ```text id="w5m8qp"
+    Query Optimization
+        ↓
+    Indexes
+        ↓
+    Less data scanned
+        ↓
+    Better performance
+    ```
+
+    ---
+
+    ## 5. Schema Design
+
+    MongoDB scaling me **schema design** bhi important hai.
+
+    Agar related data frequently together read hota hai:
+
+    ```text id="z3n7mc"
+    User
+    └── Address
+    ```
+
+    embedding useful ho sakti hai.
+
+    Agar data large/shared/independent hai:
+
+    ```text id="k8m4qz"
+    User
+    └── departmentId
+            ↓
+        Department
+    ```
+
+    referencing better ho sakti hai.
+
+    Poor schema design se unnecessary `$lookup`, huge documents ya excessive duplication ho sakti hai.
+
+    ---
+
+    ## 6. Connection Pooling
+
+    Application side par database connections efficiently manage karne chahiye.
+
+    ```text id="q7v3mx"
+    Node.js Instances
+    ├── Pool
+    ├── Pool
+    └── Pool
+        ↓
+        MongoDB
+    ```
+
+    Har request ke liye new DB connection create karna avoid karna chahiye.
+
+    ---
+
+    ## ⭐ Real Production Scaling Strategy
+
+    Suppose traffic increase ho raha hai:
+
+    ```text id="h4m9qx"
+    Traffic ↑
+    ↓
+    Measure
+    ↓
+    Identify Bottleneck
+    ↓
+    ┌──────────────┬──────────────┐
+    ↓              ↓              ↓
+    Slow Query    Read Load      Huge Dataset
+    ↓              ↓              ↓
+    Indexing      Replicas       Sharding
+    ```
+
+    **Blindly sharding start nahi karna chahiye.**
+
+    Pehle:
+
+    ```text
+    Query performance
+    Indexes
+    Schema
+    Connection pool
+    Hardware
+    Read/write patterns
+    ```
+
+    analyze karunga.
+
+    ---
+
+    ## Vertical vs Horizontal Scaling
+
+    | Vertical                 | Horizontal                |
+    | ------------------------ | ------------------------- |
+    | Bigger machine           | More machines             |
+    | Simple                   | More complex              |
+    | Hardware limit           | Better large-scale growth |
+    | Usually initial approach | Large-scale workloads     |
+    | Scale-up                 | Scale-out                 |
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **I would scale MongoDB based on the actual bottleneck. Initially, I would optimize queries, indexes, schema design, and connection pooling and then consider vertical scaling by increasing CPU, memory, or storage. For read-heavy workloads, I can use replica sets and appropriate read preferences to distribute some read traffic. When the dataset or workload exceeds the capacity of a single server, I would consider horizontal scaling through sharding, using a carefully chosen shard key to distribute data evenly and avoid hotspots.**
+
+    ### Interview Follow-up
+
+    **Q. Kab sharding use karoge?**
+
+    > **I would consider sharding when the dataset or workload can no longer be handled effectively by a single server, or when horizontal scaling is required for storage or throughput. Before introducing sharding, I would optimize indexes, queries, schema design, and hardware because sharding adds operational and architectural complexity.**
+
+    ```text id="m5n8qp"
+    Single Server
+        ↓
+    Optimize
+        ↓
+    Vertical Scale
+        ↓
+    Replica Set / Read Scaling
+        ↓
+    Still insufficient?
+        ↓
+    Sharding
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **MongoDB Scaling = Optimize first → Vertical scale → Replication for HA/read scaling → Sharding for horizontal scale.**
+
+
 337. Performance issues fix?
 338. Change streams?
 339. MongoDB vs SQL?
