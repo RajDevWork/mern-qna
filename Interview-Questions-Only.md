@@ -24676,6 +24676,357 @@ Browser automatically validation kar dega.
 
 
 337. Performance issues fix?
+
+    ## Hinglish Explanation
+
+    **MongoDB performance issues fix karne ka approach** hai pehle bottleneck identify karna, phir targeted optimization karna. Randomly index ya server size increase nahi karna chahiye.
+
+    ```text id="m7q2vx"
+    Performance Problem
+        ↓
+    Measure
+        ↓
+    Find Bottleneck
+        ↓
+    Optimize
+        ↓
+    Benchmark Again
+    ```
+
+    ---
+
+    ### 1. Slow Queries Identify Karo ⭐⭐⭐
+
+    Sabse pehle `explain()` use karunga:
+
+    ```javascript id="x8n4mq"
+    db.users
+    .find({
+        email: "raj@gmail.com"
+    })
+    .explain("executionStats");
+    ```
+
+    Important metrics:
+
+    ```text id="q5m8vz"
+    executionTimeMillis
+    totalDocsExamined
+    totalKeysExamined
+    nReturned
+    ```
+
+    Example:
+
+    ```text id="c7r3mx"
+    nReturned          → 10
+    totalDocsExamined → 1,000,000
+    ```
+
+    Agar 10 documents return karne ke liye 10 lakh documents examine ho rahe hain, query/index investigate karna chahiye.
+
+    ---
+
+    ### 2. Proper Indexes ⭐⭐⭐
+
+    Agar query:
+
+    ```javascript id="v9m2qp"
+    db.orders.find({
+    tenantId: "t1",
+    status: "completed"
+    });
+    ```
+
+    frequently execute hoti hai:
+
+    ```javascript id="n6q4mx"
+    db.orders.createIndex({
+    tenantId: 1,
+    status: 1
+    });
+    ```
+
+    Compound indexes ko actual query patterns ke according design karunga.
+
+    ---
+
+    ### 3. Unnecessary Indexes Remove Karo
+
+    Bahut saare indexes bhi problem create kar sakte hain:
+
+    ```text id="p8m3vz"
+    Too many indexes
+        ↓
+    More disk/memory usage
+        +
+    Slower writes
+    ```
+
+    Index usage analyze karke unused/redundant indexes ko review/remove kar sakte hain.
+
+    ---
+
+    ### 4. Query ko Optimize Karo
+
+    ❌ Unnecessary huge result:
+
+    ```javascript id="r4q7nx"
+    db.users.find({});
+    ```
+
+    Better:
+
+    ```javascript id="w5m8qp"
+    db.users
+    .find({
+        status: "active"
+    })
+    .limit(20);
+    ```
+
+    Aur agar sirf kuch fields chahiye:
+
+    ```javascript id="z3n7mc"
+    db.users.find(
+    { status: "active" },
+    { name: 1, email: 1 }
+    );
+    ```
+
+    ---
+
+    ### 5. Pagination
+
+    Large collection me thousands/millions of documents ek saath return nahi karna chahiye.
+
+    ```text id="k8m4qz"
+    Database
+    ↓
+    20 records
+    ↓
+    API
+    ↓
+    Frontend
+    ```
+
+    Large datasets ke liye appropriate **cursor/range-based pagination** often better scale karti hai than deep `skip()` pagination.
+
+    ---
+
+    ### 6. Aggregation Optimize Karo
+
+    Suppose:
+
+    ```javascript id="q7v3mx"
+    db.orders.aggregate([
+    {
+        $match: {
+        status: "completed"
+        }
+    },
+    {
+        $group: {
+        _id: "$customerId",
+        total: {
+            $sum: "$amount"
+        }
+        }
+    }
+    ]);
+    ```
+
+    Selective `$match` ko early stage me rakhna generally useful hai:
+
+    ```text id="h4m9qx"
+    10 Million Documents
+        ↓
+        $match
+        ↓
+    100K relevant docs
+        ↓
+        $group
+    ```
+
+    Isse later stages ko kam data process karna padta hai.
+
+    ---
+
+    ### 7. N+1 Queries Avoid Karo ⭐
+
+    Bad:
+
+    ```text id="m5n8qp"
+    Get 100 users
+        ↓
+    100 separate DB queries
+        ↓
+    101 queries ❌
+    ```
+
+    Better:
+
+    ```text id="v6q2rx"
+    Get required data
+        ↓
+    Optimized query / aggregation
+        ↓
+    Fewer DB round trips
+    ```
+
+    ---
+
+    ### 8. Schema Design Review Karo
+
+    Kabhi problem query me nahi, schema me hoti hai.
+
+    ```text id="x4m9vz"
+    Frequently read together?
+            ↓
+    Embedding consider karo
+
+    Large/shared/independent data?
+            ↓
+    Referencing consider karo
+    ```
+
+    Poor schema design unnecessary `$lookup`, huge documents, ya excessive duplication create kar sakta hai.
+
+    ---
+
+    ### 9. Connection Pooling
+
+    Application ko har request par new database connection nahi banana chahiye.
+
+    ```text id="p6q2mc"
+    Node.js
+    ↓
+    Connection Pool
+    ↓
+    MongoDB
+    ```
+
+    Pool size ko workload ke according tune karna chahiye.
+
+    ---
+
+    ### 10. Database Server Metrics Check Karo
+
+    Agar queries optimized hain phir bhi performance poor hai, infrastructure check karunga:
+
+    ```text id="n8r3qx"
+    CPU
+    Memory
+    Disk I/O
+    Storage latency
+    Connections
+    Network
+    Replication lag
+    ```
+
+    Kabhi bottleneck database query nahi, **hardware/infrastructure** hota hai.
+
+    ---
+
+    ### 11. Read Scaling
+
+    Read-heavy workload me replica set use karke appropriate reads ko secondary nodes par distribute kiya ja sakta hai.
+
+    ```text id="w7m4pz"
+                    Primary
+                    /       \
+                ↓         ↓
+            Secondary   Secondary
+
+    Writes → Primary
+    Some Reads → Secondaries
+    ```
+
+    ⚠️ Secondary reads me replication lag ki wajah se stale data possible hai.
+
+    ---
+
+    ### 12. Sharding — Last-Level Scaling
+
+    Agar dataset/workload single server ki capacity se bahar ja raha hai:
+
+    ```text id="q3v8mx"
+    Single MongoDB
+        ↓
+    Optimize
+        ↓
+    Scale Hardware
+        ↓
+    Replica Set
+        ↓
+    Still insufficient?
+        ↓
+    Sharding
+    ```
+
+    Sharding se data multiple servers me distribute kiya ja sakta hai.
+
+    ---
+
+    ## ⭐ Interview Scenario
+
+    **Interviewer:**
+    *"Production me MongoDB query suddenly slow ho gayi. What will you do?"*
+
+    Main answer dunga:
+
+    ```text id="r9m4qx"
+    1. Identify affected query
+            ↓
+    2. Run explain("executionStats")
+            ↓
+    3. Check query plan
+            ↓
+    4. Check docs/keys examined
+            ↓
+    5. Check indexes
+            ↓
+    6. Review query & aggregation
+            ↓
+    7. Check N+1 / DB round trips
+            ↓
+    8. Check schema
+            ↓
+    9. Check CPU/memory/disk/connections
+            ↓
+    10. Optimize
+            ↓
+    11. Benchmark again
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **When troubleshooting MongoDB performance issues, I first measure the problem rather than making assumptions. I identify slow queries and use `explain("executionStats")` to analyze the query plan, execution time, documents examined, and index usage. Then I optimize indexes, queries, aggregations, pagination, and schema design, while avoiding N+1 queries and unnecessary data retrieval. I also check connection pooling and infrastructure metrics such as CPU, memory, disk I/O, connections, and replication lag. For read-heavy workloads I may use replicas appropriately, and for workloads exceeding single-server capacity I would consider sharding. Finally, I benchmark the changes to verify the improvement.**
+
+    ### Interview Follow-up
+
+    **Q. Query slow hai: sabse pehle kya check karoge?**
+
+    > **`explain("executionStats")` — because I want evidence about the query plan and how much data MongoDB is actually examining before deciding whether the problem is an index, query, schema, or infrastructure issue.**
+
+    ```text id="m2q7vx"
+    Slow Query
+    ↓
+    explain()
+    ↓
+    Evidence
+    ↓
+    Targeted Fix
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Performance Fix = Measure → `explain()` → Index/Query/Schema/Infrastructure → Optimize → Benchmark.**
+
+
+
 338. Change streams?
 339. MongoDB vs SQL?
 340. Aggregation pipeline optimization?
