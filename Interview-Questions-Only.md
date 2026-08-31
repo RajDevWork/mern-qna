@@ -27374,6 +27374,258 @@ Browser automatically validation kar dega.
 
 
 345. GridFS?
+
+    ## Hinglish Explanation
+
+    **GridFS** MongoDB ka mechanism hai jo **large files ko store aur retrieve** karne ke liye use hota hai.
+
+    Simple words me:
+
+    > **GridFS = MongoDB me large files ko chunks me divide karke store karna.**
+
+    Example:
+
+    ```text id="m7q2vx"
+    Large File
+    ↓
+    GridFS
+    ↓
+    ┌────────┬────────┬────────┬────────┐
+    │Chunk 1 │Chunk 2 │Chunk 3 │Chunk 4 │
+    └────────┴────────┴────────┴────────┘
+    ```
+
+    ---
+
+    ## GridFS ki zarurat kyun?
+
+    MongoDB ka normal document size limit **16 MB** hai.
+
+    Agar file bahut large hai:
+
+    ```text id="x8n4mq"
+    video.mp4
+    ↓
+    500 MB
+    ↓
+    Can't store as a single MongoDB document ❌
+    ```
+
+    GridFS file ko smaller chunks me divide karke store karta hai.
+
+    ---
+
+    ## GridFS kaise store karta hai? ⭐
+
+    GridFS normally do collections use karta hai:
+
+    ```text id="q5m8vz"
+    fs.files
+    ↓
+    File metadata
+
+    fs.chunks
+    ↓
+    Actual file chunks
+    ```
+
+    Conceptually:
+
+    ```text id="c7r3mx"
+    fs.files
+    {
+    filename: "video.mp4",
+    length: 500000000,
+    ...
+    }
+
+            ↓ references
+
+    fs.chunks
+    ├── Chunk 0
+    ├── Chunk 1
+    ├── Chunk 2
+    └── ...
+    ```
+
+    ---
+
+    ## Upload Flow
+
+    ```text id="v9m2qp"
+    Client
+    ↓
+    Node.js / API
+    ↓
+    GridFS
+    ↓
+    File divided into chunks
+    ↓
+    MongoDB
+    ```
+
+    Example Node.js driver:
+
+    ```javascript id="n6q4mx"
+    const bucket = new GridFSBucket(db, {
+    bucketName: "uploads"
+    });
+
+    fs.createReadStream("./video.mp4")
+    .pipe(bucket.openUploadStream("video.mp4"));
+    ```
+
+    File stream hoti hui GridFS me upload ho sakti hai.
+
+    ---
+
+    ## Download Flow
+
+    ```text id="p8m3vz"
+    MongoDB GridFS
+        ↓
+    Chunks
+        ↓
+    GridFS reconstructs stream
+        ↓
+    Node.js
+        ↓
+    Client
+    ```
+
+    Example:
+
+    ```javascript id="r4q7nx"
+    const bucket = new GridFSBucket(db, {
+    bucketName: "uploads"
+    });
+
+    bucket
+    .openDownloadStreamByName("video.mp4")
+    .pipe(res);
+    ```
+
+    Isse file directly HTTP response stream me bheji ja sakti hai.
+
+    ---
+
+    ## ⭐ GridFS + Streaming
+
+    GridFS ka major advantage hai ki large file ko **memory me poora load karne ki zarurat nahi**.
+
+    ```text id="w5m8qp"
+    500 MB File
+        ↓
+    Stream
+        ↓
+    Small chunks
+        ↓
+    MongoDB
+    ```
+
+    Instead of:
+
+    ```text id="z3n7mc"
+    500 MB
+    ↓
+    Load entire file into RAM ❌
+    ```
+
+    Ye large files handle karne me useful hai.
+
+    ---
+
+    ## GridFS Kab Use Karoge?
+
+    Good use cases:
+
+    ```text id="k8m4qz"
+    Large files
+    +
+    MongoDB ke saath file lifecycle maintain karna
+    +
+    Streaming
+    +
+    Files ko MongoDB ecosystem ke saath tightly integrate karna
+    ```
+
+    Examples:
+
+    ```text id="q7v3mx"
+    Videos
+    Images
+    PDFs
+    Audio
+    Large documents
+    ```
+
+    ---
+
+    ## ⚠️ Har File ke Liye GridFS Best Nahi Hai
+
+    Agar application me bahut large media files hain, often object storage better architecture ho sakta hai:
+
+    ```text id="h4m9qx"
+    Application
+        ↓
+    Object Storage
+        ↓
+    S3-compatible storage
+    ```
+
+    MongoDB me sirf metadata:
+
+    ```json id="m5n8qp"
+    {
+    "filename": "video.mp4",
+    "url": "...",
+    "size": 500000000
+    }
+    ```
+
+    store kar sakte ho.
+
+    So:
+
+    ```text id="v6q2rx"
+    GridFS
+    → Large files inside MongoDB
+
+    Object Storage
+    → Large media/file storage at scale
+    ```
+
+    Choice requirements par depend karegi.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **GridFS is MongoDB's mechanism for storing and retrieving large files that cannot be stored as a single BSON document. MongoDB's BSON document size limit is 16 MB, so GridFS splits large files into smaller chunks and stores file metadata separately from the chunks. It also supports streaming uploads and downloads, which means we don't need to load the entire file into application memory. For very large-scale media storage, however, object storage such as S3 may be a better architectural choice, with MongoDB storing the file metadata and reference.**
+
+    ### Interview Follow-up
+
+    **Q. GridFS vs S3?**
+
+    > **GridFS stores files within MongoDB using chunks, which can simplify data management when files need to live closely with MongoDB data. Object storage such as S3 is purpose-built for large-scale file storage and is often preferred for large media workloads. The choice depends on scale, access patterns, cost, operational requirements, and architecture.**
+
+    ```text id="x4m9vz"
+    Large File
+    ↓
+    Need inside MongoDB?
+    → GridFS
+
+    Large-scale media storage?
+    → Object Storage
+        +
+    MongoDB metadata
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **GridFS = Large file → chunks → MongoDB → stream upload/download.**
+
+
 346. Realm kya hai?
 347. Compass tool?
 348. Monitoring tools?
