@@ -28102,6 +28102,337 @@ Browser automatically validation kar dega.
 
 
 348. Monitoring tools?
+
+    ## Hinglish Explanation
+
+    **MongoDB Monitoring Tools** ka use database ki **health, performance, resource usage aur issues** ko continuously observe karne ke liye hota hai.
+
+    Simple flow:
+
+    ```text id="m7q2vx"
+    MongoDB
+    ↓
+    Monitoring
+    ↓
+    Metrics + Logs + Alerts
+    ↓
+    Problem Detection
+    ↓
+    Troubleshooting
+    ```
+
+    ---
+
+    # 1. MongoDB Atlas Monitoring ⭐⭐⭐
+
+    Agar MongoDB Atlas use kar rahe ho, Atlas me built-in monitoring milti hai.
+
+    Common metrics:
+
+    ```text id="x8n4mq"
+    CPU
+    Memory
+    Disk Usage
+    Disk I/O
+    Connections
+    Operations
+    Query Performance
+    Replication Lag
+    ```
+
+    Example:
+
+    ```text id="q5m8vz"
+    CPU suddenly ↑
+        ↓
+    Check Queries
+        ↓
+    Find expensive operation
+        ↓
+    Optimize
+    ```
+
+    ---
+
+    # 2. MongoDB Compass
+
+    Compass primarily **GUI/database exploration tool** hai, but development/debugging ke time query performance aur explain plans inspect karne me useful hai.
+
+    ```text id="c7r3mx"
+    Query
+    ↓
+    Explain
+    ↓
+    Execution Plan
+    ↓
+    Performance Analysis
+    ```
+
+    Example:
+
+    ```javascript id="v9m2qp"
+    db.orders
+    .find({ status: "pending" })
+    .explain("executionStats");
+    ```
+
+    ---
+
+    # 3. `mongostat`
+
+    MongoDB ke command-line monitoring tools me `mongostat` useful hai.
+
+    ```bash id="n6q4mx"
+    mongostat
+    ```
+
+    Ye real-time server statistics show kar sakta hai:
+
+    ```text id="p8m3vz"
+    insert
+    query
+    update
+    delete
+    connections
+    network
+    ```
+
+    Conceptually:
+
+    ```text id="r4q7nx"
+    mongostat
+    ↓
+    Live MongoDB Activity
+    ```
+
+    ---
+
+    # 4. `mongotop`
+
+    `mongotop` collection-level read/write activity dekhne ke liye useful hai.
+
+    ```bash id="w5m8qp"
+    mongotop
+    ```
+
+    Conceptually:
+
+    ```text id="z3n7mc"
+    Collection
+        ↓
+    Read Time
+    Write Time
+    ```
+
+    Agar koi collection unusually busy hai, investigation start kar sakte ho.
+
+    ---
+
+    # 5. MongoDB Logs ⭐
+
+    MongoDB logs se errors aur operational events investigate kar sakte ho.
+
+    Example:
+
+    ```text id="k8m4qz"
+    Connection Error
+    Slow Operation
+    Replication Issue
+    Authentication Failure
+    ```
+
+    Production troubleshooting me:
+
+    ```text id="q7v3mx"
+    Metrics
+    +
+    Logs
+    +
+    Query Statistics
+    ```
+
+    combine karke issue diagnose karna better hota hai.
+
+    ---
+
+    # 6. MongoDB Profiler ⭐⭐⭐
+
+    MongoDB **Database Profiler** operations ko record karne ke liye use hota hai, particularly slow operations identify karne me.
+
+    Conceptually:
+
+    ```text id="h4m9qx"
+    Database Operations
+        ↓
+    Profiler
+        ↓
+    Slow / Expensive Operations
+    ```
+
+    Example:
+
+    ```javascript id="m5n8qp"
+    db.setProfilingLevel(1);
+    ```
+
+    Production me profiler settings carefully use karni chahiye because profiling overhead ho sakta hai.
+
+    ---
+
+    # 7. Prometheus + Grafana ⭐⭐⭐
+
+    Large production environments me common monitoring architecture:
+
+    ```text id="v6q2rx"
+    MongoDB
+    ↓
+    Exporter / Metrics
+    ↓
+    Prometheus
+    ↓
+    Grafana
+    ```
+
+    Grafana me dashboards bana sakte ho:
+
+    ```text id="x4m9vz"
+    CPU
+    Memory
+    Connections
+    Operations/sec
+    Latency
+    Replication Lag
+    Disk Usage
+    ```
+
+    Aur thresholds ke basis par alerts configure kar sakte ho.
+
+    ---
+
+    # 8. Application Monitoring
+
+    Sirf MongoDB monitor karna enough nahi hai.
+
+    Node.js/NestJS application side bhi monitor karna chahiye:
+
+    ```text id="p6q2mc"
+    API
+    ↓
+    Request Latency
+    ↓
+    DB Query
+    ↓
+    MongoDB
+    ```
+
+    Agar API slow hai:
+
+    ```text id="n8r3qx"
+    API latency ↑
+        ↓
+    DB latency?
+        ↓
+    Slow query?
+        ↓
+    MongoDB bottleneck?
+    ```
+
+    Distributed applications me tools such as OpenTelemetry-based observability stacks tracing ke liye useful ho sakte hain.
+
+    ---
+
+    # ⭐ What Should You Monitor?
+
+    Interview me ye metrics mention karna useful hai:
+
+    ```text id="w7m4pz"
+    Database Health
+    ├── CPU
+    ├── Memory
+    ├── Disk Space
+    ├── Disk I/O
+    ├── Connections
+    ├── Query Latency
+    ├── Operations/sec
+    ├── Slow Queries
+    ├── Replication Lag
+    └── Errors
+    ```
+
+    ---
+
+    # Real Production Scenario
+
+    Suppose API suddenly slow ho gayi:
+
+    ```text id="q3v8mx"
+    API Latency ↑
+        ↓
+    MongoDB Latency?
+        ↓
+    YES
+        ↓
+    Check Metrics
+        ↓
+    Check Slow Queries
+        ↓
+    explain()
+        ↓
+    Index / Query Problem
+        ↓
+    Fix
+        ↓
+    Monitor Again
+    ```
+
+    Agar DB CPU:
+
+    ```text id="r9m4qx"
+    CPU = 95%
+    ```
+
+    to possible expensive queries/increased workload investigate karunga.
+
+    Agar:
+
+    ```text id="m2q7vx"
+    Replication Lag ↑
+    ```
+
+    to replica health, workload, network, disk I/O etc. investigate karunga.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **For MongoDB monitoring, I would use MongoDB Atlas monitoring for managed deployments, along with MongoDB logs, database profiler, and tools such as `mongostat` and `mongotop` for operational troubleshooting. For larger observability setups, I can expose metrics to Prometheus and visualize them in Grafana. I would monitor CPU, memory, disk usage and I/O, connections, query latency, operations, slow queries, replication lag, and errors. I would also correlate database metrics with application-level metrics and traces to identify whether a performance problem originates in the API, database queries, or infrastructure.**
+
+    ### Interview Follow-up
+
+    **Q. Production me MongoDB slow ho gaya. Kya check karoge?**
+
+    > **I would first check system and database metrics, then identify slow operations and inspect their execution plans using `explain()`. I would check indexes, query patterns, connection usage, disk I/O, CPU, memory, and replication lag. After fixing the bottleneck, I would monitor and benchmark again to confirm the improvement.**
+
+    ```text id="h6m2vx"
+    Metrics
+    ↓
+    Logs / Profiler
+    ↓
+    Slow Query
+    ↓
+    explain()
+    ↓
+    Fix
+    ↓
+    Monitor
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **MongoDB Monitoring = Metrics + Logs + Slow Queries + Replication Health + Alerts.**
+
+
+
 349. Security best practices?
 350. Encryption?
 351. Audit logging?
