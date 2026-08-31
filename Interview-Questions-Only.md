@@ -26796,6 +26796,265 @@ Browser automatically validation kar dega.
 
 
 343. Geospatial queries?
+
+    ## Hinglish Explanation
+
+    **Geospatial queries** ka matlab hai database me **location/coordinates ke basis par data search, filter aur calculate karna**.
+
+    Simple words:
+
+    > **Geospatial Query = "Location ke according data find karo."**
+
+    Example:
+
+    ```text id="m7q2vx"
+    User Location
+        ↓
+    (17.3850, 78.4867)
+        ↓
+    Nearby Restaurants?
+    Nearby Drivers?
+    Within 5 KM?
+    ```
+
+    MongoDB geospatial data ke liye **GeoJSON** aur geospatial indexes support karta hai.
+
+    ---
+
+    # 1. GeoJSON Data ⭐
+
+    Location ko generally GeoJSON format me store kar sakte ho:
+
+    ```json id="x8n4mq"
+    {
+    "name": "Restaurant A",
+    "location": {
+        "type": "Point",
+        "coordinates": [78.4867, 17.3850]
+    }
+    }
+    ```
+
+    ⚠️ Important:
+
+    ```text id="q5m8vz"
+    coordinates: [longitude, latitude]
+    ```
+
+    **Longitude first, latitude second.**
+
+    ---
+
+    # 2. `2dsphere` Index ⭐⭐⭐
+
+    Earth-like spherical geometry ke liye MongoDB me `2dsphere` index use hota hai.
+
+    ```javascript id="c7r3mx"
+    db.restaurants.createIndex({
+    location: "2dsphere"
+    });
+    ```
+
+    Ab geospatial queries efficiently execute kar sakte hain.
+
+    ---
+
+    # 3. Nearby Locations — `$near` ⭐
+
+    Suppose user ki location:
+
+    ```text id="v9m2qp"
+    Longitude = 78.4867
+    Latitude  = 17.3850
+    ```
+
+    Nearby restaurants find:
+
+    ```javascript id="n6q4mx"
+    db.restaurants.find({
+    location: {
+        $near: {
+        $geometry: {
+            type: "Point",
+            coordinates: [78.4867, 17.3850]
+        },
+        $maxDistance: 5000
+        }
+    }
+    });
+    ```
+
+    `$maxDistance: 5000` means approximately:
+
+    ```text id="p8m3vz"
+    5000 meters
+    = 5 KM
+    ```
+
+    So:
+
+    ```text id="r4q7nx"
+    User
+    ↓
+    5 KM radius
+    ↓
+    Restaurants
+    ```
+
+    ---
+
+    # 4. `$geoNear` ⭐
+
+    Aggregation pipeline me nearby results ke liye `$geoNear` use kar sakte ho.
+
+    ```javascript id="w5m8qp"
+    db.restaurants.aggregate([
+    {
+        $geoNear: {
+        near: {
+            type: "Point",
+            coordinates: [78.4867, 17.3850]
+        },
+        distanceField: "distance",
+        maxDistance: 5000,
+        spherical: true
+        }
+    }
+    ]);
+    ```
+
+    Output me distance bhi mil sakta hai:
+
+    ```json id="z3n7mc"
+    {
+    "name": "Restaurant A",
+    "distance": 1200
+    }
+    ```
+
+    Meaning restaurant approximately **1.2 km** away hai, depending on the configured geometry/units.
+
+    ---
+
+    # 5. `$geoWithin`
+
+    Agar check karna hai:
+
+    > **"Kaunse locations ek particular area ke andar hain?"**
+
+    Use:
+
+    ```javascript id="k8m4qz"
+    {
+    location: {
+        $geoWithin: {
+        $centerSphere: [
+            [78.4867, 17.3850],
+            5 / 6378.1
+        ]
+        }
+    }
+    }
+    ```
+
+    Ye circular area ke andar locations find karne ka older/common pattern hai.
+
+    GeoJSON polygon-based boundaries ke liye `$geoWithin` with `$geometry` bhi use kar sakte ho.
+
+    ---
+
+    # Real-world Use Cases ⭐⭐⭐
+
+    ### Food Delivery
+
+    ```text id="q7v3mx"
+    Customer Location
+        ↓
+    Nearby Restaurants
+        ↓
+    Within 5 KM
+    ```
+
+    ### Uber/Ola-like Application
+
+    ```text id="h4m9qx"
+    Customer
+    ↓
+    Nearby Drivers
+    ↓
+    Distance
+    ↓
+    Closest Driver
+    ```
+
+    ### Real Estate
+
+    ```text id="m5n8qp"
+    User Location
+        ↓
+    Properties within 10 KM
+    ```
+
+    ### Delivery
+
+    ```text id="v6q2rx"
+    Delivery Address
+        ↓
+    Service Area?
+        ↓
+    Yes / No
+    ```
+
+    ---
+
+    # ⭐ Important: Geospatial Index
+
+    Without appropriate geospatial indexing:
+
+    ```text id="x4m9vz"
+    Millions of locations
+            ↓
+    Scan everything ❌
+    ```
+
+    With:
+
+    ```javascript id="p6q2mc"
+    db.places.createIndex({
+    location: "2dsphere"
+    });
+    ```
+
+    MongoDB geospatial queries ko efficiently execute kar sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Geospatial queries are used to search and analyze data based on geographic locations and coordinates. In MongoDB, I would typically store locations using GeoJSON, such as a `Point`, and create a `2dsphere` index on the location field. I can then use operators such as `$near` and `$geoWithin`, or `$geoNear` in an aggregation pipeline, to find nearby locations, filter locations within an area, and calculate distances. This is useful for applications such as food delivery, ride sharing, real estate, and location-based services.**
+
+    ### Interview Follow-up
+
+    **Q. `2dsphere` index kyun use karte ho?**
+
+    > **`2dsphere` is designed for geospatial queries on spherical geographic data, such as locations represented on the Earth's surface. It supports operations like proximity and area-based queries.**
+
+    ```text id="n8r3qx"
+    GeoJSON Point
+        ↓
+    2dsphere Index
+        ↓
+    $near / $geoNear / $geoWithin
+        ↓
+    Location-based Results
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Geospatial Query = Coordinates + `2dsphere` index → Nearby / Within Area / Distance-based search.**
+
+
+
 344. Text search?
 345. GridFS?
 346. Realm kya hai?
