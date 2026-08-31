@@ -26538,6 +26538,263 @@ Browser automatically validation kar dega.
 
 
 342. Time series data?
+
+    ## Hinglish Explanation
+
+    **Time Series Data** wo data hota hai jo **time ke saath continuously ya periodically record hota hai**.
+
+    Simple words:
+
+    > **Time Series Data = Timestamp + Measurement/Event**
+
+    Example:
+
+    ```text
+    10:00 → Temperature = 25°C
+    10:01 → Temperature = 26°C
+    10:02 → Temperature = 25°C
+    10:03 → Temperature = 27°C
+    ```
+
+    Yahan har record ke saath **time** important hai.
+
+    ---
+
+    ## Real-world Examples ⭐
+
+    ```text
+    IoT Sensors
+    → Temperature / Humidity
+
+    Stock Market
+    → Price over time
+
+    Application Monitoring
+    → CPU / Memory / Requests
+
+    GPS
+    → Location over time
+
+    Analytics
+    → Users / Orders per minute
+
+    Logs
+    → Events over time
+    ```
+
+    Example MongoDB document:
+
+    ```json
+    {
+    "sensorId": "S101",
+    "timestamp": "2026-08-31T10:00:00Z",
+    "temperature": 25.4,
+    "humidity": 62
+    }
+    ```
+
+    Next reading:
+
+    ```json
+    {
+    "sensorId": "S101",
+    "timestamp": "2026-08-31T10:01:00Z",
+    "temperature": 25.8,
+    "humidity": 63
+    }
+    ```
+
+    ---
+
+    # MongoDB Time Series Collections ⭐⭐⭐
+
+    MongoDB specifically **time series collections** provide karta hai.
+
+    Example:
+
+    ```javascript
+    db.createCollection("sensorData", {
+    timeseries: {
+        timeField: "timestamp",
+        metaField: "sensorId",
+        granularity: "minutes"
+    }
+    });
+    ```
+
+    Yahan:
+
+    ```text
+    timeField
+    → Measurement ka timestamp
+
+    metaField
+    → Kis sensor/entity se data aaya
+
+    granularity
+    → Data kis frequency ke around aa raha hai
+    ```
+
+    ---
+
+    ## Normal Collection vs Time Series Collection
+
+    ### Normal Collection
+
+    ```text
+    sensorData
+    ├── document
+    ├── document
+    ├── document
+    └── ...
+    ```
+
+    ### Time Series Collection
+
+    ```text
+    Time
+    ↓
+    Measurements
+    ↓
+    MongoDB optimized storage/query behavior
+    ```
+
+    MongoDB time-series collections ko time-based measurements ke workloads ke liye optimize karta hai.
+
+    ---
+
+    ## Time Series Data me Important Queries
+
+    Usually queries time range par hoti hain:
+
+    ```javascript
+    db.sensorData.find({
+    sensorId: "S101",
+    timestamp: {
+        $gte: ISODate("2026-08-31T10:00:00Z"),
+        $lt: ISODate("2026-08-31T11:00:00Z")
+    }
+    });
+    ```
+
+    Meaning:
+
+    ```text
+    Sensor S101
+    +
+    10:00 → 11:00
+    ```
+
+    ---
+
+    ## Aggregation ke saath ⭐
+
+    Time-series data me aggregation bahut common hai.
+
+    Suppose hourly average temperature chahiye:
+
+    ```text
+    Raw readings
+        ↓
+    $match
+        ↓
+    Time range
+        ↓
+    $group
+        ↓
+    Average
+    ```
+
+    Conceptually:
+
+    ```javascript
+    {
+    $group: {
+        _id: {
+        $hour: "$timestamp"
+        },
+        avgTemperature: {
+        $avg: "$temperature"
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ## Bucket Pattern se Relation
+
+    Tumne previous question me **Bucket Pattern** padha tha.
+
+    Time-series data historically bucket pattern ke liye common use case hai:
+
+    ```text
+    Individual readings
+        ↓
+    Group into buckets
+        ↓
+    Efficient storage/access
+    ```
+
+    MongoDB ki dedicated time-series collections internally time-series data ko efficiently organize karne ke liye bucket-oriented storage approach use karti hain.
+
+    ---
+
+    ## ⭐ Time Series Data ki Characteristics
+
+    Generally:
+
+    ```text
+    Timestamp important
+        +
+    Data continuously append hota hai
+        +
+    Large volume
+        +
+    Time-range queries
+        +
+    Aggregation common
+    ```
+
+    Example:
+
+    ```text
+    10:00 → 20 requests
+    10:01 → 25 requests
+    10:02 → 31 requests
+    ...
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Time-series data is data collected or recorded over time, where the timestamp is a key part of each measurement or event. Examples include IoT sensor readings, stock prices, application metrics, and monitoring data. In MongoDB, I can use time-series collections, which are designed for workloads involving timestamped measurements. I would typically model the timestamp using `timeField`, use metadata such as a sensor or device ID as `metaField`, and optimize queries around time ranges and aggregation requirements.**
+
+    ### Interview Follow-up
+
+    **Q. Normal collection ki jagah MongoDB Time Series Collection kab use karoge?**
+
+    > **I would use a time-series collection when the workload consists primarily of timestamped measurements or events, especially when data arrives continuously at high volume and queries commonly filter or aggregate by time ranges.**
+
+    ```text
+    Sensor Metrics
+        ↓
+    Timestamped Data
+        ↓
+    High Volume
+        ↓
+    Time-based Queries
+        ↓
+    Time Series Collection ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Time Series Data = Time ke saath continuously recorded measurements/events.**
+
+
+
 343. Geospatial queries?
 344. Text search?
 345. GridFS?
