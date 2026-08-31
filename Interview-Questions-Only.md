@@ -27056,6 +27056,323 @@ Browser automatically validation kar dega.
 
 
 344. Text search?
+
+    ## Hinglish Explanation
+
+    **Text Search** ka matlab hai database me **text ke andar specific words/terms search karna**.
+
+    Example:
+
+    ```text
+    Products
+
+    Laptop HP
+    MacBook Pro
+    Gaming Laptop
+    Wireless Mouse
+    ```
+
+    User search kare:
+
+    ```text
+    "laptop"
+    ```
+
+    To relevant documents find karne hain.
+
+    MongoDB me traditional text search ke liye **text index** aur **`$text` operator** use kiya ja sakta hai.
+
+    ---
+
+    # 1. Text Index ⭐⭐⭐
+
+    Suppose `products` collection:
+
+    ```json id="m7q2vx"
+    {
+    "name": "Gaming Laptop",
+    "description": "High performance laptop for gaming"
+    }
+    ```
+
+    Text index:
+
+    ```javascript id="x8n4mq"
+    db.products.createIndex({
+    name: "text",
+    description: "text"
+    });
+    ```
+
+    Ab MongoDB in fields ke text ko search kar sakta hai.
+
+    ---
+
+    # 2. `$text` Search
+
+    ```javascript id="q5m8vz"
+    db.products.find({
+    $text: {
+        $search: "laptop"
+    }
+    });
+    ```
+
+    Conceptually:
+
+    ```text id="c7r3mx"
+    User enters:
+    "laptop"
+        ↓
+    $text
+        ↓
+    Text Index
+        ↓
+    Matching Documents
+    ```
+
+    ---
+
+    # 3. Multiple Words
+
+    ```javascript id="v9m2qp"
+    db.products.find({
+    $text: {
+        $search: "gaming laptop"
+    }
+    });
+    ```
+
+    MongoDB text search words ke basis par matching documents find kar sakta hai.
+
+    ---
+
+    # 4. Search Phrase
+
+    Exact phrase search ke liye quotes use kar sakte ho:
+
+    ```javascript id="n6q4mx"
+    db.products.find({
+    $text: {
+        $search: "\"gaming laptop\""
+    }
+    });
+    ```
+
+    Conceptually:
+
+    ```text id="p8m3vz"
+    "gaming laptop"
+        ↓
+    Phrase matching
+    ```
+
+    ---
+
+    # 5. Exclude Words
+
+    Suppose:
+
+    ```text
+    Search:
+    laptop -gaming
+    ```
+
+    ```javascript id="r4q7nx"
+    db.products.find({
+    $text: {
+        $search: "laptop -gaming"
+    }
+    });
+    ```
+
+    Meaning:
+
+    ```text id="w5m8qp"
+    Contains "laptop"
+    +
+    Doesn't contain "gaming"
+    ```
+
+    ---
+
+    # 6. Search Score ⭐
+
+    MongoDB text search relevance score provide kar sakta hai.
+
+    ```javascript id="z3n7mc"
+    db.products.find(
+    {
+        $text: {
+        $search: "laptop"
+        }
+    },
+    {
+        score: {
+        $meta: "textScore"
+        }
+    }
+    ).sort({
+    score: {
+        $meta: "textScore"
+    }
+    });
+    ```
+
+    Conceptually:
+
+    ```text id="k8m4qz"
+    Search
+    ↓
+    Matching Documents
+    ↓
+    Relevance Score
+    ↓
+    Best matches first
+    ```
+
+    ---
+
+    # 7. Text Index with Weights
+
+    Different fields ko different importance deni ho:
+
+    ```javascript id="q7v3mx"
+    db.products.createIndex(
+    {
+        name: "text",
+        description: "text"
+    },
+    {
+        weights: {
+        name: 10,
+        description: 2
+        }
+    }
+    );
+    ```
+
+    Meaning:
+
+    ```text id="h4m9qx"
+    name
+    → More important
+
+    description
+    → Less important
+    ```
+
+    So search relevance me `name` ko higher weight diya ja sakta hai.
+
+    ---
+
+    # ⚠️ Text Search vs `$regex`
+
+    Ye interview me useful difference hai.
+
+    ### `$regex`
+
+    ```javascript id="m5n8qp"
+    db.products.find({
+    name: {
+        $regex: "laptop",
+        $options: "i"
+    }
+    });
+    ```
+
+    Regex pattern matching ke liye useful hai.
+
+    ### `$text`
+
+    ```javascript id="v6q2rx"
+    db.products.find({
+    $text: {
+        $search: "laptop"
+    }
+    });
+    ```
+
+    Text-oriented search ke liye designed hai.
+
+    ```text id="x4m9vz"
+    Regex
+    → Pattern matching
+
+    $text
+    → Text search + text index + relevance
+    ```
+
+    ---
+
+    # ⭐ MongoDB Text Search ki Limitation
+
+    MongoDB ka built-in `$text` search **full-featured search engine ka complete replacement nahi hai**.
+
+    Agar requirements hain:
+
+    ```text id="p6q2mc"
+    Autocomplete
+    Typo tolerance
+    Advanced relevance
+    Faceting
+    Complex linguistic search
+    ```
+
+    to dedicated search technology, such as **MongoDB Atlas Search**, may be more appropriate.
+
+    ---
+
+    ## Real-world Example
+
+    E-commerce search:
+
+    ```text id="n8r3qx"
+    User:
+    "gaming laptop"
+        ↓
+    Search
+        ↓
+    Product name
+    +
+    Description
+        ↓
+    Relevant products
+        ↓
+    Sort by relevance
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **MongoDB supports text search through text indexes and the `$text` operator. I can create a text index on fields such as product name and description and then search using `$search`. MongoDB can also provide a text relevance score using `$meta: "textScore"`, and text-index weights can be used to give certain fields higher importance. For more advanced search requirements such as autocomplete, typo tolerance, and sophisticated relevance, I would consider MongoDB Atlas Search or a dedicated search engine.**
+
+    ### Interview Follow-up
+
+    **Q. `$text` aur `$regex` me difference?**
+
+    > **`$regex` is primarily for pattern matching, while `$text` uses MongoDB's text index for text-oriented searching and can provide relevance scoring. For advanced search functionality, I would consider Atlas Search.**
+
+    ```text id="w7m4pz"
+    Simple text search
+        ↓
+    $text + text index
+
+    Pattern matching
+        ↓
+    $regex
+
+    Advanced search
+        ↓
+    Atlas Search / Search Engine
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Text Search = Text Index + `$text` + `$search` → Relevant text documents find karo.**
+
+
 345. GridFS?
 346. Realm kya hai?
 347. Compass tool?
