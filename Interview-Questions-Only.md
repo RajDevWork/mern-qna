@@ -28434,6 +28434,363 @@ Browser automatically validation kar dega.
 
 
 349. Security best practices?
+
+    ## Hinglish Explanation
+
+    **MongoDB Security Best Practices** ka matlab hai database ko **unauthorized access, data leakage, malicious queries aur accidental exposure** se protect karna.
+
+    Simple security layers:
+
+    ```text
+    Application
+        ↓
+    Authentication
+        ↓
+    Authorization
+        ↓
+    Network Security
+        ↓
+    Encryption
+        ↓
+    Auditing + Monitoring
+        ↓
+    Backup Security
+    ```
+
+    ---
+
+    # 1. Authentication ⭐⭐⭐
+
+    Database ko anonymously accessible mat rakho.
+
+    ```text
+    Application
+        ↓
+    Username + Password / Auth Mechanism
+        ↓
+    MongoDB
+    ```
+
+    Example connection:
+
+    ```javascript
+    mongodb://username:password@host:27017/mydb
+    ```
+
+    Credentials ko source code me hardcode nahi karna chahiye.
+
+    ---
+
+    # 2. Authorization / RBAC ⭐⭐⭐
+
+    Har user ko full database access dena avoid karo.
+
+    Example:
+
+    ```text
+    Admin
+    ↓
+    Read + Write + Admin Operations
+
+    Application User
+    ↓
+    Only required DB operations
+
+    Read-only User
+    ↓
+    Read only
+    ```
+
+    Principle:
+
+    > **Least Privilege**
+
+    Matlab user/service ko **sirf utni permissions do jitni actually required hain**.
+
+    ---
+
+    # 3. Network Security ⭐⭐⭐
+
+    MongoDB ko public internet par unnecessarily expose nahi karna chahiye.
+
+    Better:
+
+    ```text id="m7q2vx"
+    Internet
+    ❌
+        ↓
+    MongoDB
+    ```
+
+    Instead:
+
+    ```text id="x8n4mq"
+    Application
+        ↓
+    Private Network
+        ↓
+    MongoDB
+    ```
+
+    Firewall/security groups/network access controls se allowed sources restrict karo.
+
+    ---
+
+    # 4. TLS/SSL Encryption in Transit
+
+    Application aur MongoDB ke beech data encrypted hona chahiye.
+
+    ```text id="q5m8vz"
+    Application
+        ↓
+    TLS 🔒
+        ↓
+    MongoDB
+    ```
+
+    Isse network traffic ko unauthorized parties ke liye read karna difficult hota hai.
+
+    ---
+
+    # 5. Encryption at Rest
+
+    Database files/storage par encryption use karo.
+
+    ```text id="c7r3mx"
+    MongoDB Storage
+        ↓
+    Encryption 🔒
+    ```
+
+    Agar disk/storage unauthorized access me aa jaye, encrypted data protection provide karta hai.
+
+    ---
+
+    # 6. Secrets Secure Rakho ⭐
+
+    Bad:
+
+    ```javascript id="v9m2qp"
+    const password = "Raj@123";
+    ```
+
+    Better:
+
+    ```text id="n6q4mx"
+    Environment / Secret Manager
+            ↓
+    Application
+            ↓
+    MongoDB
+    ```
+
+    Examples:
+
+    ```text
+    MONGODB_URI
+    MONGODB_USERNAME
+    MONGODB_PASSWORD
+    ```
+
+    Aur:
+
+    ```text id="p8m3vz"
+    .env
+    ↓
+    .gitignore
+    ```
+
+    Production me dedicated secret-management solution use karna better hota hai.
+
+    ---
+
+    # 7. Input Validation ⭐⭐⭐
+
+    User input ko directly database query me blindly pass nahi karna chahiye.
+
+    Example API:
+
+    ```javascript id="r4q7nx"
+    const userId = req.params.id;
+    ```
+
+    Validate karo:
+
+    ```text id="w5m8qp"
+    Expected ObjectId?
+        ↓
+    Validate
+        ↓
+    Query
+    ```
+
+    Especially dynamic MongoDB operators ko untrusted input se directly construct karna avoid karo.
+
+    ---
+
+    # 8. NoSQL Injection Prevention
+
+    Bad pattern:
+
+    ```javascript id="z3n7mc"
+    db.users.find({
+    username: req.body.username,
+    password: req.body.password
+    });
+    ```
+
+    Agar input ko safely validate/handle nahi kiya gaya, malicious query objects risk create kar sakte hain.
+
+    Better approach:
+
+    ```text id="k8m4qz"
+    User Input
+    ↓
+    Validate
+    ↓
+    Allow expected types/operators only
+    ↓
+    Database Query
+    ```
+
+    ODM/driver APIs ka safe usage karo aur untrusted objects ko query operators ke roop me blindly accept mat karo.
+
+    ---
+
+    # 9. Keep MongoDB Updated
+
+    Old database versions me known security vulnerabilities ho sakti hain.
+
+    ```text id="q7v3mx"
+    MongoDB
+    ↓
+    Security Updates
+    ↓
+    Regularly Patch
+    ```
+
+    Lekin production upgrade se pehle compatibility/testing zaroor karo.
+
+    ---
+
+    # 10. Auditing & Monitoring
+
+    Suspicious activity detect karne ke liye:
+
+    ```text id="h4m9qx"
+    Authentication Failures
+    Unauthorized Access
+    Database Errors
+    Suspicious Operations
+    ```
+
+    monitor/log karo.
+
+    Security + monitoring combine:
+
+    ```text id="m5n8qp"
+    Security Event
+        ↓
+    Logs
+        ↓
+    Monitoring
+        ↓
+    Alert
+    ```
+
+    ---
+
+    # 11. Backup Security ⭐
+
+    Backup bhi secure hona chahiye.
+
+    ```text id="v6q2rx"
+    Backup
+    ↓
+    Encryption
+    ↓
+    Access Control
+    ↓
+    Separate Storage
+    ```
+
+    Aur backup restore regularly test karo.
+
+    ---
+
+    # 12. Don't Use Admin Credentials in Application ⭐⭐⭐
+
+    Bad:
+
+    ```text id="x4m9vz"
+    Node.js App
+        ↓
+    MongoDB Admin Account ❌
+    ```
+
+    Better:
+
+    ```text id="p6q2mc"
+    Node.js App
+        ↓
+    Application-specific DB User
+        ↓
+    Only required permissions
+    ```
+
+    Agar application compromise ho jaye, attacker ko unnecessarily full database administration permissions nahi milengi.
+
+    ---
+
+    # ⭐ Production Security Checklist
+
+    ```text id="n8r3qx"
+    ☑ Authentication enabled
+    ☑ Least-privilege RBAC
+    ☑ MongoDB not publicly exposed
+    ☑ Network access restricted
+    ☑ TLS enabled
+    ☑ Encryption at rest
+    ☑ Secrets not hardcoded
+    ☑ Input validation
+    ☑ NoSQL injection protection
+    ☑ MongoDB patched
+    ☑ Security monitoring/auditing
+    ☑ Encrypted & access-controlled backups
+    ☑ Restore testing
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **For MongoDB security, I would follow a defense-in-depth approach. I would enable authentication and use least-privilege RBAC, restrict network access so the database isn't unnecessarily exposed to the public internet, use TLS for data in transit and encryption at rest where required, and store credentials in a secure secret-management system rather than source code. I would validate application inputs and prevent NoSQL injection by controlling types and operators in database queries. I would also keep MongoDB patched, enable appropriate auditing and monitoring, and secure and regularly test backups.**
+
+    ### Interview Follow-up
+
+    **Q. MongoDB ko secure karne ke liye sabse important 3 cheezein?**
+
+    > **Authentication and least-privilege authorization, network isolation/access control, and encryption for data in transit and at rest. I would also consider secure secrets management and continuous monitoring as essential production practices.**
+
+    ```text id="w7m4pz"
+    Authentication
+        +
+    Authorization
+        +
+    Network Security
+        +
+    Encryption
+        +
+    Monitoring
+        ↓
+    Secure MongoDB
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **MongoDB Security = Auth + Least Privilege + Private Network + Encryption + Input Validation + Monitoring + Secure Backups.**
+
+
 350. Encryption?
 351. Audit logging?
 352. Data validation?
