@@ -29026,6 +29026,311 @@ Browser automatically validation kar dega.
 
 
 351. Audit logging?
+
+    ## Hinglish Explanation
+
+    **Audit Logging** ka matlab hai system/database me hone wali **important activities ka record maintain karna**, taaki baad me pata chal sake:
+
+    > **Kisne kya action kiya, kab kiya, aur kis resource par kiya?**
+
+    Simple:
+
+    ```text id="m7q2vx"
+    User / Admin
+        ↓
+    Action
+        ↓
+    Audit Log
+        ↓
+    Store + Monitor
+        ↓
+    Investigation / Compliance
+    ```
+
+    Example:
+
+    ```text id="x8n4mq"
+    Who      → Raj
+    Action   → DELETE
+    Resource → users/123
+    Time     → 2026-09-01 09:30
+    Result   → Success
+    ```
+
+    ---
+
+    ## Audit Log vs Normal Application Log ⭐
+
+    Dono same nahi hain.
+
+    ### Application Log
+
+    Application ka behavior/debugging track karta hai:
+
+    ```text id="q5m8vz"
+    INFO  → Server started
+    ERROR → Database connection failed
+    WARN  → Request timeout
+    ```
+
+    ### Audit Log
+
+    **Security-sensitive/user activity** track karta hai:
+
+    ```text id="c7r3mx"
+    Who?
+    What?
+    When?
+    Which resource?
+    Result?
+    ```
+
+    Example:
+
+    ```text id="v9m2qp"
+    Raj
+    ↓
+    Changed user role
+    ↓
+    Audit Log
+    ```
+
+    ---
+
+    # MongoDB Audit Logging ⭐⭐⭐
+
+    MongoDB deployments me auditing capabilities available hain, particularly supported MongoDB Enterprise deployments.
+
+    Audit events se activities such as:
+
+    ```text id="n6q4mx"
+    Authentication
+    Authorization
+    Database operations
+    Configuration changes
+    Security-related events
+    ```
+
+    track kiye ja sakte hain, depending on deployment/version/configuration.
+
+    Conceptually:
+
+    ```text id="p8m3vz"
+    MongoDB
+    ↓
+    Audit Event
+    ↓
+    Audit Log
+    ↓
+    Secure Log Storage
+    ```
+
+    ---
+
+    ## Example Audit Event
+
+    Conceptually audit record kuch aisa ho sakta hai:
+
+    ```json id="r4q7nx"
+    {
+    "user": "admin",
+    "action": "update",
+    "resource": "users",
+    "timestamp": "2026-09-01T09:30:00Z",
+    "result": "success"
+    }
+    ```
+
+    Actual MongoDB audit event structure deployment/version ke according different ho sakta hai.
+
+    ---
+
+    # Application Level Audit Logging ⭐
+
+    MongoDB ke alawa application me bhi audit trail maintain kar sakte ho.
+
+    Suppose admin ne user ka role change kiya:
+
+    ```text id="w5m8qp"
+    Admin
+    ↓
+    PUT /users/123/role
+    ↓
+    Role changed
+    ↓
+    Audit Log
+    ```
+
+    Database me:
+
+    ```json id="z3n7mc"
+    {
+    "actorId": "admin123",
+    "action": "ROLE_CHANGED",
+    "targetId": "user123",
+    "oldValue": "USER",
+    "newValue": "ADMIN",
+    "timestamp": "..."
+    }
+    ```
+
+    Ye especially **RBAC applications** me useful hai.
+
+    ---
+
+    # Audit Logging ke Important Fields ⭐
+
+    Good audit log me generally:
+
+    ```text id="k8m4qz"
+    Actor
+    ↓
+    Who performed the action?
+
+    Action
+    ↓
+    What did they do?
+
+    Resource
+    ↓
+    Kis object/resource par?
+
+    Timestamp
+    ↓
+    Kab?
+
+    Result
+    ↓
+    Success / Failure
+
+    Request/Trace ID
+    ↓
+    Which request caused it?
+    ```
+
+    Example:
+
+    ```json id="q7v3mx"
+    {
+    "actorId": "admin-123",
+    "action": "DELETE_USER",
+    "resource": "users",
+    "resourceId": "user-456",
+    "result": "SUCCESS",
+    "timestamp": "2026-09-01T09:30:00Z",
+    "requestId": "req-789"
+    }
+    ```
+
+    ---
+
+    ## ⭐ Audit Logs ko Secure Kaise Rakhen?
+
+    Audit log khud sensitive hota hai.
+
+    ```text id="h4m9qx"
+    Audit Logs
+    ↓
+    Restricted Access
+    ↓
+    Tamper Resistance
+    ↓
+    Retention Policy
+    ↓
+    Monitoring
+    ```
+
+    Important practices:
+
+    * Normal users ko audit logs ka access na do
+    * Logs ko unnecessarily modify/delete nahi hone do
+    * Sensitive data/passwords/tokens log mat karo
+    * Appropriate retention policy rakho
+    * Centralized log storage use karo
+    * Suspicious events par alerts configure karo
+
+    ---
+
+    # Audit Logging + Compliance ⭐
+
+    Audit logs compliance aur security investigations me useful hote hain.
+
+    Example:
+
+    ```text id="m5n8qp"
+    GDPR / SOC 2 / HIPAA
+            ↓
+    Security & Accountability
+            ↓
+    Audit Trails
+    ```
+
+    Exact compliance requirements organization aur regulation ke according differ karti hain.
+
+    ---
+
+    # Audit Logging + Request Tracing ⭐
+
+    Tumne pehle **request tracing** padha tha.
+
+    Dono ko combine kar sakte ho:
+
+    ```text id="v6q2rx"
+    HTTP Request
+        ↓
+    requestId / traceId
+        ↓
+    Controller
+        ↓
+    Service
+        ↓
+    MongoDB
+        ↓
+    Audit Event
+    ```
+
+    Example:
+
+    ```text id="x4m9vz"
+    traceId = abc123
+
+    API Request
+        ↓
+    Role Changed
+        ↓
+    Audit Log
+        ↓
+    traceId = abc123
+    ```
+
+    Isse production incident investigate karna easier hota hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Audit logging is the process of recording security-sensitive and important user or system activities so that we can determine who performed an action, what they did, when they did it, what resource was affected, and whether the operation succeeded. In MongoDB environments, auditing capabilities can record database and security-related events depending on the deployment and edition. At the application level, I can also maintain an audit trail for actions such as role changes, user deletion, or permission changes. I would protect audit logs from unauthorized modification, avoid logging secrets or sensitive credentials, apply retention policies, and correlate audit events with request or trace IDs for troubleshooting.**
+
+    ### Interview Follow-up
+
+    **Q. Normal logs aur audit logs me difference?**
+
+    > **Application logs primarily help with debugging and operational monitoring, while audit logs provide an accountability trail of security-sensitive actions—who did what, when, and to which resource.**
+
+    ```text id="p3m8vx"
+    Application Log
+    → "What happened in the system?"
+
+    Audit Log
+    → "Who did what, when, and to what?"
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Audit Logging = Who + What + When + Which Resource + Result.**
+
+
+
 352. Data validation?
 353. Schema versioning?
 354. Migration strategies?
