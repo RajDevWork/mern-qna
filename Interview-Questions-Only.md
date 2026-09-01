@@ -29994,6 +29994,468 @@ Browser automatically validation kar dega.
 
 
 354. Migration strategies?
+
+    ## Hinglish Explanation
+
+    **Migration Strategies** ka matlab hai database ke **old schema/data ko safely new schema/data structure me convert karna**, especially production environment me.
+
+    Simple flow:
+
+    ```text
+    Old Schema
+        ↓
+    Migration Strategy
+        ↓
+    New Schema
+        ↓
+    Verify
+        ↓
+    Old Data/Fields Remove
+    ```
+
+    MongoDB flexible schema use karta hai, isliye migration ka approach relational database migrations se thoda different ho sakta hai.
+
+    ---
+
+    # 1. Big-Bang Migration
+
+    Saara data ek hi baar migrate karna.
+
+    ```text
+    Version 1
+    ↓
+    Migration Script
+    ↓
+    All Documents
+    ↓
+    Version 2
+    ```
+
+    Example:
+
+    ```javascript
+    db.users.updateMany(
+    {},
+    {
+        $set: {
+        schemaVersion: 2
+        }
+    }
+    );
+    ```
+
+    ### Advantage
+
+    * Simple concept
+    * Migration ek baar me complete
+
+    ### Problem
+
+    Agar collection bahut large hai:
+
+    ```text
+    10 Million Documents
+        ↓
+    One Huge Migration
+        ↓
+    Long Runtime
+        ↓
+    High DB Load
+    ```
+
+    Production me downtime ya performance impact ho sakta hai.
+
+    ---
+
+    # 2. Incremental / Batch Migration ⭐⭐⭐
+
+    Large dataset ko **small batches** me migrate karna.
+
+    ```text
+    10M Documents
+        ↓
+    Batch 1 → 10K
+    Batch 2 → 10K
+    Batch 3 → 10K
+    ...
+    ```
+
+    Flow:
+
+    ```text
+    Read Batch
+    ↓
+    Transform
+    ↓
+    Write
+    ↓
+    Verify
+    ↓
+    Next Batch
+    ```
+
+    Ye large production databases ke liye generally safer approach hoti hai.
+
+    ---
+
+    # 3. Lazy Migration ⭐⭐
+
+    Data ko tab migrate karo jab woh access ho.
+
+    ```text
+    Old Document
+        ↓
+    User reads it
+        ↓
+    Detect old version
+        ↓
+    Transform
+        ↓
+    Save new version
+    ```
+
+    Example:
+
+    ```javascript
+    if (user.schemaVersion === 1) {
+    user.newField = transform(user.oldField);
+    user.schemaVersion = 2;
+
+    await user.save();
+    }
+    ```
+
+    ### Advantage
+
+    * Ek saath millions of documents migrate nahi karne padte.
+
+    ### Problem
+
+    ```text
+    Old Documents
+        +
+    New Documents
+    ```
+
+    kaafi time tak coexist kar sakte hain.
+
+    ---
+
+    # 4. Dual-Write Migration ⭐⭐⭐
+
+    Migration ke transition period me application **old aur new fields dono write** karti hai.
+
+    Suppose:
+
+    ```text
+    oldField → fullName
+    newField → firstName + lastName
+    ```
+
+    Application:
+
+    ```text
+    New Request
+        ↓
+    Write fullName
+    +
+    Write firstName/lastName
+    ```
+
+    Flow:
+
+    ```text
+                Application
+                    ↓
+            ┌───────┴───────┐
+            ↓               ↓
+        Old Field       New Fields
+    ```
+
+    Background me old documents migrate hote rehte hain.
+
+    ---
+
+    # 5. Expand → Migrate → Contract ⭐⭐⭐
+
+    Production migrations ke liye ye **bahut important pattern** hai.
+
+    Suppose:
+
+    ```text
+    Old:
+    fullName
+    ```
+
+    New:
+
+    ```text
+    firstName
+    lastName
+    ```
+
+    ### Step 1 — Expand
+
+    New fields introduce karo:
+
+    ```json
+    {
+    "fullName": "Raj Parihar",
+    "firstName": "Raj",
+    "lastName": "Parihar"
+    }
+    ```
+
+    Old field abhi remove nahi karo.
+
+    ---
+
+    ### Step 2 — Migrate
+
+    Existing documents ko gradually convert karo:
+
+    ```text
+    fullName
+    ↓
+    firstName + lastName
+    ```
+
+    ---
+
+    ### Step 3 — Switch
+
+    Application ko new fields use karne ke liye update karo.
+
+    ```text
+    Application
+        ↓
+    firstName + lastName
+    ```
+
+    ---
+
+    ### Step 4 — Contract
+
+    Jab verify ho jaye ki old field ki zarurat nahi hai:
+
+    ```text
+    fullName
+    ↓
+    Remove
+    ```
+
+    Complete flow:
+
+    ```text
+    Expand
+    ↓
+    Deploy compatible code
+    ↓
+    Migrate data
+    ↓
+    Switch reads/writes
+    ↓
+    Verify
+    ↓
+    Contract
+    ```
+
+    ---
+
+    # 6. Online Migration ⭐⭐
+
+    Application ko completely stop kiye bina migration run karna.
+
+    ```text
+    Application Running
+        +
+    Background Migration
+        ↓
+    Database gradually updated
+    ```
+
+    Large production systems me useful hai.
+
+    But concurrency carefully handle karni padti hai.
+
+    ---
+
+    # 7. Offline Migration
+
+    Application temporarily stop karke migration run karna.
+
+    ```text
+    Stop Application
+        ↓
+    Run Migration
+        ↓
+    Verify
+        ↓
+    Start Application
+    ```
+
+    Simple hai, but downtime required ho sakta hai.
+
+    Small/internal systems ke liye acceptable ho sakta hai.
+
+    ---
+
+    # 8. Shadow / Backfill Approach
+
+    Kabhi new structure ko parallel me populate karte hain while old structure remains available.
+
+    ```text
+    Old Data
+    ↓
+    Background Backfill
+    ├── Old Structure
+    └── New Structure
+    ```
+
+    Phir new structure ko validate karke application ko gradually switch kar sakte ho.
+
+    Ye especially large migrations me useful hai.
+
+    ---
+
+    # ⭐ Example: MongoDB Schema Migration
+
+    Suppose old documents:
+
+    ```json
+    {
+    "name": "Raj",
+    "age": 25
+    }
+    ```
+
+    New requirement:
+
+    ```json
+    {
+    "name": {
+        "first": "Raj",
+        "last": "Parihar"
+    },
+    "age": 25
+    }
+    ```
+
+    Production strategy:
+
+    ```text
+    1. New structure support karo
+            ↓
+    2. Old + New format read karo
+            ↓
+    3. New writes new format me
+            ↓
+    4. Old data batch-wise migrate karo
+            ↓
+    5. Verify
+            ↓
+    6. Old format support remove karo
+    ```
+
+    ---
+
+    # ⚠️ Migration me Important Things
+
+    Production migration se pehle:
+
+    ### Backup
+
+    ```text
+    Database
+    ↓
+    Backup
+    ↓
+    Migration
+    ```
+
+    ### Idempotency ⭐
+
+    Migration ko safely retry kar pao.
+
+    ```text
+    Migration
+    ↓
+    Failure
+    ↓
+    Retry
+    ↓
+    No duplicate/corrupt data
+    ```
+
+    ### Monitoring
+
+    ```text
+    Migration
+    ↓
+    Monitor
+    ├── Error rate
+    ├── DB load
+    ├── Progress
+    └── Latency
+    ```
+
+    ### Rollback Plan
+
+    Migration fail hone par recovery strategy honi chahiye.
+
+    ```text
+    Migration
+    ↓
+    Problem
+    ↓
+    Rollback / Restore / Forward Fix
+    ```
+
+    ---
+
+    ## ⭐ Which Strategy When?
+
+    | Strategy        | Best For                                        |
+    | --------------- | ----------------------------------------------- |
+    | Big-bang        | Small datasets / downtime acceptable            |
+    | Batch           | Large datasets                                  |
+    | Lazy            | Infrequently accessed old data                  |
+    | Dual-write      | Zero/minimal-downtime transitions               |
+    | Expand-contract | Production schema changes                       |
+    | Online          | Large systems requiring continuous availability |
+    | Offline         | Simple systems where downtime is acceptable     |
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **For database migrations, I choose the strategy based on data size, downtime requirements, compatibility, and risk. For small datasets, a simple migration may be sufficient. For large production datasets, I prefer incremental or batch migrations to control database load. For zero or minimal downtime, I use a backward-compatible expand-migrate-contract approach, sometimes combined with dual writes during the transition. I also make migrations idempotent where possible, monitor their progress and database impact, take appropriate backups, and have a rollback or recovery plan before starting the migration.**
+
+    ### Interview Follow-up
+
+    **Q. Zero-downtime MongoDB migration kaise karoge?**
+
+    > **I would use expand → migrate → contract: first introduce the new fields and deploy code that supports both formats, then backfill existing documents in batches while the application remains online, switch reads and writes to the new format, verify the migration, and finally remove the old fields and compatibility code.**
+
+    ```text
+    Expand
+    ↓
+    Backward-Compatible Deploy
+    ↓
+    Batch Backfill
+    ↓
+    Switch
+    ↓
+    Verify
+    ↓
+    Contract
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Migration Strategy = Safe transition from old schema → new schema, with minimum downtime and controlled risk.**
+
+
 355. Bulk operations?
 356. Cursor handling?
 357. Transaction best practices?
