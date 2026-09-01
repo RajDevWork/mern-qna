@@ -30832,6 +30832,363 @@ Browser automatically validation kar dega.
 
 
 356. Cursor handling?
+
+    ## Hinglish Explanation
+
+    **Cursor Handling** ka matlab hai MongoDB se query ke results ko **ek saath memory me load karne ke bajay cursor ke through gradually/batch-wise process karna**.
+
+    Simple:
+
+    ```text id="m7q2vx"
+    MongoDB Query
+        ↓
+    Cursor
+        ↓
+    Batch 1
+        ↓
+    Batch 2
+        ↓
+    Batch 3
+        ↓
+    ...
+    ```
+
+    Ye especially **large datasets** ke liye important hai.
+
+    ---
+
+    # 1. Cursor kya hota hai? ⭐⭐⭐
+
+    Suppose collection me 10 lakh documents hain:
+
+    ```javascript id="x8n4mq"
+    const cursor = db.users.find({});
+    ```
+
+    `find()` ke result ko cursor ke through iterate kar sakte ho.
+
+    ```javascript id="q5m8vz"
+    for await (const user of cursor) {
+    console.log(user);
+    }
+    ```
+
+    MongoDB saare 10 lakh documents ko ek saath application memory me load karne ke bajay results ko batches me fetch/process kar sakta hai.
+
+    ```text id="c7r3mx"
+    10,00,000 Documents
+        ↓
+        Cursor
+        ↓
+    Batch → Process
+        ↓
+    Batch → Process
+        ↓
+    Batch → Process
+    ```
+
+    ---
+
+    # 2. Cursor vs Array ⭐
+
+    Ye difference important hai.
+
+    ### Array-style approach
+
+    ```javascript id="v9m2qp"
+    const users = await db.users.find({}).toArray();
+    ```
+
+    Conceptually:
+
+    ```text id="n6q4mx"
+    MongoDB
+    ↓
+    All Results
+    ↓
+    Memory
+    ↓
+    Array
+    ```
+
+    Agar millions of documents hain, memory pressure create ho sakta hai.
+
+    ### Cursor
+
+    ```javascript id="p8m3vz"
+    const cursor = db.users.find({});
+
+    for await (const user of cursor) {
+    // process one result at a time
+    }
+    ```
+
+    ```text id="r4q7nx"
+    MongoDB
+    ↓
+    Cursor
+    ↓
+    Small Batch
+    ↓
+    Process
+    ↓
+    Next Batch
+    ```
+
+    ---
+
+    # 3. Batch Size ⭐⭐
+
+    Cursor ka batch size configure kar sakte ho:
+
+    ```javascript id="w5m8qp"
+    const cursor = db.users
+    .find({})
+    .batchSize(100);
+    ```
+
+    Conceptually:
+
+    ```text id="z3n7mc"
+    100 documents
+    ↓
+    Process
+    ↓
+    Next 100
+    ↓
+    Process
+    ```
+
+    ⚠️ `batchSize()` ka matlab ye nahi ki cursor total results ko 100 tak limit kar deta hai.
+
+    ```text id="k8m4qz"
+    batchSize(100)
+    → Per batch
+
+    limit(100)
+    → Maximum results
+    ```
+
+    ---
+
+    # 4. Cursor with Pagination ⭐⭐⭐
+
+    API me large dataset return karte waqt cursor-based pagination useful hoti hai.
+
+    Suppose:
+
+    ```text id="q7v3mx"
+    GET /users
+    ```
+
+    Instead of:
+
+    ```text id="h4m9qx"
+    page=5000
+    ```
+
+    cursor-based approach:
+
+    ```text id="m5n8qp"
+    GET /users?cursor=abc123
+    ```
+
+    Flow:
+
+    ```text id="v6q2rx"
+    First Request
+        ↓
+    20 Users
+        ↓
+    nextCursor
+        ↓
+    Second Request
+        ↓
+    Next 20 Users
+    ```
+
+    Large datasets me deep `skip()` ke comparison me **range/cursor-based pagination** often better scale karti hai.
+
+    ---
+
+    # 5. `_id` Based Cursor Pagination ⭐⭐⭐
+
+    Example:
+
+    ```javascript id="x4m9vz"
+    const users = await db.users
+    .find({
+        _id: {
+        $gt: lastId
+        }
+    })
+    .sort({
+        _id: 1
+    })
+    .limit(20)
+    .toArray();
+    ```
+
+    Flow:
+
+    ```text id="p6q2mc"
+    lastId = 100
+        ↓
+    _id > 100
+        ↓
+    Next 20 documents
+    ```
+
+    Next request me last returned `_id` ko cursor ke roop me use kar sakte ho.
+
+    Production pagination me ideally cursor ko opaque/tokenized format me API client ko expose kiya jata hai.
+
+    ---
+
+    # 6. Why Cursor Pagination Better Than Deep `skip()`?
+
+    Suppose:
+
+    ```javascript id="n8r3qx"
+    db.users
+    .find({})
+    .skip(500000)
+    .limit(20);
+    ```
+
+    Deep pagination me database ko large offset handle karna pad sakta hai.
+
+    Cursor/range:
+
+    ```javascript id="w7m4pz"
+    db.users
+    .find({
+        _id: {
+        $gt: lastId
+        }
+    })
+    .limit(20);
+    ```
+
+    Conceptually:
+
+    ```text id="q3v8mx"
+    skip()
+    → "Pehle 500,000 cross karo"
+
+    cursor
+    → "Is point ke baad ke records do"
+    ```
+
+    Large datasets me cursor/range approach generally more scalable hoti hai, provided appropriate index/sort field available ho.
+
+    ---
+
+    # 7. Cursor Close Karna
+
+    Agar cursor ko manually use kar rahe ho aur iteration complete/cancel ho gayi hai, resources ko properly release karna important hai.
+
+    ```javascript id="r9m4qx"
+    const cursor = db.users.find({});
+
+    try {
+    for await (const user of cursor) {
+        // process
+    }
+    } finally {
+    await cursor.close();
+    }
+    ```
+
+    Many normal iteration patterns cursor completion ko automatically handle karte hain, but explicit lifecycle management useful hai for long-running/custom processing.
+
+    ---
+
+    # 8. Cursor + Streaming ⭐
+
+    Large data export me cursor bahut useful hai:
+
+    ```text id="m2q7vx"
+    MongoDB
+    ↓
+    Cursor
+    ↓
+    Batch
+    ↓
+    Transform
+    ↓
+    File / Response Stream
+    ```
+
+    Example use cases:
+
+    ```text id="h6m2vx"
+    CSV Export
+    Report Generation
+    Data Migration
+    ETL
+    Large Dataset Processing
+    ```
+
+    Isse entire dataset ko RAM me load karne ki need avoid ki ja sakti hai.
+
+    ---
+
+    ## ⭐ Cursor Handling vs Bulk Operations
+
+    Tumne previous topic me `bulkWrite()` padha tha.
+
+    Dono ka purpose different hai:
+
+    ```text id="c6r8qz"
+    Cursor
+    → Large result set ko gradually READ/process karo
+
+    bulkWrite()
+    → Multiple WRITE operations ko batch me execute karo
+    ```
+
+    Migration me dono saath use ho sakte hain:
+
+    ```text id="x9m4vz"
+    Cursor
+    ↓
+    Read old documents
+    ↓
+    Transform
+    ↓
+    bulkWrite()
+    ↓
+    Update batch
+    ```
+
+    Ye large migrations ke liye kaafi common pattern hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **A MongoDB cursor is used to iterate over query results without loading the entire result set into application memory at once. This is especially useful when processing large datasets. I can control the cursor's batch size, iterate asynchronously, and use cursor-based or range-based pagination for APIs. For large exports or migrations, I can read documents through a cursor, process them in batches, and write the results using bulk operations. Cursor-based pagination is often more scalable than deep `skip()` pagination when the dataset is large and an appropriate indexed sort field is available.**
+
+    ### Interview Follow-up
+
+    **Q. Cursor aur `toArray()` me difference?**
+
+    > **`toArray()` query ke results ko application memory me array ke form me materialize karta hai, while a cursor allows results to be consumed incrementally. For very large result sets, cursor-based processing is generally safer for memory usage.**
+
+    ```text id="k4m8qp"
+    toArray()
+    → All results → Memory
+
+    Cursor
+    → Batch → Process → Next batch
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Cursor = Large result set ko memory me ek saath load mat karo; batch-wise read aur process karo.**
+
+
 357. Transaction best practices?
 358. Error handling?
 359. Connection pooling?
