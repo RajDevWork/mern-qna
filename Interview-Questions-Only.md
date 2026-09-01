@@ -29651,6 +29651,348 @@ Browser automatically validation kar dega.
 
 
 353. Schema versioning?
+
+    ## Hinglish Explanation
+
+    **Schema Versioning** ka matlab hai database ke document/schema me changes ko **version ke saath manage karna**, taaki application purane aur naye data structures ko safely handle kar sake.
+
+    MongoDB ka schema flexible hota hai, isliye time ke saath documents ka structure change ho sakta hai.
+
+    Example:
+
+    ### Version 1
+
+    ```json
+    {
+    "name": "Raj",
+    "email": "raj@gmail.com"
+    }
+    ```
+
+    Baad me requirement aayi:
+
+    ```json
+    {
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "phone": "9999999999"
+    }
+    ```
+
+    Ab purane documents me `phone` nahi hai.
+
+    Schema versioning se hum identify kar sakte hain:
+
+    ```text id="m7q2vx"
+    Old Documents
+    version: 1
+
+    New Documents
+    version: 2
+    ```
+
+    ---
+
+    # 1. `schemaVersion` Field ⭐⭐⭐
+
+    MongoDB me explicitly version store kar sakte ho:
+
+    ```json id="x8n4mq"
+    {
+    "_id": 101,
+    "schemaVersion": 2,
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "phone": "9999999999"
+    }
+    ```
+
+    Old document:
+
+    ```json id="q5m8vz"
+    {
+    "_id": 102,
+    "schemaVersion": 1,
+    "name": "Amit",
+    "email": "amit@gmail.com"
+    }
+    ```
+
+    Ab application ko pata hai:
+
+    ```text id="c7r3mx"
+    schemaVersion = 1
+        ↓
+    Old structure
+
+    schemaVersion = 2
+        ↓
+    New structure
+    ```
+
+    ---
+
+    # 2. Application Multiple Versions Handle Kar Sakti Hai ⭐
+
+    Suppose API ko dono documents milte hain:
+
+    ```text id="v9m2qp"
+    Document
+    ↓
+    schemaVersion?
+    ├── 1 → Old format handling
+    └── 2 → New format handling
+    ```
+
+    Example:
+
+    ```javascript id="n6q4mx"
+    if (user.schemaVersion === 1) {
+    // Handle old document
+    } else if (user.schemaVersion === 2) {
+    // Handle new document
+    }
+    ```
+
+    Isse migration complete hone tak application safely operate kar sakti hai.
+
+    ---
+
+    # 3. Lazy Migration ⭐
+
+    Har purane document ko immediately migrate karna zaroori nahi.
+
+    Jab old document access ho:
+
+    ```text id="p8m3vz"
+    Read old document
+        ↓
+    Detect version 1
+        ↓
+    Convert to version 2
+        ↓
+    Save
+    ```
+
+    Example:
+
+    ```javascript id="r4q7nx"
+    if (user.schemaVersion === 1) {
+    user.phone = null;
+    user.schemaVersion = 2;
+
+    await user.save();
+    }
+    ```
+
+    Is approach ko **lazy migration** kaha ja sakta hai.
+
+    ---
+
+    # 4. Explicit Migration
+
+    Large/important datasets ke liye controlled migration run kar sakte ho.
+
+    ```text id="w5m8qp"
+    Version 1
+    ↓
+    Migration Script
+    ↓
+    Version 2
+    ```
+
+    Example:
+
+    ```javascript id="z3n7mc"
+    db.users.updateMany(
+    {
+        schemaVersion: 1
+    },
+    {
+        $set: {
+        schemaVersion: 2
+        }
+    }
+    );
+    ```
+
+    Real migration me sirf version update nahi, required data transformation bhi karni hogi.
+
+    ---
+
+    # 5. Backward Compatibility ⭐⭐⭐
+
+    Schema change karte waqt ye important hai:
+
+    > **New application old data ko handle kar sake.**
+
+    Example:
+
+    ```text id="k8m4qz"
+    Old DB Data
+        ↓
+    New Application
+        ↓
+    Still works ✅
+    ```
+
+    Isse deployment safer hota hai.
+
+    ---
+
+    # 6. Expand → Migrate → Contract Pattern ⭐⭐⭐
+
+    Production schema changes ke liye ye useful pattern hai.
+
+    Suppose:
+
+    ```text id="q7v3mx"
+    Old field:
+    fullName
+    ```
+
+    ko split karna hai:
+
+    ```text id="h4m9qx"
+    firstName
+    lastName
+    ```
+
+    ### Step 1 — Expand
+
+    New fields add karo:
+
+    ```json id="m5n8qp"
+    {
+    "fullName": "Raj Parihar",
+    "firstName": "Raj",
+    "lastName": "Parihar"
+    }
+    ```
+
+    Old field abhi bhi rakho.
+
+    ### Step 2 — Migrate
+
+    Existing documents convert karo:
+
+    ```text id="v6q2rx"
+    fullName
+    ↓
+    firstName + lastName
+    ```
+
+    ### Step 3 — Contract
+
+    Jab application completely new fields use karne lage:
+
+    ```text id="x4m9vz"
+    Stop using fullName
+            ↓
+    Remove old field
+    ```
+
+    Flow:
+
+    ```text id="p6q2mc"
+    Expand
+    ↓
+    Migrate
+    ↓
+    Switch Application
+    ↓
+    Verify
+    ↓
+    Contract
+    ```
+
+    Ye **zero/minimal-downtime schema evolution** ke liye useful pattern hai.
+
+    ---
+
+    # 7. Schema Versioning vs Database Migration
+
+    Dono related hain but same nahi.
+
+    ```text id="n8r3qx"
+    Schema Versioning
+    → Document kis schema version ka hai?
+
+    Migration
+    → Old schema ko new schema me kaise convert karna hai?
+    ```
+
+    Example:
+
+    ```text id="w7m4pz"
+    Version 1
+    ↓
+    Migration
+    ↓
+    Version 2
+    ```
+
+    ---
+
+    ## ⭐ MongoDB me Schema Versioning kyun useful hai?
+
+    Because MongoDB flexible schema allow karta hai.
+
+    ```text id="q3v8mx"
+    MongoDB
+    ↓
+    Documents can evolve
+    ↓
+    Old + New structures may coexist
+    ```
+
+    But flexibility ka matlab ye nahi ki schema management ki zarurat nahi hai.
+
+    Large production application me:
+
+    ```text id="r9m4qx"
+    Schema Evolution
+    +
+    Versioning
+    +
+    Migration
+    +
+    Backward Compatibility
+    ```
+
+    important ho jata hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Schema versioning is a technique for managing changes to the structure of documents over time. Since MongoDB has a flexible document model, different versions of documents can exist during a schema transition. I can add a `schemaVersion` field to identify the document structure and make the application capable of handling older versions during migration. For production changes, I prefer a backward-compatible approach such as expand, migrate, and contract, where new fields are introduced first, existing data is migrated, the application is switched to the new structure, and old fields are removed only after they are no longer needed.**
+
+    ### Interview Follow-up
+
+    **Q. Production me schema change ka safest approach kya hoga?**
+
+    > **I would prefer an incremental, backward-compatible migration: expand the schema, deploy code that supports both versions, migrate existing data, switch reads/writes to the new structure, verify the migration, and finally remove the old fields.**
+
+    ```text id="m2q7vx"
+    Expand
+    ↓
+    Backward-Compatible Code
+    ↓
+    Migrate
+    ↓
+    Switch
+    ↓
+    Verify
+    ↓
+    Remove Old Schema
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Schema Versioning = `schemaVersion` + backward compatibility + controlled migration.**
+
+
 354. Migration strategies?
 355. Bulk operations?
 356. Cursor handling?
