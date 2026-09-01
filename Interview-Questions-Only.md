@@ -28792,6 +28792,239 @@ Browser automatically validation kar dega.
 
 
 350. Encryption?
+
+    ## Hinglish Explanation
+
+    **Encryption** ka matlab hai data ko ek **unreadable format (ciphertext)** me convert karna, taaki unauthorized person us data ko directly read na kar sake.
+
+    ```text
+    Original Data
+        ↓
+    Encryption 🔒
+        ↓
+    Encrypted Data
+        ↓
+    Authorized User
+        ↓
+    Decryption 🔓
+        ↓
+    Original Data
+    ```
+
+    MongoDB security me mainly 2 places par encryption important hai:
+
+    ```text
+    Encryption
+    ├── In Transit
+    └── At Rest
+    ```
+
+    ---
+
+    ### 1. Encryption in Transit ⭐⭐⭐
+
+    Application aur MongoDB ke beech network par data travel kar raha hota hai.
+
+    Without encryption:
+
+    ```text
+    Application
+        ↓
+    Plain Data ❌
+        ↓
+    MongoDB
+    ```
+
+    TLS use karne par:
+
+    ```text
+    Application
+        ↓
+    TLS 🔒
+        ↓
+    MongoDB
+    ```
+
+    Example:
+
+    ```text
+    Username
+    Password
+    User Data
+    ```
+
+    network par encrypted form me travel karte hain.
+
+    **MongoDB me TLS/SSL configure karke in-transit encryption provide ki ja sakti hai.**
+
+    ---
+
+    ### 2. Encryption at Rest ⭐⭐⭐
+
+    Database ka data disk/storage par saved hota hai.
+
+    Without encryption:
+
+    ```text
+    MongoDB
+    ↓
+    Disk
+    ↓
+    Plain Data ❌
+    ```
+
+    Encryption at rest:
+
+    ```text
+    MongoDB
+    ↓
+    Encrypted Storage 🔒
+    ```
+
+    Agar kisi unauthorized person ko disk/files mil bhi jayein, encryption additional protection provide karta hai.
+
+    ---
+
+    ### 3. Client-Side / Field-Level Encryption ⭐⭐
+
+    Kabhi tumhe **specific sensitive fields** ko protect karna hota hai.
+
+    Example:
+
+    ```json
+    {
+    "name": "Raj",
+    "email": "raj@gmail.com",
+    "ssn": "encrypted-value"
+    }
+    ```
+
+    Yahan entire database encrypt karne ke bajay sensitive field ko specifically encrypt kiya ja sakta hai.
+
+    MongoDB ecosystem me **Client-Side Field Level Encryption (CSFLE)** aur **Queryable Encryption** jaise approaches available hain.
+
+    Conceptually:
+
+    ```text
+    Application
+        ↓
+    Encrypt sensitive field
+        ↓
+    MongoDB
+        ↓
+    Encrypted field 🔒
+    ```
+
+    ---
+
+    ## Encryption vs Hashing ⭐⭐⭐
+
+    Interview me bahut poocha ja sakta hai.
+
+    ### Encryption
+
+    Encryption **reversible** hota hai if you have the appropriate key.
+
+    ```text
+    Plaintext
+    ↓
+    Encryption + Key
+    ↓
+    Ciphertext
+    ↓
+    Decryption + Key
+    ↓
+    Plaintext
+    ```
+
+    Use:
+
+    ```text
+    Sensitive data that must later be recovered
+    ```
+
+    ### Hashing
+
+    Hashing generally **one-way** hoti hai.
+
+    ```text
+    Password
+    ↓
+    Hash
+    ↓
+    Stored Hash
+    ```
+
+    Password ko normally decrypt nahi karte.
+
+    Password storage ke liye strong password hashing algorithms such as **Argon2, bcrypt, or scrypt** use karne chahiye.
+
+    ---
+
+    ## ⭐ MongoDB Security Architecture
+
+    Production application me:
+
+    ```text
+                    Application
+                        ↓
+                Authentication
+                        ↓
+                    TLS 🔒
+                        ↓
+                MongoDB Cluster
+                        ↓
+                Encryption at Rest
+                        ↓
+                    Encrypted Disk
+    ```
+
+    Sensitive fields ke liye:
+
+    ```text
+    Application
+        ↓
+    Field-level Encryption
+        ↓
+    MongoDB
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Encryption protects data by converting plaintext into ciphertext using an encryption key. In MongoDB, I would consider encryption both in transit and at rest. TLS protects data while it travels between the application and MongoDB, while encryption at rest protects stored database data. For highly sensitive fields, MongoDB also provides client-side field-level encryption and Queryable Encryption capabilities. Encryption is different from password hashing: encryption is reversible with the appropriate key, while password hashing is designed to be one-way.**
+
+    ### Interview Follow-up
+
+    **Q. Encryption in transit vs encryption at rest?**
+
+    > **Encryption in transit protects data while it is moving between systems, typically using TLS. Encryption at rest protects data stored on disk or other persistent storage.**
+
+    ```text
+    Data Moving
+    ↓
+    TLS
+    ↓
+    Encryption in Transit 🔒
+
+
+    Data Stored
+    ↓
+    Encrypted Storage
+    ↓
+    Encryption at Rest 🔒
+    ```
+
+    **Q. Password ko encrypt karoge ya hash?**
+
+    > **Password ko normally encrypt nahi, securely hash karunga using a password hashing algorithm such as Argon2, bcrypt, or scrypt.**
+
+    ### ⭐ One-line memory trick
+
+    > **Encryption = Data ko protect karo 🔒 | TLS = Transit me | At Rest = Storage me | Hashing = Password ke liye one-way protection.**
+
+
 351. Audit logging?
 352. Data validation?
 353. Schema versioning?
