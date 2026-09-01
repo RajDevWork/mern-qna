@@ -29332,6 +29332,324 @@ Browser automatically validation kar dega.
 
 
 352. Data validation?
+
+    ## Hinglish Explanation
+
+    **Data Validation** ka matlab hai database me **sirf valid, expected aur correct format ka data** store hone dena.
+
+    Simple:
+
+    ```text
+    User Input
+        ↓
+    Validation
+        ↓
+    Valid? ─── No → ❌ Reject
+        ↓ Yes
+    Database
+        ↓
+    Store ✅
+    ```
+
+    Example:
+
+    ```json
+    {
+    "name": "Raj",
+    "age": 25,
+    "email": "raj@gmail.com"
+    }
+    ```
+
+    Agar:
+
+    ```text
+    age = "hello"
+    email = "abc"
+    ```
+
+    hai, to validation us data ko reject kar sakti hai.
+
+    ---
+
+    # 1. Application-Level Validation ⭐
+
+    API level par validation karna.
+
+    NestJS me commonly DTO + `class-validator` use kar sakte ho:
+
+    ```typescript
+    export class CreateUserDto {
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @IsEmail()
+    email: string;
+
+    @IsInt()
+    @Min(18)
+    age: number;
+    }
+    ```
+
+    Request:
+
+    ```json
+    {
+    "name": "Raj",
+    "email": "invalid",
+    "age": 15
+    }
+    ```
+
+    Validation:
+
+    ```text
+    email ❌
+    age    ❌
+    ```
+
+    Request reject ho jayegi.
+
+    ---
+
+    # 2. Database-Level Validation ⭐⭐⭐
+
+    Application validation ke alawa database me bhi validation rules rakhna useful hai.
+
+    MongoDB me **JSON Schema validation** use kar sakte ho.
+
+    Example:
+
+    ```javascript
+    db.createCollection("users", {
+    validator: {
+        $jsonSchema: {
+        bsonType: "object",
+        required: ["name", "email"],
+        properties: {
+            name: {
+            bsonType: "string"
+            },
+            email: {
+            bsonType: "string"
+            },
+            age: {
+            bsonType: "int",
+            minimum: 18
+            }
+        }
+        }
+    }
+    });
+    ```
+
+    Conceptually:
+
+    ```text
+    Application
+        ↓
+    Validation
+        ↓
+    MongoDB
+        ↓
+    Database Validation
+        ↓
+    Store
+    ```
+
+    ---
+
+    # 3. Mongoose Validation
+
+    Agar Node.js application me Mongoose use kar rahe ho:
+
+    ```javascript
+    const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+
+    email: {
+        type: String,
+        required: true
+    },
+
+    age: {
+        type: Number,
+        min: 18
+    }
+    });
+    ```
+
+    Mongoose application/ODM layer par validation provide karta hai.
+
+    ---
+
+    # 4. Important Validation Types
+
+    Common validation rules:
+
+    ```text
+    Required
+    ↓
+    Type
+    ↓
+    Format
+    ↓
+    Range
+    ↓
+    Length
+    ↓
+    Allowed Values
+    ↓
+    Uniqueness
+    ```
+
+    Example:
+
+    ```text
+    name
+    → required
+    → string
+    → max length
+
+    age
+    → integer
+    → minimum 18
+
+    email
+    → valid email format
+
+    role
+    → USER | ADMIN
+    ```
+
+    ---
+
+    # 5. Validation vs Sanitization ⭐
+
+    Dono same nahi hain.
+
+    ### Validation
+
+    Check karta hai:
+
+    > **"Data valid hai?"**
+
+    ```text
+    age = 25
+    → Valid ✅
+    ```
+
+    ### Sanitization
+
+    Input ko clean/normalize karta hai:
+
+    ```text
+    "  Raj  "
+        ↓
+    "Raj"
+    ```
+
+    ```text
+    Validation
+    → Check
+
+    Sanitization
+    → Clean / Normalize
+    ```
+
+    ---
+
+    # 6. Validation vs Authentication vs Authorization
+
+    Interview me confuse mat karna.
+
+    ```text
+    Validation
+    → Input valid hai?
+
+    Authentication
+    → User kaun hai?
+
+    Authorization
+    → User ko permission hai?
+    ```
+
+    Example:
+
+    ```text
+    POST /users
+
+    Validation
+    → email valid?
+
+    Authentication
+    → requester logged in?
+
+    Authorization
+    → requester admin hai?
+    ```
+
+    ---
+
+    # ⭐ Why Data Validation Important?
+
+    Without validation:
+
+    ```text
+    Database
+    ├── age: "hello"
+    ├── email: "xyz"
+    ├── role: "SUPER_ADMIN"
+    └── missing required fields
+    ```
+
+    Problems:
+
+    ```text
+    Bad Data
+    ↓
+    Application Bugs
+    ↓
+    Incorrect Reports
+    ↓
+    Security Issues
+    ↓
+    Difficult Maintenance
+    ```
+
+    Validation data quality maintain karti hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Data validation is the process of ensuring that incoming data follows the expected type, format, range, and business rules before it is stored or processed. I would typically validate data at the API/application layer using DTOs or validation libraries, and for important invariants I would also consider database-level validation. In MongoDB, JSON Schema validation can enforce rules such as required fields and BSON types. Validation should be combined with appropriate indexes, constraints, and authorization rather than relying on only one layer.**
+
+    ### Interview Follow-up
+
+    **Q. Sirf application-level validation enough hai?**
+
+    > **Not always. Application-level validation protects the API, but data can potentially enter the database through other paths such as scripts, migrations, admin tools, or another service. For critical data integrity rules, database-level validation provides an additional protection layer.**
+
+    ```text
+    API Validation
+        ↓
+    Database Validation
+        ↓
+    Data Integrity ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Data Validation = Wrong data ko database tak pahunchne se pehle ya database level par reject karna.**
+
+
+
 353. Schema versioning?
 354. Migration strategies?
 355. Bulk operations?
