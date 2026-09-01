@@ -30457,6 +30457,380 @@ Browser automatically validation kar dega.
 
 
 355. Bulk operations?
+
+    ## Hinglish Explanation
+
+    **Bulk Operations** ka matlab hai **multiple database operations ko ek saath/batch me execute karna**, instead of har document ke liye separate database request bhejna.
+
+    MongoDB me commonly `bulkWrite()` use hota hai.
+
+    ```text
+    Individual Operations
+    → Query → DB
+    → Query → DB
+    → Query → DB
+    → Query → DB
+    ❌ Many round trips
+
+    Bulk Operation
+    → One batch → DB
+    ✅ Fewer round trips
+    ```
+
+    ---
+
+    # 1. `bulkWrite()` ⭐⭐⭐
+
+    MongoDB me different operations ko ek bulk request me combine kar sakte ho:
+
+    ```javascript id="m7q2vx"
+    await db.collection("users").bulkWrite([
+    {
+        insertOne: {
+        document: {
+            name: "Raj",
+            age: 25
+        }
+        }
+    },
+    {
+        updateOne: {
+        filter: { name: "Amit" },
+        update: {
+            $set: { age: 30 }
+        }
+        }
+    },
+    {
+        deleteOne: {
+        filter: { name: "John" }
+        }
+    }
+    ]);
+    ```
+
+    Ek hi bulk operation me:
+
+    ```text
+    insert
+    update
+    delete
+    ```
+
+    sab perform ho sakte hain.
+
+    ---
+
+    # 2. Bulk Operations ke Types
+
+    `bulkWrite()` me common operations:
+
+    ```text id="x8n4mq"
+    insertOne
+    updateOne
+    updateMany
+    deleteOne
+    deleteMany
+    replaceOne
+    ```
+
+    Example:
+
+    ```javascript id="q5m8vz"
+    await db.collection("users").bulkWrite([
+    {
+        updateOne: {
+        filter: { _id: 1 },
+        update: { $set: { status: "active" } }
+        }
+    },
+    {
+        updateOne: {
+        filter: { _id: 2 },
+        update: { $set: { status: "active" } }
+        }
+    }
+    ]);
+    ```
+
+    ---
+
+    # 3. Bulk Insert ⭐
+
+    Suppose 10,000 users insert karne hain.
+
+    Instead of:
+
+    ```javascript id="c7r3mx"
+    for (const user of users) {
+    await db.collection("users").insertOne(user);
+    }
+    ```
+
+    bulk approach:
+
+    ```javascript id="v9m2qp"
+    await db.collection("users").insertMany(users);
+    ```
+
+    Ya `bulkWrite()`:
+
+    ```javascript id="n6q4mx"
+    await db.collection("users").bulkWrite(
+    users.map(user => ({
+        insertOne: {
+        document: user
+        }
+    }))
+    );
+    ```
+
+    Usually fewer network round trips and better throughput mil sakta hai.
+
+    ---
+
+    # 4. Bulk Update ⭐⭐⭐
+
+    Suppose multiple users ko different values update karni hain:
+
+    ```javascript id="p8m3vz"
+    await db.collection("users").bulkWrite([
+    {
+        updateOne: {
+        filter: { _id: 1 },
+        update: { $set: { role: "admin" } }
+        }
+    },
+    {
+        updateOne: {
+        filter: { _id: 2 },
+        update: { $set: { role: "manager" } }
+        }
+    }
+    ]);
+    ```
+
+    ```text
+    User 1 → admin
+    User 2 → manager
+    ```
+
+    Ek bulk request me.
+
+    ---
+
+    # 5. Ordered vs Unordered ⭐
+
+    MongoDB bulk writes ko ordered ya unordered mode me execute kar sakta hai.
+
+    ### Ordered
+
+    ```javascript id="r4q7nx"
+    {
+    ordered: true
+    }
+    ```
+
+    Operations order me process hote hain.
+
+    Agar error aaye, remaining operations ke execution par impact pad sakta hai.
+
+    ```text
+    Operation 1 ✅
+    Operation 2 ❌
+    Operation 3 ...
+    ```
+
+    ### Unordered
+
+    ```javascript id="w5m8qp"
+    {
+    ordered: false
+    }
+    ```
+
+    MongoDB operations ko independent manner me process kar sakta hai, so one operation failure doesn't require the remaining operations to stop.
+
+    Large independent batches me throughput improve ho sakta hai.
+
+    ```text
+    Operation 1 ✅
+    Operation 2 ❌
+    Operation 3 ✅
+    Operation 4 ✅
+    ```
+
+    ---
+
+    # 6. Bulk Operations vs Transactions ⭐
+
+    Ye important difference hai.
+
+    ### Bulk Operation
+
+    Purpose:
+
+    > **Many operations efficiently execute karna.**
+
+    ```text
+    Performance / Throughput
+    ```
+
+    ### Transaction
+
+    Purpose:
+
+    > **Multiple operations ko atomic unit banana.**
+
+    ```text
+    All succeed
+        ↓
+    Commit ✅
+
+    Failure
+        ↓
+    Rollback ❌
+    ```
+
+    So:
+
+    ```text
+    Bulk ≠ Transaction
+    ```
+
+    Bulk write operations by themselves automatically transaction nahi ban jaati.
+
+    Agar atomicity required hai, transaction explicitly use karna padega.
+
+    ---
+
+    # 7. Bulk Operations for Data Migration ⭐⭐⭐
+
+    Tumne previous topic me **migration strategies** padha tha.
+
+    Large migration me:
+
+    ```text
+    1 Million Documents
+        ↓
+    Batch 1
+        ↓
+    Bulk Write
+        ↓
+    Batch 2
+        ↓
+    Bulk Write
+        ↓
+    ...
+    ```
+
+    Example:
+
+    ```javascript id="z3n7mc"
+    await db.collection("users").bulkWrite(
+    batch.map(user => ({
+        updateOne: {
+        filter: { _id: user._id },
+        update: {
+            $set: {
+            schemaVersion: 2
+            }
+        }
+        }
+    })),
+    {
+        ordered: false
+    }
+    );
+    ```
+
+    Ye large-scale migrations me useful pattern hai.
+
+    ---
+
+    # 8. Bulk Operations ko Blindly Huge Mat Rakho ⚠️
+
+    ```text
+    10 million operations
+        ↓
+    One giant request ❌
+    ```
+
+    Better:
+
+    ```text
+    10 million
+    ↓
+    Small/controlled batches
+    ↓
+    Bulk Write
+    ↓
+    Monitor
+    ```
+
+    Batch size workload, document size, latency, memory aur server limits ke according tune karni chahiye.
+
+    ---
+
+    ## ⭐ Performance Benefit
+
+    Without bulk:
+
+    ```text
+    Application
+    ↓
+    DB Request
+    ↓
+    Response
+    ↓
+    DB Request
+    ↓
+    Response
+    ↓
+    ...
+    ```
+
+    Bulk:
+
+    ```text
+    Application
+        ↓
+    Bulk Batch
+        ↓
+    MongoDB
+        ↓
+    Bulk Result
+    ```
+
+    Main benefit:
+
+    > **Reduced network round trips and more efficient batch processing.**
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **Bulk operations allow us to perform multiple MongoDB write operations as a batch instead of sending each operation as a separate database request. I can use `bulkWrite()` to combine inserts, updates, replacements, and deletes, and I can choose ordered or unordered execution depending on whether operation order matters. Bulk operations are especially useful for high-volume imports, batch updates, and data migrations. However, bulk writes are not automatically transactions; if multiple operations need atomicity, I would use a transaction explicitly. For very large workloads, I would process operations in controlled batches and monitor database load.**
+
+    ### Interview Follow-up
+
+    **Q. `bulkWrite()` aur transaction me kya difference hai?**
+
+    > **`bulkWrite()` is primarily about efficiently executing many write operations, while a transaction is about atomicity and consistency across multiple operations. A bulk write can be used inside a transaction if the application requires both efficient batching and transactional semantics, subject to MongoDB transaction constraints.**
+
+    ```text
+    bulkWrite()
+    → Batch / Performance
+
+    Transaction
+    → Atomicity / Consistency
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Bulk Operations = Multiple DB operations → one batch → fewer round trips → better throughput.**
+
+
 356. Cursor handling?
 357. Transaction best practices?
 358. Error handling?
