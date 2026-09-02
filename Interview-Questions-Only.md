@@ -31792,6 +31792,140 @@ Browser automatically validation kar dega.
 
 360. Performance monitoring?
 
+    ## Hinglish Explanation
+
+    **Performance Monitoring** ka matlab hai application ki health aur speed ko continuously observe karna, taaki pata chale **system slow kahan ho raha hai aur kyun**.
+
+    Node.js backend me mainly ye cheezein monitor karte hain:
+
+    1. **Response time / latency** — API kitni fast response de rahi hai.
+    2. **Throughput** — per second/minute kitni requests handle ho rahi hain.
+    3. **CPU usage** — CPU bottleneck to nahi.
+    4. **Memory usage** — memory continuously increase to nahi ho rahi.
+    5. **Database query time** — slow queries identify karna.
+    6. **Error rate** — kitni requests fail ho rahi hain.
+    7. **Event loop lag** — Node.js event loop blocked to nahi ho raha.
+    8. **External API latency** — third-party service slow to nahi.
+
+    ### Small Node.js Implementation
+
+    Simple API timing middleware:
+
+    ```javascript
+    const express = require("express");
+
+    const app = express();
+
+    app.use((req, res, next) => {
+    const start = process.hrtime.bigint();
+
+    res.on("finish", () => {
+        const end = process.hrtime.bigint();
+
+        const durationMs =
+        Number(end - start) / 1_000_000;
+
+        console.log(
+        `${req.method} ${req.originalUrl} - ${res.statusCode} - ${durationMs.toFixed(2)}ms`
+        );
+    });
+
+    next();
+    });
+
+    app.get("/users", async (req, res) => {
+    // database operation
+    res.json({ users: [] });
+    });
+
+    app.listen(3000);
+    ```
+
+    Output:
+
+    ```text
+    GET /users - 200 - 42.31ms
+    ```
+
+    Isse hume pata chalega ki API request ko kitna time laga.
+
+    ### Production me
+
+    Usually logs + metrics + tracing tools use karte hain:
+
+    ```text
+    Request
+    ↓
+    API latency
+    ↓
+    Application metrics
+    ↓
+    Database metrics
+    ↓
+    Logs + Traces
+    ↓
+    Alert
+    ↓
+    Investigate bottleneck
+    ```
+
+    Example: Agar `/users` API suddenly **100ms → 3 seconds** ho gayi, to monitoring se check karenge:
+
+    ```text
+    API latency?
+        ↓
+    CPU/Memory?
+        ↓
+    Database query slow?
+        ↓
+    External API slow?
+        ↓
+    Event loop blocked?
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Performance monitoring means continuously measuring an application's performance and health to identify bottlenecks and performance degradation. In a Node.js application, I monitor API response time, throughput, CPU and memory usage, error rate, event loop lag, database query latency, and external service latency. I use structured logs, metrics, and distributed tracing when required. If an API becomes slow, I first identify where the time is being spent and then optimize the specific bottleneck instead of making random changes.”**
+
+    ### Interview Follow-up
+
+    **Q: How would you debug a slow API?**
+
+    Interview me ye flow bol sakte ho:
+
+    ```text
+    Slow API
+    ↓
+    Check latency metrics
+    ↓
+    Check logs / trace
+    ↓
+    Check DB query
+    ↓
+    Check CPU / memory
+    ↓
+    Check external API
+    ↓
+    Check event loop
+    ↓
+    Fix bottleneck
+    ↓
+    Measure again
+    ```
+
+    **Q: Monitoring vs Logging?**
+
+    * **Logging** → kya hua?
+    * **Monitoring** → system ki current health/performance kaisi hai?
+    * **Tracing** → request ne different services/components me kitna time spend kiya?
+
+    ### ⭐ One-line memory trick
+
+    **Performance Monitoring = Measure → Find bottleneck → Fix → Measure again.**
+
+
 **Additional Important Questions**
 
 0. What is Data Modeling in MongoDB?
