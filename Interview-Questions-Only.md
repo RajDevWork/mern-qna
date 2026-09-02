@@ -31190,6 +31190,370 @@ Browser automatically validation kar dega.
 
 
 357. Transaction best practices?
+
+    ## Hinglish Explanation
+
+    **Transaction Best Practices** ka matlab hai transactions ko aise use karna ki **data consistency maintain rahe, lekin unnecessary locking, latency aur database load na badhe.**
+
+    Simple rule:
+
+    > **Transaction ko sirf tab use karo jab multiple operations ko atomic way me complete karna zaroori ho.**
+
+    ```text id="m7q2vx"
+    Need Atomicity?
+        ↓
+    Transaction
+        ↓
+    Keep it Short
+        ↓
+    Commit / Rollback
+        ↓
+    Verify & Monitor
+    ```
+
+    ---
+
+    ### 1. Transaction ko Short Rakho ⭐⭐⭐
+
+    Transaction ke andar unnecessary operations mat rakho.
+
+    ❌:
+
+    ```text id="x8n4mq"
+    BEGIN
+    ↓
+    Database Update
+    ↓
+    API Call ❌
+    ↓
+    Email Send ❌
+    ↓
+    COMMIT
+    ```
+
+    Better:
+
+    ```text id="q5m8vz"
+    BEGIN
+    ↓
+    DB Operation 1
+    ↓
+    DB Operation 2
+    ↓
+    COMMIT
+    ↓
+    Send Email / External API
+    ```
+
+    External API, file processing, user input wait etc. transaction ke andar avoid karo.
+
+    ---
+
+    ### 2. Sirf Required Operations Transaction me Rakho
+
+    Example bank transfer:
+
+    ```text id="c7r3mx"
+    BEGIN
+    ↓
+    Debit Account A
+    ↓
+    Credit Account B
+    ↓
+    COMMIT
+    ```
+
+    Ye appropriate hai because dono operations ko together succeed hona chahiye.
+
+    But simple operation:
+
+    ```text id="v9m2qp"
+    Create User
+    ```
+
+    ke liye unnecessarily transaction use karna zaroori nahi.
+
+    ---
+
+    ### 3. Commit / Rollback Properly Handle Karo ⭐⭐⭐
+
+    Node.js/MongoDB example:
+
+    ```javascript id="n6q4mx"
+    const session = client.startSession();
+
+    try {
+    session.startTransaction();
+
+    await accounts.updateOne(
+        { _id: fromId },
+        { $inc: { balance: -1000 } },
+        { session }
+    );
+
+    await accounts.updateOne(
+        { _id: toId },
+        { $inc: { balance: 1000 } },
+        { session }
+    );
+
+    await session.commitTransaction();
+
+    } catch (error) {
+    await session.abortTransaction();
+    throw error;
+
+    } finally {
+    await session.endSession();
+    }
+    ```
+
+    Flow:
+
+    ```text id="p8m3vz"
+    BEGIN
+    ↓
+    Operations
+    ↓
+    Success → COMMIT
+    ↓
+    Failure → ABORT/ROLLBACK
+    ↓
+    END SESSION
+    ```
+
+    ---
+
+    ### 4. Proper Error Handling ⭐⭐
+
+    Transaction fail hone par error swallow nahi karna:
+
+    ❌
+
+    ```javascript id="r4q7nx"
+    catch (error) {
+    console.log(error);
+    }
+    ```
+
+    Better:
+
+    ```javascript id="w5m8qp"
+    catch (error) {
+    await session.abortTransaction();
+    throw error;
+    }
+    ```
+
+    Application ko pata hona chahiye ki transaction successful nahi hua.
+
+    ---
+
+    ### 5. Retry Transient Failures ⭐⭐⭐
+
+    Distributed MongoDB deployments me kuch transient transaction errors retryable ho sakte hain.
+
+    Production code me MongoDB driver's transaction helpers/retry mechanisms ka appropriate use karna better hai rather than blindly implementing custom retries.
+
+    Conceptually:
+
+    ```text id="z3n7mc"
+    Transaction
+        ↓
+    Transient Failure?
+    ↙       ↘
+    Yes        No
+    ↓           ↓
+    Retry      Handle Error
+    ```
+
+    ⚠️ Retry logic carefully design karo, especially agar transaction ke bahar side effects hain.
+
+    ---
+
+    ### 6. Correct Indexes Rakho
+
+    Transaction ke andar queries slow hain:
+
+    ```text id="k8m4qz"
+    Transaction
+    ↓
+    Slow Query
+    ↓
+    Longer Transaction
+    ↓
+    More Resource Usage
+    ```
+
+    Isliye transactional queries ko appropriate indexes ke saath optimize karo.
+
+    ---
+
+    ### 7. Large Transactions Avoid Karo ⭐⭐⭐
+
+    Thousands/millions of operations ko ek huge transaction me rakhna generally good idea nahi hai.
+
+    ❌:
+
+    ```text id="q7v3mx"
+    1 Million Updates
+        ↓
+    One Transaction
+    ```
+
+    Better:
+
+    ```text id="h4m9qx"
+    Batch 1 → Transaction
+    Batch 2 → Transaction
+    Batch 3 → Transaction
+    ```
+
+    Ya transaction ki zarurat hi hai ya nahi, ye workload ke according evaluate karo.
+
+    ---
+
+    ### 8. Transaction vs Bulk Write ⭐
+
+    Ye previous topic se important connection hai.
+
+    ```text id="m5n8qp"
+    bulkWrite()
+    → Efficient batch operations
+
+    Transaction
+    → Atomicity across operations
+    ```
+
+    Agar sirf:
+
+    ```text id="v6q2rx"
+    10,000 independent updates
+    ```
+
+    karne hain:
+
+    > Bulk operations better fit ho sakte hain.
+
+    Agar:
+
+    ```text id="x4m9vz"
+    Debit
+    +
+    Credit
+    ```
+
+    ko **all-or-nothing** banana hai:
+
+    > Transaction use karo.
+
+    ---
+
+    ### 9. Read/Write Concerns Carefully Choose Karo
+
+    Transactions me appropriate **read concern** aur **write concern** requirements ke according configure kar sakte ho.
+
+    ```text id="p6q2mc"
+    Consistency Requirement
+        ↓
+    Read Concern
+    +
+    Write Concern
+    ```
+
+    Higher guarantees potentially latency/performance impact kar sakti hain, so blindly strongest settings choose nahi karni chahiye.
+
+    ---
+
+    ### 10. External Side Effects Transaction ke Bahar ⭐⭐⭐
+
+    Suppose transaction ke andar:
+
+    ```text id="n8r3qx"
+    Update Order
+    ↓
+    Send Email
+    ↓
+    Payment API
+    ```
+
+    Problem:
+
+    ```text id="w7m4pz"
+    DB Transaction Rollback
+        ↓
+    Email already sent ❌
+    ```
+
+    Database rollback external side effect ko undo nahi karega.
+
+    Better architecture:
+
+    ```text id="q3v8mx"
+    Transaction
+    ↓
+    Commit DB changes
+    ↓
+    Publish Event / Outbox
+    ↓
+    Email / Payment / Notification
+    ```
+
+    Critical distributed workflows me **Outbox Pattern** jaise approaches useful ho sakte hain.
+
+    ---
+
+    ## ⭐ Production Transaction Flow
+
+    ```text id="r9m4qx"
+    Request
+    ↓
+    Validate
+    ↓
+    Start Transaction
+    ↓
+    Required DB Operations
+    ↓
+    Everything successful?
+    ↙              ↘
+    Yes                No
+    ↓                  ↓
+    COMMIT             ABORT
+    ↓                  ↓
+    External          Error
+    Side Effects
+    ↓
+    Response
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **For MongoDB transactions, I use them only when multiple operations must succeed or fail as a single atomic unit. I keep transactions short and include only the required database operations. I avoid external API calls, email sending, or other long-running work inside the transaction. I handle commit and abort properly, close the session, use appropriate indexes for transactional queries, and avoid unnecessarily large transactions. For transient transaction failures, I use the driver's supported retry mechanisms where appropriate. I also choose read and write concerns according to the application's consistency requirements.**
+
+    ### Interview Follow-up
+
+    **Q. Transaction ke andar external API call kyun avoid karoge?**
+
+    > **Because the database transaction can be rolled back, but the external API call usually cannot be rolled back automatically. This can leave the system in an inconsistent state. I would generally commit the database transaction first and then use an event or outbox-based mechanism for reliable external side effects.**
+
+    ```text id="m2q7vx"
+    DB Transaction
+        ↓
+    COMMIT
+        ↓
+    Outbox/Event
+        ↓
+    External Service
+    ```
+
+    ### ⭐ One-line memory trick
+
+    > **Transaction Best Practice = Short + Necessary + Indexed + Proper Commit/Rollback + Retry transient failures + No external side effects inside.**
+
+
+
 358. Error handling?
 359. Connection pooling?
 360. Performance monitoring?
