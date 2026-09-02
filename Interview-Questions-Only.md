@@ -31674,6 +31674,122 @@ Browser automatically validation kar dega.
 
 
 359. Connection pooling?
+
+    ## Hinglish Explanation
+
+    **Connection Pooling** ka matlab hai database ke saath multiple connections ko **pehle se maintain karke reuse karna**, instead of har request ke liye new DB connection banana.
+
+    Suppose API par 100 requests aayi:
+
+    ❌ Without pooling:
+
+    ```text
+    Request → New DB Connection → Query → Close
+    Request → New DB Connection → Query → Close
+    ...
+    ```
+
+    ✅ With pooling:
+
+    ```text
+            ┌─ Connection 1
+    Pool ───┼─ Connection 2
+            ├─ Connection 3
+            └─ Connection 4
+
+    Request → Available connection → Query → Connection वापस Pool
+    ```
+
+    Iske benefits:
+
+    * Connection create/close ka overhead kam.
+    * Database latency improve hoti hai.
+    * Multiple requests efficiently handle hoti hain.
+    * Database resources better utilize hote hain.
+    * High-concurrency applications ke liye important hai.
+
+    ### Small Node.js + PostgreSQL Implementation
+
+    `pg` library connection pool provide karti hai:
+
+    ```javascript
+    const { Pool } = require("pg");
+
+    const pool = new Pool({
+    host: "localhost",
+    port: 5432,
+    user: "postgres",
+    password: "password",
+    database: "mydb",
+
+    max: 10, // Maximum connections
+    });
+
+    app.get("/users", async (req, res, next) => {
+    try {
+        const result = await pool.query(
+        "SELECT * FROM users"
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        next(error);
+    }
+    });
+    ```
+
+    Yahan `max: 10` ka matlab pool maximum **10 database connections** maintain kar sakta hai.
+
+    Request query complete hone ke baad connection destroy nahi hota; generally pool us connection ko **reuse** karta hai.
+
+    ### Important Production Point
+
+    Pool size blindly increase nahi karna.
+
+    Agar:
+
+    ```text
+    App instances = 10
+    Pool max = 20
+    ```
+
+    Potentially database par **~200 connections** tak demand aa sakti hai.
+
+    Isliye pool size ko database ki capacity, application instances aur workload ke according configure karna chahiye.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Connection pooling is a technique where an application maintains a pool of reusable database connections instead of creating a new connection for every request. When a request needs the database, it gets an available connection from the pool, executes the query, and the connection is returned to the pool for reuse. This reduces connection creation overhead, improves performance, and helps the application handle concurrent requests efficiently. I also configure the pool size according to the database capacity and application workload.”**
+
+    ### Interview Follow-up
+
+    **Q: What happens if all connections in the pool are busy?**
+
+    The new request generally **waits for an available connection** until the pool/driver timeout or queue policy is reached.
+
+    **Q: Is a bigger connection pool always better?**
+
+    **No.** Too many connections can overload the database and actually reduce performance.
+
+    **Q: Connection Pool vs Single DB Connection?**
+
+    ```text
+    Single Connection → Limited concurrency
+
+    Connection Pool
+        ↓
+    Multiple reusable connections
+        ↓
+    Better concurrency + less overhead
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Connection Pooling = Connections ko baar-baar create/destroy mat karo → Reuse karo.**
+
+
 360. Performance monitoring?
 
 **Additional Important Questions**
