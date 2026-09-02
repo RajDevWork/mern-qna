@@ -31555,6 +31555,124 @@ Browser automatically validation kar dega.
 
 
 358. Error handling?
+
+    ## Hinglish Explanation
+
+    **Error Handling** ka matlab hai application me aane wale errors ko properly **catch, handle aur response** karna, taaki server crash na ho aur client ko meaningful response mile.
+
+    Node.js/Express me generally:
+
+    1. Error ko `try/catch` ya async handling se catch karte hain.
+    2. Error ko centralized **error-handling middleware** tak bhejte hain.
+    3. Middleware error ko log karta hai.
+    4. Client ko proper HTTP status code aur safe message deta hai.
+    5. Production me internal error details client ko nahi bhejte.
+
+    ### Small Express Implementation
+
+    ```javascript
+    const express = require("express");
+
+    const app = express();
+
+    app.get("/users/:id", async (req, res, next) => {
+    try {
+        const user = null;
+
+        if (!user) {
+        const error = new Error("User not found");
+        error.statusCode = 404;
+        throw error;
+        }
+
+        res.json(user);
+    } catch (error) {
+        next(error);
+    }
+    });
+
+    // Global Error Handling Middleware
+    app.use((error, req, res, next) => {
+    console.error(error);
+
+    const statusCode = error.statusCode || 500;
+
+    res.status(statusCode).json({
+        success: false,
+        message:
+        statusCode === 500
+            ? "Internal Server Error"
+            : error.message,
+    });
+    });
+
+    app.listen(3000);
+    ```
+
+    ### Important point
+
+    Express me error-handling middleware ki signature **4 parameters** hoti hai:
+
+    ```javascript
+    (error, req, res, next)
+    ```
+
+    Aur ise normally **routes/middleware ke baad** define karte hain.
+
+    For async code:
+
+    ```javascript
+    try {
+    // database operation
+    } catch (error) {
+    next(error);
+    }
+    ```
+
+    Isse error centralized handler tak pahunchta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Error handling is the process of catching and managing application errors properly so that the application does not crash and the client receives an appropriate response. In Express, I usually use try-catch for async operations and pass errors using `next(error)`. Then I handle them in a centralized error-handling middleware. I return proper HTTP status codes and safe error messages, and I log the actual error for debugging. In production, I avoid exposing internal stack traces or sensitive information to the client.”**
+
+    ### Interview Follow-up
+
+    **Q: Why use centralized error handling?**
+
+    Because instead of writing the same error-response logic in every controller, we handle errors at one place.
+
+    ```text
+    Controller
+        ↓
+    Error occurs
+        ↓
+    next(error)
+        ↓
+    Global Error Middleware
+        ↓
+    Log + Status Code + Safe Response
+    ```
+
+    **Q: What status code for unexpected server error?**
+
+    Usually:
+
+    ```text
+    500 Internal Server Error
+    ```
+
+    **Q: Should we send `error.stack` to frontend?**
+
+    **No**, especially in production. Stack traces can expose internal implementation details.
+
+    ### ⭐ One-line memory trick
+
+    **Error Handling = Catch → `next(error)` → Central Handler → Log → Safe Response.**
+
+
+
 359. Connection pooling?
 360. Performance monitoring?
 
