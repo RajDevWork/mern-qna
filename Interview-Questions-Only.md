@@ -32223,6 +32223,159 @@ Browser automatically validation kar dega.
 
 
 2. How does indexing work in MongoDB, and what are compound indexes?
+
+    ## Hinglish Explanation
+
+    **Indexing** MongoDB me queries ko fast banane ka mechanism hai. Index ek separate data structure maintain karta hai jisme MongoDB ko documents quickly locate karne me help milti hai, instead of har document scan karne ke.
+
+    Without index:
+
+    ```text
+    Query → Collection ke almost saare documents scan → Result
+                ↓
+            COLLSCAN
+    ```
+
+    With index:
+
+    ```text
+    Query → Index → Matching documents → Result
+                ↓
+            IXSCAN
+    ```
+
+    Example:
+
+    ```javascript
+    db.users.createIndex({ email: 1 });
+    ```
+
+    Ab:
+
+    ```javascript
+    db.users.find({ email: "raj@example.com" });
+    ```
+
+    ke liye MongoDB email index use kar sakta hai.
+
+    ### Compound Index kya hai?
+
+    **Compound index** ek hi index me **multiple fields** ko include karta hai.
+
+    ```javascript
+    db.orders.createIndex({
+    tenantId: 1,
+    status: 1,
+    createdAt: -1
+    });
+    ```
+
+    Is index me 3 fields hain:
+
+    ```text
+    tenantId → status → createdAt
+    ```
+
+    Ye queries me useful ho sakta hai jaise:
+
+    ```javascript
+    db.orders.find({
+    tenantId: 10,
+    status: "completed"
+    }).sort({
+    createdAt: -1
+    });
+    ```
+
+    ### Compound Index ka Important Rule
+
+    Compound index me **field order matters**.
+
+    ```javascript
+    { tenantId: 1, status: 1, createdAt: -1 }
+    ```
+
+    Ye generally un queries ke liye useful hai jo index ke **leftmost prefix** ko use karti hain:
+
+    ```text
+    tenantId
+    tenantId + status
+    tenantId + status + createdAt
+    ```
+
+    Lekin iska matlab ye nahi ki har query jo sirf `createdAt` use karti hai automatically efficiently is index ko use karegi.
+
+    ### Index ke Downsides
+
+    Indexing free nahi hai:
+
+    * Extra disk space lagta hai.
+    * Insert/update/delete par index maintain karna padta hai.
+    * Bahut saare unnecessary indexes write performance ko hurt kar sakte hain.
+    * Isliye **har field par index create nahi karna chahiye**.
+
+    Query performance check karne ke liye:
+
+    ```javascript
+    db.orders
+    .find({
+        tenantId: 10,
+        status: "completed"
+    })
+    .explain("executionStats");
+    ```
+
+    Important metrics:
+
+    ```text
+    executionTimeMillis
+    totalDocsExamined
+    totalKeysExamined
+    nReturned
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Indexing in MongoDB is used to improve query performance by allowing MongoDB to find matching documents without scanning the entire collection. Without a suitable index, MongoDB may perform a collection scan, while with an index it can use an index scan. A compound index is an index created on multiple fields, and the order of those fields is important because MongoDB can efficiently use the index based on its leftmost prefix. For example, for a multi-tenant orders collection, I might create an index like `{ tenantId: 1, status: 1, createdAt: -1 }` if those fields match the application's query and sorting patterns. I use `explain()` to verify whether the index is actually helping.”**
+
+    ### Interview Follow-up
+
+    **Q: Single-field index vs Compound index?**
+
+    ```text
+    Single:
+    { email: 1 }
+
+    → One field
+
+    Compound:
+    { tenantId: 1, status: 1, createdAt: -1 }
+
+    → Multiple fields
+    ```
+
+    **Q: `1` and `-1` kya mean karte hain?**
+
+    ```text
+    1  → Ascending
+    -1 → Descending
+    ```
+
+    **Q: Kya more indexes = better performance?**
+
+    **No.** Reads improve ho sakti hain, but every additional index consumes storage and adds maintenance cost to writes.
+
+    **Q: `COLLSCAN` aur `IXSCAN`?**
+
+    * `COLLSCAN` → Collection scan
+    * `IXSCAN` → Index scan
+
+    ### ⭐ One-line memory trick
+
+    **Index = Fast lookup; Compound Index = Multiple fields + correct field order.**
+
 3. What’s the difference between find(), findOne(), and aggregate()?
 4. How do you optimize MongoDB queries for performance?
 5. What is schema design and how do you model relationships in MongoDB (1:1, 1:N, N:N)?
