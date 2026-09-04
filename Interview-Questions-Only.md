@@ -33019,6 +33019,182 @@ Browser automatically validation kar dega.
 
 
 7. What are transactions in MongoDB and when would you use them?
+
+    ## Hinglish Explanation
+
+    **MongoDB Transaction** ka matlab hai multiple database operations ko ek **single atomic unit** ki tarah execute karna.
+
+    Agar transaction ke andar 5 operations hain, to requirement ye ho sakti hai:
+
+    ```text
+    Sab successful → COMMIT ✅
+    Koi ek fail → ROLLBACK ❌
+    ```
+
+    Yani database ko **partial/inconsistent state** me nahi chhodna.
+
+    ### Example: Bank Transfer
+
+    Suppose ₹1000 `Account A` se `Account B` me transfer karne hain:
+
+    ```text
+    Account A: -₹1000
+    Account B: +₹1000
+    ```
+
+    Agar A se money deduct ho gayi but B me add nahi hui, to problem hai.
+
+    Transaction ensure kar sakta hai:
+
+    ```text
+    Start Transaction
+        ↓
+    A - ₹1000
+        ↓
+    B + ₹1000
+        ↓
+    Commit
+    ```
+
+    Agar second operation fail:
+
+    ```text
+    Start Transaction
+        ↓
+    A - ₹1000
+        ↓
+    B + ₹1000 ❌
+        ↓
+    Rollback
+        ↓
+    A & B → Original State
+    ```
+
+    ### Small Implementation
+
+    MongoDB Node.js driver me:
+
+    ```javascript id="k8f2m1"
+    const session = client.startSession();
+
+    try {
+    session.startTransaction();
+
+    await accounts.updateOne(
+        { _id: fromId },
+        { $inc: { balance: -1000 } },
+        { session }
+    );
+
+    await accounts.updateOne(
+        { _id: toId },
+        { $inc: { balance: 1000 } },
+        { session }
+    );
+
+    await session.commitTransaction();
+
+    } catch (error) {
+    await session.abortTransaction();
+    throw error;
+
+    } finally {
+    await session.endSession();
+    }
+    ```
+
+    Yahan dono updates same transaction ke andar hain.
+
+    ### Kab Transaction Use Karna Chahiye?
+
+    Jab **multiple database operations ko ek saath succeed/fail karna zaroori ho**.
+
+    Examples:
+
+    * Bank transfer
+    * Order + inventory update
+    * Payment record + order status update
+    * Wallet debit + transaction record
+    * Related documents ke multiple updates
+
+    ### Kab Avoid Karna Chahiye?
+
+    Har operation ko transaction me wrap karna zaroori nahi.
+
+    Agar ek single atomic update enough hai:
+
+    ```javascript id="w7p3k4"
+    await users.updateOne(
+    { _id: userId },
+    { $inc: { balance: 100 } }
+    );
+    ```
+
+    to unnecessary transaction add karna overhead create kar sakta hai.
+
+    **Important production rule:** transaction ke andar external API calls, emails, file processing jaise side effects avoid karo.
+
+    Example:
+
+    ```text
+    Transaction
+    ↓
+    DB operations
+    ↓
+    COMMIT
+    ↓
+    Outbox/Event
+    ↓
+    Email / Payment API / Notification
+    ```
+
+    Transaction rollback database changes ko undo kar sakta hai, **external API ka already completed action undo nahi kar sakta**.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“A transaction in MongoDB allows multiple database operations to execute as a single atomic unit. The main purpose is to ensure that either all required operations succeed or none of them are applied. I would use transactions when multiple operations must maintain consistency, such as transferring money between accounts or updating an order and inventory together. I avoid using transactions for simple single-document operations because MongoDB already provides atomicity for single-document writes, and unnecessary transactions can add overhead. I also keep transactions short and avoid external API calls or other side effects inside them.”**
+
+    ### Interview Follow-up
+
+    **Q: Transaction vs Bulk Operation?**
+
+    ```text
+    Transaction
+    → Atomicity / consistency
+    → All operations succeed or rollback
+
+    Bulk Operation
+    → Multiple operations in a batch
+    → Mainly efficiency / fewer round trips
+    ```
+
+    **Q: Kya MongoDB me single document update ke liye transaction chahiye?**
+
+    Usually **no**. MongoDB single-document writes are atomic.
+
+    **Q: Transaction fail ho jaye to kya karoge?**
+
+    Properly:
+
+    ```text
+    catch
+    ↓
+    abortTransaction()
+    ↓
+    throw / handle error
+    ↓
+    endSession()
+    ```
+
+    Transient transaction errors ke case me driver-supported retry mechanisms use karna appropriate ho sakta hai.
+
+    ### ⭐ One-line memory trick
+
+    **MongoDB Transaction = Multiple DB operations ko ek unit banao → All succeed = Commit, any failure = Rollback.**
+
+
 8. What is a capped collection?
 9. How does MongoDB handle concurrency?
 10. Explain change streams in MongoDB.
