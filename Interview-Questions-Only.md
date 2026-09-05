@@ -33196,6 +33196,106 @@ Browser automatically validation kar dega.
 
 
 8. What is a capped collection?
+
+    ## Hinglish Explanation
+
+    **Capped Collection** MongoDB ki ek **fixed-size collection** hoti hai jiska maximum storage size pehle define kiya jata hai.
+
+    Iska main feature hai: jab collection apni maximum size reach kar leti hai, to **oldest documents automatically remove/overwrite** hone lagte hain taaki new documents ke liye space available ho.
+
+    Example:
+
+    ```javascript id="c8m2v7"
+    db.createCollection("logs", {
+    capped: true,
+    size: 100000
+    });
+    ```
+
+    Yahan collection maximum **100,000 bytes** ke around configured hai.
+
+    ```text id="k7p4x1"
+    Oldest logs
+        ↓
+    [Log 1][Log 2][Log 3][Log 4]
+                            ↑
+                        New data
+                            ↓
+    Collection full
+                            ↓
+    Old Log 1 removed
+                            ↓
+    [Log 2][Log 3][Log 4][New Log]
+    ```
+
+    ### Important Characteristics
+
+    * Fixed maximum size hota hai.
+    * Old documents automatically expire/overwrite hote hain as space is needed.
+    * Natural insertion order preserve hota hai.
+    * Generally high-throughput sequential writes ke use cases ke liye useful.
+    * Normal collection ki tarah unlimited growth nahi karti.
+
+    ### Use Cases
+
+    Capped collections useful ho sakti hain for:
+
+    * Application logs
+    * Temporary event data
+    * Recent activity/history
+    * Lightweight queues in specific use cases
+    * Monitoring data where only recent records matter
+
+    Example:
+
+    ```javascript id="v4n8q2"
+    db.createCollection("activity_logs", {
+    capped: true,
+    size: 1024 * 1024 * 10, // 10 MB
+    max: 10000
+    });
+    ```
+
+    Yahan:
+
+    * `size` → maximum storage size
+    * `max` → maximum number of documents
+
+    **Important:** Capped collection ko normal collection ki tarah arbitrary delete/update behavior ke liye design nahi kiya jata. Agar application ko flexible deletion, unbounded growth, TTL-based expiration, etc. chahiye, normal collection + appropriate indexes/TTL strategy often better hoti hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“A capped collection is a fixed-size MongoDB collection that maintains documents in insertion order. When the collection reaches its configured size limit, MongoDB automatically removes the oldest documents to make room for new ones. Capped collections are useful for data where we only need recent records, such as logs, monitoring data, or temporary activity data. We can define both a maximum storage size and optionally a maximum number of documents. They are mainly designed for high-throughput sequential writes and automatic retention based on collection capacity.”**
+
+    ### Interview Follow-up
+
+    **Q: Capped collection vs TTL index?**
+
+    ```text id="s5j9x3"
+    Capped Collection
+    → Fixed collection size
+    → Old data removed as space is needed
+
+    TTL Index
+    → Documents expire based on time
+    → Example: delete after 7 days
+    ```
+
+    **Q: Kya capped collection automatically delete old documents based on time?**
+
+    **No.** Its primary limit is **size** (and optionally document count), not a specific age. If you need “delete after 7 days,” a TTL index is usually the appropriate solution.
+
+    **Q: Kya capped collection ka size unlimited ho sakta hai?**
+
+    No. Its defining characteristic is a **fixed maximum size**.
+
+    ### ⭐ One-line memory trick
+
+    **Capped Collection = Fixed size + insertion order + new data aate hi oldest data automatically out.**
+
+
 9. How does MongoDB handle concurrency?
 10. Explain change streams in MongoDB.
 11. What’s the difference between populate() and $lookup?
