@@ -33937,6 +33937,159 @@ Browser automatically validation kar dega.
 
 
 13. What is the use of the $facet stage?
+
+    ## Hinglish Explanation
+
+    MongoDB ka **`$facet`** stage tab use hota hai jab hume **same input documents par multiple aggregation pipelines ek hi baar me run** karni ho.
+
+    Simple words me:
+
+    ```text
+    Same Documents
+        ↓
+        $facet
+    ↙   ↓   ↘
+    Pipeline A  Pipeline B  Pipeline C
+    ```
+
+    Iska common use case hai **dashboard, search results, filtering + pagination + total count**.
+
+    ### Small Implementation
+
+    Suppose products hain aur hume ek hi query me:
+
+    * filtered products
+    * total count
+    * price statistics
+
+    chahiye:
+
+    ```javascript id="f7m3q9"
+    db.products.aggregate([
+    {
+        $match: {
+        category: "laptop"
+        }
+    },
+    {
+        $facet: {
+        products: [
+            { $sort: { price: 1 } },
+            { $limit: 10 }
+        ],
+
+        totalCount: [
+            { $count: "total" }
+        ],
+
+        priceStats: [
+            {
+            $group: {
+                _id: null,
+                minPrice: { $min: "$price" },
+                maxPrice: { $max: "$price" }
+            }
+            }
+        ]
+        }
+    }
+    ]);
+    ```
+
+    Output conceptually:
+
+    ```javascript id="k2r8v4"
+    {
+    products: [
+        // first 10 products
+    ],
+
+    totalCount: [
+        { total: 150 }
+    ],
+
+    priceStats: [
+        {
+        minPrice: 30000,
+        maxPrice: 150000
+        }
+    ]
+    }
+    ```
+
+    Yani ek hi aggregation ke andar:
+
+    ```text id="z8q1p6"
+    $match
+    ↓
+    $facet
+    ├── products
+    ├── totalCount
+    └── priceStats
+    ```
+
+    ### Real-world Example
+
+    E-commerce search page:
+
+    ```text id="m4w7c2"
+    User filters:
+    Category = Laptop
+    Brand = Dell
+
+                ↓
+
+            $facet
+            ↙    ↓     ↘
+    Products   Count   Price Stats
+    ↓         ↓          ↓
+    Page 1    Total 45   ₹40k-₹1.5L
+    ```
+
+    Isse application ko alag-alag queries fire karne ki need kam ho sakti hai.
+
+    **Important:** `$facet` automatically performance improve nahi karta. Har sub-pipeline ka work expensive ho sakta hai, isliye filtering ko appropriate stage par early karna aur actual performance ko `explain()` se verify karna important hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“The `$facet` stage in MongoDB is used when I need to run multiple independent aggregation pipelines on the same input documents and return all their results together. For example, on an e-commerce search page, I can use `$facet` to get the paginated products, total document count, and price statistics in a single aggregation pipeline. Each field inside `$facet` contains its own pipeline. It is useful for dashboards, search results, reporting, and pagination-related queries.”**
+
+    ### Interview Follow-up
+
+    **Q: `$facet` ka main advantage kya hai?**
+
+    Same input dataset par multiple calculations/results ko **one aggregation request** me combine kar sakte ho.
+
+    **Q: `$facet` ke andar pipelines ek doosre ka output use karti hain?**
+
+    ❌ No.
+
+    Har sub-pipeline `$facet` ko receive hue **same input documents** se independently start hoti hai.
+
+    ```text id="c6v2n9"
+    Input
+    ↓
+    $facet
+    ├── Pipeline A → Input
+    ├── Pipeline B → Input
+    └── Pipeline C → Input
+    ```
+
+    **Q: `$facet` kaha useful hai?**
+
+    * Search + pagination
+    * Total count + results
+    * Dashboard statistics
+    * Multiple filters/statistics
+    * Reporting
+
+    ### ⭐ One-line memory trick
+
+    **`$facet` = Same input → Multiple aggregation pipelines → Multiple results in one response.**
+
+
 14. How does MongoDB handle horizontal scaling?
 15. Difference between embedded documents vs. referenced documents.
 16. How do you back up and restore a MongoDB database?
