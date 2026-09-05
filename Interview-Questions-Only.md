@@ -33470,6 +33470,159 @@ Browser automatically validation kar dega.
 
 
 10. Explain change streams in MongoDB.
+
+    ## Hinglish Explanation
+
+    **MongoDB Change Streams** ek mechanism hai jisse application MongoDB me hone wale **real-time data changes ko listen** kar sakti hai.
+
+    Matlab database me:
+
+    ```text
+    INSERT
+    UPDATE
+    DELETE
+    REPLACE
+    ```
+
+    jaise changes hote hain, application ko unka event mil sakta hai.
+
+    ```text id="f3k8m2"
+    MongoDB
+    ↓
+    Document Change
+    ↓
+    Change Stream
+    ↓
+    Application receives event
+    ↓
+    Perform some action
+    ```
+
+    ### Small Node.js Implementation
+
+    ```javascript id="r7p2x4"
+    const changeStream = db
+    .collection("users")
+    .watch();
+
+    changeStream.on("change", (change) => {
+    console.log("Database changed:");
+    console.log(change);
+    });
+    ```
+
+    Agar new user insert hua:
+
+    ```javascript id="q5n8v1"
+    await db.collection("users").insertOne({
+    name: "Raj",
+    email: "raj@example.com"
+    });
+    ```
+
+    Change stream application ko `insert` event ke baare me notify kar sakta hai.
+
+    ### Specific Changes Filter Karna
+
+    Agar sirf `insert` events chahiye:
+
+    ```javascript id="w4c9m6"
+    const changeStream = db.collection("users").watch([
+    {
+        $match: {
+        operationType: "insert"
+        }
+    }
+    ]);
+
+    changeStream.on("change", (change) => {
+    console.log("New user:", change.fullDocument);
+    });
+    ```
+
+    ### Common Use Cases
+
+    Change Streams ka use hota hai:
+
+    * Real-time notifications
+    * Cache invalidation
+    * Search index synchronization
+    * Event-driven processing
+    * Audit/event processing
+    * Real-time dashboards
+    * Other services ko database changes ke according trigger karna
+
+    Example:
+
+    ```text id="v8m3q6"
+    Order Updated
+        ↓
+    Change Stream
+        ↓
+    Event received
+        ↓
+    Notification Service
+        ↓
+    "Order status changed" 🔔
+    ```
+
+    ### Important Point
+
+    Change Streams ke liye MongoDB ko supported **replica set ya sharded cluster deployment** par run karna hota hai.
+
+    Aur Change Streams ko blindly **Kafka/RabbitMQ ka replacement** nahi samajhna chahiye. Agar application ko complex durable event processing, independent consumers, long-term event retention, etc. chahiye, dedicated messaging/event system better fit ho sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“MongoDB Change Streams provide a way for applications to listen to real-time changes happening in MongoDB. They can notify an application when documents are inserted, updated, replaced, or deleted. In Node.js, I can use the `watch()` method to create a change stream and listen for change events. Change Streams are useful for real-time notifications, cache invalidation, search index synchronization, and event-driven architectures. They require a supported replica set or sharded cluster deployment.”**
+
+    ### Interview Follow-up
+
+    **Q: Change Stream aur polling me difference?**
+
+    ```text id="m2x7k9"
+    Polling
+    → Application repeatedly asks:
+    "Kuch change hua?"
+
+    Change Stream
+    → MongoDB change hone par event provide karta hai.
+    ```
+
+    Change Streams real-time use cases me unnecessary repeated queries avoid kar sakte hain.
+
+    **Q: Change Stream me kaunse operations mil sakte hain?**
+
+    Common operations:
+
+    ```text id="p6t4z8"
+    insert
+    update
+    replace
+    delete
+    invalidate
+    ```
+
+    **Q: Kya Change Stream ko filter kar sakte hain?**
+
+    Yes, aggregation pipeline ke through:
+
+    ```javascript id="n9w2c5"
+    collection.watch([
+    {
+        $match: {
+        operationType: "update"
+        }
+    }
+    ]);
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Change Streams = MongoDB changes ko real-time me listen karo → Event receive karo → Action trigger karo.**
+
 11. What’s the difference between populate() and $lookup?
 12. How do you perform pagination in MongoDB efficiently?
 13. What is the use of the $facet stage?
