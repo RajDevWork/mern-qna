@@ -34091,6 +34091,178 @@ Browser automatically validation kar dega.
 
 
 14. How does MongoDB handle horizontal scaling?
+
+    ## Hinglish Explanation
+
+    **Horizontal scaling** ka matlab hai ek powerful server ko aur powerful banane ke bajay **multiple servers/nodes add karke workload distribute karna**.
+
+    MongoDB me large datasets/workloads ke liye horizontal scaling ka main mechanism **Sharding** hai.
+
+    ```text
+                    Application
+                        ↓
+                    MongoDB Cluster
+                        ↓
+                ┌───────┴───────┐
+                ↓               ↓
+            Shard 1          Shard 2
+                ↓               ↓
+            Data A/B         Data C/D
+    ```
+
+    ### 1. Sharding
+
+    MongoDB data ko multiple **shards** me distribute karta hai.
+
+    Example:
+
+    ```text
+    Users
+    ↓
+    Shard Key: tenantId
+
+    tenantId 1–1000   → Shard 1
+    tenantId 1001–2000 → Shard 2
+    tenantId 2001–3000 → Shard 3
+    ```
+
+    Isse dataset aur workload multiple machines par spread ho sakta hai.
+
+    ### 2. Shard Key
+
+    **Shard key** decide karta hai ki document kis shard par distribute hoga.
+
+    Example:
+
+    ```javascript id="k7m2p4"
+    sh.shardCollection(
+    "app.orders",
+    { tenantId: 1 }
+    );
+    ```
+
+    Shard key carefully choose karna bahut important hai.
+
+    Poor shard key se:
+
+    ```text
+    Hot Shard
+    ↓
+    One shard gets most traffic
+    ↓
+    Poor scalability ❌
+    ```
+
+    Good distribution:
+
+    ```text
+    Shard 1 → Balanced workload
+    Shard 2 → Balanced workload
+    Shard 3 → Balanced workload
+                ↓
+            Better scaling
+    ```
+
+    ### 3. Mongos
+
+    Application generally directly har shard se communicate nahi karti. **`mongos`** router requests ko appropriate shard(s) tak route karta hai.
+
+    ```text id="x8q4n1"
+    Application
+        ↓
+    mongos
+        ↓
+    ┌───┼───┐
+    ↓   ↓   ↓
+    S1  S2  S3
+    ```
+
+    Agar query me shard key available hai, MongoDB potentially **targeted query** kar sakta hai.
+
+    Agar shard key nahi hai, query ko multiple/all shards par execute karna pad sakta hai — ise **scatter-gather** pattern kaha jata hai.
+
+    ### 4. Config Servers
+
+    Sharded cluster me **config servers** cluster metadata maintain karte hain, jaise chunks/data distribution information.
+
+    Simplified architecture:
+
+    ```text id="j4p8s2"
+                Application
+                    ↓
+                mongos
+                    ↓
+            ┌─────────┼─────────┐
+            ↓         ↓         ↓
+        Shard 1   Shard 2   Shard 3
+            ↓         ↓         ↓
+        Replica   Replica   Replica
+        Set       Set       Set
+
+                Config Servers
+    ```
+
+    ### Horizontal vs Vertical Scaling
+
+    ```text id="f2n7q5"
+    Vertical:
+    1 Server
+    ↓
+    Bigger CPU/RAM/Storage
+
+    Horizontal:
+    1 Server
+    ↓
+    Multiple Servers
+    ↓
+    Distribute data/workload
+    ```
+
+    MongoDB production architecture me **replica sets** high availability/read scaling ke liye aur **sharding** horizontal data/workload scaling ke liye use ho sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“MongoDB handles horizontal scaling primarily through sharding. Sharding distributes data across multiple servers called shards, allowing the dataset and workload to scale beyond the capacity of a single server. A shard key determines how documents are distributed, so choosing a good shard key is very important for balanced distribution and query performance. Applications typically connect through `mongos`, which routes requests to the appropriate shards. MongoDB also uses config servers to maintain sharded-cluster metadata. For high availability, each shard is typically deployed as a replica set.”**
+
+    ### Interview Follow-up
+
+    **Q: What is the most important consideration in sharding?**
+
+    👉 **Shard key selection.**
+
+    A poor shard key can cause:
+
+    * Uneven data distribution
+    * Hot shards
+    * Poor query performance
+    * Limited scalability
+
+    **Q: Sharding vs Replication?**
+
+    ```text id="n6c3v9"
+    Replication
+    → Same data copies
+    → High availability
+    → Failover
+    → Can help scale reads
+
+    Sharding
+    → Data distributed across nodes
+    → Horizontal scaling
+    → Larger dataset/workload
+    ```
+
+    **Q: What is a scatter-gather query?**
+
+    Jab query ko specific shard identify nahi hota, MongoDB ko **multiple/all shards** se data collect karke result banana pad sakta hai.
+
+    ### ⭐ One-line memory trick
+
+    **MongoDB Horizontal Scaling = Sharding → Good Shard Key → Data distributed across shards → `mongos` routes queries.**
+
+
 15. Difference between embedded documents vs. referenced documents.
 16. How do you back up and restore a MongoDB database?
 17. How can you enforce uniqueness on a field?
