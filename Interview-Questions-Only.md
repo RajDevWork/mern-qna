@@ -33297,6 +33297,178 @@ Browser automatically validation kar dega.
 
 
 9. How does MongoDB handle concurrency?
+
+    ## Hinglish Explanation
+
+    **Concurrency** ka matlab hai multiple users/requests ek hi time par database ko read/write kar rahe hain.
+
+    MongoDB concurrency ko mainly **document-level atomicity, locking/yielding, optimistic concurrency patterns, aur transactions** ke through handle karta hai.
+
+    ### 1. Single-document operations atomic hote hain
+
+    MongoDB me ek single document par write operation **atomic** hota hai.
+
+    ```javascript id="8s4qk2"
+    await db.accounts.updateOne(
+    { _id: 1, balance: { $gte: 1000 } },
+    { $inc: { balance: -1000 } }
+    );
+    ```
+
+    Agar multiple requests same time par balance update kar rahi hain, MongoDB individual update ko atomically apply karta hai.
+
+    ---
+
+    ### 2. MongoDB fine-grained concurrency use karta hai
+
+    Modern MongoDB storage engine **WiredTiger** concurrency ke liye document-level/record-level conflict handling aur internal locking mechanisms use karta hai.
+
+    Simple way me:
+
+    ```text id="3v6n9p"
+    Request A → Document A → Update
+    Request B → Document B → Update
+
+            ↓
+
+    Parallel work possible
+    ```
+
+    Isliye database ko har operation ke liye globally lock karke sab requests ko sequentially execute nahi karna padta.
+
+    ---
+
+    ### 3. Concurrent update conflict ho sakta hai
+
+    Suppose do requests same document ko update kar rahi hain:
+
+    ```text id="x9k3m1"
+    Request A ──┐
+                ├── Same Document
+    Request B ──┘
+    ```
+
+    MongoDB concurrency control ensure karta hai ki conflicting operations safely handle hon. Application ko business-level race conditions ke liye appropriate query conditions, atomic operators, or transactions use karne chahiye.
+
+    ---
+
+    ### 4. Atomic operators important hain
+
+    Instead of:
+
+    ```javascript id="q3m8z1"
+    const user = await users.findOne({ _id: 1 });
+
+    user.balance += 100;
+
+    await users.replaceOne(
+    { _id: 1 },
+    user
+    );
+    ```
+
+    Better:
+
+    ```javascript id="v7c2n5"
+    await users.updateOne(
+    { _id: 1 },
+    { $inc: { balance: 100 } }
+    );
+    ```
+
+    `$inc` jaise atomic operators concurrent updates ke cases me safer hote hain.
+
+    ---
+
+    ### 5. Multiple documents ko atomically update karna ho → Transaction
+
+    Agar operation multiple documents par depend karta hai:
+
+    ```text id="u4n7p2"
+    Account A
+    ↓
+    -₹1000
+
+    Account B
+    ↓
+    +₹1000
+    ```
+
+    To transaction use kar sakte hain:
+
+    ```javascript id="m8w2r5"
+    session.startTransaction();
+
+    await accounts.updateOne(
+    { _id: fromId },
+    { $inc: { balance: -1000 } },
+    { session }
+    );
+
+    await accounts.updateOne(
+    { _id: toId },
+    { $inc: { balance: 1000 } },
+    { session }
+    );
+
+    await session.commitTransaction();
+    ```
+
+    Agar koi operation fail ho:
+
+    ```text id="b2q6s9"
+    Failure
+    ↓
+    abortTransaction()
+    ↓
+    All transaction changes rollback
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“MongoDB handles concurrency using atomic single-document operations, fine-grained concurrency control in the storage engine, and transactions for multi-document operations. Single-document writes are atomic, so I prefer atomic operators such as `$inc`, `$set`, and conditional updates when possible. When multiple documents need to be updated as one consistent unit, I use a transaction. For business-level race conditions, I also use appropriate query conditions and concurrency patterns instead of relying only on database locking. This allows MongoDB to support high levels of concurrent read and write operations efficiently.”**
+
+    ### Interview Follow-up
+
+    **Q: How would you prevent two users from updating the same record incorrectly?**
+
+    One useful approach is **optimistic concurrency control** using a version field:
+
+    ```javascript id="p4y8k1"
+    await users.updateOne(
+    {
+        _id: userId,
+        version: currentVersion
+    },
+    {
+        $set: { name: "New Name" },
+        $inc: { version: 1 }
+    }
+    );
+    ```
+
+    Agar kisi aur request ne pehle version change kar diya, filter match nahi karega:
+
+    ```text id="e6r3w9"
+    version = 5
+
+    Request A → version 5 → update → version 6 ✅
+    Request B → version 5 → no match ❌
+    ```
+
+    Isse **lost update** type problems detect ki ja sakti hain.
+
+    **Q: MongoDB me har operation ke liye transaction use karna chahiye?**
+
+    No. Single-document atomic operations ke liye transaction unnecessary overhead ho sakta hai. Transaction tab use karo jab **multiple operations ko atomically succeed/fail karna required ho**.
+
+    ### ⭐ One-line memory trick
+
+    **MongoDB Concurrency = Atomic document updates + concurrency control + proper conditions + transactions when multiple documents must stay consistent.**
+
+
 10. Explain change streams in MongoDB.
 11. What’s the difference between populate() and $lookup?
 12. How do you perform pagination in MongoDB efficiently?
