@@ -34432,6 +34432,165 @@ Browser automatically validation kar dega.
 
 
 16. How do you back up and restore a MongoDB database?
+
+    ## Hinglish Explanation
+
+    MongoDB me **backup** ka matlab database ki safe copy banana, aur **restore** ka matlab backup se database/data ko wapas recover karna.
+
+    MongoDB me commonly:
+
+    * **`mongodump`** → backup/export
+    * **`mongorestore`** → backup restore
+    * **Atlas** → managed backup/snapshot options
+
+    ### 1. Backup with `mongodump`
+
+    ```bash
+    mongodump \
+    --uri="mongodb://localhost:27017/mydb" \
+    --out="./backup"
+    ```
+
+    Ye `mydb` database ka BSON-based backup `./backup` directory me create karega.
+
+    Conceptually:
+
+    ```text
+    MongoDB
+    ↓
+    mongodump
+    ↓
+    backup/
+    └── mydb/
+        ├── users.bson
+        └── orders.bson
+    ```
+
+    ### 2. Restore with `mongorestore`
+
+    ```bash
+    mongorestore \
+    --uri="mongodb://localhost:27017/mydb" \
+    ./backup/mydb
+    ```
+
+    Backup ka data MongoDB me restore ho jayega.
+
+    ### Specific Collection Backup
+
+    ```bash
+    mongodump \
+    --uri="mongodb://localhost:27017/mydb" \
+    --collection=users \
+    --out="./backup"
+    ```
+
+    ### Important Production Considerations
+
+    Production me sirf `mongodump` run karna enough nahi hai.
+
+    **1. Backup schedule**
+
+    ```text
+    Daily / Hourly
+        ↓
+    Backup
+        ↓
+    Separate storage
+    ```
+
+    **2. Backup ko same server par hi mat rakho.**
+
+    Agar server/disk fail ho gaya, backup bhi lost ho sakta hai.
+
+    **3. Encryption & access control**
+
+    Backup me sensitive data ho sakta hai, so access restricted aur encryption important hai.
+
+    **4. Restore testing**
+
+    Sabse important interview point:
+
+    > **Backup successful hona aur backup se successfully restore hona do different things hain.**
+
+    Regularly test karo:
+
+    ```text
+    Backup
+    ↓
+    Restore to test environment
+    ↓
+    Verify data
+    ↓
+    Measure recovery time
+    ```
+
+    **5. RPO & RTO**
+
+    * **RPO (Recovery Point Objective)** → maximum acceptable data loss.
+    * **RTO (Recovery Time Objective)** → system ko kitne time me recover karna hai.
+
+    Example:
+
+    ```text
+    RPO = 1 hour
+    → Maximum ~1 hour data loss acceptable
+
+    RTO = 30 minutes
+    → System 30 minutes ke andar recover hona chahiye
+    ```
+
+    ### Backup vs Replication
+
+    Ye interview me frequently poocha jata hai:
+
+    ```text
+    Replication
+    → High Availability / Failover
+
+    Backup
+    → Data Recovery
+    ```
+
+    Agar accidentally koi document delete kar diya aur deletion replica nodes par bhi replicate ho gayi, **replication alone backup ka replacement nahi hai**.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“MongoDB can be backed up and restored using tools such as `mongodump` and `mongorestore`. `mongodump` creates a backup of the database, and `mongorestore` restores that backup into MongoDB. In production, I also consider managed backup solutions such as MongoDB Atlas, depending on the deployment. I store backups separately from the primary database, secure them with proper access controls and encryption, and regularly test the restore process. I also define RPO and RTO based on the application's recovery requirements. Replication provides high availability, but it should not be considered a replacement for backups.”**
+
+    ### Interview Follow-up
+
+    **Q: `mongodump` aur `mongorestore` kya hain?**
+
+    ```text
+    mongodump
+    → MongoDB data ka backup
+
+    mongorestore
+    → Backup ko MongoDB me restore
+    ```
+
+    **Q: Backup test kyun karna chahiye?**
+
+    Because:
+
+    ```text
+    Backup exists ≠ Recovery guaranteed
+    ```
+
+    Agar backup corrupt hai ya restore process fail ho raha hai, emergency ke time backup useless ho sakta hai.
+
+    **Q: Replication backup ka replacement kyun nahi hai?**
+
+    Replication ka purpose mainly **availability/failover** hai. Accidental deletion/corruption replicate ho sakti hai. Backup historical recovery point provide kar sakta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Backup = Data recovery | Replication = High availability | Restore testing = Backup actually works.**
+
+
 17. How can you enforce uniqueness on a field?
 18. What are MongoDB Atlas Triggers?
 19. What is TTL indexing and when would you use it?
