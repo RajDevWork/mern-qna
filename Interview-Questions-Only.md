@@ -34743,6 +34743,159 @@ Browser automatically validation kar dega.
     **Uniqueness = Unique Index → Database guarantees no duplicate values.**
 
 18. What are MongoDB Atlas Triggers?
+
+    ## Hinglish Explanation
+
+    **MongoDB Atlas Triggers** ek serverless automation feature hai jo MongoDB me kisi **event ke hone par automatically code/action execute** kar sakta hai.
+
+    Simple flow:
+
+    ```text
+    MongoDB Event
+        ↓
+    Atlas Trigger
+        ↓
+    Function execute
+        ↓
+    Required action
+    ```
+
+    Example:
+
+    ```text
+    New User Created
+        ↓
+    Database Trigger
+        ↓
+    Function
+        ↓
+    Send welcome notification
+    ```
+
+    ### Trigger ke common types
+
+    **1. Database Trigger**
+
+    MongoDB document ke changes par trigger hota hai:
+
+    ```text
+    insert
+    update
+    replace
+    delete
+    ```
+
+    Example:
+
+    ```text
+    Order inserted
+        ↓
+    Trigger
+        ↓
+    Create notification / update another system
+    ```
+
+    **2. Scheduled Trigger**
+
+    Time/schedule ke according automatically run hota hai.
+
+    ```text
+    Every day at 12 AM
+        ↓
+    Atlas Trigger
+        ↓
+    Cleanup / reporting task
+    ```
+
+    ### Small Example
+
+    Conceptually database trigger function kuch aisa kaam kar sakta hai:
+
+    ```javascript id="k8m4p2"
+    exports = async function(changeEvent) {
+
+    if (changeEvent.operationType === "insert") {
+
+        const user = changeEvent.fullDocument;
+
+        console.log(
+        `New user created: ${user.email}`
+        );
+
+        // Perform required action
+    }
+    };
+    ```
+
+    Yahan `changeEvent` me database change ki information milti hai, jaise `operationType` aur `fullDocument` (when available).
+
+    ### Real-world Use Cases
+
+    Atlas Triggers useful ho sakte hain for:
+
+    * Notifications
+    * Audit/event processing
+    * Data synchronization
+    * Automatically updating related data
+    * Scheduled cleanup
+    * Background automation
+    * Integrating with external services
+
+    ### Change Streams vs Atlas Triggers
+
+    Ye interview me important distinction hai:
+
+    ```text
+    Change Streams
+    → Application khud MongoDB changes listen karti hai
+
+    Atlas Trigger
+    → Atlas event detect karke configured function automatically run karta hai
+    ```
+
+    So:
+
+    **Change Streams = listen**
+
+    **Atlas Trigger = event ke response me automation**
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“MongoDB Atlas Triggers are an event-driven automation feature in MongoDB Atlas. They can automatically execute a configured function when a database event occurs or when a scheduled time is reached. Database triggers can react to events such as insert, update, replace, or delete. They are useful for notifications, data synchronization, audit processing, scheduled cleanup, and other background automation. They are useful when I want event-driven logic without managing a separate server for that trigger logic.”**
+
+    ### Interview Follow-up
+
+    **Q: Database Trigger vs Scheduled Trigger?**
+
+    ```text
+    Database Trigger
+    → Runs when database event occurs
+
+    Scheduled Trigger
+    → Runs according to a schedule
+    ```
+
+    **Q: Atlas Trigger vs Change Stream?**
+
+    ```text
+    Atlas Trigger
+    → Managed event-driven automation in Atlas
+
+    Change Stream
+    → Application-level API for consuming MongoDB changes
+    ```
+
+    **Q: Kya trigger ke andar heavy business logic rakhna chahiye?**
+
+    Generally unnecessary heavy/long-running processing avoid karna better hai. Complex workflows ke liye dedicated workers/message queues/event-processing systems more appropriate ho sakte hain.
+
+    ### ⭐ One-line memory trick
+
+    **Atlas Trigger = MongoDB/Time event → Automatically function run → Action perform.**
+
+
 19. What is TTL indexing and when would you use it?
 20. How do you monitor and profile MongoDB queries?
 
