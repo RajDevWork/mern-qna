@@ -34592,6 +34592,156 @@ Browser automatically validation kar dega.
 
 
 17. How can you enforce uniqueness on a field?
+
+    ## Hinglish Explanation
+
+    MongoDB me kisi field ko **unique** banane ka standard aur reliable way hai us field par **unique index** create karna.
+
+    Example: Agar `email` unique hona chahiye:
+
+    ```javascript id="q8m4z2"
+    db.users.createIndex(
+    { email: 1 },
+    { unique: true }
+    );
+    ```
+
+    Ab:
+
+    ```javascript id="x7p3k1"
+    db.users.insertOne({
+    name: "Raj",
+    email: "raj@example.com"
+    });
+    ```
+
+    ✅ First insert successful.
+
+    Agar same email dobara insert karoge:
+
+    ```javascript id="n5v9c4"
+    db.users.insertOne({
+    name: "Amit",
+    email: "raj@example.com"
+    });
+    ```
+
+    ❌ MongoDB **duplicate key error** dega.
+
+    ```text id="r3k6w8"
+    email: raj@example.com
+            ↓
+    Unique Index
+            ↓
+    Duplicate ❌
+    ```
+
+    ### Why application-level check alone is not enough?
+
+    Ye approach:
+
+    ```javascript id="a4m8p2"
+    const user = await users.findOne({ email });
+
+    if (!user) {
+    await users.insertOne({ email });
+    }
+    ```
+
+    **alone reliable nahi hai**, because two requests simultaneously check kar sakti hain:
+
+    ```text id="j9q2v5"
+    Request A → email exists? → No
+    Request B → email exists? → No
+
+    Request A → Insert ✅
+    Request B → Insert ✅  ❌
+    ```
+
+    Isko **race condition** kaha ja sakta hai.
+
+    Unique index database level par constraint enforce karta hai:
+
+    ```text id="f7n3k1"
+    Request A ──┐
+                ├── MongoDB Unique Index
+    Request B ──┘
+                    ↓
+                Only one wins
+    ```
+
+    Application level par duplicate-key error ko properly handle karna bhi important hai.
+
+    ### Compound Unique Index
+
+    Multiple fields ka **combination unique** chahiye ho to compound unique index use kar sakte ho:
+
+    ```javascript id="c2v8m6"
+    db.users.createIndex(
+    {
+        tenantId: 1,
+        email: 1
+    },
+    {
+        unique: true
+    }
+    );
+    ```
+
+    Iska meaning:
+
+    ```text id="u5r7p9"
+    Same tenant + same email
+            ↓
+    Not allowed ❌
+
+    Different tenant + same email
+            ↓
+    Allowed ✅
+    ```
+
+    Ye **multi-tenant applications** me particularly useful pattern hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“In MongoDB, I enforce uniqueness by creating a unique index on the required field. For example, if email must be unique, I create `{ email: 1 }` with the `unique: true` option. MongoDB then rejects duplicate values with a duplicate key error. I don't rely only on an application-level check because two concurrent requests can both pass the check and create duplicates. For multi-tenant applications, if uniqueness should be scoped to a tenant, I can use a compound unique index such as `{ tenantId: 1, email: 1 }`.”**
+
+    ### Interview Follow-up
+
+    **Q: Unique index vs application-level `findOne()` check?**
+
+    ```text id="s2m6q8"
+    findOne()
+    → Useful for friendly validation
+    → Alone not concurrency-safe
+
+    Unique Index
+    → Database-level enforcement
+    → Handles concurrent inserts
+    ```
+
+    Best practice:
+
+    ```text id="n7p3x5"
+    Application validation
+            ↓
+    Friendly error message
+            +
+    Database unique index
+            ↓
+    Actual uniqueness guarantee
+    ```
+
+    **Q: Existing duplicate data ho to unique index create hoga?**
+
+    Usually **no**. Existing duplicates ki wajah se unique index creation fail ho sakti hai. Pehle duplicate data identify/clean karna padega.
+
+    ### ⭐ One-line memory trick
+
+    **Uniqueness = Unique Index → Database guarantees no duplicate values.**
+
 18. What are MongoDB Atlas Triggers?
 19. What is TTL indexing and when would you use it?
 20. How do you monitor and profile MongoDB queries?
