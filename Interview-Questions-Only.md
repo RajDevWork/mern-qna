@@ -35041,6 +35041,165 @@ Browser automatically validation kar dega.
 
 20. How do you monitor and profile MongoDB queries?
 
+    ## Hinglish Explanation
+
+    MongoDB queries ko monitor/profile karne ka main goal hai identify karna ki **kaunsi query slow hai, kitne documents scan kar rahi hai, aur kaunsa index use ho raha hai**.
+
+    Mainly 4 tools/features important hain:
+
+    1. **`explain()`** → Individual query ka execution plan analyze karna.
+    2. **Database Profiler** → Slow/interesting operations ko capture karna.
+    3. **MongoDB logs** → Database-level events aur slow operations investigate karna.
+    4. **Atlas Monitoring** → Production me latency, operations, CPU, memory, connections etc. monitor karna.
+
+    ### 1. `explain()` — Most Important
+
+    Example:
+
+    ```javascript id="p7k2m4"
+    db.users
+    .find({ email: "raj@example.com" })
+    .explain("executionStats");
+    ```
+
+    Important metrics:
+
+    ```text id="c4n8q1"
+    executionTimeMillis
+    totalDocsExamined
+    totalKeysExamined
+    nReturned
+    ```
+
+    Agar:
+
+    ```text id="m8v3x6"
+    nReturned = 10
+    totalDocsExamined = 100000
+    ```
+
+    to ye indicate kar sakta hai ki query unnecessarily bahut documents examine kar rahi hai.
+
+    Query plan me:
+
+    ```text id="x5q9r2"
+    COLLSCAN → Collection scan
+    IXSCAN   → Index scan
+    ```
+
+    `COLLSCAN` automatically bad nahi hai—small collection me ye perfectly reasonable ho sakta hai.
+
+    ---
+
+    ### 2. Database Profiler
+
+    MongoDB **database profiler** operations ko capture kar sakta hai, including slow operations depending on profiling configuration.
+
+    Example:
+
+    ```javascript id="v2n7k5"
+    db.setProfilingLevel(1, {
+    slowms: 100
+    });
+    ```
+
+    Yahan slow operations ko profile karne ke liye threshold configure kiya gaya hai.
+
+    Profiled operations ko `system.profile` collection se inspect kar sakte hain:
+
+    ```javascript id="z9c4m8"
+    db.system.profile.find().sort({
+    ts: -1
+    });
+    ```
+
+    **Production me profiling carefully configure karna chahiye**, kyunki profiling ka overhead ho sakta hai.
+
+    ---
+
+    ### 3. Atlas Monitoring
+
+    Production me MongoDB Atlas use kar rahe ho to monitoring se:
+
+    ```text id="r3w7p1"
+    Query latency
+    Operations/sec
+    CPU
+    Memory
+    Disk
+    Connections
+    Replication lag
+    ```
+
+    jaise metrics observe kar sakte ho.
+
+    Isse pata chal sakta hai ki problem sirf query ki hai ya overall database resource bottleneck hai.
+
+    ---
+
+    ### Practical Troubleshooting Flow
+
+    ```text id="k6m2v9"
+    Slow API
+    ↓
+    Check application metrics
+    ↓
+    Identify slow MongoDB query
+    ↓
+    explain("executionStats")
+    ↓
+    Check indexes + docs examined
+    ↓
+    Optimize query/index/schema
+    ↓
+    Benchmark again
+    ↓
+    Monitor production
+    ```
+
+    **Important:** Sirf `executionTimeMillis` dekhna enough nahi hai. Query ne **kitne documents/keys examine kiye aur kitne return kiye**, ye bhi important hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“I monitor and profile MongoDB queries using `explain()`, the database profiler, logs, and monitoring tools such as MongoDB Atlas. For a specific query, I use `explain('executionStats')` to check the execution plan and metrics such as execution time, documents examined, keys examined, and documents returned. I look for inefficient plans such as unnecessary collection scans or excessive documents examined. For production monitoring, I use database metrics and slow-query information to identify trends. After optimizing an index or query, I run `explain()` and benchmark again to verify the improvement.”**
+
+    ### Interview Follow-up
+
+    **Q: `COLLSCAN` always means query is bad?**
+
+    ❌ No.
+
+    Small collection ke liye collection scan efficient ho sakta hai. Actual execution statistics aur workload dekhna important hai.
+
+    **Q: `totalDocsExamined` vs `nReturned` kya batata hai?**
+
+    Example:
+
+    ```text id="y3p8w2"
+    totalDocsExamined = 100,000
+    nReturned         = 10
+    ```
+
+    Database ne 100,000 documents examine kiye but sirf 10 return kiye. Ye query/index design investigate karne ka strong signal ho sakta hai.
+
+    **Q: Profiler aur `explain()` me difference?**
+
+    ```text id="b5r9m1"
+    explain()
+    → Specific query ka execution analysis
+
+    Profiler
+    → Database operations ko capture/record karta hai
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **MongoDB Query Profiling = `explain()` → Docs/Keys Examined → Query Plan → Index → Optimize → Measure again.**
+
+
+
 ---
 
 ## 🏗️ System Design & DevOps (361-500)
