@@ -34897,6 +34897,148 @@ Browser automatically validation kar dega.
 
 
 19. What is TTL indexing and when would you use it?
+
+    ## Hinglish Explanation
+
+    **TTL (Time-To-Live) Index** MongoDB ka special index hai jo documents ko **automatically expire/delete** karne ke liye use hota hai.
+
+    Simple example: Agar mujhe OTP/session/log ko **10 minutes ya 7 days** ke baad automatically remove karna hai, to TTL index useful hai.
+
+    ### Small Implementation
+
+    Suppose session document:
+
+    ```javascript id="m7x3p9"
+    {
+    userId: 101,
+    token: "abc123",
+    createdAt: new Date()
+    }
+    ```
+
+    TTL index:
+
+    ```javascript id="q4n8v2"
+    db.sessions.createIndex(
+    { createdAt: 1 },
+    { expireAfterSeconds: 3600 }
+    );
+    ```
+
+    `3600` seconds = **1 hour**.
+
+    Ab roughly `createdAt` ke 1 hour ke baad MongoDB document ko expire/remove karega.
+
+    ```text id="h5k9r1"
+    createdAt
+    ↓
+    1 hour
+    ↓
+    TTL Monitor
+    ↓
+    Document removed
+    ```
+
+    **Important:** TTL deletion exact second par guaranteed nahi hoti. MongoDB background TTL process periodically expired documents clean up karta hai, so some delay possible hai.
+
+    ### TTL ke Common Use Cases
+
+    * OTP records
+    * Sessions
+    * Temporary tokens
+    * Temporary cache-like data
+    * Logs
+    * Temporary verification records
+    * Expiring events
+
+    Example:
+
+    ```javascript id="v8c2m6"
+    db.otp.createIndex(
+    { expiresAt: 1 },
+    { expireAfterSeconds: 0 }
+    );
+    ```
+
+    Agar document hai:
+
+    ```javascript id="p3w7q1"
+    {
+    email: "raj@example.com",
+    otp: "4821",
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000)
+    }
+    ```
+
+    To document `expiresAt` time ke baad expire ho sakta hai.
+
+    ### Two Important TTL Patterns
+
+    **1. Fixed lifetime**
+
+    ```javascript
+    { createdAt: 1 },
+    { expireAfterSeconds: 3600 }
+    ```
+
+    Har document approximately 1 hour after `createdAt` expire hoga.
+
+    **2. Per-document expiry**
+
+    ```javascript
+    { expiresAt: 1 },
+    { expireAfterSeconds: 0 }
+    ```
+
+    Har document apne `expiresAt` value ke according expire hoga.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“TTL stands for Time-To-Live. A TTL index in MongoDB automatically removes documents after a specified amount of time. I would use it for temporary or time-sensitive data such as OTPs, sessions, temporary tokens, logs, or verification records. For example, I can create a TTL index on a `createdAt` field with `expireAfterSeconds`. MongoDB's background TTL process then removes expired documents. I also keep in mind that TTL deletion is not guaranteed to happen at the exact expiration second.”**
+
+    ### Interview Follow-up
+
+    **Q: TTL index ka deletion exact time par hota hai?**
+
+    ❌ Not necessarily.
+
+    TTL monitor background me expired documents clean karta hai, so **small delay possible** hai.
+
+    **Q: TTL index kis field par create kar sakte hain?**
+
+    Typically a field containing a **date value** is used for expiration.
+
+    Example:
+
+    ```javascript
+    db.sessions.createIndex(
+    { expiresAt: 1 },
+    { expireAfterSeconds: 0 }
+    );
+    ```
+
+    **Q: TTL index aur Capped Collection me difference?**
+
+    ```text
+    TTL Index
+    → Time-based expiration
+
+    Capped Collection
+    → Fixed-size collection
+    → Oldest data removed as space is needed
+    ```
+
+    **Q: Kya TTL business-critical exact-time deletion ke liye use karna chahiye?**
+
+    Agar exact-second execution critical hai, TTL ko scheduler/worker ka exact replacement nahi samajhna chahiye. TTL automatic cleanup mechanism hai, **precise job scheduler nahi**.
+
+    ### ⭐ One-line memory trick
+
+    **TTL Index = Time set karo → Document expire hoga → MongoDB automatically clean karega.**
+
+
 20. How do you monitor and profile MongoDB queries?
 
 ---
