@@ -36721,6 +36721,152 @@ Browser automatically validation kar dega.
 
 
 389. Blue-green deployment
+
+    ## Hinglish Explanation
+
+    **Blue-Green Deployment** ek deployment strategy hai jisme production ke **2 identical environments** maintain kiye jaate hain:
+
+    * **Blue** → currently live production version
+    * **Green** → new version
+
+    New version ko pehle **Green environment** me deploy aur test karte hain. Jab sab correct ho, traffic ko Blue se Green par switch kar dete hain.
+
+    ```text id="p7k3m2"
+                    Load Balancer
+                        ↓
+                    ┌─────┴─────┐
+                    ↓           ↓
+                BLUE        GREEN
+                v1.0          v2.0
+                LIVE         Testing
+                    ↓
+            Traffic Switch
+                    ↓
+                GREEN
+                LIVE
+    ```
+
+    ### Deployment Flow
+
+    Suppose currently:
+
+    ```text id="w5n8q1"
+    Blue  → v1.0 → Production ✅
+    Green → v2.0 → Deploy & Test
+    ```
+
+    Green ko test karne ke baad:
+
+    ```text id="c9r4m6"
+    Blue  → v1.0
+    Green → v2.0 ✅
+
+            ↓ Switch Traffic
+
+    Blue  → v1.0
+    Green → v2.0 → Production ✅
+    ```
+
+    ### Rollback ka biggest benefit
+
+    Agar Green production me problem de:
+
+    ```text id="a6q2v8"
+    Green v2.0 ❌
+        ↓
+    Traffic वापस Blue
+        ↓
+    Blue v1.0 ✅
+    ```
+
+    Isliye rollback usually **fast** ho sakta hai because old environment still available hai.
+
+    ### Real-world Architecture
+
+    ```text id="k3m7p9"
+                        Users
+                        ↓
+                    Load Balancer
+                        ↓
+                ┌───────┴───────┐
+                ↓               ↓
+            Blue v1.0       Green v2.0
+            LIVE             NEW
+                                
+                        ↓
+                Health Checks
+                        ↓
+                Traffic Switch
+    ```
+
+    ### Advantages
+
+    * **Low/no downtime** possible.
+    * New version production traffic receive karne se pehle test kar sakte ho.
+    * **Fast rollback**.
+    * Deployment risk reduce hota hai.
+
+    ### Disadvantages
+
+    * Do environments maintain karne padte hain → **extra infrastructure cost**.
+    * Database migrations tricky ho sakti hain.
+    * Blue/Green environments ko compatible rakhna zaroori hai.
+
+    Database migration ke case me usually:
+
+    ```text
+    Expand → Migrate → Contract
+    ```
+
+    approach useful hoti hai, taaki old aur new application versions temporarily compatible rahen.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Blue-green deployment is a deployment strategy where we maintain two production-like environments. The blue environment is running the current stable version, while the green environment contains the new version. We deploy and test the new version in the green environment, and once it is healthy, we switch traffic from blue to green using a load balancer or routing layer. If the new version has a problem, we can quickly switch traffic back to blue. The main benefits are low downtime and fast rollback, while the main drawback is the additional infrastructure cost and the complexity of database migrations.”**
+
+    ### Interview Follow-up
+
+    **Q: Blue-green vs Rolling Deployment?**
+
+    ```text id="q8m2v6"
+    Blue-Green
+    → Two environments
+    → Traffic switch
+    → Fast rollback
+
+    Rolling
+    → Existing instances gradually replace
+    → New version + old version temporarily coexist
+    → Usually less extra infrastructure
+    ```
+
+    **Q: Blue-green me database migration kaise handle karoge?**
+
+    Direct breaking migration avoid karunga.
+
+    ```text id="n4r7x1"
+    Backward-compatible DB change
+            ↓
+    Deploy new application
+            ↓
+    Migrate data
+            ↓
+    Switch traffic
+            ↓
+    Remove old schema later
+    ```
+
+    **Q: Blue-green ka main advantage kya hai?**
+
+    👉 **Fast rollback with minimal downtime.**
+
+    ### ⭐ One-line memory trick
+
+    **Blue-Green = Old environment LIVE → New environment READY → Traffic Switch → Problem aaye to Switch Back.**
+
+
 390. Canary deployment
 
 **Security**
