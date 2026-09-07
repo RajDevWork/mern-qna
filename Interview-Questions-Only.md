@@ -35398,6 +35398,191 @@ Browser automatically validation kar dega.
 
 
 382. Docker
+
+    ## Hinglish Explanation
+
+    **Docker** ek platform hai jo application ko **container** ke andar package aur run karta hai. Container me application ke saath uski required dependencies, libraries aur runtime configuration hoti hai.
+
+    Simple example:
+
+    ```text
+    Without Docker
+    Developer Machine
+    ↓
+    Node version?
+    Dependencies?
+    OS differences?
+    ↓
+    "It works on my machine" 😅
+    ```
+
+    Docker ke saath:
+
+    ```text
+    Application
+    +
+    Dependencies
+    +
+    Node.js Runtime
+    ↓
+    Docker Image
+    ↓
+    Container
+    ↓
+    Same predictable environment
+    ```
+
+    ### Docker ke Important Concepts
+
+    **1. Dockerfile**
+
+    Application ka environment/image kaise build hoga, ye define karta hai.
+
+    ```dockerfile
+    FROM node:20
+
+    WORKDIR /app
+
+    COPY package*.json ./
+    RUN npm ci
+
+    COPY . .
+
+    RUN npm run build
+
+    EXPOSE 3000
+
+    CMD ["npm", "run", "start:prod"]
+    ```
+
+    **2. Docker Image**
+
+    Dockerfile se banne wala **read-only template/package**.
+
+    ```text
+    Dockerfile
+        ↓
+    docker build
+        ↓
+    Docker Image
+    ```
+
+    **3. Container**
+
+    Image ka running instance.
+
+    ```text
+    Docker Image
+        ↓
+    docker run
+        ↓
+    Container
+    ```
+
+    Commands:
+
+    ```bash
+    docker build -t my-api .
+    docker run -p 3000:3000 my-api
+    ```
+
+    `-p 3000:3000` host ke port `3000` ko container ke port `3000` se map karta hai.
+
+    ### Docker vs Virtual Machine
+
+    ```text
+    Virtual Machine
+    → Full guest OS
+    → More resource overhead
+
+    Docker Container
+    → Host OS kernel share karta hai
+    → Lightweight
+    → Faster startup
+    ```
+
+    ### Docker Compose
+
+    Agar application me multiple services hain:
+
+    ```text
+    NestJS
+    ↓
+    PostgreSQL
+    ↓
+    Redis
+    ```
+
+    To **Docker Compose** se multiple containers ko define/run kar sakte hain.
+
+    Example:
+
+    ```yaml
+    services:
+    api:
+        build: .
+        ports:
+        - "3000:3000"
+
+    postgres:
+        image: postgres:16
+        environment:
+        POSTGRES_PASSWORD: password
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Docker is a containerization platform used to package an application along with its dependencies and runtime environment into a consistent, isolated container. A Dockerfile defines how the application image is built. That image can then be used to create and run containers. Docker helps solve environment consistency issues and makes applications easier to deploy and scale. Compared to virtual machines, containers are generally more lightweight because they share the host operating system kernel. Docker Compose can be used when an application needs multiple services such as an API, PostgreSQL, and Redis.”**
+
+    ### Interview Follow-up
+
+    **Q: Docker Image vs Container?**
+
+    ```text
+    Docker Image
+    → Template/package
+
+    Container
+    → Running instance of an image
+    ```
+
+    **Q: Dockerfile kya hai?**
+
+    Docker image build karne ke instructions ka file.
+
+    ```text
+    Dockerfile
+    ↓
+    docker build
+    ↓
+    Image
+    ```
+
+    **Q: Docker ka CI/CD me use kya hai?**
+
+    ```text
+    Code
+    ↓
+    Test
+    ↓
+    Docker Image Build
+    ↓
+    Registry me Push
+    ↓
+    Server par Deploy
+    ↓
+    Container Run
+    ```
+
+    Isse same image ko staging aur production me deploy karna easier aur consistent ho jata hai.
+
+    ### ⭐ One-line memory trick
+
+    **Docker = Application + Dependencies → Image → Container → Same environment everywhere.**
+
+
 383. Kubernetes basics
 384. AWS services
 385. Nginx
