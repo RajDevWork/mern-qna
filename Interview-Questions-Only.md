@@ -36868,6 +36868,123 @@ Browser automatically validation kar dega.
 
 
 390. Canary deployment
+    ## Hinglish Explanation
+
+    **Canary Deployment** ek deployment strategy hai jisme new version ko **sabhi users ko ek saath nahi diya jata**. Pehle **small percentage of users/traffic** ko new version par bhejte hain.
+
+    Example:
+
+    ```text
+    Users
+    ↓
+    Load Balancer
+    ↓
+    95% → Old Version (v1)
+    5%  → New Version (v2)  ← Canary
+    ```
+
+    Agar v2 properly kaam kar raha hai—**error rate, latency, CPU, business metrics** sab normal hain—then traffic gradually increase karte hain:
+
+    ```text
+    5% → 25% → 50% → 100%
+    ```
+
+    Agar problem milti hai, traffic wapas v1 par kar sakte hain.
+
+    **Real benefit:** New release ka risk limited users tak rehta hai. Isliye production me bug detect karna safer hota hai.
+
+    ### Small Implementation
+
+    Maan lo Kubernetes me 2 versions hain:
+
+    ```yaml
+    # Stable version
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: api-v1
+    spec:
+    replicas: 19
+    selector:
+        matchLabels:
+        app: api
+        version: v1
+    template:
+        metadata:
+        labels:
+            app: api
+            version: v1
+        spec:
+        containers:
+            - name: api
+            image: my-api:1.0
+    ```
+
+    ```yaml
+    # Canary version
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: api-v2-canary
+    spec:
+    replicas: 1
+    selector:
+        matchLabels:
+        app: api
+        version: v2
+    template:
+        metadata:
+        labels:
+            app: api
+            version: v2
+        spec:
+        containers:
+            - name: api
+            image: my-api:2.0
+    ```
+
+    Conceptually, agar total 20 replicas hain, to **1 replica v2** ko roughly 5% traffic mil sakta hai, depending on the routing setup. Kubernetes Service alone se exact percentage guarantee nahi hota; traffic weighting ke liye service mesh/ingress/load-balancer support commonly use hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Canary deployment is a deployment strategy where we release a new application version to a small percentage of users or traffic first, instead of releasing it to everyone. We monitor metrics like error rate, response time, CPU usage, and business metrics. If the new version is stable, we gradually increase the traffic, for example from 5% to 25%, 50%, and finally 100%. If we find a serious issue, we can stop the rollout and send traffic back to the old version. This reduces production risk and allows us to validate the new release with real traffic.”**
+
+    ### Interview Follow-up
+
+    **Q: Canary vs Blue-Green deployment?**
+
+    **Canary:** New version ko **gradually small percentage users** tak release karte hain.
+
+    **Blue-Green:** Do separate environments maintain karke **traffic mostly/all at once** old environment se new environment par switch karte hain.
+
+    ```text
+    Canary:
+    v1 → 95%
+    v2 → 5%
+        ↓
+    v1 → 75%
+    v2 → 25%
+        ↓
+    v2 → 100%
+    ```
+
+    ```text
+    Blue-Green:
+    Blue  → 100% LIVE
+    Green → 0%
+
+        ↓ SWITCH
+
+    Blue  → 0%
+    Green → 100% LIVE
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Canary = Pehle thode users ko new version → Monitor → Gradually 100% traffic.**
+
+
+
 
 **Security**
 
