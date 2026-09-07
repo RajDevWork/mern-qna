@@ -36164,6 +36164,167 @@ Browser automatically validation kar dega.
 
 
 386. Reverse proxy
+
+    ## Hinglish Explanation
+
+    **Reverse Proxy** ek server hota hai jo **client aur backend servers ke beech middle layer** ki tarah kaam karta hai.
+
+    Client directly Node.js/NestJS server ko request nahi bhejta. Pehle reverse proxy ko request milti hai, aur wo request ko appropriate backend server tak forward karta hai.
+
+    ```text
+    Client
+    ↓
+    Reverse Proxy (Nginx)
+    ↓
+    Backend Server
+    ↓
+    Database
+    ```
+
+    ### Simple Example
+
+    Maan lo NestJS app `localhost:3000` par chal rahi hai.
+
+    Nginx:
+
+    ```nginx id="5k2m8p"
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://localhost:3000;
+        }
+    }
+    ```
+
+    Ab:
+
+    ```text
+    Client
+    ↓
+    http://example.com
+    ↓
+    Nginx :80
+    ↓
+    NestJS :3000
+    ```
+
+    Client ko backend ka actual `:3000` port directly expose karne ki zarurat nahi hai.
+
+    ### Reverse Proxy ke Main Uses
+
+    **1. Backend ko hide karna**
+
+    ```text
+    Internet
+    ↓
+    Nginx
+    ↓
+    Private Backend
+    ```
+
+    Client ko backend server ka internal address directly expose nahi hota.
+
+    **2. Load Balancing**
+
+    Multiple servers ke beech requests distribute kar sakta hai:
+
+    ```text
+                Nginx
+            /   |   \
+            ↓    ↓    ↓
+        Node1 Node2 Node3
+    ```
+
+    **3. SSL/TLS Termination**
+
+    Nginx HTTPS handle kar sakta hai:
+
+    ```text
+    Client
+    ↓ HTTPS
+    Nginx
+    ↓ HTTP/internal
+    NestJS
+    ```
+
+    **4. Caching**
+
+    Frequently requested responses ko cache karke backend load reduce kar sakta hai.
+
+    **5. Routing**
+
+    Different paths ko different services par route kar sakta hai:
+
+    ```text
+    /api/users  → User Service
+    /api/orders → Order Service
+    /api/auth   → Auth Service
+    ```
+
+    ### Reverse Proxy vs Forward Proxy
+
+    Ye interview me important hai:
+
+    ```text
+    Forward Proxy:
+
+    Client → Proxy → Internet
+            ↑
+        Client ki taraf
+
+
+    Reverse Proxy:
+
+    Client → Reverse Proxy → Backend
+                ↑
+            Server ki taraf
+    ```
+
+    **Forward proxy** client ko represent karta hai.
+
+    **Reverse proxy** backend/server infrastructure ko represent karta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“A reverse proxy is a server that sits between clients and backend servers and forwards client requests to the appropriate backend. Nginx is a common example of a reverse proxy. It can hide backend servers from direct public access, perform load balancing, terminate SSL/TLS, provide caching, and route requests to different services. For example, in a NestJS application, the client can communicate with Nginx over HTTPS, and Nginx can forward the request to one of the internal NestJS instances.”**
+
+    ### Interview Follow-up
+
+    **Q: Why use a reverse proxy in front of Node.js?**
+
+    ```text
+    Client
+    ↓
+    Nginx
+    ↓
+    Node.js
+    ```
+
+    Because Nginx can handle **HTTPS, routing, load balancing, caching and traffic management**, while Node.js focuses mainly on application/business logic.
+
+    **Q: Is Nginx the only reverse proxy?**
+
+    No. Examples include:
+
+    * Nginx
+    * HAProxy
+    * Apache
+    * Cloud load balancers
+    * Traefik
+
+    **Q: Reverse proxy aur API Gateway same hain?**
+
+    Not exactly.
+
+    A reverse proxy primarily **forwards/routs traffic**, while an API Gateway usually provides additional API-specific capabilities such as authentication/authorization integration, rate limiting, request transformation, API policies, etc.
+
+    ### ⭐ One-line memory trick
+
+    **Reverse Proxy = Client ke saamne server → Request receive karo → Right backend ko forward karo.**
+
 387. Monitoring tools
 388. Logging tools
 389. Blue-green deployment
