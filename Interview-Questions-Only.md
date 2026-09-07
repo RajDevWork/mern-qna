@@ -35584,6 +35584,222 @@ Browser automatically validation kar dega.
 
 
 383. Kubernetes basics
+
+    ## Hinglish Explanation
+
+    **Kubernetes (K8s)** ek **container orchestration platform** hai jo Docker jaise containers ko production me **deploy, manage, scale aur monitor** karne me help karta hai.
+
+    Agar ek application ke 2–3 containers hain, manually manage karna possible hai. Lekin hundreds of containers/multiple servers ho jaayein, Kubernetes useful hota hai.
+
+    ```text
+    Developer
+    ↓
+    Docker Image
+    ↓
+    Kubernetes Cluster
+    ↓
+    ┌─────────────────────────┐
+    │ Node 1      Node 2      │
+    │ ┌──────┐    ┌──────┐    │
+    │ │ Pod  │    │ Pod  │    │
+    │ │ API  │    │ API  │    │
+    │ └──────┘    └──────┘    │
+    └─────────────────────────┘
+    ```
+
+    ### Important Kubernetes Concepts
+
+    **1. Cluster**
+
+    Kubernetes ka complete environment.
+
+    ```text
+    Cluster
+    ├── Control Plane
+    └── Worker Nodes
+    ```
+
+    **2. Node**
+
+    Cluster ke andar ek machine/VM jo workloads run karti hai.
+
+    **3. Pod**
+
+    Kubernetes ki **smallest deployable unit**.
+
+    Usually ek Pod ke andar ek application container hota hai:
+
+    ```text
+    Pod
+    └── NestJS Container
+    ```
+
+    **4. Deployment**
+
+    Deployment define karta hai ki application ke kitne replicas run hone chahiye aur updates kaise perform honge.
+
+    ```yaml id="f8k2m4"
+    apiVersion: apps/v1
+    kind: Deployment
+
+    spec:
+    replicas: 3
+
+    selector:
+        matchLabels:
+        app: api
+
+    template:
+        metadata:
+        labels:
+            app: api
+
+        spec:
+        containers:
+            - name: api
+            image: my-api:1.0
+            ports:
+                - containerPort: 3000
+    ```
+
+    Yahan:
+
+    ```text
+    replicas: 3
+        ↓
+    3 Pods
+        ↓
+    API running
+    ```
+
+    Agar ek Pod crash ho jaye:
+
+    ```text
+    Pod 1 ❌
+    ↓
+    Kubernetes detects failure
+    ↓
+    Replacement Pod ✅
+    ```
+
+    Ye Kubernetes ka **self-healing** behavior hai.
+
+    **5. Service**
+
+    Pods ka IP change ho sakta hai. Service stable network endpoint provide karti hai.
+
+    ```text
+    Client
+    ↓
+    Service
+    ↓
+    ┌──────┬──────┬──────┐
+    Pod 1  Pod 2  Pod 3
+    ```
+
+    **6. ConfigMap & Secret**
+
+    Configuration aur sensitive values manage karne ke liye.
+
+    ```text
+    ConfigMap → Non-sensitive config
+    Secret    → Sensitive values
+    ```
+
+    **7. Namespace**
+
+    Ek cluster ke resources ko logically isolate/group karne ke liye.
+
+    Example:
+
+    ```text
+    Cluster
+    ├── development
+    ├── staging
+    └── production
+    ```
+
+    ### Scaling
+
+    Agar traffic increase ho:
+
+    ```bash id="v6p3n8"
+    kubectl scale deployment api --replicas=5
+    ```
+
+    Ab Kubernetes 5 Pods maintain karega.
+
+    Production me **Horizontal Pod Autoscaler (HPA)** metrics ke basis par replicas automatically adjust kar sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Kubernetes is a container orchestration platform used to deploy, manage, scale, and maintain containerized applications. A Kubernetes cluster consists of a control plane and worker nodes. Applications run inside Pods, and Deployments are commonly used to manage replicas and rolling updates. Services provide stable networking and load distribution to Pods. Kubernetes also provides features such as self-healing, scaling, configuration management, and rolling deployments. For example, if one API Pod crashes, Kubernetes can automatically create a replacement Pod to maintain the desired number of replicas.”**
+
+    ### Interview Follow-up
+
+    **Q: Docker vs Kubernetes?**
+
+    ```text id="z9q4m1"
+    Docker
+    → Build & run containers
+
+    Kubernetes
+    → Manage containers at scale
+    → Deployment
+    → Scaling
+    → Networking
+    → Self-healing
+    ```
+
+    **Q: Pod vs Container?**
+
+    ```text id="c7w2p5"
+    Pod
+    └── Container
+    ```
+
+    Pod Kubernetes ki deployment unit hai; container actual application process/environment provide karta hai. A Pod can contain multiple tightly coupled containers, though one main container per Pod is common.
+
+    **Q: Deployment vs Service?**
+
+    ```text id="n4v8x6"
+    Deployment
+    → Pods ko manage karta hai
+
+    Service
+    → Pods ko stable network endpoint provide karti hai
+    ```
+
+    **Q: Kubernetes me self-healing kya hai?**
+
+    Agar desired state:
+
+    ```text
+    replicas = 3
+    ```
+
+    hai aur ek Pod fail ho gaya:
+
+    ```text
+    3 → 2 ❌
+    ↓
+    Kubernetes
+    ↓
+    New Pod
+    ↓
+    3 ✅
+    ```
+
+    Kubernetes desired state maintain karne ki koshish karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Kubernetes = Containers ko production me Deploy → Scale → Network → Self-heal → Manage.**
+
+
+
 384. AWS services
 385. Nginx
 386. Reverse proxy
