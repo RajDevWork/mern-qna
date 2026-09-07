@@ -35244,6 +35244,159 @@ Browser automatically validation kar dega.
 **DevOps & Infrastructure**
 
 381. CI/CD pipeline
+
+    ## Hinglish Explanation
+
+    **CI/CD Pipeline** ek automated process hai jo code ko **build, test, validate aur deploy** karne me help karta hai.
+
+    * **CI = Continuous Integration** → Developer code push/PR karta hai → automatically build + tests + checks run hote hain.
+    * **CD = Continuous Delivery / Continuous Deployment** → validated code ko deployment ke liye ready karna ya automatically deploy karna.
+
+    Typical flow:
+
+    ```text
+    Developer
+    ↓
+    Git Push / Pull Request
+    ↓
+    CI Pipeline
+    ├── Install Dependencies
+    ├── Lint
+    ├── Unit Tests
+    ├── Build
+    └── Security Checks
+            ↓
+        Success?
+            ↙    ↘
+        No      Yes
+        ↓        ↓
+    Stop     Deploy
+                ↓
+            Staging
+                ↓
+            Production
+    ```
+
+    ### Small GitHub Actions Implementation
+
+    Example NestJS/Node.js project ke liye:
+
+    ```yaml
+    name: CI/CD
+
+    on:
+    push:
+        branches: [main]
+
+    jobs:
+    build-test:
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v4
+
+        - uses: actions/setup-node@v4
+            with:
+            node-version: 20
+
+        - run: npm ci
+        - run: npm run lint
+        - run: npm test
+        - run: npm run build
+    ```
+
+    Yahan developer `main` branch par push karta hai, aur pipeline automatically:
+
+    ```text
+    Checkout
+    ↓
+    Install
+    ↓
+    Lint
+    ↓
+    Test
+    ↓
+    Build
+    ```
+
+    Agar koi step fail hota hai, pipeline stop ho sakti hai aur broken code ko next stage tak nahi jaane deti.
+
+    ### CI vs CD
+
+    **CI:**
+
+    ```text
+    Code → Build → Test → Validate
+    ```
+
+    **Continuous Delivery:**
+
+    ```text
+    Validated Code → Deployment-ready
+    ```
+
+    **Continuous Deployment:**
+
+    ```text
+    Validated Code → Automatically Production
+    ```
+
+    Isliye **Delivery aur Deployment exactly same nahi hain**.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“CI/CD is an automated software delivery process that helps teams build, test, and deploy applications consistently. CI stands for Continuous Integration, where every code change is automatically built and tested to detect problems early. CD can mean Continuous Delivery, where validated code is kept ready for deployment, or Continuous Deployment, where it is automatically deployed to production. A typical pipeline includes checkout, dependency installation, linting, testing, building, security checks, and deployment. Tools like GitHub Actions, GitLab CI, Jenkins, or Azure DevOps can be used to implement these pipelines.”**
+
+    ### Interview Follow-up
+
+    **Q: CI/CD pipeline me test fail ho jaye to kya hota hai?**
+
+    ```text
+    Code Push
+    ↓
+    Tests ❌
+    ↓
+    Pipeline stops
+    ↓
+    Deployment blocked
+    ```
+
+    Isse broken code production tak pahunchne ka risk reduce hota hai.
+
+    **Q: CI/CD me environment variables/secrets kaise handle karoge?**
+
+    Secrets ko source code me hardcode nahi karna chahiye:
+
+    ```javascript id="j7p3k9"
+    const dbUrl = process.env.DATABASE_URL;
+    ```
+
+    CI/CD platform ke **secret management** mechanism me sensitive values store karke runtime par inject karte hain.
+
+    **Q: Docker CI/CD me kahan fit hota hai?**
+
+    Common flow:
+
+    ```text
+    Code
+    ↓
+    Test
+    ↓
+    Build Docker Image
+    ↓
+    Push to Registry
+    ↓
+    Deploy Container
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **CI/CD = Code Push → Build → Test → Validate → Deploy.**
+
+
+
 382. Docker
 383. Kubernetes basics
 384. AWS services
