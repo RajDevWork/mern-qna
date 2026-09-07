@@ -35801,6 +35801,191 @@ Browser automatically validation kar dega.
 
 
 384. AWS services
+
+
+    ## Hinglish Explanation
+
+    **AWS (Amazon Web Services)** ek cloud platform hai jisme application ke liye **servers, databases, storage, networking, security, monitoring** etc. managed services milti hain.
+
+    Interview me AWS ke hundreds of services yaad karne ki zarurat nahi hai. Backend developer ke liye common services samajhna important hai.
+
+    ### Important AWS Services
+
+    | Service         | Simple Meaning          | Backend Use                        |
+    | --------------- | ----------------------- | ---------------------------------- |
+    | **EC2**         | Virtual server          | Application/API run karna          |
+    | **S3**          | Object/file storage     | Images, PDFs, backups              |
+    | **RDS**         | Managed relational DB   | PostgreSQL/MySQL                   |
+    | **DynamoDB**    | Managed NoSQL DB        | High-scale key-value/document data |
+    | **Lambda**      | Serverless functions    | Event-based/background tasks       |
+    | **ECS**         | Container orchestration | Docker containers run karna        |
+    | **EKS**         | Managed Kubernetes      | Kubernetes workloads               |
+    | **CloudFront**  | CDN                     | Fast content delivery              |
+    | **Route 53**    | DNS service             | Domain → application routing       |
+    | **VPC**         | Private network         | Network isolation                  |
+    | **IAM**         | Access management       | Users, roles, permissions          |
+    | **CloudWatch**  | Monitoring/logging      | Logs, metrics, alerts              |
+    | **SQS**         | Message queue           | Async/background processing        |
+    | **SNS**         | Pub/Sub notifications   | Notifications/events               |
+    | **API Gateway** | API entry point         | Serverless/API routing             |
+    | **ElastiCache** | Managed cache           | Redis/Memcached                    |
+
+    ### Typical Node.js Application on AWS
+
+    Ek simple production architecture:
+
+    ```text
+                        Users
+                        ↓
+                    Route 53
+                        ↓
+                    CloudFront
+                        ↓
+                Load Balancer
+                        ↓
+                ┌───────┴───────┐
+                ↓               ↓
+                EC2             EC2
+            Node.js          Node.js
+                └───────┬───────┘
+                        ↓
+                    RDS / MongoDB
+                        
+            Files → S3
+            Cache → ElastiCache
+            Queue → SQS
+            Logs → CloudWatch
+    ```
+
+    Agar Docker/Kubernetes use kar rahe ho:
+
+    ```text
+    Docker
+    ↓
+    ECR (Container Registry)
+    ↓
+    ECS / EKS
+    ↓
+    Containers
+    ```
+
+    ### IAM — Very Important
+
+    **IAM (Identity and Access Management)** decide karta hai:
+
+    > **Who can access what?**
+
+    Example:
+
+    ```text
+    Node.js API
+        ↓
+    IAM Role
+        ↓
+    S3: Read/Write
+    ```
+
+    Application me AWS access keys hardcode karne ke bajay appropriate **IAM roles** use karna better practice hai where supported.
+
+    ### EC2 vs Lambda
+
+    ```text
+    EC2
+    → Virtual server
+    → You manage server/runtime more directly
+    → Long-running applications
+
+    Lambda
+    → Serverless function
+    → AWS manages infrastructure
+    → Event/request-driven workloads
+    ```
+
+    ### S3 vs EBS
+
+    ```text
+    S3
+    → Object storage
+    → Images, videos, documents, backups
+
+    EBS
+    → Block storage attached to EC2
+    → Server disk/storage
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“AWS is a cloud platform that provides managed services for compute, storage, databases, networking, security, monitoring, and messaging. For a backend application, common services I would use include EC2 or ECS/EKS for compute, S3 for object storage, RDS for relational databases, DynamoDB for NoSQL workloads, ElastiCache for caching, SQS for asynchronous processing, IAM for access control, VPC for networking, and CloudWatch for monitoring and logs. The exact services depend on the application's requirements, scalability, availability, and cost.”**
+
+    ### Interview Follow-up
+
+    **Q: EC2 vs ECS vs EKS?**
+
+    ```text
+    EC2
+    → Virtual machines
+
+    ECS
+    → AWS container orchestration
+
+    EKS
+    → Managed Kubernetes
+    ```
+
+    **Q: S3 ka use kya hai?**
+
+    Files/object data ke liye:
+
+    ```text
+    Images
+    PDFs
+    Videos
+    Backups
+    Static assets
+    ```
+
+    **Q: SQS vs SNS?**
+
+    ```text
+    SQS
+    → Queue
+    → Consumer messages process karta hai
+
+    SNS
+    → Pub/Sub
+    → One message → Multiple subscribers
+    ```
+
+    **Q: VPC kya hai?**
+
+    **Virtual Private Cloud** — AWS resources ke liye logically isolated network environment.
+
+    ```text
+    VPC
+    ├── Public Subnet
+    └── Private Subnet
+    ```
+
+    Example: Load balancer public side par aur database private subnet me rakh sakte hain.
+
+    **Q: CloudWatch kya karta hai?**
+
+    AWS resources/application ke:
+
+    * Metrics
+    * Logs
+    * Alarms
+    * Monitoring
+
+    ke liye use hota hai.
+
+    ### ⭐ One-line memory trick
+
+    **AWS = Compute (EC2) + Storage (S3) + DB (RDS/DynamoDB) + Network (VPC) + Security (IAM) + Monitoring (CloudWatch).**
+
+
 385. Nginx
 386. Reverse proxy
 387. Monitoring tools
