@@ -36326,6 +36326,220 @@ Browser automatically validation kar dega.
     **Reverse Proxy = Client ke saamne server → Request receive karo → Right backend ko forward karo.**
 
 387. Monitoring tools
+
+    ## Hinglish Explanation
+
+    **Monitoring tools** ka use application aur infrastructure ki **health, performance, errors aur resource usage** continuously dekhne ke liye hota hai.
+
+    Backend production me mainly ye monitor karte hain:
+
+    ```text id="m7x2q1"
+    Application
+    ↓
+    Metrics + Logs + Traces
+    ↓
+    Monitoring Tool
+    ↓
+    Dashboard + Alerts
+    ```
+
+    ### Common Monitoring Tools
+
+    | Tool                         | Main Use                                         |
+    | ---------------------------- | ------------------------------------------------ |
+    | **Prometheus**               | Metrics collect/store karna                      |
+    | **Grafana**                  | Metrics ka dashboard/visualization               |
+    | **ELK / Elastic Stack**      | Centralized logs search/analyze karna            |
+    | **Datadog**                  | Metrics + logs + APM + infrastructure monitoring |
+    | **New Relic**                | Application Performance Monitoring (APM)         |
+    | **Sentry**                   | Application errors/exceptions track karna        |
+    | **AWS CloudWatch**           | AWS resources + application logs/metrics         |
+    | **MongoDB Atlas Monitoring** | MongoDB performance/health monitoring            |
+
+    ### 1. Prometheus + Grafana
+
+    Ye combination interview me kaafi common hai.
+
+    ```text id="x8p4k2"
+    Application
+        ↓
+    Prometheus
+        ↓
+    Metrics
+        ↓
+    Grafana
+        ↓
+    Dashboard
+    ```
+
+    Example metrics:
+
+    ```text id="j3m7q9"
+    CPU Usage
+    Memory Usage
+    Request Count
+    Request Latency
+    Error Rate
+    Database Connections
+    ```
+
+    Prometheus mainly **metrics collect** karta hai, while Grafana mainly **visualize** karta hai.
+
+    ---
+
+    ### 2. ELK / Elastic Stack
+
+    Logs ko centralized place par collect aur search karne ke liye:
+
+    ```text id="w5n9c3"
+    Node.js Apps
+        ↓
+    Log Collection
+        ↓
+    Elasticsearch
+        ↓
+    Kibana
+        ↓
+    Search / Dashboard
+    ```
+
+    Example:
+
+    ```text id="p6q2v8"
+    ERROR
+    POST /orders
+    500
+    Database connection timeout
+    ```
+
+    Large distributed applications me centralized logging kaafi useful hai.
+
+    ---
+
+    ### 3. Sentry
+
+    Application errors track karne ke liye useful:
+
+    ```text id="k9r4m1"
+    User Request
+        ↓
+    Application Error ❌
+        ↓
+    Sentry
+        ↓
+    Stack Trace + Request Context
+    ```
+
+    Isse production errors ko reproduce/debug karna easier ho sakta hai.
+
+    ---
+
+    ### 4. AWS CloudWatch
+
+    Agar application AWS par hai, CloudWatch se:
+
+    * Logs
+    * CPU/memory-related metrics
+    * Request/application metrics
+    * Alarms
+    * AWS resource health
+
+    monitor kar sakte ho.
+
+    ---
+
+    ### What Should You Monitor?
+
+    Interview me ye list yaad rakhna:
+
+    ```text id="v2c7n5"
+    Application
+    ├── Response Time
+    ├── Throughput
+    ├── Error Rate
+    ├── CPU
+    ├── Memory
+    ├── Event Loop Lag
+    ├── DB Query Latency
+    ├── DB Connections
+    └── External API Latency
+    ```
+
+    Aur distributed system me **tracing** bhi important hoti hai:
+
+    ```text id="b8m3q6"
+    Request
+    ↓
+    API Gateway
+    ↓
+    Node.js
+    ↓
+    MongoDB
+    ↓
+    External API
+    ```
+
+    Tracing se pata chal sakta hai ki total 2 seconds me **exactly kis component ne 1.5 seconds consume kiye**.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Monitoring tools are used to observe application performance, infrastructure health, errors, logs, and resource usage in production. Common tools include Prometheus for metrics collection, Grafana for visualization, Elastic Stack for centralized logging, Sentry for application error tracking, and CloudWatch for AWS monitoring. For distributed applications, I also use application performance monitoring and distributed tracing to understand request latency across different services. Important metrics include response time, throughput, error rate, CPU, memory, database latency, connections, and event loop lag.”**
+
+    ### Interview Follow-up
+
+    **Q: Prometheus vs Grafana?**
+
+    ```text id="t6w4p9"
+    Prometheus
+    → Collect/store metrics
+
+    Grafana
+    → Visualize metrics
+    → Dashboards + alerts
+    ```
+
+    **Q: Logging vs Monitoring vs Tracing?**
+
+    ```text id="z1k8r3"
+    Logging
+    → What happened?
+
+    Monitoring
+    → System ki health/performance kaisi hai?
+
+    Tracing
+    → Request ne exactly kahan kitna time spend kiya?
+    ```
+
+    **Q: Production me API slow ho gayi, kaise investigate karoge?**
+
+    ```text id="n4p7x2"
+    API latency alert
+        ↓
+    Check metrics
+        ↓
+    Check logs
+        ↓
+    Check trace
+        ↓
+    DB query?
+    External API?
+    CPU/Memory?
+    Event loop?
+        ↓
+    Find bottleneck
+        ↓
+    Fix + verify
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Monitoring = Metrics + Logs + Traces → Detect → Investigate → Fix → Alert.**
+
+
+
 388. Logging tools
 389. Blue-green deployment
 390. Canary deployment
