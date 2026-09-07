@@ -35987,6 +35987,182 @@ Browser automatically validation kar dega.
 
 
 385. Nginx
+
+    ## Hinglish Explanation
+
+    **Nginx (Engine-X)** ek high-performance **web server aur reverse proxy** hai. Backend applications, especially Node.js/NestJS/Express ke aage production me frequently use hota hai.
+
+    Typical setup:
+
+    ```text id="nginxflow"
+    Client
+    ↓
+    Nginx
+    ↓
+    Node.js / NestJS
+    ↓
+    Database
+    ```
+
+    Node.js application directly internet par expose karne ke bajay Nginx ko **public entry point** bana sakte hain.
+
+    ### Nginx ke Main Uses
+
+    **1. Reverse Proxy**
+
+    Client request ko backend server tak forward karta hai.
+
+    ```nginx
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://localhost:3000;
+        }
+    }
+    ```
+
+    ```text
+    Client → Nginx:80 → NestJS:3000
+    ```
+
+    ---
+
+    **2. Load Balancing**
+
+    Multiple backend instances ke beech traffic distribute kar sakta hai:
+
+    ```nginx
+    upstream backend {
+        server localhost:3001;
+        server localhost:3002;
+        server localhost:3003;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+    ```
+
+    ```text
+                Nginx
+                /   |   \
+            ↓    ↓    ↓
+            Node1 Node2 Node3
+    ```
+
+    ---
+
+    **3. SSL/TLS Termination**
+
+    HTTPS connection Nginx handle kar sakta hai aur backend ko internal HTTP connection par forward kar sakta hai.
+
+    ```text
+    Client
+    ↓ HTTPS
+    Nginx
+    ↓ HTTP/internal network
+    NestJS
+    ```
+
+    ---
+
+    **4. Static Files**
+
+    Nginx images, CSS, JS, HTML jaise static files efficiently serve kar sakta hai.
+
+    ---
+
+    **5. Caching**
+
+    Frequently requested responses/resources ko cache karke backend par load reduce kar sakta hai.
+
+    ---
+
+    **6. Security / Traffic Control**
+
+    Nginx ko frontend entry point par rakhkar request size limits, basic access rules, headers, rate limiting etc. configure kiye ja sakte hain.
+
+    ### Nginx + Node.js Production Example
+
+    ```text id="prodflow"
+                    Internet
+                        ↓
+                    Nginx
+                ┌─────┴─────┐
+                ↓           ↓
+            NestJS       NestJS
+            :3001        :3002
+                └─────┬─────┘
+                        ↓
+                    PostgreSQL
+    ```
+
+    Yahan Nginx **reverse proxy + load balancer + HTTPS entry point** ki tarah kaam kar raha hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Nginx is a high-performance web server and reverse proxy commonly used in front of backend applications. In a Node.js or NestJS application, I can use Nginx to receive client requests and forward them to the backend. It can also perform load balancing across multiple application instances, terminate SSL/TLS connections, serve static files, provide caching, and apply certain traffic and security controls. A common production setup is Client → Nginx → Node.js/NestJS → Database.”**
+
+    ### Interview Follow-up
+
+    **Q: Reverse Proxy kya hota hai?**
+
+    Client directly backend se communicate karne ke bajay:
+
+    ```text
+    Client
+    ↓
+    Reverse Proxy
+    ↓
+    Backend
+    ```
+
+    Reverse proxy backend servers ki taraf se client requests receive aur forward karta hai.
+
+    **Q: Nginx vs Node.js?**
+
+    ```text
+    Nginx
+    → Web server / reverse proxy
+    → Static files / proxy / load balancing
+
+    Node.js
+    → JavaScript runtime
+    → Application/business logic
+    → APIs
+    ```
+
+    **Q: Nginx aur Load Balancer same hain?**
+
+    Exactly same nahi.
+
+    Nginx **load balancing kar sakta hai**, but load balancer ek broader concept hai. AWS me example ke liye dedicated load-balancing services bhi available hain.
+
+    **Q: Nginx ke peeche multiple Node.js instances kyun?**
+
+    ```text
+    Nginx
+    ↓
+    Node 1
+    Node 2
+    Node 3
+    ```
+
+    Isse traffic distribute kar sakte hain aur ek instance fail hone par availability improve ho sakti hai.
+
+    ### ⭐ One-line memory trick
+
+    **Nginx = Client ke aage gateway → Reverse Proxy + Load Balancer + HTTPS + Static Files.**
+
+
+
 386. Reverse proxy
 387. Monitoring tools
 388. Logging tools
