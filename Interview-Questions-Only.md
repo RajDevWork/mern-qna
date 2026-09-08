@@ -37340,6 +37340,107 @@ Browser automatically validation kar dega.
 
 
 394. bcrypt
+    ## Hinglish Explanation
+
+    **bcrypt** ek **password hashing algorithm** hai jo passwords ko securely store karne ke liye use hota hai.
+
+    Sabse important point:
+
+    ```text
+    Password → bcrypt hash → Database
+    ```
+
+    Login ke time:
+
+    ```text
+    User Password
+        ↓
+    bcrypt.compare()
+        ↓
+    Stored Hash
+        ↓
+    Match? → Login ✅
+    ```
+
+    Password ko **encrypt karke database me store nahi karna chahiye**, kyunki encryption reversible hota hai. Password ke liye hashing use karte hain, jisme original password ko directly recover nahi kiya ja sakta.
+
+    bcrypt automatically **salt** use karta hai, isliye same password ke hashes normally different hote hain.
+
+    ### Small Implementation
+
+    Install:
+
+    ```bash
+    npm install bcrypt
+    ```
+
+    Password hash karna:
+
+    ```javascript id="bc8721"
+    import bcrypt from "bcrypt";
+
+    const password = "MyPassword123";
+
+    const hash = await bcrypt.hash(password, 12);
+
+    console.log(hash);
+    ```
+
+    Login ke time:
+
+    ```javascript id="bc8722"
+    const isValid = await bcrypt.compare(
+    password,
+    storedHash
+    );
+
+    if (!isValid) {
+    throw new Error("Invalid credentials");
+    }
+    ```
+
+    Yahan `12` **cost factor** hai. Higher cost ka matlab hashing intentionally more computationally expensive hogi, so password guessing attacks ko harder banaya ja sakta hai—but server par login workload bhi increase hota hai.
+
+    ### Important Difference
+
+    ```text
+    Encryption:
+    Data → Encrypt → Decrypt → Original Data
+
+    Hashing:
+    Password → Hash → ❌ Original password directly recover nahi
+    ```
+
+    Isliye:
+
+    **Password → bcrypt hash → DB**
+
+    Aur **plain password kabhi database me store nahi karna chahiye.**
+
+    ## 🎯 English Interview Answer
+
+    > **“bcrypt is a password hashing algorithm commonly used to securely store user passwords. Instead of storing the plain password, I generate a bcrypt hash and store only that hash in the database. During login, I use bcrypt.compare to compare the entered password with the stored hash. bcrypt also uses a salt and a configurable cost factor, which makes password cracking more difficult. Passwords should be hashed rather than encrypted because we don't need to recover the original password.”**
+
+    ### Interview Follow-up
+
+    **Q: bcrypt aur encryption me kya difference hai?**
+
+    **Encryption reversible hoti hai** — key ke through original data recover kar sakte hain.
+
+    **bcrypt hashing one-way hoti hai** — original password ko hash se directly decrypt nahi kar sakte.
+
+    **Q: Salt kya hota hai?**
+
+    Salt ek **random value** hoti hai jo password hashing ke time use hoti hai. Isse same password ke hashes different ban sakte hain aur precomputed/rainbow-table attacks ke against protection improve hoti hai.
+
+    **Q: bcrypt ka cost factor kya karta hai?**
+
+    Cost factor hashing ko intentionally more expensive banata hai. Higher cost → generally more computation → brute-force attacks more expensive, but application ke CPU usage/latency bhi increase hoti hai.
+
+    ### ⭐ One-line memory trick
+
+    **bcrypt = Password ko hash karo + salt use karo + cost factor → DB me hash store karo.**
+
 395. HTTPS
 396. CORS
 397. Secure cookies
