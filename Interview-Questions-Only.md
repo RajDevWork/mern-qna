@@ -36989,6 +36989,116 @@ Browser automatically validation kar dega.
 **Security**
 
 391. XSS
+
+    ## Hinglish Explanation
+
+    **XSS (Cross-Site Scripting)** ek web security vulnerability hai jisme attacker **malicious JavaScript/code ko web page me inject** kar deta hai, aur woh code kisi user ke browser me execute ho sakta hai.
+
+    Simple example:
+
+    ```text
+    Attacker → Malicious Script → Website
+                            ↓
+                    User's Browser
+                            ↓
+                    Script Execute
+    ```
+
+    Maan lo application user ka comment directly HTML me render kar rahi hai:
+
+    ```html
+    <div>
+    <%= comment %>
+    </div>
+    ```
+
+    Agar attacker comment me malicious HTML/script inject kar de aur application usse safely escape na kare, browser usse execute kar sakta hai.
+
+    ### XSS ke common types
+
+    **1. Stored XSS**
+
+    Malicious payload database me save ho jata hai.
+
+    ```text
+    Attacker → Comment → Database → Other Users → Script executes
+    ```
+
+    **2. Reflected XSS**
+
+    Malicious input request ke through aata hai aur immediately response me reflect ho jata hai.
+
+    ```text
+    Attacker → Malicious URL → Server → Browser → Script
+    ```
+
+    **3. DOM-based XSS**
+
+    Server ki zarurat bhi nahi ho sakti. Client-side JavaScript unsafe data ko DOM me insert karta hai.
+
+    ```javascript
+    element.innerHTML = userInput;
+    ```
+
+    ### XSS se kaise protect karein?
+
+    Main approaches:
+
+    * **Output encoding/escaping** — user input ko HTML/JS ke form me directly execute na hone do.
+    * Framework ki safe rendering features use karo. React ka normal JSX rendering generally values ko escape karta hai.
+    * `innerHTML` jaise unsafe DOM APIs avoid karo; zarurat ho to trusted sanitization use karo.
+    * **Content Security Policy (CSP)** implement karo.
+    * Cookies ke liye **HttpOnly** flag use karo, taaki JavaScript directly cookie read na kar sake.
+    * Input validation/sanitization ko additional defense ke roop me use karo.
+
+    ### Small Implementation
+
+    Unsafe:
+
+    ```javascript
+    const comment = req.body.comment;
+
+    res.send(`
+    <div>${comment}</div>
+    `);
+    ```
+
+    Better approach: HTML escaping/safe templating use karo instead of directly injecting user input.
+
+    For example, browser-side DOM manipulation me:
+
+    ```javascript
+    element.textContent = userInput;
+    ```
+
+    `textContent` input ko HTML ke roop me interpret nahi karta.
+
+    ## 🎯 English Interview Answer
+
+    > **“XSS stands for Cross-Site Scripting. It is a web security vulnerability where an attacker injects malicious script into a web page, and that script executes in another user's browser. There are three common types: stored XSS, reflected XSS, and DOM-based XSS. To prevent XSS, I use proper output encoding, safe framework rendering, avoid unsafe APIs like innerHTML when possible, sanitize trusted HTML when required, and use security headers such as Content Security Policy. I also use HttpOnly cookies for sensitive session information so client-side JavaScript cannot directly access them.”**
+
+    ### Interview Follow-up
+
+    **Q: XSS vs SQL Injection?**
+
+    **XSS** → Malicious code **user ke browser me execute** hota hai.
+
+    **SQL Injection** → Malicious input **database query ko manipulate** karta hai.
+
+    ```text
+    XSS            → Attacker → Web Page → Browser
+    SQL Injection  → Attacker → Application → Database
+    ```
+
+    **Q: Kya input validation alone XSS prevent kar sakta hai?**
+
+    Nahi. Validation useful hai, but **output encoding + safe rendering + CSP** jaise multiple layers better protection dete hain.
+
+    ### ⭐ One-line memory trick
+
+    **XSS = Attacker ka script → Website me inject → User ke browser me execute.**
+
+
 392. CSRF
 393. Injection attacks
 394. bcrypt
