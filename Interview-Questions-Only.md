@@ -37442,6 +37442,119 @@ Browser automatically validation kar dega.
     **bcrypt = Password ko hash karo + salt use karo + cost factor → DB me hash store karo.**
 
 395. HTTPS
+
+    ## Hinglish Explanation
+
+    **HTTPS (HTTP Secure)** basically **HTTP + TLS encryption** hai. Iska purpose client aur server ke beech data ko securely transfer karna hai.
+
+    Simple flow:
+
+    ```text id="https01"
+    Client / Browser
+        ↓
+    HTTPS
+        ↓
+    TLS Encryption 🔒
+        ↓
+    Server
+    ```
+
+    HTTPS mainly 3 cheezein provide karta hai:
+
+    1. **Encryption** → Data network me readable form me nahi jata.
+    2. **Integrity** → Data transit me tamper hua ya nahi, detect karne me help karta hai.
+    3. **Authentication** → TLS certificate ke through client verify kar sakta hai ki woh intended server se connect kar raha hai.
+
+    Example:
+
+    ```text id="https02"
+    HTTP:
+    Password → Network → Password ❌
+
+    HTTPS:
+    Password → Encrypt → Network → Decrypt → Server ✅
+    ```
+
+    ### TLS ka basic flow
+
+    ```text id="https03"
+    Client
+    ↓
+    Server se HTTPS connection
+    ↓
+    Server Certificate
+    ↓
+    Certificate validation
+    ↓
+    TLS Handshake
+    ↓
+    Session keys establish
+    ↓
+    Encrypted HTTP communication 🔒
+    ```
+
+    Modern HTTPS me **TLS** use hota hai. TLS handshake ke baad actual application data generally symmetric session keys se efficiently encrypt hota hai.
+
+    ### Small Implementation
+
+    Nginx ke through HTTPS commonly configure karte hain:
+
+    ```nginx id="https04"
+    server {
+        listen 443 ssl;
+
+        server_name api.example.com;
+
+        ssl_certificate     /etc/ssl/cert.pem;
+        ssl_certificate_key /etc/ssl/private/key.pem;
+
+        location / {
+            proxy_pass http://localhost:3000;
+        }
+    }
+    ```
+
+    Architecture:
+
+    ```text id="https05"
+    Client
+    ↓ HTTPS :443
+    Nginx
+    ↓ HTTP/internal network
+    NestJS :3000
+    ```
+
+    Isse **TLS termination Nginx par** ho sakta hai. Production architecture me backend-to-backend traffic ko bhi HTTPS/TLS ki zarurat ho sakti hai, depending on network trust and security requirements.
+
+    ## 🎯 English Interview Answer
+
+    > **“HTTPS stands for Hypertext Transfer Protocol Secure. It is HTTP running over TLS, which secures communication between the client and server. HTTPS provides encryption, data integrity, and server authentication through TLS certificates. During the TLS handshake, the client and server establish secure session keys, and then HTTP data is exchanged securely. In production, I commonly terminate TLS at a load balancer or Nginx and forward the request to the application server. I also make sure HTTP traffic is redirected to HTTPS and sensitive data is never sent over plain HTTP.”**
+
+    ### Interview Follow-up
+
+    **Q: HTTP aur HTTPS me difference?**
+
+    | HTTP                          | HTTPS                                  |
+    | ----------------------------- | -------------------------------------- |
+    | Plain communication           | TLS-secured communication              |
+    | Default port 80               | Default port 443                       |
+    | Data encrypted nahi hota      | Data encrypted hota hai                |
+    | Certificate required nahi     | TLS certificate involved               |
+    | Sensitive data ke liye unsafe | Secure communication ke liye preferred |
+
+    **Q: SSL vs TLS?**
+
+    **TLS** modern protocol hai. **SSL** purana protocol hai jo deprecated hai. Log commonly “SSL certificate” bolte hain, but modern HTTPS connections generally **TLS** use karte hain.
+
+    **Q: HTTPS password ko secure karta hai?**
+
+    Haan, **transit ke time** password ko network attackers se protect karta hai. Lekin application ko password ko database me **bcrypt/Argon2 jaise password-hashing algorithm** se store karna chahiye. HTTPS database password storage ka replacement nahi hai.
+
+    ### ⭐ One-line memory trick
+
+    **HTTPS = HTTP + TLS → Encryption + Integrity + Server Authentication 🔒**
+
+
 396. CORS
 397. Secure cookies
 398. API security
