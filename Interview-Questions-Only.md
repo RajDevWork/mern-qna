@@ -37100,6 +37100,118 @@ Browser automatically validation kar dega.
 
 
 392. CSRF
+
+    ## Hinglish Explanation
+
+    **CSRF (Cross-Site Request Forgery)** ek web security attack hai jisme attacker user ke **already authenticated session** ka misuse karke user ki taraf se unwanted request karwata hai.
+
+    Simple example:
+
+    ```text id="csfr01"
+    User → Bank Website → Login → Session Cookie
+
+    Attacker Website
+        ↓
+    User ke browser se
+    Bank ko unwanted request
+        ↓
+    Bank thinks: "User already logged in hai"
+        ↓
+    Action perform ❌
+    ```
+
+    Example: user bank me logged in hai. Attacker ek malicious page banata hai jo background me transfer request trigger karne ki koshish karta hai.
+
+    ```html id="csfr02"
+    <form action="https://bank.com/transfer" method="POST">
+    <input name="amount" value="10000">
+    <input name="to" value="attacker">
+    </form>
+
+    <script>
+    document.forms[0].submit();
+    </script>
+    ```
+
+    Agar authentication **cookie-based** hai aur server CSRF protection nahi karta, browser automatically relevant cookie bhej sakta hai.
+
+    ### CSRF se kaise protect karein?
+
+    **1. CSRF Token**
+
+    Server ek unpredictable token generate karta hai. Request ke saath token verify karta hai.
+
+    ```text id="csfr03"
+    Request
+    ↓
+    CSRF Token present?
+    ↓
+    Valid? ── No → Reject ❌
+    │
+    Yes
+    ↓
+    Process Request ✅
+    ```
+
+    **2. SameSite Cookies**
+
+    Cookie ko:
+
+    ```text
+    SameSite=Lax
+    ```
+
+    ya appropriate cases me:
+
+    ```text
+    SameSite=Strict
+    ```
+
+    set kar sakte hain. Isse cross-site requests me cookies bhejne ka behavior restrict hota hai.
+
+    **3. Origin/Referer validation**
+
+    Sensitive requests ke liye server check kar sakta hai ki request trusted origin se aayi hai ya nahi.
+
+    ### Important: CSRF vs XSS
+
+    ```text id="csfr04"
+    XSS
+    Attacker → Malicious Script → User Browser
+
+    CSRF
+    Attacker → User Browser → Authenticated Website
+    ```
+
+    **XSS me attacker ka script execute hota hai.**
+
+    **CSRF me attacker user se unwanted authenticated action karwane ki koshish karta hai.**
+
+    Ek important point: **XSS aur CSRF different attacks hain, lekin XSS successful hone par kuch CSRF defenses ko bypass karna possible ho sakta hai**, isliye dono ke against protection important hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“CSRF stands for Cross-Site Request Forgery. It is a security attack where an attacker tricks an authenticated user's browser into sending an unwanted request to a trusted application. This is especially relevant when authentication is based on cookies because the browser may automatically include the authentication cookie with the request. To prevent CSRF, I use CSRF tokens, appropriate SameSite cookie settings, and validate the Origin or Referer header for sensitive operations. I also make sure that state-changing operations are not performed through GET requests.”**
+
+    ### Interview Follow-up
+
+    **Q: JWT use karne par CSRF nahi hota?**
+
+    **Depends on JWT ko kaha store/use kar rahe ho.**
+
+    Agar JWT **HttpOnly cookie** me stored hai, browser automatically cookie bhej sakta hai, so **CSRF protection still matters**.
+
+    Agar JWT `Authorization: Bearer <token>` header me manually send hota hai, normal cross-site form request automatically woh header nahi laga sakti, so classic cookie-based CSRF risk significantly different/lower hota hai. But XSS and token-storage/security concerns still matter.
+
+    **Q: GET request se data change karna kyun avoid karna chahiye?**
+
+    GET ideally **safe/read-only** operation hona chahiye. Delete/update/transfer jaise state-changing operations ke liye POST/PUT/PATCH/DELETE use karna better hai.
+
+    ### ⭐ One-line memory trick
+
+    **CSRF = User logged-in hai → Attacker uske browser se unwanted authenticated request karwata hai.**
+
+
 393. Injection attacks
 394. bcrypt
 395. HTTPS
