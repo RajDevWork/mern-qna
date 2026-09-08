@@ -37213,6 +37213,132 @@ Browser automatically validation kar dega.
 
 
 393. Injection attacks
+
+    ## Hinglish Explanation
+
+    **Injection Attack** tab hota hai jab attacker **untrusted input ko application ke command/query/code ka part bana deta hai**, aur application us input ko safely handle nahi karti.
+
+    Simple flow:
+
+    ```text
+    User Input
+    ↓
+    Application
+    ↓
+    Query / Command / Code me directly add
+    ↓
+    Attacker ka input execute/interpret ❌
+    ```
+
+    Common injection attacks:
+
+    * **SQL Injection** → SQL query manipulate karna
+    * **NoSQL Injection** → MongoDB query manipulate karna
+    * **Command Injection** → OS command manipulate/execute karwana
+    * **LDAP Injection** → LDAP query manipulate karna
+    * **Template Injection** → Server-side template engine ko manipulate karna
+    * **Code Injection** → Application ke context me malicious code execute karwana
+
+    ### Small Implementation
+
+    Unsafe SQL example:
+
+    ```javascript
+    const email = req.body.email;
+
+    const query =
+    `SELECT * FROM users WHERE email = '${email}'`;
+
+    db.query(query);
+    ```
+
+    Problem: user input directly query ke andar concatenate ho raha hai.
+
+    Better:
+
+    ```javascript
+    const email = req.body.email;
+
+    const query =
+    `SELECT * FROM users WHERE email = $1`;
+
+    db.query(query, [email]);
+    ```
+
+    Yahan **parameterized query** use ho rahi hai, so user input ko SQL code ke part ki tarah interpret karna much harder/prevented hai.
+
+    MongoDB me bhi user-controlled objects ko blindly query me pass nahi karna chahiye:
+
+    ```javascript
+    // ❌ Unsafe pattern
+    User.find(req.body);
+    ```
+
+    Instead expected fields ko explicitly pick/validate karo:
+
+    ```javascript
+    // ✅ Better
+    const { email } = req.body;
+
+    User.findOne({ email });
+    ```
+
+    ### Injection attacks prevent kaise karein?
+
+    Main approach:
+
+    ```text id="inj01"
+    Validate Input
+        ↓
+    Parameterized Queries
+        ↓
+    Safe APIs / ORM
+        ↓
+    Avoid String Concatenation
+        ↓
+    Least Privilege
+        ↓
+    Security Testing & Monitoring
+    ```
+
+    **Important:** Sirf input validation par depend nahi karna chahiye. **Parameterized queries / safe APIs** primary defense honi chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > **“Injection attacks happen when untrusted user input is interpreted as part of a query, command, or code instead of being treated as data. Common examples are SQL injection, NoSQL injection, command injection, LDAP injection, and template injection. To prevent injection attacks, I validate and sanitize input where appropriate, use parameterized queries or prepared statements, avoid building queries and commands using string concatenation, and use safe APIs or ORM features. I also follow the principle of least privilege and monitor suspicious inputs and errors.”**
+
+    ### Interview Follow-up
+
+    **Q: SQL Injection kaise prevent karoge?**
+
+    Mainly:
+
+    1. **Parameterized queries / prepared statements**
+    2. ORM/query builder ka safe usage
+    3. Input validation
+    4. Least-privilege DB user
+    5. Raw SQL ko carefully handle karna
+
+    **Q: SQL Injection aur XSS me difference?**
+
+    ```text id="inj02"
+    SQL Injection
+    Attacker Input → Database Query → Database
+
+    XSS
+    Attacker Input → Web Page → User Browser
+    ```
+
+    **SQL Injection** ka target mainly database/query execution hota hai.
+
+    **XSS** ka target user's browser hota hai.
+
+    ### ⭐ One-line memory trick
+
+    **Injection = Untrusted Input ko Query/Command/Code mat banne do → Treat it as Data.**
+
+
+
 394. bcrypt
 395. HTTPS
 396. CORS
