@@ -38010,6 +38010,198 @@ Browser automatically validation kar dega.
 
 
 399. OAuth
+
+    ## Hinglish Explanation
+
+    **OAuth 2.0** ek **authorization framework** hai. Iska main purpose hai kisi application ko user ke behalf par **limited access** dena, bina user ka password application ke saath share kiye.
+
+    Example: **“Login with Google”** ko samjho:
+
+    ```text id="oauth01"
+    User
+    ↓
+    Your App
+    ↓
+    Google Authorization Server
+    ↓
+    User Login + Consent
+    ↓
+    Authorization Code
+    ↓
+    Your Backend
+    ↓
+    Access Token
+    ↓
+    Google API
+    ```
+
+    Suppose tumhari application ko Google Calendar read karna hai. User apna Google password tumhari application ko nahi deta. Instead, Google user se permission leta hai aur application ko appropriate **access token** deta hai.
+
+    ### OAuth ke important components
+
+    **1. Resource Owner**
+
+    Usually **user** — jiske data ko access karna hai.
+
+    **2. Client**
+
+    Tumhari application jo access maang rahi hai.
+
+    **3. Authorization Server**
+
+    User ko authenticate karta hai aur authorization grant/token issue karta hai.
+
+    **4. Resource Server**
+
+    Actual protected API/data provide karta hai.
+
+    ```text id="oauth02"
+    User
+    ↓
+    Client App
+    ↓
+    Authorization Server → Access Token
+                            ↓
+                        Resource Server
+                            ↓
+                        Data
+    ```
+
+    ### Access Token
+
+    Access token API ko batata hai ki client ko kis scope tak access diya gaya hai.
+
+    Example:
+
+    ```text id="oauth03"
+    scope:
+    calendar.read
+    ```
+
+    Iska matlab application ko calendar read karne ki permission hai, but necessarily calendar modify karne ki nahi.
+
+    ### OAuth Authorization Code Flow
+
+    Modern web applications me **Authorization Code + PKCE** commonly recommended flow hai.
+
+    ```text id="oauth04"
+    1. User → Your App
+
+    2. Your App → Authorization Server
+
+    3. User Login + Consent
+
+    4. Authorization Server
+        ↓
+    Authorization Code
+
+    5. App → Token Endpoint
+        ↓
+    Code + PKCE verifier
+
+    6. Authorization Server
+        ↓
+    Access Token
+
+    7. App → Resource API
+        ↓
+    Bearer Access Token
+    ```
+
+    **PKCE** authorization code ko intercept hone ki situation me misuse karna harder banata hai.
+
+    ### Small Implementation
+
+    OAuth provider se authorization URL ka conceptual example:
+
+    ```javascript id="oauth05"
+    const authUrl =
+    "https://auth.example.com/authorize" +
+    "?client_id=123" +
+    "&response_type=code" +
+    "&redirect_uri=https://app.example.com/callback" +
+    "&scope=profile%20email" +
+    "&code_challenge=...";
+    ```
+
+    User authorization ke baad:
+
+    ```text id="oauth06"
+    GET /callback?code=abc123
+    ```
+
+    Backend authorization code ko token endpoint par exchange karta hai:
+
+    ```javascript id="oauth07"
+    const response = await fetch(
+    "https://auth.example.com/token",
+    {
+        method: "POST",
+        body: new URLSearchParams({
+        grant_type: "authorization_code",
+        code,
+        redirect_uri,
+        client_id,
+        code_verifier,
+        }),
+    }
+    );
+
+    const tokens = await response.json();
+    ```
+
+    Real implementation me provider ki official SDK/library aur exact OAuth configuration use karna better hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“OAuth 2.0 is an authorization framework that allows an application to access a user's protected resources without requiring the user to share their password with that application. For example, with Google OAuth, the user logs in and gives consent on Google's authorization server. The application receives an authorization code and exchanges it for an access token. The access token is then used to call protected APIs with specific scopes. For modern web applications, I commonly use the Authorization Code flow with PKCE.”**
+
+    ### Interview Follow-up
+
+    **Q: OAuth vs JWT?**
+
+    Ye bahut common interview question hai.
+
+    ```text id="oauth08"
+    OAuth
+    → Authorization framework
+    → "Application ko kis resource ka access milega?"
+
+    JWT
+    → Token format
+    → Token ke andar claims represent kar sakta hai
+    ```
+
+    **OAuth aur JWT competitors nahi hain.** OAuth flow me tokens JWT format me ho sakte hain, but **OAuth token ka JWT hona mandatory nahi hai**.
+
+    **Q: OAuth authentication hai ya authorization?**
+
+    **OAuth primarily authorization hai.**
+
+    OAuth ka core question:
+
+    > **“Application ko user ke behalf par kya access milna chahiye?”**
+
+    User authentication ke liye **OpenID Connect (OIDC)** OAuth 2.0 ke upar identity layer provide karta hai.
+
+    **Q: Access Token vs Refresh Token?**
+
+    ```text id="oauth09"
+    Access Token
+    → API access ke liye
+    → Short-lived rakhna preferred
+
+    Refresh Token
+    → New access token obtain karne ke liye
+    → More sensitive
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **OAuth = Password share kiye bina → Application ko limited user-data access do.**
+
+
+
 400. JWT security
 
 ---
