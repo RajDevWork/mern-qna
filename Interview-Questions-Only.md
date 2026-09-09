@@ -38204,6 +38204,136 @@ Browser automatically validation kar dega.
 
 400. JWT security
 
+    ## Hinglish Explanation
+
+    **JWT Security** ka matlab sirf JWT generate karna nahi hai. JWT ko **securely issue, store, transmit, validate aur expire** karna important hai.
+
+    Typical flow:
+
+    ```text id="jwtsec01"
+    Login
+    ↓
+    Validate User
+    ↓
+    Generate JWT
+    ↓
+    Client
+    ↓
+    Send JWT with Request
+    ↓
+    Backend verifies JWT
+    ↓
+    Access granted ✅
+    ```
+
+    JWT ke saath mainly ye security practices follow karni chahiye:
+
+    1. **Strong secret/private key** use karo — hardcode mat karo.
+    2. **Short-lived access token** rakho, e.g. 10–15 minutes depending on requirement.
+    3. **Refresh token** use karke new access token issue karo.
+    4. Token ko **HTTPS** par hi transmit karo.
+    5. Browser app me token storage carefully choose karo. **HttpOnly + Secure + SameSite cookies** XSS token theft risk ko reduce kar sakti hain, but cookie-based auth me CSRF protection bhi consider karna hota hai.
+    6. JWT ke claims me **password/secrets/sensitive data** mat rakho.
+    7. Server par **signature, expiration (`exp`), issuer (`iss`), audience (`aud`)** jaise claims validate karo where applicable.
+    8. Algorithm ko explicitly configure/allow-list karo; blindly token ke `alg` par trust mat karo.
+    9. Logout/revocation requirements ke liye short-lived tokens, refresh-token rotation/revocation, ya server-side session/token state use kar sakte ho.
+
+    ### Small Implementation
+
+    JWT generate:
+
+    ```javascript id="jwtsec02"
+    const token = jwt.sign(
+    {
+        sub: user.id,
+        role: user.role,
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn: "15m",
+        issuer: "my-api",
+        audience: "my-client",
+    }
+    );
+    ```
+
+    Verify:
+
+    ```javascript id="jwtsec03"
+    const payload = jwt.verify(
+    token,
+    process.env.JWT_SECRET,
+    {
+        issuer: "my-api",
+        audience: "my-client",
+    }
+    );
+    ```
+
+    Agar token invalid, expired, ya signature mismatch hai:
+
+    ```text id="jwtsec04"
+    JWT
+    ↓
+    Signature valid? ❌
+    OR expired? ❌
+    ↓
+    401 Unauthorized
+    ```
+
+    **Important:** JWT ka payload normally **encrypted nahi hota**. Base64URL encoded hota hai. Isliye JWT ke andar sensitive information mat store karo.
+
+    ## 🎯 English Interview Answer
+
+    > **“JWT security means securely issuing, storing, transmitting, and validating JWT tokens. I use a strong secret or private key and never hardcode it in the source code. I keep access tokens short-lived and use refresh tokens when longer sessions are required. I always transmit tokens over HTTPS and carefully choose secure storage, such as HttpOnly, Secure, and appropriate SameSite cookies for browser applications. On the server, I validate the signature, expiration, issuer, audience, and expected algorithm. I also avoid putting sensitive information inside the JWT payload.”**
+
+    ### Interview Follow-up
+
+    **Q: JWT ko localStorage me store karna safe hai?**
+
+    `localStorage` convenient hai, but agar application me **XSS vulnerability** ho, malicious JavaScript stored token ko read kar sakta hai.
+
+    Isliye browser-based authentication me **HttpOnly cookies** often a safer choice for protecting tokens from direct JavaScript access. Lekin cookie-based authentication ke saath **CSRF protection** bhi properly configure karna important hai.
+
+    **Q: JWT ko logout kaise karoge?**
+
+    JWT stateless hone ki wajah se issued access token ko server automatically “delete” nahi kar sakta.
+
+    Practical approach:
+
+    ```text id="jwtsec05"
+    Short-lived Access Token
+            +
+    Refresh Token
+            ↓
+    Logout
+            ↓
+    Refresh Token Revoke/Rotate
+    ```
+
+    Agar immediate access-token revocation required ho, server-side denylist/session state bhi use ki ja sakti hai, but usse JWT architecture ka stateless benefit reduce hota hai.
+
+    **Q: JWT payload me password store kar sakte hain?**
+
+    **Never.**
+
+    ```text id="jwtsec06"
+    JWT Payload
+    ❌ password
+    ❌ secret keys
+    ❌ sensitive personal data
+
+    ✅ userId / sub
+    ✅ role
+    ✅ required claims
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **JWT Security = Strong Key + Short Expiry + HTTPS + Safe Storage + Strict Validation + No Sensitive Payload.**
+
+
+
 ---
 
 ## 🛠️ Real-World Experience Questions (401-450)
