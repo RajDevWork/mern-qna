@@ -37809,6 +37809,206 @@ Browser automatically validation kar dega.
 
 
 398. API security
+
+    ## Hinglish Explanation
+
+    **API Security** ka matlab hai API ko **unauthorized access, data theft, attacks aur misuse** se protect karna.
+
+    Production API me sirf login enough nahi hota. Multiple security layers lagani hoti hain:
+
+    ```text id="apis01"
+    Client
+    ↓
+    HTTPS / TLS 🔒
+    ↓
+    Authentication
+    ↓
+    Authorization (RBAC)
+    ↓
+    Input Validation
+    ↓
+    Rate Limiting
+    ↓
+    API
+    ↓
+    Database
+    ```
+
+    ### Important API Security Practices
+
+    **1. HTTPS**
+
+    Data ko network me encrypted rakhta hai.
+
+    **2. Authentication**
+
+    Verify karta hai **user kaun hai?**
+
+    ```text
+    JWT / Session / OAuth
+    ```
+
+    **3. Authorization**
+
+    Check karta hai **user kya kar sakta hai?**
+
+    ```text
+    Admin → Delete User ✅
+    Normal User → Delete User ❌
+    ```
+
+    **4. Input Validation**
+
+    Expected input hi accept karo.
+
+    ```javascript id="apis02"
+    const { email } = req.body;
+
+    if (typeof email !== "string") {
+    return res.status(400).json({
+        message: "Invalid email",
+    });
+    }
+    ```
+
+    Production me DTO/schema validation library use karna better hai.
+
+    **5. Rate Limiting**
+
+    Ek user/IP ko unlimited requests nahi karne deta.
+
+    ```text id="apis03"
+    1000 requests/sec
+        ↓
+    Rate Limiter
+        ↓
+    Too many requests ❌
+    ```
+
+    Brute-force aur API abuse ko reduce karta hai.
+
+    **6. Secure Cookies / Token Security**
+
+    Authentication tokens ko safely handle karo. Cookie-based auth me `HttpOnly`, `Secure`, `SameSite` jaise attributes important hain.
+
+    **7. CORS**
+
+    Trusted frontend origins ko hi browser-based cross-origin access allow karo.
+
+    **8. Security Headers**
+
+    Helmet jaise tools ke through appropriate HTTP security headers configure kar sakte ho.
+
+    **9. Injection Prevention**
+
+    Parameterized queries, safe ORM/query APIs, validation etc. use karo.
+
+    **10. Don't expose sensitive information**
+
+    Response me ye nahi bhejna:
+
+    ```text id="apis04"
+    ❌ Password
+    ❌ JWT/refresh token unnecessarily
+    ❌ Database credentials
+    ❌ Internal stack trace
+    ❌ API secrets
+    ```
+
+    **11. Logging & Monitoring**
+
+    Suspicious requests, authentication failures, rate-limit violations aur errors monitor karo—but passwords/tokens ko logs me mat daalo.
+
+    ### Small Implementation
+
+    Express API ka basic security setup:
+
+    ```javascript id="apis05"
+    import express from "express";
+    import cors from "cors";
+    import helmet from "helmet";
+    import rateLimit from "express-rate-limit";
+
+    const app = express();
+
+    app.use(helmet());
+
+    app.use(cors({
+    origin: "https://app.example.com"
+    }));
+
+    app.use(express.json());
+
+    app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100
+    }));
+    ```
+
+    Authentication + authorization:
+
+    ```javascript id="apis06"
+    app.delete("/users/:id", authenticate, authorize("admin"), deleteUser);
+    ```
+
+    Yahan:
+
+    ```text
+    authenticate → User authenticated hai?
+    authorize    → User ke paas admin permission hai?
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“API security means protecting APIs from unauthorized access, data leakage, abuse, and different types of attacks. In production, I use HTTPS for secure communication, authentication such as JWT or sessions, and authorization using roles or permissions. I validate all incoming data, use rate limiting to prevent abuse, configure CORS for trusted origins, and use security headers. I also prevent SQL or NoSQL injection by using parameterized queries and safe database APIs. Finally, I use secure token or cookie handling, centralized logging and monitoring, and I make sure sensitive information is never exposed in API responses or logs.”**
+
+    ### Interview Follow-up
+
+    **Q: Authentication vs Authorization?**
+
+    ```text id="apis07"
+    Authentication
+    → "Tum kaun ho?"
+
+    Authorization
+    → "Tum kya kar sakte ho?"
+    ```
+
+    Example:
+
+    ```text
+    Login successful → Authentication ✅
+
+    Admin can delete user → Authorization ✅
+    ```
+
+    **Q: API ko secure karne ke liye sabse important layers kya hain?**
+
+    Interview me ye sequence bol sakte ho:
+
+    ```text id="apis08"
+    HTTPS
+    ↓
+    Authentication
+    ↓
+    Authorization
+    ↓
+    Input Validation
+    ↓
+    Rate Limiting
+    ↓
+    Secure DB Queries
+    ↓
+    Security Headers / CORS
+    ↓
+    Logging & Monitoring
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **API Security = HTTPS + Auth + Authorization + Validation + Rate Limit + Safe DB + Monitoring.**
+
+
 399. OAuth
 400. JWT security
 
