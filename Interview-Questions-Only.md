@@ -37556,6 +37556,151 @@ Browser automatically validation kar dega.
 
 
 396. CORS
+
+    ## Hinglish Explanation
+
+    **CORS (Cross-Origin Resource Sharing)** ek **browser security mechanism** hai jo decide karta hai ki ek origin se chal raha frontend **dusre origin ke backend ko request kar sakta hai ya nahi**.
+
+    Sabse pehle **origin** samjho:
+
+    ```text id="cors01"
+    http://localhost:3000
+        ↓
+    Frontend
+
+    http://localhost:5000
+        ↓
+    Backend API
+    ```
+
+    Port different hai, isliye dono **different origins** hain.
+
+    Browser normally cross-origin requests ko restrict karta hai. Server CORS headers ke through browser ko batata hai ki kaunse origins allowed hain.
+
+    Example:
+
+    ```text id="cors02"
+    Frontend: http://localhost:3000
+                ↓
+        GET /users
+                ↓
+    Backend: http://localhost:5000
+                ↓
+    Access-Control-Allow-Origin:
+    http://localhost:3000
+    ```
+
+    ### Small Implementation
+
+    Express me:
+
+    ```javascript id="cors03"
+    import cors from "cors";
+
+    app.use(
+    cors({
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST", "PUT", "DELETE"],
+    })
+    );
+    ```
+
+    Multiple trusted origins:
+
+    ```javascript id="cors04"
+    const allowedOrigins = [
+    "http://localhost:3000",
+    "https://app.example.com",
+    ];
+
+    app.use(
+    cors({
+        origin: allowedOrigins,
+    })
+    );
+    ```
+
+    Credentials/cookies ke case me:
+
+    ```javascript id="cors05"
+    app.use(
+    cors({
+        origin: "https://app.example.com",
+        credentials: true,
+    })
+    );
+    ```
+
+    Yahan `credentials: true` ke saath `Access-Control-Allow-Origin: *` use nahi kar sakte.
+
+    ### Preflight Request kya hoti hai?
+
+    Kuch cross-origin requests se pehle browser automatically **OPTIONS request** bhejta hai. Isko **preflight request** kehte hain.
+
+    ```text id="cors06"
+    Browser
+    ↓
+    OPTIONS /users
+    ↓
+    Server
+    ↓
+    "POST allowed hai?"
+    ↓
+    Yes ✅
+    ↓
+    Actual POST /users
+    ```
+
+    Usually custom headers ya methods jaise `PUT`, `PATCH`, `DELETE` etc. ke certain cases me preflight ho sakti hai.
+
+    ### Important Point
+
+    **CORS authentication/security mechanism nahi hai.**
+
+    CORS mainly **browser ko control karta hai**. Server ko authentication aur authorization independently implement karna hi chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > **“CORS stands for Cross-Origin Resource Sharing. It is a browser security mechanism that controls whether a web application from one origin can access resources from another origin. The server controls this using HTTP response headers such as Access-Control-Allow-Origin. In my applications, I usually allow only trusted frontend origins instead of allowing every origin. For requests involving credentials, I configure credentials carefully and don't use a wildcard origin. Some cross-origin requests also trigger an OPTIONS preflight request before the actual request.”**
+
+    ### Interview Follow-up
+
+    **Q: CORS error frontend me kyun aata hai?**
+
+    Usually browser ne request ko cross-origin detect kiya aur backend ke response me required CORS headers missing/incorrect mile.
+
+    ```text id="cors07"
+    Frontend A
+        ↓
+    Backend B
+        ↓
+    CORS header missing ❌
+        ↓
+    Browser blocks response
+    ```
+
+    **Q: Postman me CORS error kyun nahi aata?**
+
+    Because **CORS primarily browser-enforced mechanism hai**. Postman browser ki same-origin policy follow nahi karta.
+
+    **Q: CORS vs CSRF?**
+
+    ```text id="cors08"
+    CORS → Browser ko control karta hai:
+            "Kaunse origins se response access allowed hai?"
+
+    CSRF → Attack:
+            "Attacker user ke authenticated session se
+            unwanted action karwa raha hai?"
+    ```
+
+    Dono **alag concepts** hain.
+
+    ### ⭐ One-line memory trick
+
+    **CORS = “Kaunse frontend origins meri API ko browser se access kar sakte hain?”**
+
+
 397. Secure cookies
 398. API security
 399. OAuth
