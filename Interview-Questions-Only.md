@@ -37702,6 +37702,112 @@ Browser automatically validation kar dega.
 
 
 397. Secure cookies
+
+    ## Hinglish Explanation
+
+    **Secure cookies** ka main goal hota hai authentication ya session information ko browser me safer way se store aur transmit karna. Iske liye cookie ke kuch important attributes configure kiye jaate hain, especially `HttpOnly`, `Secure`, aur `SameSite`.
+
+    Authentication cookie ka typical setup kuch aisa hota hai:
+
+    ```text id="cook01"
+    HttpOnly
+    Secure
+    SameSite
+    ```
+
+    `HttpOnly` ka matlab hai ki browser-side JavaScript cookie ko directly read nahi kar sakta. For example:
+
+    ```javascript id="cook02"
+    res.cookie("session", token, {
+    httpOnly: true,
+    });
+    ```
+
+    Is case me `document.cookie` se ye cookie accessible nahi hogi. Ye XSS ke through cookie theft ka risk **reduce** karta hai, lekin XSS ko completely prevent nahi karta.
+
+    `Secure` attribute ensure karta hai ki cookie **HTTPS connection par hi send ho**:
+
+    ```javascript id="cook03"
+    res.cookie("session", token, {
+    httpOnly: true,
+    secure: true,
+    });
+    ```
+
+    Production authentication cookies ke liye generally `Secure` use karna chahiye.
+
+    `SameSite` decide karta hai ki cross-site requests ke context me browser cookie kab send karega:
+
+    ```javascript id="cook04"
+    res.cookie("session", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    });
+    ```
+
+    Iske common options hain:
+
+    ```text id="cook05"
+    Strict → Stronger cross-site restriction
+    Lax    → Common practical default
+    None   → Cross-site usage allowed, but Secure required
+    ```
+
+    Express me ek practical production-style example:
+
+    ```javascript id="cook06"
+    res.cookie("session", sessionToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 1000,
+    });
+    ```
+
+    Agar frontend aur backend ke setup me cookie ko intentionally **cross-site** use karna hai, to `SameSite=None; Secure` ki requirement aa sakti hai. Aise setup me appropriate **CSRF protection** ko bhi consider karna chahiye.
+
+    Sirf `HttpOnly` laga dena complete cookie security nahi hai. Expiration, domain aur path jaise settings bhi application ke requirement ke according configure karni chahiye.
+
+    ```text id="cook07"
+    Secure Cookie
+    ├── HttpOnly → JS access reduce
+    ├── Secure   → HTTPS only
+    ├── SameSite → Cross-site sending control
+    └── Proper expiry/domain/path
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“For authentication cookies, I use security attributes such as HttpOnly, Secure, and SameSite. HttpOnly prevents client-side JavaScript from directly reading the cookie, which helps reduce the impact of cookie theft through XSS. Secure ensures the cookie is sent only over HTTPS. SameSite controls when cookies are sent in cross-site requests and also helps reduce CSRF risk. I also configure appropriate expiration, domain, and path settings, and I use CSRF protection when the application's cookie-based authentication requires it.”**
+
+    ### Interview Follow-up
+
+    **Q: `HttpOnly` aur `Secure` me kya difference hai?**
+
+    ```text id="cook08"
+    HttpOnly → JavaScript cookie ko read nahi kar sakta.
+
+    Secure   → Cookie HTTP par nahi,
+            HTTPS par send hogi.
+    ```
+
+    Dono alag security concerns ko address karte hain.
+
+    **Q: Kya `HttpOnly` XSS ko completely prevent karta hai?**
+
+    **No.** `HttpOnly` primarily JavaScript ko cookie directly read karne se rokta hai. XSS attacker phir bhi page ke context me malicious JavaScript execute kar sakta hai. Isliye output encoding, safe rendering, CSP, etc. bhi important hain.
+
+    **Q: `SameSite` aur CSRF ka kya connection hai?**
+
+    `SameSite` cross-site contexts me cookies bhejne ko restrict kar sakta hai, jiski wajah se **CSRF risk reduce** hota hai. Lekin application ki requirements ke according dedicated CSRF protection ki bhi zarurat ho sakti hai.
+
+    ### ⭐ One-line memory trick
+
+    **Secure Cookie = `HttpOnly` + `Secure` + `SameSite` → Cookie ko browser me safely handle karo.**
+
+
+
 398. API security
 399. OAuth
 400. JWT security
