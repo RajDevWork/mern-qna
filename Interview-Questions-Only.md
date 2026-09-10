@@ -2292,6 +2292,186 @@ Browser automatically validation kar dega.
 
 
 12. Call stack kya hai?
+
+    ## Hinglish Explanation
+
+    **Call Stack** JavaScript ka ek **LIFO (Last In, First Out) stack** hai jo track karta hai ki currently kaunsa function execute ho raha hai.
+
+    Simple example:
+
+    ```javascript
+    function one() {
+    two();
+    }
+
+    function two() {
+    three();
+    }
+
+    function three() {
+    console.log("Hello");
+    }
+
+    one();
+    ```
+
+    Execution ke time Call Stack roughly:
+
+    ```text id="stack01"
+            three()
+            ───────
+            two()
+            ───────
+            one()
+            ───────
+            Global
+            ───────
+    ```
+
+    Jab `three()` complete hota hai:
+
+    ```text id="stack02"
+    three() → POP ❌
+
+    two()
+    one()
+    Global
+    ```
+
+    Phir `two()` complete:
+
+    ```text id="stack03"
+    two() → POP ❌
+
+    one()
+    Global
+    ```
+
+    ### LIFO ka matlab
+
+    **Last function jo stack me gaya, wahi pehle bahar niklega.**
+
+    ```text id="stack04"
+    Push:
+    one()
+    two()
+    three()
+
+    Pop:
+    three() ← first
+    two()
+    one()
+    ```
+
+    ### Call Stack ka Execution Context se relation
+
+    Ye dono concepts connected hain:
+
+    ```text id="stack05"
+    Function Call
+        ↓
+    Function Execution Context create
+        ↓
+    Call Stack me push
+        ↓
+    Function execute
+        ↓
+    Function complete
+        ↓
+    Call Stack se pop
+    ```
+
+    Example:
+
+    ```javascript id="stack06"
+    function greet() {
+    console.log("Hello");
+    }
+
+    greet();
+    ```
+
+    `greet()` call hone par uska execution context Call Stack me add hota hai.
+
+    ### Stack Overflow
+
+    Agar function continuously khud ko call karta rahe:
+
+    ```javascript id="stack07"
+    function test() {
+    test();
+    }
+
+    test();
+    ```
+
+    Stack continuously grow karega:
+
+    ```text id="stack08"
+    test()
+    test()
+    test()
+    test()
+    test()
+    ...
+    ↓
+    Stack Overflow ❌
+    ```
+
+    Isliye browser/Node.js eventually **Maximum call stack size exceeded** jaisi error de sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“The call stack is a LIFO data structure used by JavaScript to keep track of function execution. Whenever a function is called, its execution context is pushed onto the call stack. When the function finishes, its context is popped from the stack. Because it follows Last In, First Out, the most recently called function finishes first. The call stack is also important for understanding synchronous execution and stack overflow errors.”**
+
+    ### Interview Follow-up
+
+    **Q: Call Stack aur Event Loop ka relation kya hai?**
+
+    ```text id="stack09"
+    Call Stack
+    ↓
+    Synchronous code execute karta hai
+    ↓
+    Async operation starts
+    ↓
+    Web APIs / Node.js APIs
+    ↓
+    Callback ready
+    ↓
+    Event Loop
+    ↓
+    Callback appropriate queue se
+    Call Stack me bhejta hai
+    ```
+
+    Example:
+
+    ```javascript id="stack10"
+    console.log("A");
+
+    setTimeout(() => {
+    console.log("B");
+    }, 0);
+
+    console.log("C");
+    ```
+
+    Output:
+
+    ```text id="stack11"
+    A
+    C
+    B
+    ```
+
+    `setTimeout(..., 0)` ka matlab **immediately execute** nahi hota. Callback tab execute hoga jab call stack available ho aur event loop usse appropriate queue se process kare.
+
+    ### ⭐ One-line memory trick
+
+    **Call Stack = Function execution ka LIFO stack → Push on call → Pop on completion.**
+
+
 13. Event loop kya hai?
 14. Callback queue kya hai?
 15. Microtask queue kya hai?
