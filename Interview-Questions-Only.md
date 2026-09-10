@@ -2131,6 +2131,166 @@ Browser automatically validation kar dega.
 
 
 11. Execution context kya hai?
+
+    ## Hinglish Explanation
+
+    **Execution Context** JavaScript ka ek **environment** hai jisme JavaScript code execute hota hai. Simple words me, JS jab code run karta hai to usko pata hona chahiye:
+
+    * Kaunsa code execute ho raha hai?
+    * Variables/functions kaha available hain?
+    * `this` kis object ko refer karega?
+    * Outer scope se kya access kar sakte hain?
+
+    JavaScript code run hote waqt mainly 3 types ke execution contexts samjhe jaate hain:
+
+    ```text id="ec01"
+    1. Global Execution Context
+    2. Function Execution Context
+    3. Eval Execution Context
+    ```
+
+    ### 1. Global Execution Context
+
+    Jab JavaScript program start hota hai, sabse pehle **Global Execution Context** create hota hai.
+
+    ```javascript id="ec02"
+    const name = "Raj";
+
+    console.log(name);
+    ```
+
+    Ye code global context me execute hoga.
+
+    ### 2. Function Execution Context
+
+    Jab koi function call hota hai, us function ke liye **new execution context** create hota hai.
+
+    ```javascript id="ec03"
+    const name = "Raj";
+
+    function greet() {
+    const message = "Hello";
+    console.log(message);
+    }
+
+    greet();
+    ```
+
+    Flow:
+
+    ```text id="ec04"
+    Global Execution Context
+            ↓
+        greet()
+            ↓
+    Function Execution Context
+            ↓
+    message = "Hello"
+            ↓
+    Function complete
+            ↓
+    Context removed
+    ```
+
+    ### Execution Context ke andar kya hota hai?
+
+    Conceptually ek execution context me important cheezein hoti hain:
+
+    ```text id="ec05"
+    Execution Context
+    ├── Lexical Environment
+    ├── Variable Environment
+    └── this binding
+    ```
+
+    **Lexical Environment** variables/functions aur unke outer scope relationships ko track karta hai.
+
+    Isi mechanism ki wajah se JavaScript ko pata hota hai ki:
+
+    ```javascript id="ec06"
+    const x = 10;
+
+    function test() {
+    const y = 20;
+    console.log(x + y);
+    }
+
+    test();
+    ```
+
+    `test()` ke andar `x` local nahi hai, but outer/global scope me available hai.
+
+    ### Execution Context + Call Stack
+
+    Ye interview me **bahut important connection** hai.
+
+    ```javascript id="ec07"
+    function one() {
+    two();
+    }
+
+    function two() {
+    console.log("Hello");
+    }
+
+    one();
+    ```
+
+    Call stack roughly:
+
+    ```text id="ec08"
+    | two() Function Context |
+    | one() Function Context |
+    | Global Context         |
+    --------------------------
+    ```
+
+    `two()` complete hone par uska context stack se remove hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Execution context is the environment created by JavaScript to execute a piece of code. It contains the information required to run that code, such as variables, functions, scope relationships, and the this binding. The main types are the global execution context, function execution context, and eval execution context. Whenever a function is called, JavaScript creates a new function execution context and pushes it onto the call stack. When the function finishes, that context is removed from the stack.”**
+
+    ### Interview Follow-up
+
+    **Q: Execution Context aur Scope me difference kya hai?**
+
+    **Scope** batata hai ki **variable kaha accessible hai**.
+
+    **Execution Context** woh **environment hai jisme code actually execute hota hai**.
+
+    ```text id="ec09"
+    Scope
+    → Variable kaha access ho sakta hai?
+
+    Execution Context
+    → Code execute karne ke liye runtime environment kya hai?
+    ```
+
+    **Q: Execution Context aur Call Stack ka relation?**
+
+    Jab function call hota hai, uska **execution context create** hota hai aur **call stack me push** hota hai.
+
+    ```text id="ec10"
+    Function Call
+        ↓
+    Execution Context Create
+        ↓
+    Call Stack me Push
+        ↓
+    Code Execute
+        ↓
+    Function Complete
+        ↓
+    Stack se Pop
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Execution Context = “JavaScript code ko execute karne ke liye required environment.”**
+
+
+
 12. Call stack kya hai?
 13. Event loop kya hai?
 14. Callback queue kya hai?
