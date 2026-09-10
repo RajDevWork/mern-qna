@@ -2473,6 +2473,172 @@ Browser automatically validation kar dega.
 
 
 13. Event loop kya hai?
+
+    ## Hinglish Explanation
+
+    **Event Loop** JavaScript runtime ka mechanism hai jo **async operations ke callbacks ko appropriate time par Call Stack me execute karwane me help karta hai**.
+
+    Important: JavaScript ka main code execution generally **single thread** par hota hai, isliye agar koi long-running synchronous operation Call Stack ko block kar de, to baaki callbacks bhi wait karte hain.
+
+    Example:
+
+    ```javascript id="evlp01"
+    console.log("A");
+
+    setTimeout(() => {
+    console.log("B");
+    }, 0);
+
+    console.log("C");
+    ```
+
+    Output:
+
+    ```text id="evlp02"
+    A
+    C
+    B
+    ```
+
+    Kyun?
+
+    ```text id="evlp03"
+    console.log("A")
+        ↓
+    Call Stack
+        ↓
+    A print
+
+    setTimeout()
+        ↓
+    Runtime timer handle karta hai
+        ↓
+    Callback later ready hota hai
+
+    console.log("C")
+        ↓
+    Call Stack
+        ↓
+    C print
+
+    Call Stack empty
+        ↓
+    Event Loop
+        ↓
+    Callback Call Stack me
+        ↓
+    B print
+    ```
+
+    ### Event Loop actually kya check karta hai?
+
+    Simplified way:
+
+    ```text id="evlp04"
+            ┌──────────────┐
+            │  Call Stack  │
+            └──────┬───────┘
+                ↑
+            Event Loop
+                ↑
+            ┌──────┴───────┐
+            │ Queues       │
+            │              │
+            │ Microtasks   │
+            │ Tasks        │
+            └──────────────┘
+    ```
+
+    Event loop dekhta hai ki **Call Stack available hai ya nahi**, aur runtime/queues me ready callbacks ko execution ke liye schedule karta hai.
+
+    ### Microtask vs Task
+
+    Interview me ye bhi pooch sakte hain.
+
+    ```javascript id="evlp05"
+    console.log("A");
+
+    setTimeout(() => {
+    console.log("B");
+    }, 0);
+
+    Promise.resolve().then(() => {
+    console.log("C");
+    });
+
+    console.log("D");
+    ```
+
+    Output:
+
+    ```text id="evlp06"
+    A
+    D
+    C
+    B
+    ```
+
+    Generally:
+
+    ```text id="evlp07"
+    Synchronous code
+        ↓
+    Microtasks
+    (Promise.then, queueMicrotask)
+        ↓
+    Tasks
+    (setTimeout, etc.)
+    ```
+
+    Exact scheduling details runtime/environment par depend karte hain, especially Node.js me different queues/phases hoti hain, but interview ke liye **“microtasks are processed before moving to the next task”** is a useful simplified model.
+
+    ### Node.js me Event Loop
+
+    Node.js me Event Loop **libuv** ke through runtime ko asynchronous I/O handle karne me help karta hai.
+
+    Example:
+
+    ```javascript id="evlp08"
+    const fs = require("fs");
+
+    fs.readFile("data.txt", () => {
+    console.log("File read complete");
+    });
+
+    console.log("Start");
+    ```
+
+    File read ke dauran Node.js unnecessarily main JavaScript execution ko block nahi karta. Jab operation complete hota hai, callback later execution ke liye schedule hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“The event loop is a mechanism provided by the JavaScript runtime that coordinates asynchronous callbacks with the call stack. JavaScript executes synchronous code on the call stack, while asynchronous operations such as timers and I/O are handled by the runtime. When an asynchronous operation is ready, its callback is queued, and the event loop schedules it for execution when the call stack is available. Microtasks such as Promise callbacks are generally processed before the runtime moves on to the next task. In Node.js, the event loop is implemented around the libuv runtime.”**
+
+    ### Interview Follow-up
+
+    **Q: Event Loop aur Call Stack me difference?**
+
+    ```text id="evlp09"
+    Call Stack
+    → Code/functions ko execute karta hai.
+
+    Event Loop
+    → Check karta hai ki Call Stack available hai
+    aur ready async callbacks ko execution ke liye
+    schedule karne me help karta hai.
+    ```
+
+    **Q: `setTimeout(fn, 0)` immediately execute hota hai?**
+
+    **Nahi.**
+
+    `0` ka matlab minimum delay hai; callback immediately Call Stack me nahi aata. Current synchronous code complete hone ke baad, scheduling rules ke according callback execute hota hai.
+
+    ### ⭐ One-line memory trick
+
+    **Event Loop = “Call Stack busy hai? Wait. Stack free hai? Ready async callback ko execution ke liye schedule karo.”**
+
+
 14. Callback queue kya hai?
 15. Microtask queue kya hai?
 16. Macrotask kya hai?
