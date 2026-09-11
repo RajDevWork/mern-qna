@@ -3434,6 +3434,162 @@ Browser automatically validation kar dega.
 
 
 19. Async/await kya hai?
+
+    ## Hinglish Explanation
+
+    **`async/await`** JavaScript me **Promises ke saath asynchronous code ko simple aur readable way me likhne ka syntax** hai.
+
+    Simple words me:
+
+    > **`async` function ko Promise return karata hai, aur `await` Promise ke result ka wait karne jaisa code likhne deta hai.**
+
+    Example:
+
+    ```javascript id="async01"
+    async function getUser() {
+    const response = await fetch("/api/user");
+    const user = await response.json();
+
+    console.log(user);
+    }
+    ```
+
+    Yahan `await` ka matlab ye **nahi** hai ki pura JavaScript/Node.js block ho gaya.
+
+    ```text id="async02"
+    await fetch()
+        ↓
+    Promise pending
+        ↓
+    getUser() ka execution pause
+        ↓
+    Event Loop dusra kaam kar sakta hai
+        ↓
+    Promise complete
+        ↓
+    getUser() resume
+    ```
+
+    ### `async` kya karta hai?
+
+    Jis function ke aage `async` lagate hain, woh **hamesha Promise return karta hai**.
+
+    ```javascript id="async03"
+    async function getName() {
+    return "Raj";
+    }
+
+    getName().then((name) => {
+    console.log(name);
+    });
+    ```
+
+    Even though humne directly `"Raj"` return kiya, `async` ki wajah se:
+
+    ```text
+    "Raj"
+    ↓
+    Promise fulfilled with "Raj"
+    ```
+
+    ### `await` kya karta hai?
+
+    `await` kisi Promise ke settle hone ka wait karta hai **us async function ke execution ko suspend karke**.
+
+    ```javascript id="async04"
+    async function getData() {
+    const result = await somePromise;
+
+    console.log(result);
+    }
+    ```
+
+    `await` ko normally **async function ke andar** use karte hain. Modern JavaScript modules me **top-level await** bhi available hai.
+
+    ### Error Handling
+
+    `async/await` ke saath commonly `try/catch` use karte hain:
+
+    ```javascript id="async05"
+    async function getUser() {
+    try {
+        const response = await fetch("/api/user");
+        const user = await response.json();
+
+        return user;
+    } catch (error) {
+        console.log("Error:", error);
+    }
+    }
+    ```
+
+    ### Sequential vs Parallel
+
+    Ye interview ka **important follow-up** hai.
+
+    Agar independent API calls hain, ye unnecessarily sequential hai:
+
+    ```javascript id="async06"
+    const users = await getUsers();
+    const products = await getProducts();
+    ```
+
+    Better:
+
+    ```javascript id="async07"
+    const [users, products] = await Promise.all([
+    getUsers(),
+    getProducts(),
+    ]);
+    ```
+
+    Dono operations concurrently start ho sakte hain, so total time reduce ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Async and await are syntax for working with Promises in a more readable way. An async function always returns a Promise, and await pauses the execution of that async function until the Promise settles. It does not block the JavaScript thread or the entire application. I usually use try-catch with async-await for error handling. When multiple independent asynchronous operations can run together, I use Promise.all instead of awaiting them sequentially.”**
+
+    ### Interview Follow-up
+
+    **Q: `async/await` aur Promise me kya difference hai?**
+
+    Actually `async/await` **Promises ka replacement nahi hai**.
+
+    ```text id="async08"
+    Promise
+    → Asynchronous result represent karta hai.
+
+    async/await
+    → Promise ke saath kaam karne ka cleaner syntax.
+    ```
+
+    **Q: Kya `await` Node.js ko block karta hai?**
+
+    **Nahi.** `await` current async function ko suspend karta hai; Node.js ka event loop doosre work ko continue kar sakta hai.
+
+    **Q: `async` function kya return karta hai?**
+
+    **Always a Promise.**
+
+    ```javascript id="async09"
+    async function test() {
+    return 10;
+    }
+    ```
+
+    Equivalent concept:
+
+    ```javascript id="async10"
+    function test() {
+    return Promise.resolve(10);
+    }
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`async` = Promise return | `await` = Promise result ka wait, without blocking the JS thread.**
+
+
 20. Promise chaining?
 21. Callback hell kya hai?
 22. Error handling async mein kaise?
