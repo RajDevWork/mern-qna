@@ -3302,6 +3302,137 @@ Browser automatically validation kar dega.
 
 
 18. Promise states?
+
+    ## Hinglish Explanation
+
+    Promise ki **3 states** hoti hain:
+
+    ```text id="ps01"
+                Promise
+                    │
+                Pending
+                    │
+            ┌──────┴──────┐
+            ↓             ↓
+        Fulfilled      Rejected
+        (Success)       (Failure)
+    ```
+
+    ### 1. Pending
+
+    Promise create hua hai, but operation **abhi complete nahi hua**.
+
+    ```javascript id="ps02"
+    const promise = new Promise((resolve, reject) => {
+    // operation running...
+    });
+    ```
+
+    State:
+
+    ```text
+    Pending ⏳
+    ```
+
+    ### 2. Fulfilled
+
+    Operation **successfully complete** ho gaya aur `resolve()` call hua.
+
+    ```javascript id="ps03"
+    const promise = new Promise((resolve) => {
+    resolve("Success");
+    });
+    ```
+
+    State:
+
+    ```text
+    Fulfilled ✅
+    ```
+
+    Result `.then()` me milta hai:
+
+    ```javascript id="ps04"
+    promise.then((result) => {
+    console.log(result);
+    });
+    ```
+
+    ### 3. Rejected
+
+    Operation **fail** ho gaya aur `reject()` call hua.
+
+    ```javascript id="ps05"
+    const promise = new Promise((resolve, reject) => {
+    reject("Failed");
+    });
+    ```
+
+    State:
+
+    ```text
+    Rejected ❌
+    ```
+
+    Error `.catch()` me handle kar sakte hain:
+
+    ```javascript id="ps06"
+    promise.catch((error) => {
+    console.log(error);
+    });
+    ```
+
+    ### Important Interview Point
+
+    Promise **Pending → Fulfilled** ya **Pending → Rejected** ja sakta hai.
+
+    Lekin once Promise settle ho gaya:
+
+    ```text id="ps07"
+    Fulfilled → Rejected ❌
+    Rejected  → Fulfilled ❌
+    ```
+
+    State **change nahi hoti**.
+
+    Example:
+
+    ```javascript id="ps08"
+    const promise = new Promise((resolve, reject) => {
+    resolve("Success");
+    reject("Failed");
+    });
+    ```
+
+    Result `"Success"` hi hoga because Promise **already fulfilled** ho chuka tha.
+
+    ## 🎯 English Interview Answer
+
+    > **“A Promise has three states: pending, fulfilled, and rejected. Pending means the asynchronous operation is still in progress. Fulfilled means the operation completed successfully, and rejected means the operation failed. A Promise starts in the pending state and can move only once to either fulfilled or rejected. After it is settled, its state cannot be changed.”**
+
+    ### Interview Follow-up
+
+    **Q: Fulfilled aur Settled me difference kya hai?**
+
+    **Settled** ek general term hai jo dono states ko include karta hai:
+
+    ```text id="ps09"
+    Settled
+    ├── Fulfilled ✅
+    └── Rejected ❌
+    ```
+
+    So:
+
+    **Pending = Not settled**
+
+    **Fulfilled/Rejected = Settled**
+
+    ### ⭐ One-line memory trick
+
+    **Promise = Pending → Fulfilled ✅ OR Rejected ❌ — once settled, state never changes.**
+
+
 19. Async/await kya hai?
 20. Promise chaining?
 21. Callback hell kya hai?
