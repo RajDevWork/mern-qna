@@ -2640,6 +2640,150 @@ Browser automatically validation kar dega.
 
 
 14. Callback queue kya hai?
+
+    ## Hinglish Explanation
+
+    **Callback Queue** ek queue hai jahan **async operation ke callbacks ready hone ke baad wait karte hain**, jab tak Call Stack unhe execute karne ke liye available nahi hota.
+
+    Example:
+
+    ```javascript id="cbq01"
+    console.log("A");
+
+    setTimeout(() => {
+    console.log("B");
+    }, 0);
+
+    console.log("C");
+    ```
+
+    Output:
+
+    ```text id="cbq02"
+    A
+    C
+    B
+    ```
+
+    Flow:
+
+    ```text id="cbq03"
+    setTimeout()
+        ↓
+    Runtime timer handle karta hai
+        ↓
+    Timer complete
+        ↓
+    Callback Queue
+        ↓
+    Event Loop
+        ↓
+    Call Stack empty?
+        ↓
+    Callback Call Stack me
+        ↓
+    "B" execute
+    ```
+
+    Matlab **Callback Queue khud callback execute nahi karti**. Ye basically callbacks ke liye **waiting area** hai.
+
+    ### Small Implementation
+
+    ```javascript id="cbq04"
+    console.log("Start");
+
+    setTimeout(() => {
+    console.log("Timer callback");
+    }, 0);
+
+    console.log("End");
+    ```
+
+    Execution:
+
+    ```text id="cbq05"
+    1. Start       → Call Stack → execute
+    2. setTimeout  → Timer starts
+    3. End         → Call Stack → execute
+    4. Timer done   → callback queue me
+    5. Event Loop   → callback ko Stack me bhejta hai
+    6. Timer callback → execute
+    ```
+
+    ### Callback Queue vs Microtask Queue
+
+    Ye interview me **bahut important** hai.
+
+    ```javascript id="cbq06"
+    console.log("A");
+
+    setTimeout(() => {
+    console.log("B");
+    }, 0);
+
+    Promise.resolve().then(() => {
+    console.log("C");
+    });
+
+    console.log("D");
+    ```
+
+    Output:
+
+    ```text id="cbq07"
+    A
+    D
+    C
+    B
+    ```
+
+    Simplified model:
+
+    ```text id="cbq08"
+            Event Loop
+                ↓
+        ┌───────────────┐
+        │ Microtask     │ → Promise.then()
+        │ Queue         │
+        └───────────────┘
+                ↓
+        ┌───────────────┐
+        │ Task/Callback │ → setTimeout()
+        │ Queue         │
+        └───────────────┘
+    ```
+
+    Current JavaScript environments have more detailed scheduling rules, especially Node.js, but interview ke liye yaad rakho: **Promise callbacks (microtasks) generally run before the next task such as a timer callback.**
+
+    ## 🎯 English Interview Answer
+
+    > **“The callback queue is a queue where callbacks from asynchronous tasks wait until they are ready to be executed. For example, when a timer finishes, its callback can become ready for execution. The event loop checks whether the call stack is available and then schedules the callback for execution. The callback queue itself does not execute the callback; it only holds callbacks waiting for execution. Promise callbacks are handled through the microtask queue, which generally gets priority over the next task queue.”**
+
+    ### Interview Follow-up
+
+    **Q: Callback Queue aur Call Stack me difference kya hai?**
+
+    ```text id="cbq09"
+    Call Stack
+    → Yahan JavaScript code execute hota hai.
+
+    Callback Queue
+    → Ready async callbacks yahan wait karte hain.
+    ```
+
+    **Q: Callback Queue me callback kaun bhejta hai?**
+
+    Browser/Node.js runtime jab async operation complete hota hai, callback ko appropriate queue/scheduling mechanism me place karta hai. **Event Loop** us callback ko Call Stack tak execution ke liye coordinate karta hai.
+
+    **Q: Kya Promise callback Callback Queue me jata hai?**
+
+    Simplified answer: **Nahi.** Promise callbacks **Microtask Queue** me jaate hain, jo normal task/callback queue se conceptually separate hai.
+
+    ### ⭐ One-line memory trick
+
+    **Callback Queue = “Async callback ready hai → abhi Stack busy hai → yahan wait karo.”**
+
+
 15. Microtask queue kya hai?
 16. Macrotask kya hai?
 17. Promises kya hain?
