@@ -2785,6 +2785,174 @@ Browser automatically validation kar dega.
 
 
 15. Microtask queue kya hai?
+
+    ## Hinglish Explanation
+
+    **Microtask Queue** ek special queue hai jahan **high-priority asynchronous callbacks** wait karte hain. Common examples hain:
+
+    * `Promise.then()`
+    * `Promise.catch()`
+    * `Promise.finally()`
+    * `queueMicrotask()`
+    * `MutationObserver` (browser)
+
+    Example:
+
+    ```javascript id="mtq01"
+    console.log("A");
+
+    Promise.resolve().then(() => {
+    console.log("B");
+    });
+
+    console.log("C");
+    ```
+
+    Output:
+
+    ```text id="mtq02"
+    A
+    C
+    B
+    ```
+
+    Kyunki Promise callback synchronous code complete hone ke baad **Microtask Queue** me jata hai.
+
+    Flow:
+
+    ```text id="mtq03"
+    Synchronous Code
+        ↓
+    Call Stack
+        ↓
+    Complete
+        ↓
+    Microtask Queue
+        ↓
+    Event Loop
+        ↓
+    Call Stack
+        ↓
+    Microtask execute
+    ```
+
+    ### Callback/Task Queue vs Microtask Queue
+
+    Example:
+
+    ```javascript id="mtq04"
+    console.log("A");
+
+    setTimeout(() => {
+    console.log("B");
+    }, 0);
+
+    Promise.resolve().then(() => {
+    console.log("C");
+    });
+
+    console.log("D");
+    ```
+
+    Output:
+
+    ```text id="mtq05"
+    A
+    D
+    C
+    B
+    ```
+
+    Reason:
+
+    ```text id="mtq06"
+    Synchronous code
+        ↓
+    A, D
+        ↓
+    Microtask Queue
+        ↓
+    C
+        ↓
+    Task/Callback Queue
+        ↓
+    B
+    ```
+
+    So interview me simple rule:
+
+    > **Current synchronous code complete hone ke baad microtasks generally next task se pehle run hote hain.**
+
+    ### ⚠️ Microtask Queue ka important issue
+
+    Agar continuously microtasks add hote rahein:
+
+    ```javascript id="mtq07"
+    function run() {
+    queueMicrotask(run);
+    }
+
+    run();
+    ```
+
+    Microtasks continuously execute hote rahenge, jiski wajah se normal tasks/timers ko **starve** kar sakte hain.
+
+    Isliye microtasks ko unnecessarily infinite loop me create nahi karna chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > **“The microtask queue is a high-priority queue used by JavaScript to schedule microtasks such as Promise callbacks and queueMicrotask. After the current synchronous code finishes, the JavaScript runtime generally processes the pending microtasks before moving to the next task, such as a timer callback. This is why a Promise callback usually executes before a setTimeout callback, even when the timeout is set to zero. We should also avoid continuously generating microtasks because they can delay normal tasks.”**
+
+    ### Interview Follow-up
+
+    **Q: Microtask Queue vs Callback Queue?**
+
+    ```text id="mtq08"
+    Microtask Queue
+    → Promise.then()
+    → Promise.catch()
+    → queueMicrotask()
+
+    Task / Callback Queue
+    → setTimeout()
+    → setInterval()
+    → Other runtime tasks
+    ```
+
+    Typical priority:
+
+    ```text id="mtq09"
+    Synchronous Code
+        ↓
+    Microtasks
+        ↓
+    Next Task
+    ```
+
+    **Q: `setTimeout(..., 0)` aur `Promise.then()` me kaun pehle chalega?**
+
+    Normally:
+
+    ```javascript id="mtq10"
+    Promise.resolve().then(() => console.log("Promise"));
+
+    setTimeout(() => console.log("Timer"), 0);
+    ```
+
+    Output:
+
+    ```text id="mtq11"
+    Promise
+    Timer
+    ```
+
+    Because Promise callback microtask hai, aur timer callback task hai.
+
+    ### ⭐ One-line memory trick
+
+    **Microtask Queue = Promise callbacks ki high-priority queue → Current code ke baad, next task se pehle process hoti hai.**
+
+
 16. Macrotask kya hai?
 17. Promises kya hain?
 18. Promise states?
