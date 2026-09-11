@@ -2954,6 +2954,164 @@ Browser automatically validation kar dega.
 
 
 16. Macrotask kya hai?
+
+    ## Hinglish Explanation
+
+    **Macrotask** (often simply called **task**) JavaScript runtime ki ek category hai jisme asynchronous tasks execute hone ke liye schedule hote hain.
+
+    Common examples:
+
+    * `setTimeout()`
+    * `setInterval()`
+    * Browser events like `click`
+    * I/O-related tasks (environment-dependent)
+    * `MessageChannel`
+
+    Example:
+
+    ```javascript id="macro01"
+    console.log("A");
+
+    setTimeout(() => {
+    console.log("B");
+    }, 0);
+
+    Promise.resolve().then(() => {
+    console.log("C");
+    });
+
+    console.log("D");
+    ```
+
+    Output:
+
+    ```text id="macro02"
+    A
+    D
+    C
+    B
+    ```
+
+    Yahan:
+
+    ```text id="macro03"
+    A, D
+    ↓
+    Synchronous Code
+
+    C
+    ↓
+    Microtask Queue
+
+    B
+    ↓
+    Macrotask / Task
+    ```
+
+    ### Macrotask ka flow
+
+    ```text id="macro04"
+            Call Stack
+                ↓
+    Synchronous code complete
+                ↓
+        Microtask Queue
+                ↓
+        Microtasks execute
+                ↓
+        Next Macrotask / Task
+                ↓
+        Call Stack
+    ```
+
+    **Important:** Event loop har microtask ko ek-ek karke randomly nahi choose karta. Generally, current task ke execution ke baad **microtask queue drain** hoti hai, phir runtime next task pick karta hai.
+
+    ### Small Implementation
+
+    ```javascript id="macro05"
+    console.log("Start");
+
+    setTimeout(() => {
+    console.log("Macrotask");
+    }, 0);
+
+    queueMicrotask(() => {
+    console.log("Microtask");
+    });
+
+    console.log("End");
+    ```
+
+    Output:
+
+    ```text id="macro06"
+    Start
+    End
+    Microtask
+    Macrotask
+    ```
+
+    Isse priority samajh sakte ho:
+
+    ```text id="macro07"
+    Synchronous Code
+        ↓
+    Microtask
+        ↓
+    Macrotask
+    ```
+
+    ### Macrotask vs Microtask
+
+    | Microtask                  | Macrotask / Task     |
+    | -------------------------- | -------------------- |
+    | `Promise.then()`           | `setTimeout()`       |
+    | `Promise.catch()`          | `setInterval()`      |
+    | `Promise.finally()`        | Browser events       |
+    | `queueMicrotask()`         | `MessageChannel`     |
+    | Higher scheduling priority | Next task scheduling |
+
+    **Note:** Exact task sources and scheduling details browser vs Node.js me different ho sakte hain. Interview me "microtasks generally run before the next task" bolna safe hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“A macrotask, commonly called a task, is a unit of asynchronous work scheduled by the JavaScript runtime. Examples include setTimeout, setInterval, and browser events such as click events. After the current task finishes, the runtime generally processes the pending microtasks before starting the next task. So, in a simple example, synchronous code runs first, then microtasks such as Promise callbacks, and then the next macrotask such as a timer callback.”**
+
+    ### Interview Follow-up
+
+    **Q: `setTimeout(0)` aur Promise me kaun pehle execute hoga?**
+
+    ```javascript id="macro08"
+    setTimeout(() => console.log("Timer"), 0);
+
+    Promise.resolve().then(() => console.log("Promise"));
+    ```
+
+    Usually output:
+
+    ```text id="macro09"
+    Promise
+    Timer
+    ```
+
+    Because:
+
+    ```text id="macro10"
+    Promise → Microtask
+    Timer   → Task/Macrotask
+
+    Microtask → Next task se pehle
+    ```
+
+    **Q: Kya macrotask ka matlab “slow task” hai?**
+
+    **Nahi.** "Macro" ka matlab slow nahi hai. Ye simply **task category** ko distinguish karne ke liye use hota hai.
+
+    ### ⭐ One-line memory trick
+
+    **Macrotask = `setTimeout`, events etc. → Current code + microtasks ke baad next task execute hota hai.**
+
+
 17. Promises kya hain?
 18. Promise states?
 19. Async/await kya hai?
