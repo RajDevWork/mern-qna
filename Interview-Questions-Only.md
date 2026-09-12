@@ -3741,6 +3741,115 @@ Browser automatically validation kar dega.
 
 
 21. Callback hell kya hai?
+
+    ## Hinglish Explanation
+
+    **Callback Hell** tab hota hai jab multiple asynchronous operations ko **nested callbacks** ke through handle karte-karte code bahut deeply nested, difficult to read aur maintain karna mushkil ho jata hai.
+
+    Simple example:
+
+    ```javascript id="ch01"
+    getUser((user) => {
+    getOrders(user.id, (orders) => {
+        getPayment(orders[0].id, (payment) => {
+        sendEmail(payment, () => {
+            console.log("Done");
+        });
+        });
+    });
+    });
+    ```
+
+    Code ka structure kuch aisa ho jata hai:
+
+    ```text id="ch02"
+    getUser()
+    └── getOrders()
+            └── getPayment()
+                └── sendEmail()
+                    └── ...
+    ```
+
+    Isi **pyramid/nested structure** ko commonly Callback Hell kehte hain.
+
+    ### Problem kya hai?
+
+    * Code read karna difficult
+    * Debugging difficult
+    * Error handling complicated
+    * Changes karna difficult
+    * Deep nesting ke wajah se maintainability poor
+
+    ### Small Implementation — Better with Promise
+
+    Same flow Promises se:
+
+    ```javascript id="ch03"
+    getUser()
+    .then((user) => getOrders(user.id))
+    .then((orders) => getPayment(orders[0].id))
+    .then((payment) => sendEmail(payment))
+    .then(() => console.log("Done"))
+    .catch((error) => console.error(error));
+    ```
+
+    Aur `async/await` se aur readable:
+
+    ```javascript id="ch04"
+    async function processOrder() {
+    try {
+        const user = await getUser();
+        const orders = await getOrders(user.id);
+        const payment = await getPayment(orders[0].id);
+
+        await sendEmail(payment);
+
+        console.log("Done");
+    } catch (error) {
+        console.error(error);
+    }
+    }
+    ```
+
+    **Important:** Callback khud bad practice nahi hai. Problem mainly **excessive nesting aur poor error/control flow** hai. Callbacks Node.js aur JavaScript me abhi bhi valid aur useful hain.
+
+    ## 🎯 English Interview Answer
+
+    > **“Callback hell is a situation where multiple asynchronous operations are handled using deeply nested callbacks, making the code difficult to read, debug, and maintain. It is also commonly called the pyramid of doom because the code starts moving deeper and deeper to the right. We can reduce callback hell by using Promises, Promise chaining, or async-await. However, callbacks themselves are not bad; the main problem is excessive nesting and complicated control flow.”**
+
+    ### Interview Follow-up
+
+    **Q: Callback Hell ko kaise avoid karoge?**
+
+    ```text id="ch05"
+    Callback Hell
+        ↓
+    Promises
+        ↓
+    Promise Chaining
+        ↓
+    async/await
+        ↓
+    Better readability + error handling
+    ```
+
+    **Q: Callback vs Promise?**
+
+    ```text id="ch06"
+    Callback
+    → Function ko later execute karne ke liye pass karte hain.
+
+    Promise
+    → Future result represent karta hai
+    → then/catch/finally
+    → async/await ke saath use kar sakte hain.
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Callback Hell = Too many nested callbacks → Pyramid of Doom → Use Promises / async-await.**
+
+
 22. Error handling async mein kaise?
 23. this keyword kya hai?
 24. Arrow vs normal function?
