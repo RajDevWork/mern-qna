@@ -4219,6 +4219,192 @@ Browser automatically validation kar dega.
 
 
 24. Arrow vs normal function?
+
+    ## Hinglish Explanation
+
+    **Arrow function vs Normal function** interview me mainly **`this`, `arguments`, `new`, aur syntax** ke basis par compare kiya jata hai.
+
+    Basic syntax:
+
+    ```javascript id="arrow01"
+    // Normal function
+    function add(a, b) {
+    return a + b;
+    }
+
+    // Arrow function
+    const add = (a, b) => {
+    return a + b;
+    };
+    ```
+
+    ### 1. `this` — sabse important difference
+
+    **Normal function** ka `this` call ke according decide hota hai.
+
+    ```javascript id="arrow02"
+    const user = {
+    name: "Raj",
+
+    greet: function () {
+        console.log(this.name);
+    }
+    };
+
+    user.greet(); // Raj
+    ```
+
+    **Arrow function ka apna `this` nahi hota.** Ye outer lexical scope ka `this` use karta hai.
+
+    ```javascript id="arrow03"
+    const user = {
+    name: "Raj",
+
+    greet: () => {
+        console.log(this.name);
+    }
+    };
+
+    user.greet();
+    ```
+
+    Yahan arrow function `user` ko `this` nahi banayega.
+
+    ### 2. `arguments`
+
+    Normal function ke paas built-in `arguments` object hota hai:
+
+    ```javascript id="arrow04"
+    function test(a, b) {
+    console.log(arguments);
+    }
+
+    test(10, 20);
+    ```
+
+    Arrow function ka apna `arguments` nahi hota:
+
+    ```javascript id="arrow05"
+    const test = (a, b) => {
+    console.log(arguments); // outer scope ka arguments, if any
+    };
+    ```
+
+    Multiple arguments ke liye arrow function me normally **rest parameter** use karte hain:
+
+    ```javascript id="arrow06"
+    const test = (...args) => {
+    console.log(args);
+    };
+    ```
+
+    ### 3. `new` ke saath
+
+    Normal function constructor ki tarah use ho sakta hai:
+
+    ```javascript id="arrow07"
+    function User(name) {
+    this.name = name;
+    }
+
+    const user = new User("Raj");
+    ```
+
+    Arrow function ko constructor ki tarah use nahi kar sakte:
+
+    ```javascript id="arrow08"
+    const User = (name) => {
+    this.name = name;
+    };
+
+    // new User("Raj"); ❌
+    ```
+
+    ### 4. Method ke liye
+
+    Object method me agar `this` chahiye, **normal method/function** use karna better hai:
+
+    ```javascript id="arrow09"
+    const user = {
+    name: "Raj",
+
+    greet() {
+        console.log(this.name);
+    }
+    };
+    ```
+
+    ### 5. Callback ke liye Arrow useful hai
+
+    ```javascript id="arrow10"
+    const numbers = [1, 2, 3];
+
+    const doubled = numbers.map((num) => num * 2);
+
+    console.log(doubled);
+    ```
+
+    Arrow functions callbacks ke liye concise aur useful hote hain.
+
+    ### Quick Comparison
+
+    | Feature           | Normal Function | Arrow Function |
+    | ----------------- | --------------- | -------------- |
+    | `this`            | Call-site based | Lexical `this` |
+    | Own `arguments`   | ✅ Yes           | ❌ No           |
+    | `new` constructor | ✅ Yes           | ❌ No           |
+    | Short syntax      | ❌               | ✅              |
+    | Callback ke liye  | ✅               | ✅ Very common  |
+    | Own `this`        | ✅               | ❌              |
+
+    ## 🎯 English Interview Answer
+
+    > **“The main difference between normal and arrow functions is how they handle `this`. A normal function has its own this value, which is determined by how the function is called. An arrow function does not have its own this; it uses the this value from its surrounding lexical scope. Normal functions also have their own arguments object and can be used as constructors with new, while arrow functions cannot. I commonly use arrow functions for callbacks and normal methods when I need dynamic this behavior.”**
+
+    ### Interview Follow-up
+
+    **Q: Object method ke liye arrow function use karna chahiye?**
+
+    Agar method ke andar `this` se object access karna hai, generally **normal method syntax** use karo:
+
+    ```javascript id="arrow11"
+    const user = {
+    name: "Raj",
+
+    greet() {
+        console.log(this.name);
+    }
+    };
+    ```
+
+    Instead of:
+
+    ```javascript id="arrow12"
+    const user = {
+    name: "Raj",
+
+    greet: () => {
+        console.log(this.name);
+    }
+    };
+    ```
+
+    **Q: Arrow function kab use karoge?**
+
+    Mostly:
+
+    ```text id="arrow13"
+    Array callbacks
+    Short functions
+    Callbacks where lexical this is useful
+    Functional-style code
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Normal Function = apna `this` | Arrow Function = outer `this` | Arrow = no own `arguments`, no `new`.**
+
+
 25. Bind kya karta hai?
 26. Call vs apply?
 27. Prototype kya hai?
