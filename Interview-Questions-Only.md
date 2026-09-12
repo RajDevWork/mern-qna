@@ -3591,6 +3591,155 @@ Browser automatically validation kar dega.
 
 
 20. Promise chaining?
+
+    ## Hinglish Explanation
+
+    **Promise Chaining** ka matlab hai **multiple asynchronous operations ko ek ke baad ek connect karna**, jahan ek Promise ka result next Promise ko pass hota hai.
+
+    Simple example:
+
+    ```javascript id="pc01"
+    getUser()
+    .then((user) => getOrders(user.id))
+    .then((orders) => getPayment(orders[0].id))
+    .then((payment) => {
+        console.log(payment);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+    ```
+
+    Flow:
+
+    ```text id="pc02"
+    getUser()
+    ↓
+    user
+    ↓
+    getOrders(user.id)
+    ↓
+    orders
+    ↓
+    getPayment(order.id)
+    ↓
+    payment
+    ```
+
+    ### Small Implementation
+
+    ```javascript id="pc03"
+    Promise.resolve(10)
+    .then((value) => {
+        return value * 2;
+    })
+    .then((value) => {
+        return value + 5;
+    })
+    .then((result) => {
+        console.log(result);
+    });
+    ```
+
+    Output:
+
+    ```text id="pc04"
+    25
+    ```
+
+    Yahan:
+
+    ```text id="pc05"
+    Promise → 10
+    ↓
+    .then() → 20
+    ↓
+    .then() → 25
+    ↓
+    .then() → console.log()
+    ```
+
+    **Important:** `.then()` ke andar agar tum koi value return karte ho, next `.then()` ko woh value milti hai.
+
+    ```javascript id="pc06"
+    Promise.resolve(10)
+    .then((value) => {
+        return value * 2;
+    })
+    .then((value) => {
+        console.log(value); // 20
+    });
+    ```
+
+    Aur agar `.then()` ke andar **Promise return** karte ho, next `.then()` us Promise ke resolved result ka wait karega:
+
+    ```javascript id="pc07"
+    getUser()
+    .then((user) => {
+        return getOrders(user.id);
+    })
+    .then((orders) => {
+        console.log(orders);
+    });
+    ```
+
+    ### Error Handling
+
+    Chain ke end me ek `.catch()` multiple steps ke errors handle kar sakta hai:
+
+    ```javascript id="pc08"
+    getUser()
+    .then((user) => getOrders(user.id))
+    .then((orders) => processOrders(orders))
+    .then((result) => console.log(result))
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+
+    Agar chain ke kisi step me rejection/error aata hai, control `.catch()` tak ja sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Promise chaining means connecting multiple asynchronous operations where the result of one Promise is passed to the next operation. We usually use multiple then methods, and each then returns a new Promise. If we return a value, that value is passed to the next then. If we return another Promise, the next then waits for that Promise to settle. We can use a catch at the end of the chain to handle errors from the chain.”**
+
+    ### Interview Follow-up
+
+    **Q: Promise chaining aur callback hell me kya difference hai?**
+
+    Callback hell me deeply nested callbacks ho sakte hain:
+
+    ```javascript id="pc09"
+    getUser((user) => {
+    getOrders(user, (orders) => {
+        getPayment(orders, (payment) => {
+        // nested...
+        });
+    });
+    });
+    ```
+
+    Promise chaining me nesting kam hoti hai:
+
+    ```javascript id="pc10"
+    getUser()
+    .then(getOrders)
+    .then(getPayment)
+    .then(processPayment)
+    .catch(handleError);
+    ```
+
+    Isliye Promises asynchronous workflows ko **more readable and maintainable** bana sakte hain.
+
+    **Q: Kya har `.then()` ek naya Promise return karta hai?**
+
+    Haan, `.then()` **new Promise return karta hai**. Isi wajah se chaining possible hoti hai.
+
+    ### ⭐ One-line memory trick
+
+    **Promise Chaining = Ek Promise ka result → next Promise → next Promise → final result.**
+
+
 21. Callback hell kya hai?
 22. Error handling async mein kaise?
 23. this keyword kya hai?
