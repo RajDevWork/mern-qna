@@ -3851,6 +3851,157 @@ Browser automatically validation kar dega.
 
 
 22. Error handling async mein kaise?
+
+    ## Hinglish Explanation
+
+    **Async code me error handling** ka main purpose hai ki asynchronous operation fail hone par application crash na ho aur hum error ko properly handle kar saken.
+
+    `async/await` ke saath sabse common approach **`try/catch`** hai.
+
+    ### 1. `async/await` + `try/catch`
+
+    ```javascript id="asyncerr01"
+    async function getUser() {
+    try {
+        const response = await fetch("/api/user");
+
+        if (!response.ok) {
+        throw new Error("Failed to fetch user");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+    }
+    ```
+
+    Flow:
+
+    ```text id="asyncerr02"
+    await Promise
+        ↓
+    Success → continue
+        ↓
+    Failure → catch()
+    ```
+
+    ### 2. Promise `.catch()`
+
+    Agar Promise chaining use kar rahe ho:
+
+    ```javascript id="asyncerr03"
+    getUser()
+    .then((user) => getOrders(user.id))
+    .then((orders) => {
+        console.log(orders);
+    })
+    .catch((error) => {
+        console.error("Something went wrong:", error);
+    });
+    ```
+
+    Chain ke kisi Promise me rejection aaye to `.catch()` usse handle kar sakta hai.
+
+    ### 3. Express/NestJS API me
+
+    Backend application me error ko **centralized error handler** tak propagate karna better hota hai.
+
+    Express:
+
+    ```javascript id="asyncerr04"
+    app.get("/users", async (req, res, next) => {
+    try {
+        const users = await getUsers();
+        res.json(users);
+    } catch (error) {
+        next(error);
+    }
+    });
+    ```
+
+    Then centralized error middleware:
+
+    ```javascript id="asyncerr05"
+    app.use((error, req, res, next) => {
+    console.error(error);
+
+    res.status(500).json({
+        message: "Internal Server Error",
+    });
+    });
+    ```
+
+    Isse har controller me response handling repeat karne ki zarurat kam hoti hai.
+
+    ### Important: Error ko swallow mat karo
+
+    Ye bad practice hai:
+
+    ```javascript id="asyncerr06"
+    try {
+    await saveUser();
+    } catch (error) {
+    console.log(error);
+    }
+    ```
+
+    Agar caller ko pata hi nahi chala ki operation fail hua, application incorrect state me ja sakti hai.
+
+    Agar current layer error handle nahi kar sakti, to **log karke rethrow/propagate** karo:
+
+    ```javascript id="asyncerr07"
+    try {
+    await saveUser();
+    } catch (error) {
+    console.error(error);
+    throw error;
+    }
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“For asynchronous error handling, I usually use try-catch with async-await. If a Promise rejects, the await expression throws the error and the catch block can handle it. When using Promise chaining, I use catch to handle rejected Promises. In an Express application, I usually pass the error to centralized error-handling middleware instead of handling the HTTP response everywhere. I also make sure errors are logged appropriately and sensitive internal details are not exposed to the client. If the current layer cannot handle the error, I propagate it to the appropriate higher-level handler.”**
+
+    ### Interview Follow-up
+
+    **Q: `try/catch` me async error kab catch hota hai?**
+
+    Jab Promise ko `await` kiya gaya ho:
+
+    ```javascript id="asyncerr08"
+    try {
+    await someAsyncOperation();
+    } catch (error) {
+    // caught
+    }
+    ```
+
+    Lekin agar Promise ko await/handle hi nahi kiya:
+
+    ```javascript id="asyncerr09"
+    try {
+    someAsyncOperation(); // ❌ not awaited
+    } catch (error) {
+    // may not catch Promise rejection
+    }
+    ```
+
+    Better:
+
+    ```javascript id="asyncerr10"
+    try {
+    await someAsyncOperation();
+    } catch (error) {
+    // caught
+    }
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Async Error Handling = `await` + `try/catch` → Error handle/propagate → Central handler → Safe response.**
+
+
 23. this keyword kya hai?
 24. Arrow vs normal function?
 25. Bind kya karta hai?
