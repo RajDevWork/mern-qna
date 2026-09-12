@@ -4003,6 +4003,221 @@ Browser automatically validation kar dega.
 
 
 23. this keyword kya hai?
+
+    ## Hinglish Explanation
+
+    **`this` keyword** JavaScript me **current execution context/object ko refer** karta hai.
+
+    Sabse important rule:
+
+    > **`this` ki value mostly is baat par depend karti hai ki function ko HOW call kiya gaya hai, function kaha define hua hai uspar nahi.**
+
+    Example:
+
+    ```javascript id="this01"
+    const user = {
+    name: "Raj",
+
+    greet() {
+        console.log(this.name);
+    }
+    };
+
+    user.greet();
+    ```
+
+    Output:
+
+    ```text id="this02"
+    Raj
+    ```
+
+    Yahan `this` → `user` object ko refer kar raha hai.
+
+    ### 1. Object method me
+
+    ```javascript id="this03"
+    const user = {
+    name: "Raj",
+
+    greet() {
+        console.log(this);
+    }
+    };
+
+    user.greet();
+    ```
+
+    Yahan:
+
+    ```text id="this04"
+    this → user
+    ```
+
+    ### 2. Normal function
+
+    Strict mode me standalone function call par:
+
+    ```javascript id="this05"
+    "use strict";
+
+    function test() {
+    console.log(this);
+    }
+
+    test();
+    ```
+
+    `this` → `undefined`.
+
+    ### 3. Arrow function
+
+    Arrow function ka **apna `this` nahi hota**. Ye surrounding lexical scope ka `this` use karta hai.
+
+    ```javascript id="this06"
+    const user = {
+    name: "Raj",
+
+    greet: () => {
+        console.log(this.name);
+    }
+    };
+
+    user.greet();
+    ```
+
+    Isliye object method ke liye arrow function blindly use nahi karna chahiye agar tumhe `this` se object access karna hai.
+
+    Better:
+
+    ```javascript id="this07"
+    const user = {
+    name: "Raj",
+
+    greet() {
+        console.log(this.name);
+    }
+    };
+    ```
+
+    ### 4. Constructor me
+
+    `new` ke saath `this` newly created object ko refer karta hai:
+
+    ```javascript id="this08"
+    function User(name) {
+    this.name = name;
+    }
+
+    const user = new User("Raj");
+
+    console.log(user.name);
+    ```
+
+    Output:
+
+    ```text id="this09"
+    Raj
+    ```
+
+    ### 5. `call`, `apply`, `bind`
+
+    In methods se normal function ka `this` explicitly set kar sakte hain:
+
+    ```javascript id="this10"
+    function greet() {
+    console.log(this.name);
+    }
+
+    const user = {
+    name: "Raj"
+    };
+
+    greet.call(user);
+    ```
+
+    Output:
+
+    ```text id="this11"
+    Raj
+    ```
+
+    ```text id="this12"
+    call   → function immediately call
+    apply  → immediately call, arguments array ke through
+    bind   → new function return karta hai with fixed this
+    ```
+
+    ### Interview ke liye main rule
+
+    ```text id="this13"
+    obj.method()
+        ↓
+    this = obj
+
+    new User()
+        ↓
+    this = new object
+
+    normal function()
+        ↓
+    strict mode → undefined
+
+    arrow function
+        ↓
+    own this nahi → outer this
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“The `this` keyword refers to the context in which a function is called. Its value depends mainly on how the function is invoked. When a function is called as an object method, `this` refers to that object. With the new keyword, `this` refers to the newly created object. In a normal function, this depends on the call site, while an arrow function does not have its own this and uses the this value from its surrounding lexical scope. We can also explicitly control this using call, apply, and bind.”**
+
+    ### Interview Follow-up
+
+    **Q: Arrow function aur normal function me `this` ka main difference?**
+
+    ```javascript id="this14"
+    const user = {
+    name: "Raj",
+
+    normal() {
+        console.log(this.name);
+    },
+
+    arrow: () => {
+        console.log(this.name);
+    }
+    };
+    ```
+
+    ```text id="this15"
+    normal()
+    → apna this call ke according
+
+    arrow()
+    → apna this nahi
+    → outer lexical this
+    ```
+
+    **Q: `call()`, `apply()` aur `bind()` kya karte hain?**
+
+    ```text id="this16"
+    call()
+    → this set + immediately execute
+
+    apply()
+    → this set + immediately execute
+
+    bind()
+    → this set + new function return
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`this` = “Function ko jis tarike se call kiya gaya, uske according `this` decide hota hai.”**
+
+
+
 24. Arrow vs normal function?
 25. Bind kya karta hai?
 26. Call vs apply?
