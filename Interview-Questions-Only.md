@@ -4406,6 +4406,177 @@ Browser automatically validation kar dega.
 
 
 25. Bind kya karta hai?
+
+    ## Hinglish Explanation
+
+    **`bind()`** JavaScript ka method hai jo kisi function ke liye **`this` ko permanently set karke ek naya function return karta hai**.
+
+    Sabse important point:
+
+    > **`bind()` function ko immediately execute nahi karta. Ye ek new function banata hai jisme `this` fixed hota hai.**
+
+    ### Small Implementation
+
+    ```javascript id="bind01"
+    const user = {
+    name: "Raj"
+    };
+
+    function greet() {
+    console.log(`Hello ${this.name}`);
+    }
+
+    const boundGreet = greet.bind(user);
+
+    boundGreet();
+    ```
+
+    Output:
+
+    ```text id="bind02"
+    Hello Raj
+    ```
+
+    Flow:
+
+    ```text id="bind03"
+    greet()
+    ↓
+    bind(user)
+    ↓
+    New function
+    ↓
+    this = user
+    ↓
+    boundGreet()
+    ```
+
+    ### `call()` vs `apply()` vs `bind()`
+
+    Ye interview ka very common question hai:
+
+    ```javascript id="bind04"
+    function greet(city) {
+    console.log(this.name, city);
+    }
+
+    const user = {
+    name: "Raj"
+    };
+    ```
+
+    **call:**
+
+    ```javascript id="bind05"
+    greet.call(user, "Ahmedabad");
+    ```
+
+    → Immediately execute.
+
+    **apply:**
+
+    ```javascript id="bind06"
+    greet.apply(user, ["Ahmedabad"]);
+    ```
+
+    → Immediately execute, arguments array-like form me.
+
+    **bind:**
+
+    ```javascript id="bind07"
+    const fn = greet.bind(user, "Ahmedabad");
+
+    fn();
+    ```
+
+    → **New function return**, baad me execute.
+
+    ```text id="bind08"
+    call()
+    → Set this + Execute now
+
+    apply()
+    → Set this + Execute now
+
+    bind()
+    → Set this + Return new function
+    ```
+
+    ### Partial Application bhi kar sakte ho
+
+    `bind()` se `this` ke saath arguments bhi pre-set kar sakte ho:
+
+    ```javascript id="bind09"
+    function add(a, b) {
+    return a + b;
+    }
+
+    const add10 = add.bind(null, 10);
+
+    console.log(add10(20));
+    ```
+
+    Output:
+
+    ```text id="bind10"
+    30
+    ```
+
+    Yahan `10` pehle se bind ho gaya.
+
+    ### Real-world use case
+
+    Callback me `this` lose hone ki situation me `bind()` useful ho sakta hai:
+
+    ```javascript id="bind11"
+    const user = {
+    name: "Raj",
+
+    greet() {
+        console.log(this.name);
+    }
+    };
+
+    const fn = user.greet.bind(user);
+
+    setTimeout(fn, 1000);
+    ```
+
+    Yahan `bind(user)` ensure karta hai ki callback execute hone par bhi `this` `user` ko refer kare.
+
+    ## 🎯 English Interview Answer
+
+    > **“The bind method is used to create a new function with a specific this value. Unlike call and apply, bind does not execute the function immediately. It returns a new function that can be called later with the this value already bound. Bind can also be used to pre-set some function arguments, which is called partial application. It is useful when passing object methods as callbacks and we need to preserve their this context.”**
+
+    ### Interview Follow-up
+
+    **Q: `bind()` aur arrow function me kya difference hai?**
+
+    ```text id="bind12"
+    bind()
+    → Normal function ka this explicitly set/fix kar sakte hain.
+
+    Arrow function
+    → Apna this hota hi nahi.
+    → Outer lexical this use karta hai.
+    ```
+
+    **Q: Kya `bind()` original function ko change karta hai?**
+
+    **Nahi.** Original function same rehta hai. `bind()` **new function** return karta hai.
+
+    ```javascript id="bind13"
+    const newFn = greet.bind(user);
+
+    console.log(greet === newFn);
+    // false
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`bind()` = `this` fix karo + new function banao + baad me execute karo.**
+
+
 26. Call vs apply?
 27. Prototype kya hai?
 28. Prototypal inheritance?
