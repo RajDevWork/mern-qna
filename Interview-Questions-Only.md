@@ -4714,6 +4714,194 @@ Browser automatically validation kar dega.
     **`call` = arguments comma-separated | `apply` = arguments array | dono immediately execute.**
 
 27. Prototype kya hai?
+
+    ## Hinglish Explanation
+
+    **Prototype** JavaScript ka ek mechanism hai jiske through objects **properties aur methods ko doosre object se inherit** kar sakte hain.
+
+    Simple words me:
+
+    > **Prototype = Object ka backup/shared object jahan JavaScript properties/methods search kar sakta hai.**
+
+    Example:
+
+    ```javascript id="proto01"
+    const user = {
+    name: "Raj"
+    };
+
+    console.log(user.toString());
+    ```
+
+    Humne `toString()` `user` object ke andar define nahi kiya, phir bhi kaam karta hai.
+
+    Reason:
+
+    ```text id="proto02"
+    user
+    ↓
+    Object.prototype
+    ↓
+    toString()
+    ```
+
+    JavaScript property/method ko pehle object me search karta hai. Nahi mila to **prototype chain** me upar search karta hai.
+
+    ### Small Implementation
+
+    Constructor function:
+
+    ```javascript id="proto03"
+    function User(name) {
+    this.name = name;
+    }
+
+    User.prototype.greet = function () {
+    console.log(`Hello ${this.name}`);
+    };
+
+    const user1 = new User("Raj");
+    const user2 = new User("Amit");
+
+    user1.greet();
+    user2.greet();
+    ```
+
+    Yahan `greet()` har object ke andar separately create nahi hua.
+
+    ```text id="proto04"
+    user1 ──→ User.prototype ──→ greet()
+    user2 ──→ User.prototype ──→ greet()
+    ```
+
+    Isse same method ko objects **share** kar sakte hain.
+
+    ### Prototype Chain
+
+    Agar property current object me nahi milti:
+
+    ```javascript id="proto05"
+    const user = {
+    name: "Raj"
+    };
+
+    console.log(user.toString());
+    ```
+
+    JavaScript roughly:
+
+    ```text id="proto06"
+    user
+    ↓
+    Object.prototype
+    ↓
+    null
+    ```
+
+    Search karta hai:
+
+    ```text
+    user.toString?
+    ↓ No
+
+    user's prototype?
+    ↓ No
+
+    Object.prototype.toString?
+    ↓ Yes ✅
+
+    Execute
+    ```
+
+    Isi ko **Prototype Chain** kehte hain.
+
+    ### `prototype` vs `__proto__`
+
+    Interview me ye difference important hai.
+
+    **`prototype`** mainly **functions/constructor functions ka property** hai:
+
+    ```javascript id="proto07"
+    function User() {}
+
+    console.log(User.prototype);
+    ```
+
+    **`__proto__`** ek object ka prototype reference/accessor hai:
+
+    ```javascript id="proto08"
+    const user = {};
+
+    console.log(user.__proto__);
+    ```
+
+    Modern code me direct `__proto__` use karne ke bajay:
+
+    ```javascript id="proto09"
+    Object.getPrototypeOf(user);
+    ```
+
+    use karna preferred hai.
+
+    ### ES6 `class` me bhi Prototype use hota hai
+
+    ```javascript id="proto10"
+    class User {
+    constructor(name) {
+        this.name = name;
+    }
+
+    greet() {
+        console.log(`Hello ${this.name}`);
+    }
+    }
+    ```
+
+    `greet()` instances ke prototype par available hota hai rather than har instance me separate method copy hone ke.
+
+    ## 🎯 English Interview Answer
+
+    > **“A prototype is an object mechanism in JavaScript that allows objects to inherit properties and methods from another object. When we access a property, JavaScript first looks on the object itself, and if it is not found, it searches through the prototype chain. For example, objects can access methods like toString through Object.prototype. Constructor functions have a prototype property, and methods placed on that prototype can be shared by all instances. JavaScript classes also use prototypes internally for instance methods.”**
+
+    ### Interview Follow-up
+
+    **Q: Prototype chain kya hai?**
+
+    Prototype chain woh chain hai jisme JavaScript property/method ko **current object se lekar uske prototypes tak** search karta hai.
+
+    ```text id="proto11"
+    Object
+    ↓
+    Prototype
+    ↓
+    Parent Prototype
+    ↓
+    Object.prototype
+    ↓
+    null
+    ```
+
+    **Q: Prototype ka benefit kya hai?**
+
+    Main benefit hai **method sharing aur memory efficiency**.
+
+    ```javascript id="proto12"
+    User.prototype.greet = function () {
+    console.log("Hello");
+    };
+    ```
+
+    1000 users ke liye `greet()` ki 1000 separate function copies banane ki zarurat nahi; instances prototype se same method access kar sakte hain.
+
+    **Q: Kya JavaScript class-based hai ya prototype-based?**
+
+    JavaScript fundamentally **prototype-based** language hai. `class` syntax prototype-based inheritance ko easier/readable syntax me represent karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Prototype = Object me property/method nahi mila → Prototype Chain me search karo → Inheritance + Method Sharing.**
+
+
 28. Prototypal inheritance?
 29. Object.create kya karta hai?
 30. Deep vs shallow copy?
