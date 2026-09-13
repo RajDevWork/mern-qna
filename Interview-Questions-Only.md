@@ -4578,6 +4578,141 @@ Browser automatically validation kar dega.
 
 
 26. Call vs apply?
+
+    ## Hinglish Explanation
+
+    **`call()` aur `apply()`** dono JavaScript ke methods hain jo kisi function ko **immediately execute** karte hain aur us function ka **`this` explicitly set** karne dete hain.
+
+    Main difference sirf **arguments pass karne ke way** me hai:
+
+    ```text id="ca01"
+    call()
+    → Arguments comma-separated
+
+    apply()
+    → Arguments array ke andar
+    ```
+
+    ### Small Implementation
+
+    ```javascript id="ca02"
+    function greet(city, country) {
+    console.log(this.name, city, country);
+    }
+
+    const user = {
+    name: "Raj"
+    };
+    ```
+
+    **Using `call()`**
+
+    ```javascript id="ca03"
+    greet.call(user, "Ahmedabad", "India");
+    ```
+
+    Output:
+
+    ```text id="ca04"
+    Raj Ahmedabad India
+    ```
+
+    Arguments individually pass hote hain.
+
+    **Using `apply()`**
+
+    ```javascript id="ca05"
+    greet.apply(user, ["Ahmedabad", "India"]);
+    ```
+
+    Output:
+
+    ```text id="ca06"
+    Raj Ahmedabad India
+    ```
+
+    Arguments **array** me pass hote hain.
+
+    ### Quick Comparison
+
+    |                              | `call()`   | `apply()`        |
+    | ---------------------------- | ---------- | ---------------- |
+    | `this` set kar sakte hain    | ✅          | ✅                |
+    | Function immediately execute | ✅          | ✅                |
+    | Arguments                    | Individual | Array/array-like |
+    | New function return          | ❌          | ❌                |
+
+    ### Practical Example
+
+    Maan lo arguments already array me hain:
+
+    ```javascript id="ca07"
+    const args = ["Ahmedabad", "India"];
+
+    greet.apply(user, args);
+    ```
+
+    `apply()` convenient hai.
+
+    Agar arguments separately available hain:
+
+    ```javascript id="ca08"
+    greet.call(user, "Ahmedabad", "India");
+    ```
+
+    `call()` simpler hai.
+
+    ### Important: `bind()` se difference
+
+    ```text id="ca09"
+    call()
+    → this set + immediately execute
+
+    apply()
+    → this set + immediately execute
+
+    bind()
+    → this set + new function return
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“Call and apply are methods used to explicitly set the this value and immediately execute a function. The main difference is how arguments are passed. With call, arguments are passed individually, while with apply, arguments are passed as an array or array-like object. Both execute the function immediately. In contrast, bind returns a new function that can be executed later.”**
+
+    ### Interview Follow-up
+
+    **Q: Kya `call()` aur `apply()` ka output different hota hai?**
+
+    Normally **nahi**. Agar same `this` aur same arguments diye hain, output same hoga.
+
+    Difference mainly syntax ka hai:
+
+    ```javascript id="ca10"
+    fn.call(obj, a, b, c);
+
+    fn.apply(obj, [a, b, c]);
+    ```
+
+    **Q: `call()` kab use karoge?**
+
+    Jab arguments individually available hon:
+
+    ```javascript id="ca11"
+    calculate.call(user, 10, 20);
+    ```
+
+    **Q: `apply()` kab useful hai?**
+
+    Jab arguments already array/array-like form me hon:
+
+    ```javascript id="ca12"
+    calculate.apply(user, [10, 20]);
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`call` = arguments comma-separated | `apply` = arguments array | dono immediately execute.**
+
 27. Prototype kya hai?
 28. Prototypal inheritance?
 29. Object.create kya karta hai?
