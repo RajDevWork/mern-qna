@@ -4903,6 +4903,204 @@ Browser automatically validation kar dega.
 
 
 28. Prototypal inheritance?
+
+    ## Hinglish Explanation
+
+    **Prototypal Inheritance** ka matlab hai ek object **directly doosre object se properties aur methods inherit** kar sakta hai.
+
+    JavaScript me inheritance ka fundamental mechanism **prototype chain** hai.
+
+    Simple example:
+
+    ```javascript id="pi01"
+    const user = {
+    greet() {
+        console.log("Hello");
+    }
+    };
+
+    const admin = Object.create(user);
+
+    admin.greet();
+    ```
+
+    Yahan `admin` ke andar `greet()` directly nahi hai, lekin:
+
+    ```text id="pi02"
+    admin
+    ↓
+    user (prototype)
+    ↓
+    greet()
+    ```
+
+    JavaScript `admin` me `greet` nahi milne par uske prototype `user` me search karta hai.
+
+    ### Small Implementation
+
+    ```javascript id="pi03"
+    const animal = {
+    eat() {
+        console.log("Eating...");
+    }
+    };
+
+    const dog = Object.create(animal);
+
+    dog.bark = function () {
+    console.log("Woof!");
+    };
+
+    dog.eat();
+    dog.bark();
+    ```
+
+    Output:
+
+    ```text id="pi04"
+    Eating...
+    Woof!
+    ```
+
+    Yahan:
+
+    ```text id="pi05"
+    dog
+    ├── bark()       ← dog ka own method
+    │
+    └── prototype
+        ↓
+        animal
+        └── eat()  ← inherited method
+    ```
+
+    ### Property lookup kaise hota hai?
+
+    ```javascript id="pi06"
+    const animal = {
+    type: "Animal"
+    };
+
+    const dog = Object.create(animal);
+
+    console.log(dog.type);
+    ```
+
+    JavaScript:
+
+    ```text id="pi07"
+    dog.type?
+    ↓
+    Not found ❌
+    ↓
+    dog's prototype (animal)
+    ↓
+    type found ✅
+    ```
+
+    ### Constructor Function ke saath
+
+    ```javascript id="pi08"
+    function Animal(name) {
+    this.name = name;
+    }
+
+    Animal.prototype.eat = function () {
+    console.log(`${this.name} is eating`);
+    };
+
+    function Dog(name) {
+    Animal.call(this, name);
+    }
+
+    Dog.prototype = Object.create(Animal.prototype);
+    Dog.prototype.constructor = Dog;
+
+    const dog = new Dog("Tommy");
+
+    dog.eat();
+    ```
+
+    Yahan:
+
+    ```text id="pi09"
+    dog
+    ↓
+    Dog.prototype
+    ↓
+    Animal.prototype
+    ↓
+    eat()
+    ```
+
+    Ye **prototype chain** ke through inheritance hai.
+
+    ### ES6 `class` me bhi same concept
+
+    ```javascript id="pi10"
+    class Animal {
+    eat() {
+        console.log("Eating");
+    }
+    }
+
+    class Dog extends Animal {
+    bark() {
+        console.log("Woof");
+    }
+    }
+
+    const dog = new Dog();
+
+    dog.eat();
+    dog.bark();
+    ```
+
+    `class extends` use karne ke bawajood underlying inheritance **prototype-based** hi hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Prototypal inheritance is JavaScript's mechanism where one object can inherit properties and methods from another object through the prototype chain. When a property is not found on the current object, JavaScript looks for it on its prototype and continues up the prototype chain. We can create this relationship using Object.create, constructor prototypes, or class extends syntax. JavaScript classes are built on top of this prototype-based inheritance model.”**
+
+    ### Interview Follow-up
+
+    **Q: Prototypal inheritance aur classical inheritance me difference?**
+
+    ```text id="pi11"
+    Classical Inheritance
+    → Classes → Objects
+    → Common in Java, C++
+
+    Prototypal Inheritance
+    → Object → Object
+    → JavaScript ka fundamental model
+    ```
+
+    JavaScript me `class` syntax available hai, but internally prototype mechanism use hota hai.
+
+    **Q: `Object.create()` kya karta hai?**
+
+    `Object.create(proto)` ek **new object create karta hai jiska prototype given object hota hai**.
+
+    ```javascript id="pi12"
+    const parent = {
+    greet() {
+        console.log("Hello");
+    }
+    };
+
+    const child = Object.create(parent);
+    ```
+
+    ```text id="pi13"
+    child → parent → Object.prototype → null
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Prototypal Inheritance = Object → Prototype Object → Inherited properties/methods → Prototype Chain.**
+
+
 29. Object.create kya karta hai?
 30. Deep vs shallow copy?
 31. JSON kya hai?
