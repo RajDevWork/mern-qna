@@ -5102,6 +5102,146 @@ Browser automatically validation kar dega.
 
 
 29. Object.create kya karta hai?
+
+    ## Hinglish Explanation
+
+    `Object.create()` JavaScript me **ek naya object create karta hai aur us naye object ka prototype kisi existing object ko set karta hai**.
+
+    Simple:
+
+    > **`Object.create(parent)` = “Ek new object banao jiska prototype `parent` ho.”**
+
+    Example:
+
+    ```javascript id="oc01"
+    const user = {
+    greet() {
+        console.log("Hello");
+    }
+    };
+
+    const admin = Object.create(user);
+
+    admin.greet();
+    ```
+
+    Output:
+
+    ```text id="oc02"
+    Hello
+    ```
+
+    `admin` ke andar `greet()` directly nahi hai. JavaScript prototype chain me `user` ko check karta hai:
+
+    ```text id="oc03"
+    admin
+    ↓
+    user
+    ↓
+    greet()
+    ```
+
+    ### Own Property vs Prototype Property
+
+    ```javascript id="oc04"
+    const user = {
+    greet() {
+        console.log("Hello");
+    }
+    };
+
+    const admin = Object.create(user);
+
+    admin.name = "Raj";
+    ```
+
+    Ab:
+
+    ```text id="oc05"
+    admin
+    ├── name = "Raj"      ← Own property
+    │
+    └── Prototype
+        ↓
+        user
+        └── greet()     ← Inherited
+    ```
+
+    Check kar sakte ho:
+
+    ```javascript id="oc06"
+    console.log(admin.hasOwnProperty("name"));  // true
+    console.log(admin.hasOwnProperty("greet")); // false
+    ```
+
+    `greet()` available hai, but woh `admin` ki **own property nahi**, prototype se inherited hai.
+
+    ### `Object.create(null)`
+
+    Ek interesting interview point:
+
+    ```javascript id="oc07"
+    const obj = Object.create(null);
+
+    console.log(obj);
+    ```
+
+    Is object ka **prototype nahi hota**.
+
+    ```text id="oc08"
+    obj → null
+    ```
+
+    Isliye isme normal `Object.prototype` methods inherited nahi hote:
+
+    ```javascript id="oc09"
+    const obj = Object.create(null);
+
+    obj.toString(); // ❌
+    ```
+
+    Ye kabhi-kabhi **dictionary/map-like objects** ke liye useful ho sakta hai, especially jab inherited property names se confusion avoid karna ho.
+
+    ## 🎯 English Interview Answer
+
+    > **“Object.create is used to create a new object with a specified prototype object. The newly created object can access properties and methods from that prototype through the prototype chain. For example, Object.create(parent) creates a new object whose prototype is parent. The properties directly added to the new object are its own properties, while properties available through the prototype are inherited properties. Object.create(null) can also create an object with no prototype.”**
+
+    ### Interview Follow-up
+
+    **Q: `Object.create()` aur `new` me difference?**
+
+    ```javascript id="oc10"
+    const child = Object.create(parent);
+    ```
+
+    → Directly specified object ko prototype banata hai.
+
+    ```javascript id="oc11"
+    const user = new User("Raj");
+    ```
+
+    → Constructor function/class ko execute karke new object create karta hai, aur normally `User.prototype` ko prototype chain me set karta hai.
+
+    Simple:
+
+    ```text id="oc12"
+    Object.create(parent)
+    → Direct prototype relationship
+
+    new User()
+    → Constructor + prototype relationship
+    ```
+
+    **Q: `Object.create()` kya parent object ko copy karta hai?**
+
+    **Nahi.** Ye parent ki properties ki copy nahi banata. New object parent ko **prototype ke roop me reference** karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **`Object.create(parent)` = New object banao → `parent` ko uska prototype bana do.**
+
+
+
 30. Deep vs shallow copy?
 31. JSON kya hai?
 32. Map vs Object?
