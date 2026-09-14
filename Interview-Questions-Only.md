@@ -5429,6 +5429,140 @@ Browser automatically validation kar dega.
 
 
 31. JSON kya hai?
+
+    ## Hinglish Explanation
+
+    **JSON = JavaScript Object Notation.** Ye ek **lightweight data format** hai jo applications ke beech data exchange karne ke liye commonly use hota hai.
+
+    Sabse important baat: **JSON JavaScript object nahi hai.** JSON actually **text/string format** hai.
+
+    Example:
+
+    ```javascript id="json01"
+    const jsonData = `{
+    "name": "Raj",
+    "age": 25,
+    "city": "Ahmedabad"
+    }`;
+    ```
+
+    Isko JavaScript object me convert karne ke liye:
+
+    ```javascript id="json02"
+    const user = JSON.parse(jsonData);
+
+    console.log(user.name);
+    // Raj
+    ```
+
+    Aur JavaScript object ko JSON string me:
+
+    ```javascript id="json03"
+    const user = {
+    name: "Raj",
+    age: 25
+    };
+
+    const jsonData = JSON.stringify(user);
+
+    console.log(jsonData);
+    // {"name":"Raj","age":25}
+    ```
+
+    ### `JSON.parse()` vs `JSON.stringify()`
+
+    ```text id="json04"
+    JSON String
+        ↓
+    JSON.parse()
+        ↓
+    JavaScript Object
+
+
+    JavaScript Object
+        ↓
+    JSON.stringify()
+        ↓
+    JSON String
+    ```
+
+    API me ye bahut common hai:
+
+    ```text id="json05"
+    Frontend
+    ↓
+    JSON Request
+    ↓
+    Backend
+    ↓
+    Database
+    ↓
+    JSON Response
+    ↓
+    Frontend
+    ```
+
+    ### JSON ke supported basic data types
+
+    ```javascript id="json06"
+    {
+    "name": "Raj",       // string
+    "age": 25,           // number
+    "active": true,      // boolean
+    "address": null,     // null
+    "skills": ["JS"],    // array
+    "user": {             // object
+        "role": "admin"
+    }
+    }
+    ```
+
+    JSON me **comments allowed nahi hote** aur object ke keys **double quotes** me hone chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > **“JSON stands for JavaScript Object Notation. It is a lightweight text-based data format commonly used to exchange data between a client and a server. JSON supports objects, arrays, strings, numbers, booleans, and null values. In JavaScript, we use JSON.parse to convert a JSON string into a JavaScript object, and JSON.stringify to convert a JavaScript object into a JSON string. It is commonly used in REST APIs for request and response data.”**
+
+    ### Interview Follow-up
+
+    **Q: JSON aur JavaScript Object me kya difference hai?**
+
+    Main difference ye hai ki **JSON data format hai, while JavaScript object JavaScript ka actual data structure hai.**
+
+    ```javascript id="json07"
+    // JavaScript Object
+    const user = {
+    name: "Raj"
+    };
+
+    // JSON String
+    const json = '{"name":"Raj"}';
+    ```
+
+    Yahan `user` actual object hai, aur `json` ek **string** hai.
+
+    **Q: JSON me function store kar sakte hain?**
+
+    **No.** JSON directly functions, `undefined`, `Symbol`, etc. ko represent nahi karta.
+
+    ```javascript id="json08"
+    const user = {
+    name: "Raj",
+    greet: function () {
+        console.log("Hello");
+    }
+    };
+
+    JSON.stringify(user);
+    ```
+
+    `greet` JSON output me represent nahi hoga.
+
+    ### ⭐ One-line memory trick
+
+    **JSON = Data exchange ka text format | `parse()` = JSON → Object | `stringify()` = Object → JSON.**
+
+
 32. Map vs Object?
 33. Set vs Array?
 34. WeakMap kya hai?
