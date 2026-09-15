@@ -6017,6 +6017,185 @@ Browser automatically validation kar dega.
 
 
 35. Symbol kya hai?
+
+    ## Hinglish Explanation
+
+    `Symbol` JavaScript ka **primitive data type** hai jo ek **unique value** represent karta hai.
+
+    Sabse important point:
+
+    > **Har `Symbol()` call ek unique symbol create karta hai, chahe description same ho.**
+
+    ```javascript id="sym01"
+    const id1 = Symbol("id");
+    const id2 = Symbol("id");
+
+    console.log(id1 === id2);
+    // false
+    ```
+
+    Description `"id"` same hai, but symbols different hain.
+
+    ### Object me Symbol as a key
+
+    Symbol ko object ki property key ke roop me use kar sakte hain:
+
+    ```javascript id="sym02"
+    const userId = Symbol("userId");
+
+    const user = {
+    name: "Raj",
+    [userId]: 101
+    };
+
+    console.log(user[userId]);
+    // 101
+    ```
+
+    Ye useful hai jab tum object me ek **unique property key** create karna chahte ho jo normal string keys se accidentally collide na kare.
+
+    ### String key se difference
+
+    ```javascript id="sym03"
+    const id = Symbol("id");
+
+    const user = {
+    id: 1,
+    [id]: 999
+    };
+
+    console.log(user.id);
+    // 1
+
+    console.log(user[id]);
+    // 999
+    ```
+
+    Dono alag properties hain:
+
+    ```text id="sym04"
+    "user key"   → id
+    "Symbol key" → Symbol("id")
+    ```
+
+    ### Symbol property normal iteration me usually nahi dikhti
+
+    ```javascript id="sym05"
+    const secret = Symbol("secret");
+
+    const user = {
+    name: "Raj",
+    [secret]: "private"
+    };
+
+    console.log(Object.keys(user));
+    // ["name"]
+    ```
+
+    Lekin iska matlab **Symbol security/private storage nahi hai**.
+
+    Symbol properties ko explicitly retrieve kiya ja sakta hai:
+
+    ```javascript id="sym06"
+    console.log(Object.getOwnPropertySymbols(user));
+    // [Symbol(secret)]
+    ```
+
+    ### `Symbol.for()` — Important Interview Point
+
+    Normal:
+
+    ```javascript id="sym07"
+    const a = Symbol("id");
+    const b = Symbol("id");
+
+    console.log(a === b);
+    // false
+    ```
+
+    `Symbol.for()` global symbol registry use karta hai:
+
+    ```javascript id="sym08"
+    const a = Symbol.for("id");
+    const b = Symbol.for("id");
+
+    console.log(a === b);
+    // true
+    ```
+
+    So:
+
+    ```text id="sym09"
+    Symbol("id")
+    → Always new unique symbol
+
+    Symbol.for("id")
+    → Same registry key → Same symbol
+    ```
+
+    ### Built-in Symbols
+
+    JavaScript kuch **well-known Symbols** bhi provide karta hai, jaise:
+
+    ```javascript id="sym10"
+    Symbol.iterator
+    Symbol.toStringTag
+    Symbol.toPrimitive
+    ```
+
+    For example `Symbol.iterator` objects ko define karta hai ki unhe kaise iterate kiya ja sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Symbol is a primitive data type in JavaScript that is mainly used to create unique values. Every call to Symbol creates a unique symbol, even if the description is the same. Symbols can be used as object property keys to avoid accidental property name collisions. Symbol properties are not included in normal Object.keys iteration, but they can still be accessed explicitly using Object.getOwnPropertySymbols. JavaScript also provides well-known symbols such as Symbol.iterator for customizing built-in language behavior.”**
+
+    ### Interview Follow-up
+
+    **Q: Kya Symbol ko object ki key bana sakte hain?**
+
+    **Yes.**
+
+    ```javascript id="sym11"
+    const id = Symbol("id");
+
+    const user = {
+    [id]: 101
+    };
+
+    console.log(user[id]);
+    // 101
+    ```
+
+    **Q: `Symbol("id")` aur `Symbol.for("id")` me difference?**
+
+    ```text id="sym12"
+    Symbol("id")
+    → New unique Symbol every time
+
+    Symbol.for("id")
+    → Global Symbol Registry se existing Symbol
+    → Same key = Same Symbol
+    ```
+
+    **Q: Kya Symbol private property banata hai?**
+
+    **No.** Symbol property hidden from some normal enumeration methods hoti hai, but truly private nahi hoti.
+
+    Actual private class field ke liye:
+
+    ```javascript id="sym13"
+    class User {
+    #password = "secret";
+    }
+    ```
+
+    `#password` JavaScript ka actual private field hai.
+
+    ### ⭐ One-line memory trick
+
+    **Symbol = Unique primitive value → Mainly unique object property keys/collision avoidance ke liye.**
+
+
 36. Destructuring kya hai?
 37. Spread operator?
 38. Rest operator?
