@@ -6197,6 +6197,200 @@ Browser automatically validation kar dega.
 
 
 36. Destructuring kya hai?
+
+    ## Hinglish Explanation
+
+    **Destructuring** JavaScript ka syntax hai jisse hum **array ya object se values ko directly variables me extract** kar sakte hain.
+
+    Simple words me:
+
+    > **Destructuring = Object/Array ke andar se required values nikal kar variables me rakhna.**
+
+    ### 1. Object Destructuring
+
+    Normal way:
+
+    ```javascript id="des01"
+    const user = {
+    name: "Raj",
+    age: 25
+    };
+
+    const name = user.name;
+    const age = user.age;
+    ```
+
+    Destructuring se:
+
+    ```javascript id="des02"
+    const user = {
+    name: "Raj",
+    age: 25
+    };
+
+    const { name, age } = user;
+
+    console.log(name); // Raj
+    console.log(age);  // 25
+    ```
+
+    ### 2. Array Destructuring
+
+    Array me **position/index** ke according values milti hain:
+
+    ```javascript id="des03"
+    const colors = ["red", "green", "blue"];
+
+    const [first, second, third] = colors;
+
+    console.log(first);  // red
+    console.log(second); // green
+    ```
+
+    Object me **property name** important hota hai, while array me **position** important hoti hai.
+
+    ---
+
+    ### 3. Rename karna
+
+    Agar object property ka naam `name` hai but variable ka naam `userName` chahiye:
+
+    ```javascript id="des04"
+    const user = {
+    name: "Raj",
+    age: 25
+    };
+
+    const { name: userName } = user;
+
+    console.log(userName);
+    // Raj
+    ```
+
+    Yahan:
+
+    ```text
+    name → property
+    userName → variable
+    ```
+
+    ---
+
+    ### 4. Default Value
+
+    Agar property available nahi hai:
+
+    ```javascript id="des05"
+    const user = {
+    name: "Raj"
+    };
+
+    const { name, age = 25 } = user;
+
+    console.log(age);
+    // 25
+    ```
+
+    Default value tab use hoti hai jab property `undefined` ho.
+
+    ---
+
+    ### 5. Function Parameters me Destructuring
+
+    Ye interviews aur real projects me bahut common hai:
+
+    ```javascript id="des06"
+    function createUser({ name, age }) {
+    console.log(name, age);
+    }
+
+    createUser({
+    name: "Raj",
+    age: 25
+    });
+    ```
+
+    NestJS/Express code me bhi frequently dikhega:
+
+    ```javascript id="des07"
+    const { id } = req.params;
+    const { email, password } = req.body;
+    ```
+
+    Yahan hum directly required values extract kar rahe hain.
+
+    ---
+
+    ### 6. Rest with Destructuring
+
+    Remaining properties ko `...` se collect kar sakte hain:
+
+    ```javascript id="des08"
+    const user = {
+    name: "Raj",
+    age: 25,
+    city: "Ahmedabad"
+    };
+
+    const { name, ...otherDetails } = user;
+
+    console.log(name);
+    // Raj
+
+    console.log(otherDetails);
+    // { age: 25, city: "Ahmedabad" }
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“Destructuring is a JavaScript syntax used to extract values from objects or arrays and assign them directly to variables. With object destructuring, values are extracted using property names, while with array destructuring, values are extracted based on their position. We can also rename variables, provide default values, and use rest syntax to collect remaining properties. It is commonly used in function parameters, API responses, and request objects.”**
+
+    ### Interview Follow-up
+
+    **Q: Object aur Array destructuring me main difference kya hai?**
+
+    ```javascript id="des09"
+    // Object → property name
+    const { name } = user;
+
+    // Array → position
+    const [first] = colors;
+    ```
+
+    **Object:**
+
+    ```text
+    Property name → Value
+    ```
+
+    **Array:**
+
+    ```text
+    Index/position → Value
+    ```
+
+    **Q: Kya destructuring original object ko modify karta hai?**
+
+    **No.** Destructuring normally sirf values ko variables me extract karta hai.
+
+    ```javascript id="des10"
+    const user = {
+    name: "Raj"
+    };
+
+    const { name } = user;
+
+    console.log(user);
+    // { name: "Raj" }
+    ```
+
+    Original object change nahi hua.
+
+    ### ⭐ One-line memory trick
+
+    **Destructuring = Object → property se value nikalo | Array → position se value nikalo.**
+
+
 37. Spread operator?
 38. Rest operator?
 39. Template literals?
