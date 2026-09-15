@@ -6639,6 +6639,218 @@ Browser automatically validation kar dega.
 
 
 38. Rest operator?
+
+    ## Hinglish Explanation
+
+    **Rest Operator (`...`)** ka use **multiple/remaining values ko ek single array ya object me collect** karne ke liye hota hai.
+
+    Simple:
+
+    > **Rest = “Jo values bach gayi hain, unko collect kar lo.”**
+
+    ### 1. Function Parameters me Rest
+
+    ```javascript id="rest01"
+    function sum(...numbers) {
+    console.log(numbers);
+    }
+
+    sum(10, 20, 30, 40);
+    ```
+
+    Output:
+
+    ```javascript id="rest02"
+    [10, 20, 30, 40]
+    ```
+
+    Yahan `...numbers` saare arguments ko **array me collect** kar raha hai.
+
+    Real example:
+
+    ```javascript id="rest03"
+    function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+    }
+
+    console.log(sum(10, 20, 30));
+    // 60
+    ```
+
+    ---
+
+    ### 2. Array Destructuring me Rest
+
+    ```javascript id="rest04"
+    const numbers = [10, 20, 30, 40];
+
+    const [first, ...remaining] = numbers;
+
+    console.log(first);
+    // 10
+
+    console.log(remaining);
+    // [20, 30, 40]
+    ```
+
+    Yahan:
+
+    ```text id="rest05"
+    first       → 10
+    remaining   → [20, 30, 40]
+    ```
+
+    `...remaining` ne **remaining values collect** kar li.
+
+    ---
+
+    ### 3. Object Destructuring me Rest
+
+    ```javascript id="rest06"
+    const user = {
+    name: "Raj",
+    age: 25,
+    city: "Ahmedabad",
+    role: "Developer"
+    };
+
+    const { name, ...otherDetails } = user;
+
+    console.log(name);
+    // Raj
+
+    console.log(otherDetails);
+    // {
+    //   age: 25,
+    //   city: "Ahmedabad",
+    //   role: "Developer"
+    // }
+    ```
+
+    Yahan `name` extract ho gaya aur **baaki properties `otherDetails` me collect** ho gayi.
+
+    ---
+
+    ### Rest vs Spread — Very Important
+
+    Syntax dono ka same hai:
+
+    ```text id="rest07"
+    ...
+    ```
+
+    But behavior opposite hai.
+
+    **Spread → Expand**
+
+    ```javascript id="rest08"
+    const numbers = [1, 2, 3];
+
+    console.log(Math.max(...numbers));
+    // 3
+    ```
+
+    Array ki values expand ho gayi:
+
+    ```text id="rest09"
+    [1, 2, 3]
+    ↓
+    1, 2, 3
+    ```
+
+    **Rest → Collect**
+
+    ```javascript id="rest10"
+    function test(...numbers) {
+    console.log(numbers);
+    }
+
+    test(1, 2, 3);
+    ```
+
+    Arguments collect ho gaye:
+
+    ```text id="rest11"
+    1, 2, 3
+    ↓
+    [1, 2, 3]
+    ```
+
+    So:
+
+    ```text id="rest12"
+    Spread → Expand → ...
+    Rest   → Collect → ...
+    ```
+
+    ### Important Rule
+
+    Function parameters me **rest parameter last me hona chahiye**:
+
+    ```javascript id="rest13"
+    function test(a, ...rest) {
+    console.log(a);
+    console.log(rest);
+    }
+    ```
+
+    Ye valid hai.
+
+    ```javascript
+    function test(...rest, a) {}
+    // ❌ Invalid
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“The rest operator uses the three-dot syntax to collect multiple remaining values into a single array or object. In function parameters, it collects all remaining arguments into an array. In array or object destructuring, it collects the remaining elements or properties. The rest operator uses the same syntax as the spread operator, but their behavior is different. Spread expands values, while rest collects values.”**
+
+    ### Interview Follow-up
+
+    **Q: Rest parameter aur `arguments` object me difference?**
+
+    ```javascript id="rest14"
+    function test(...args) {
+    console.log(args);
+    }
+    ```
+
+    Rest parameter:
+
+    * Actual **Array** hota hai.
+    * Modern and cleaner syntax.
+    * Specific parameters ke saath use kar sakte ho.
+
+    ```javascript id="rest15"
+    function test(first, ...rest) {
+    console.log(first);
+    console.log(rest);
+    }
+
+    test(10, 20, 30);
+    // first = 10
+    // rest = [20, 30]
+    ```
+
+    `arguments`:
+
+    ```javascript id="rest16"
+    function test() {
+    console.log(arguments);
+    }
+    ```
+
+    * Array-like object hota hai, actual Array nahi.
+    * Arrow functions ke paas apna `arguments` object nahi hota.
+    * Modern code me variable number of arguments ke liye **rest parameter generally preferred** hai.
+
+    ### ⭐ One-line memory trick
+
+    **Rest `...` = Jo values/properties bach gayi → unko collect karo.**
+
+    **Spread = Expand | Rest = Collect.**
+
+
 39. Template literals?
 40. Default parameters?
 41. Debounce kya hai?
