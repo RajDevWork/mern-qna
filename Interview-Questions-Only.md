@@ -5871,6 +5871,151 @@ Browser automatically validation kar dega.
 
 
 34. WeakMap kya hai?
+
+    ## Hinglish Explanation
+
+    `WeakMap` bhi `Map` ki tarah **key-value collection** hai, lekin iska main special feature hai:
+
+    > **WeakMap ki keys sirf objects honi chahiye, aur agar key object ko kahin aur reference nahi kiya ja raha, to Garbage Collector us object ko remove kar sakta hai.**
+
+    Example:
+
+    ```javascript id="wm01"
+    const weakMap = new WeakMap();
+
+    const user = {
+    name: "Raj"
+    };
+
+    weakMap.set(user, "User Data");
+
+    console.log(weakMap.get(user));
+    // User Data
+    ```
+
+    Yahan `user` ek object hai, isliye WeakMap ki key ban sakta hai.
+
+    ### WeakMap ko "Weak" kyun bolte hain?
+
+    ```javascript id="wm02"
+    let user = {
+    name: "Raj"
+    };
+
+    const weakMap = new WeakMap();
+
+    weakMap.set(user, "Some private data");
+
+    user = null;
+    ```
+
+    Ab original object ko koi strong reference nahi hai.
+
+    ```text id="wm03"
+    WeakMap
+    │
+    └── weak reference → User Object
+
+    user = null
+        ↓
+    Object unreachable
+        ↓
+    Garbage Collector eventually remove kar sakta hai
+    ```
+
+    Isliye WeakMap **memory leaks avoid karne ke kuch use cases** me useful hai.
+
+    ### WeakMap ke important methods
+
+    ```javascript id="wm04"
+    weakMap.set(key, value);
+    weakMap.get(key);
+    weakMap.has(key);
+    weakMap.delete(key);
+    ```
+
+    Lekin:
+
+    ```javascript id="wm05"
+    weakMap.size       // ❌
+    weakMap.keys()     // ❌
+    weakMap.values()   // ❌
+    weakMap.entries()  // ❌
+    ```
+
+    Reason: WeakMap ki keys garbage collection ke according disappear ho sakti hain, isliye reliable enumeration/size provide nahi kiya jata.
+
+    ### Practical Use Case
+
+    Suppose tum kisi object ke saath **extra metadata** attach karna chahte ho, but nahi chahte ki metadata us object ko unnecessarily memory me alive rakhe.
+
+    ```javascript id="wm06"
+    const metadata = new WeakMap();
+
+    let user = {
+    name: "Raj"
+    };
+
+    metadata.set(user, {
+    lastLogin: "Today"
+    });
+
+    console.log(metadata.get(user));
+    // { lastLogin: "Today" }
+
+    user = null;
+    ```
+
+    Ab `user` object unreachable ho sakta hai, aur WeakMap ki weak reference usko alive rakhne se prevent karti hai.
+
+    ### Map vs WeakMap
+
+    | Feature              | Map                          | WeakMap                          |
+    | -------------------- | ---------------------------- | -------------------------------- |
+    | Keys                 | Any value                    | Objects / non-registered symbols |
+    | Garbage collection   | Strong references            | Weak object-key references       |
+    | `size`               | ✅                            | ❌                                |
+    | Iteration            | ✅                            | ❌                                |
+    | `set/get/has/delete` | ✅                            | ✅                                |
+    | Main use             | General key-value collection | Object-associated metadata       |
+
+    ## 🎯 English Interview Answer
+
+    > **“WeakMap is a key-value collection similar to Map, but its keys are object-based and held weakly. This means if an object used as a WeakMap key is no longer strongly referenced anywhere else, it can be garbage collected. WeakMap provides methods like set, get, has, and delete, but it does not provide size or iteration methods. It is useful when I want to associate additional metadata with objects without unnecessarily keeping those objects alive in memory.”**
+
+    ### Interview Follow-up
+
+    **Q: WeakMap ko iterate kyun nahi kar sakte?**
+
+    Because garbage collection can happen at unpredictable times.
+
+    Agar iteration aur `size` available hota, to GC ke according collection ke members/size change ho sakte the, which would make the behavior unpredictable.
+
+    Isliye WeakMap intentionally **non-enumerable** hai.
+
+    **Q: WeakMap ki key string ho sakti hai?**
+
+    Normally **no**.
+
+    ```javascript id="wm07"
+    const wm = new WeakMap();
+
+    wm.set("user", "Raj");
+    // ❌ TypeError
+    ```
+
+    Object key use karo:
+
+    ```javascript id="wm08"
+    wm.set({ id: 1 }, "Raj");
+    // ✅
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **WeakMap = Object ko key banao → Metadata attach karo → Object unreachable hua to GC usse remove kar sakta hai.**
+
+
 35. Symbol kya hai?
 36. Destructuring kya hai?
 37. Spread operator?
