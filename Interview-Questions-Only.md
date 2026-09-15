@@ -5715,6 +5715,161 @@ Browser automatically validation kar dega.
 
 
 33. Set vs Array?
+
+    ## Hinglish Explanation
+
+    `Set` aur `Array` dono multiple values store karte hain, but unka **purpose different** hai.
+
+    ### 1. Array
+
+    Array me values **ordered** hoti hain aur **duplicates allowed** hote hain.
+
+    ```javascript id="setarr01"
+    const users = ["Raj", "Amit", "Raj"];
+
+    console.log(users);
+    // ["Raj", "Amit", "Raj"]
+
+    console.log(users[0]);
+    // Raj
+    ```
+
+    Array ka main benefit hai **index-based access**.
+
+    ```javascript id="setarr02"
+    console.log(users[1]);
+    // Amit
+    ```
+
+    ---
+
+    ### 2. Set
+
+    `Set` me **unique values** store hoti hain. Duplicate values automatically ignore ho jaati hain.
+
+    ```javascript id="setarr03"
+    const users = new Set();
+
+    users.add("Raj");
+    users.add("Amit");
+    users.add("Raj");
+
+    console.log(users);
+    // Set {"Raj", "Amit"}
+    ```
+
+    Set me index-based access nahi hota:
+
+    ```javascript id="setarr04"
+    // users[0] ❌
+    ```
+
+    Agar check karna hai value exist karti hai ya nahi:
+
+    ```javascript id="setarr05"
+    console.log(users.has("Raj"));
+    // true
+    ```
+
+    ---
+
+    ### Practical Example
+
+    Suppose API se duplicate user IDs aa gayi:
+
+    ```javascript id="setarr06"
+    const ids = [101, 102, 101, 103, 102];
+
+    const uniqueIds = [...new Set(ids)];
+
+    console.log(uniqueIds);
+    // [101, 102, 103]
+    ```
+
+    Yahan `Set` duplicate remove karne ke liye perfect hai.
+
+    ### Main Difference
+
+    | Feature          | Array              | Set                         |
+    | ---------------- | ------------------ | --------------------------- |
+    | Duplicate values | ✅ Allowed          | ❌ Not allowed               |
+    | Order            | ✅ Maintains order  | ✅ Maintains insertion order |
+    | Index access     | ✅ `arr[0]`         | ❌                           |
+    | `length`         | ✅                  | ❌                           |
+    | `size`           | ❌                  | ✅                           |
+    | `includes()`     | ✅                  | ❌                           |
+    | `has()`          | ❌                  | ✅                           |
+    | Add              | `push()`           | `add()`                     |
+    | Delete           | `splice()` etc.    | `delete()`                  |
+    | Iteration        | ✅                  | ✅                           |
+    | Main use         | Ordered collection | Unique values               |
+
+    ### Important Interview Point
+
+    Set ko simply **"Array se faster"** mat bolna.
+
+    For membership checks, `Set.has()` is generally designed for efficient lookup, but actual performance depends on runtime, data size, and operation.
+
+    Simple rule:
+
+    ```text id="setarr07"
+    Array → Order + Index + Duplicates allowed
+
+    Set → Unique values + Membership checking
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“An Array and a Set are both used to store multiple values, but they have different use cases. An Array is ordered, supports index-based access, and allows duplicate values. A Set stores only unique values and provides methods like add, delete, and has. I use an Array when order and index-based access are important. I use a Set when I mainly need unique values or efficient membership checking. For example, I can use a Set to remove duplicate IDs from an array.”**
+
+    ### Interview Follow-up
+
+    **Q: Array se duplicate values kaise remove karoge?**
+
+    ```javascript id="setarr08"
+    const numbers = [1, 2, 2, 3, 3, 4];
+
+    const uniqueNumbers = [...new Set(numbers)];
+
+    console.log(uniqueNumbers);
+    // [1, 2, 3, 4]
+    ```
+
+    Flow:
+
+    ```text id="setarr09"
+    Array
+    ↓
+    new Set()
+    ↓
+    Duplicates removed
+    ↓
+    [...]
+    ↓
+    Unique Array
+    ```
+
+    **Q: Set me duplicate object values automatically remove hongi?**
+
+    Yahan ek important point hai: objects **reference ke basis par** unique hote hain.
+
+    ```javascript id="setarr10"
+    const a = { id: 1 };
+    const b = { id: 1 };
+
+    const set = new Set([a, b]);
+
+    console.log(set.size);
+    // 2
+    ```
+
+    `a` aur `b` ka data same hai, lekin references different hain.
+
+    ### ⭐ One-line memory trick
+
+    **Array = Ordered + Index + Duplicates | Set = Unique values + `has()`**
+
+
 34. WeakMap kya hai?
 35. Symbol kya hai?
 36. Destructuring kya hai?
