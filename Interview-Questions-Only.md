@@ -6852,6 +6852,195 @@ Browser automatically validation kar dega.
 
 
 39. Template literals?
+
+    ## Hinglish Explanation
+
+    **Template Literals** JavaScript me strings ko **easily create aur dynamic values ko string ke andar insert** karne ke liye use hote hain.
+
+    Template literals me **backticks `` ` ``** use hote hain, normal single `' '` ya double `" "` quotes nahi.
+
+    ### 1. Basic Example
+
+    ```javascript id="tmp01"
+    const name = "Raj";
+
+    const message = `Hello ${name}`;
+
+    console.log(message);
+    // Hello Raj
+    ```
+
+    `${}` ko **template interpolation** bolte hain.
+
+    ```text id="tmp02"
+    `Hello ${name}`
+        ↓
+    Expression evaluate
+        ↓
+    `Hello Raj`
+    ```
+
+    ---
+
+    ### 2. Multiple Variables
+
+    ```javascript id="tmp03"
+    const name = "Raj";
+    const age = 25;
+
+    const message = `My name is ${name} and I am ${age} years old.`;
+
+    console.log(message);
+    ```
+
+    Ye string concatenation se cleaner hota hai:
+
+    ```javascript id="tmp04"
+    const message =
+    "My name is " + name + " and I am " + age + " years old.";
+    ```
+
+    ---
+
+    ### 3. Expression bhi use kar sakte ho
+
+    `${}` ke andar sirf variable nahi, **JavaScript expression** bhi use kar sakte ho.
+
+    ```javascript id="tmp05"
+    const a = 10;
+    const b = 20;
+
+    console.log(`Total = ${a + b}`);
+    // Total = 30
+    ```
+
+    Function bhi:
+
+    ```javascript id="tmp06"
+    function getName() {
+    return "Raj";
+    }
+
+    console.log(`Hello ${getName()}`);
+    // Hello Raj
+    ```
+
+    ---
+
+    ### 4. Multi-line Strings
+
+    Normal strings me multiple lines ke liye `\n` use karna padta tha:
+
+    ```javascript id="tmp07"
+    const message = "Hello\nWelcome to JavaScript";
+    ```
+
+    Template literal me directly:
+
+    ```javascript id="tmp08"
+    const message = `Hello
+    Welcome to JavaScript`;
+
+    console.log(message);
+    ```
+
+    Output:
+
+    ```text id="tmp09"
+    Hello
+    Welcome to JavaScript
+    ```
+
+    ---
+
+    ### 5. Practical Node.js Example
+
+    API response/message generate karte time:
+
+    ```javascript id="tmp10"
+    const user = {
+    name: "Raj",
+    role: "Developer"
+    };
+
+    const message = `Welcome ${user.name}, your role is ${user.role}.`;
+
+    console.log(message);
+    ```
+
+    Output:
+
+    ```text id="tmp11"
+    Welcome Raj, your role is Developer.
+    ```
+
+    ### Important Interview Point
+
+    Template literals **sirf variable interpolation ke liye nahi hain**.
+
+    Main features:
+
+    ```text id="tmp12"
+    Template Literals
+        │
+        ├── Backticks ` `
+        ├── ${expression}
+        ├── Multi-line strings
+        └── Easier dynamic strings
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“Template literals are a way to create strings in JavaScript using backticks. They allow us to embed variables and expressions directly inside a string using the `${}` syntax. They also support multi-line strings without manually adding newline characters. Template literals make dynamic string creation more readable compared to traditional string concatenation.”**
+
+    ### Interview Follow-up
+
+    **Q: Template literal me function call kar sakte hain?**
+
+    **Yes.**
+
+    ```javascript id="tmp13"
+    function getRole() {
+    return "Developer";
+    }
+
+    const message = `Raj is a ${getRole()}`;
+
+    console.log(message);
+    // Raj is a Developer
+    ```
+
+    **Q: `${}` ke andar expression use kar sakte hain?**
+
+    **Yes.**
+
+    ```javascript id="tmp14"
+    const price = 100;
+    const quantity = 3;
+
+    console.log(`Total: ₹${price * quantity}`);
+    // Total: ₹300
+    ```
+
+    **Q: Template literal aur normal string me main difference?**
+
+    ```javascript id="tmp15"
+    const name = "Raj";
+
+    // Normal string
+    const a = "Hello " + name;
+
+    // Template literal
+    const b = `Hello ${name}`;
+    ```
+
+    Template literal me dynamic values aur expressions directly embed kar sakte hain, aur multi-line strings bhi easily create kar sakte hain.
+
+    ### ⭐ One-line memory trick
+
+    **Template Literal = Backticks `` ` ` `` + `${expression}` → Clean dynamic strings.**
+
+
 40. Default parameters?
 41. Debounce kya hai?
 42. Throttle kya hai?
