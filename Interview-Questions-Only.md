@@ -7042,6 +7042,177 @@ Browser automatically validation kar dega.
 
 
 40. Default parameters?
+
+    ## Hinglish Explanation
+
+    **Default Parameters** ka use function parameter ko **default value dene** ke liye hota hai, jab caller us argument ko pass nahi karta ya `undefined` pass karta hai.
+
+    Simple:
+
+    > **Default Parameter = Argument nahi mila → Default value use karo.**
+
+    ### 1. Basic Example
+
+    ```javascript id="def01"
+    function greet(name = "Guest") {
+    console.log(`Hello ${name}`);
+    }
+
+    greet("Raj");
+    // Hello Raj
+
+    greet();
+    // Hello Guest
+    ```
+
+    Yahan `name = "Guest"` default parameter hai.
+
+    ---
+
+    ### 2. `undefined` par bhi Default Value
+
+    ```javascript id="def02"
+    function greet(name = "Guest") {
+    console.log(name);
+    }
+
+    greet(undefined);
+    // Guest
+    ```
+
+    Lekin `null` par default value apply nahi hoti:
+
+    ```javascript id="def03"
+    greet(null);
+    // null
+    ```
+
+    Important:
+
+    ```text id="def04"
+    undefined → Default value ✅
+    null      → Default value nahi ❌
+    ```
+
+    ---
+
+    ### 3. Multiple Default Parameters
+
+    ```javascript id="def05"
+    function createUser(name = "Guest", role = "user") {
+    console.log(name, role);
+    }
+
+    createUser();
+    // Guest user
+
+    createUser("Raj");
+    // Raj user
+
+    createUser("Raj", "admin");
+    // Raj admin
+    ```
+
+    ---
+
+    ### 4. Default Parameter me Expression bhi use kar sakte ho
+
+    ```javascript id="def06"
+    function calculatePrice(price, tax = price * 0.18) {
+    return price + tax;
+    }
+
+    console.log(calculatePrice(1000));
+    // 1180
+    ```
+
+    Yahan `tax` ki default value `price` par depend kar rahi hai.
+
+    ---
+
+    ### 5. Real-world API Example
+
+    ```javascript id="def07"
+    function getUsers(page = 1, limit = 10) {
+    console.log(`Page: ${page}, Limit: ${limit}`);
+    }
+
+    getUsers();
+    // Page: 1, Limit: 10
+
+    getUsers(2, 20);
+    // Page: 2, Limit: 20
+    ```
+
+    Backend APIs me pagination ke liye ye common pattern hai.
+
+    ---
+
+    ### Default Parameter vs `||`
+
+    Ek common old approach:
+
+    ```javascript id="def08"
+    function greet(name) {
+    name = name || "Guest";
+    }
+    ```
+
+    Problem: `||` **falsy values** ko bhi replace kar deta hai.
+
+    ```javascript id="def09"
+    function test(value = 10) {
+    console.log(value);
+    }
+
+    test(0);
+    // 0
+    ```
+
+    Default parameter sirf tab apply hota hai jab value `undefined` ho.
+
+    ## 🎯 English Interview Answer
+
+    > **“Default parameters allow us to provide a default value for a function parameter when no value is provided or the value is undefined. For example, I can define a function like `function greet(name = 'Guest')`. If I call it without an argument, it uses Guest as the default value. If I pass a value, that value is used. An important point is that default parameters apply to undefined, but not to null.”**
+
+    ### Interview Follow-up
+
+    **Q: Default parameter `null` ke liye work karta hai?**
+
+    **No.**
+
+    ```javascript id="def10"
+    function test(value = 10) {
+    console.log(value);
+    }
+
+    test(undefined); // 10
+    test(null);      // null
+    test(0);         // 0
+    ```
+
+    Because default parameter only checks for `undefined`.
+
+    **Q: Default parameters aur rest parameters ek saath use kar sakte hain?**
+
+    **Yes**, but rest parameter last me hona chahiye:
+
+    ```javascript id="def11"
+    function test(name = "Guest", ...skills) {
+    console.log(name);
+    console.log(skills);
+    }
+
+    test("Raj", "JS", "Node");
+    // Raj
+    // ["JS", "Node"]
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Default Parameter = Argument missing/`undefined` → Default value use karo.**
+
+
 41. Debounce kya hai?
 42. Throttle kya hai?
 43. Memoization?
