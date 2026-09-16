@@ -7214,6 +7214,181 @@ Browser automatically validation kar dega.
 
 
 41. Debounce kya hai?
+
+    ## Hinglish Explanation
+
+    **Debouncing** ek technique hai jisme hum **rapidly repeated events ko immediately execute nahi karte**. Hum wait karte hain ki event kuch time ke liye stop ho, phir function execute karte hain.
+
+    Simple:
+
+    > **Debounce = “User continuously action kar raha hai → wait karo → action rukne ke baad ek baar function chalao.”**
+
+    ### Real-world Example: Search Box
+
+    User type karta hai:
+
+    ```text
+    R
+    Ra
+    Raj
+    Raj P
+    Raj Pa
+    Raj Parihar
+    ```
+
+    Agar har keystroke par API call karein:
+
+    ```text
+    R       → API
+    Ra      → API
+    Raj     → API
+    Raj P   → API
+    Raj Pa  → API
+    Raj Parihar → API
+    ```
+
+    Bahut unnecessary API calls hongi.
+
+    Debounce ke saath:
+
+    ```text
+    R
+    ↓
+    Ra
+    ↓
+    Raj
+    ↓
+    Raj P
+    ↓
+    Raj Pa
+    ↓
+    Raj Parihar
+    ↓
+    User stopped typing
+    ↓
+    Wait 500ms
+    ↓
+    ONE API CALL ✅
+    ```
+
+    ### Small Implementation
+
+    ```javascript id="deb01"
+    function debounce(fn, delay) {
+    let timer;
+
+    return function (...args) {
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+        fn(...args);
+        }, delay);
+    };
+    }
+    ```
+
+    Use:
+
+    ```javascript id="deb02"
+    const search = debounce((query) => {
+    console.log("API call:", query);
+    }, 500);
+
+    search("R");
+    search("Ra");
+    search("Raj");
+    ```
+
+    Agar calls ke beech **500ms se kam gap** hai, previous timer cancel hota rahega.
+
+    Finally:
+
+    ```text
+    500ms tak koi new call nahi
+            ↓
+    search("Raj") execute
+    ```
+
+    ### Common Use Cases
+
+    * 🔍 Search/autocomplete API
+    * 📝 User typing events
+    * 🖥️ Resize events
+    * 🎯 Input validation
+    * 🔎 Filter/search UI
+
+    ### Debounce vs Throttle
+
+    Ye interview me **bahut common follow-up** hai.
+
+    **Debounce:**
+
+    ```text
+    Events:  █ █ █ █ █ █ █
+                ↓
+            Wait for pause
+                ↓
+                █
+    ```
+
+    **Throttle:**
+
+    ```text
+    Events:  █ █ █ █ █ █ █
+            ↓   ↓   ↓
+            Execute at fixed intervals
+    ```
+
+    Simple:
+
+    > **Debounce = Last event ke baad execute.**
+    > **Throttle = Fixed interval me maximum ek baar execute.**
+
+    ## 🎯 English Interview Answer
+
+    > **“Debouncing is a technique used to limit how frequently a function is executed when an event happens repeatedly. Instead of executing the function for every event, we wait for a specific period after the last event. If another event happens during that period, the timer is reset. A common example is a search input where we wait for the user to stop typing before making an API call. This helps reduce unnecessary API requests and improves performance.”**
+
+    ### Interview Follow-up
+
+    **Q: Debounce aur Throttle me difference kya hai?**
+
+    | Debounce                        | Throttle                                  |
+    | ------------------------------- | ----------------------------------------- |
+    | Last event ke baad execute      | Fixed interval par execute                |
+    | User activity stop hone ka wait | Continuous activity ke during bhi execute |
+    | Search input ke liye common     | Scroll/resize ke liye common              |
+
+    Example:
+
+    ```text
+    Search box      → Debounce
+    Scroll event    → Throttle
+    Resize event    → Often Throttle
+    Autocomplete    → Debounce
+    ```
+
+    **Q: `clearTimeout()` kyun use kiya?**
+
+    ```javascript id="deb03"
+    clearTimeout(timer);
+    ```
+
+    Because agar user dobara type karta hai, **previous scheduled execution cancel** karni hoti hai.
+
+    Phir new timer start hota hai:
+
+    ```javascript id="deb04"
+    clearTimeout(oldTimer);
+            ↓
+    setTimeout(newTimer);
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Debounce = “Action rukne do → thoda wait karo → last action ke liye ek baar execute karo.”**
+
+
+
 42. Throttle kya hai?
 43. Memoization?
 44. Pure functions?
