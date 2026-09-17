@@ -7536,6 +7536,175 @@ Browser automatically validation kar dega.
 
 
 43. Memoization?
+
+
+    ## Hinglish Explanation
+
+    **Memoization** ek optimization technique hai jisme function ke **previous results ko cache** karte hain, taaki same input dobara aaye to function ko calculate na karna pade.
+
+    Simple:
+
+    > **Memoization = Same input → Pehle ka result cache se return karo → Recalculation avoid karo.**
+
+    ### Without Memoization
+
+    ```javascript id="mem01"
+    function square(n) {
+    console.log("Calculating...");
+    return n * n;
+    }
+
+    console.log(square(5)); // Calculating... 25
+    console.log(square(5)); // Calculating... 25
+    ```
+
+    Same input `5` ke liye calculation dobara ho rahi hai.
+
+    ### With Memoization
+
+    ```javascript id="mem02"
+    function memoize(fn) {
+    const cache = new Map();
+
+    return function (n) {
+        if (cache.has(n)) {
+        return cache.get(n);
+        }
+
+        const result = fn(n);
+
+        cache.set(n, result);
+
+        return result;
+    };
+    }
+
+    const square = memoize((n) => {
+    console.log("Calculating...");
+    return n * n;
+    });
+
+    console.log(square(5));
+    // Calculating...
+    // 25
+
+    console.log(square(5));
+    // 25
+    ```
+
+    Second time `"Calculating..."` print nahi hua because result **cache se mil gaya**.
+
+    Flow:
+
+    ```text id="mem03"
+    square(5)
+    ↓
+    Cache me 5 hai?
+    ↓
+    No ──→ Calculate → Store → Return
+    │
+    Yes
+    ↓
+    Return cached result
+    ```
+
+    ### Real-world Use Case
+
+    Suppose expensive calculation hai:
+
+    ```javascript id="mem04"
+    function calculateReport(userId) {
+    // expensive calculation
+    return result;
+    }
+    ```
+
+    Agar same `userId` repeatedly request kar raha hai:
+
+    ```text id="mem05"
+    userId = 101
+    ↓
+    Calculate Report
+    ↓
+    Cache result
+
+    userId = 101
+    ↓
+    Cache hit
+    ↓
+    Return result directly ✅
+    ```
+
+    Isse CPU/time save ho sakta hai.
+
+    ### React me Memoization
+
+    React me commonly:
+
+    ```javascript id="mem06"
+    useMemo()
+    useCallback()
+    ```
+
+    use kiye jaate hain.
+
+    Example:
+
+    ```javascript id="mem07"
+    const total = useMemo(() => {
+    return calculateTotal(products);
+    }, [products]);
+    ```
+
+    `products` change nahi hua to React previous calculated value reuse kar sakta hai.
+
+    **Important:** Memoization har jagah use nahi karni chahiye. Cache memory consume karta hai aur agar calculation cheap hai to memoization ka overhead benefit se zyada ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Memoization is an optimization technique where we cache the result of a function based on its input. When the same input is provided again, we return the cached result instead of executing the calculation again. This can improve performance for expensive and frequently repeated calculations. In JavaScript, we can implement memoization using a Map or another cache structure. However, I use it only when the performance benefit justifies the additional memory and cache management overhead.”**
+
+    ### Interview Follow-up
+
+    **Q: Memoization aur caching same hai?**
+
+    Related hain, but exactly same nahi.
+
+    **Caching** ek broader concept hai:
+
+    ```text id="mem08"
+    Caching
+    ├── API response cache
+    ├── Database query cache
+    ├── Browser cache
+    └── Function result cache
+    ```
+
+    **Memoization** specifically usually **function results ko inputs ke basis par cache** karne ko refer karta hai.
+
+    **Q: Memoization kab useful hai?**
+
+    Jab:
+
+    * Function calculation expensive ho
+    * Same inputs repeatedly aa rahe ho
+    * Function deterministic/pure ho, ya caching ke rules clearly defined ho
+
+    Example:
+
+    ```text id="mem09"
+    Fibonacci
+    Complex calculations
+    Repeated selectors/computations
+    Expensive transformations
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Memoization = Same input → Cached result → Calculation dobara mat karo.**
+
+
+
 44. Pure functions?
 45. Side effects kya hai?
 46. Functional programming kya hai?
