@@ -7390,6 +7390,151 @@ Browser automatically validation kar dega.
 
 
 42. Throttle kya hai?
+
+    ## Hinglish Explanation
+
+    **Throttling** ek performance optimization technique hai jisme hum ensure karte hain ki koi function **fixed time interval me maximum ek baar** execute ho.
+
+    Simple:
+
+    > **Throttle = Event kitni bhi baar aaye, function ko fixed interval se zyada frequently execute mat hone do.**
+
+    ### Real-world Example: Scroll Event
+
+    Scroll event bahut frequently fire ho sakta hai:
+
+    ```text
+    Scroll → Scroll → Scroll → Scroll → Scroll → Scroll → ...
+    ```
+
+    Agar har event par heavy function chalega, performance affect ho sakti hai.
+
+    Throttle lagane par:
+
+    ```text
+    Events:
+    ████████████████████
+
+    Function:
+    █----█----█----█----
+    100ms  100ms  100ms
+    ```
+
+    Matlab function **har 100ms me maximum ek baar** execute hoga.
+
+    ### Small Implementation
+
+    ```javascript id="thr01"
+    function throttle(fn, delay) {
+    let lastCall = 0;
+
+    return function (...args) {
+        const now = Date.now();
+
+        if (now - lastCall >= delay) {
+        lastCall = now;
+        fn(...args);
+        }
+    };
+    }
+    ```
+
+    Use:
+
+    ```javascript id="thr02"
+    const handleScroll = throttle(() => {
+    console.log("Scroll handled");
+    }, 100);
+
+    window.addEventListener("scroll", handleScroll);
+    ```
+
+    Chahe `scroll` event hundreds of times fire ho, function approximately **100ms ke interval se zyada frequently execute nahi karega**.
+
+    ### Debounce vs Throttle
+
+    Ye **bahut important interview question** hai:
+
+    ```text id="thr03"
+    DEBOUNCE
+
+    User typing:
+    ███████████████
+                ↓
+            Pause
+                ↓
+                █
+            Execute once
+
+
+    THROTTLE
+
+    Continuous events:
+    ██████████████████
+    ↓    ↓    ↓    ↓
+    █    █    █    █
+    fixed interval
+    ```
+
+    | Debounce                   | Throttle                                  |
+    | -------------------------- | ----------------------------------------- |
+    | Last event ke baad execute | Fixed interval me execute                 |
+    | Activity stop hone ka wait | Activity ke during execute hota rahta hai |
+    | Search/autocomplete        | Scroll/mousemove                          |
+    | API search requests        | Scroll position tracking                  |
+    | "Wait until user stops"    | "Run at most once per interval"           |
+
+    ### Practical Examples
+
+    **Debounce:**
+
+    ```text
+    User typing → wait → API call
+    ```
+
+    **Throttle:**
+
+    ```text
+    User scrolling → every 100ms → update position
+    ```
+
+    Isliye:
+
+    > **Search box → Debounce**
+    > **Scroll/Mouse movement → Throttle**
+
+    ## 🎯 English Interview Answer
+
+    > **“Throttling is a technique used to limit how frequently a function can execute. The function is allowed to execute at most once during a specified time interval, even if the event occurs many times. For example, scroll events can fire very frequently, so I can use throttling to execute the scroll handler once every 100 milliseconds. This reduces unnecessary function calls and helps improve application performance.”**
+
+    ### Interview Follow-up
+
+    **Q: Debounce aur Throttle me simple difference?**
+
+    > **“Debounce waits until the events stop, while throttle allows execution at a fixed interval during continuous events.”**
+
+    Example:
+
+    ```text id="thr04"
+    Search Input  → Debounce
+    Scroll        → Throttle
+    Mousemove     → Throttle
+    Autocomplete  → Debounce
+    ```
+
+    **Q: Throttle ka main benefit kya hai?**
+
+    Repeated events ke wajah se hone wale **unnecessary function executions ko control** karta hai, especially scroll, resize, mousemove jaise high-frequency events me.
+
+    ### ⭐ One-line memory trick
+
+    **Throttle = “Event kitni bhi baar aaye → Function fixed interval me maximum 1 baar.”**
+
+    **Interview duration:** ~90–120 seconds.
+
+
+
+
 43. Memoization?
 44. Pure functions?
 45. Side effects kya hai?
