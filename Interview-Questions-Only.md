@@ -7706,6 +7706,203 @@ Browser automatically validation kar dega.
 
 
 44. Pure functions?
+
+    ## Hinglish Explanation
+
+    **Pure Function** wo function hota hai jo **same input par hamesha same output deta hai** aur **bahar ki state/data ko modify nahi karta**.
+
+    Simple:
+
+    > **Pure Function = Same Input → Same Output + No Side Effects**
+
+    ### 1. Pure Function Example
+
+    ```javascript id="pure01"
+    function add(a, b) {
+    return a + b;
+    }
+
+    console.log(add(10, 20)); // 30
+    console.log(add(10, 20)); // 30
+    ```
+
+    `10, 20` doge to hamesha `30` milega.
+
+    Is function ne kisi external variable ko modify nahi kiya.
+
+    ---
+
+    ### 2. Impure Function
+
+    ```javascript id="pure02"
+    let total = 0;
+
+    function addToTotal(amount) {
+    total += amount;
+    return total;
+    }
+    ```
+
+    Yahan function **external variable `total` ko modify** kar raha hai.
+
+    ```text id="pure03"
+    addToTotal(100) → 100
+    addToTotal(100) → 200
+    ```
+
+    Same input diya, but output change ho gaya.
+
+    So ye **impure function** hai.
+
+    ---
+
+    ### 3. Side Effect kya hota hai?
+
+    Function ke bahar ki state/system ko affect karna.
+
+    Examples:
+
+    ```javascript id="pure04"
+    // Side effects
+    database.update();
+    console.log();
+    API call();
+    DOM manipulation;
+    global variable modify;
+    file write;
+    ```
+
+    Example:
+
+    ```javascript id="pure05"
+    function saveUser(user) {
+    database.save(user); // Side effect
+    }
+    ```
+
+    Ye pure function nahi hai because external system/database ko change kar raha hai.
+
+    ---
+
+    ### 4. Object ke saath Important Example
+
+    Ye function **impure** hai:
+
+    ```javascript id="pure06"
+    function updateUser(user) {
+    user.name = "Amit";
+
+    return user;
+    }
+    ```
+
+    Kyunki original object modify ho raha hai.
+
+    Better:
+
+    ```javascript id="pure07"
+    function updateUser(user) {
+    return {
+        ...user,
+        name: "Amit"
+    };
+    }
+    ```
+
+    Ab original object modify nahi hua.
+
+    ```text id="pure08"
+    Original Object
+        ↓
+    Function
+        ↓
+    New Object
+    ```
+
+    ---
+
+    ### Pure Function ki 2 Main Conditions
+
+    ```text id="pure09"
+    Pure Function
+        │
+        ├── Same input → Same output
+        │
+        └── No side effects
+    ```
+
+    Dono conditions important hain.
+
+    ### Pure Function ka benefit
+
+    Pure functions:
+
+    * Test karna easy hota hai
+    * Debugging easy hoti hai
+    * Predictable behavior
+    * Reusable hote hain
+    * Memoization ke liye useful hote hain
+    * Functional programming me important hain
+
+    For example memoization me pure functions especially useful hote hain:
+
+    ```text id="pure10"
+    Same input
+    ↓
+    Same output
+    ↓
+    Result safely cache kar sakte ho
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“A pure function is a function that always produces the same output for the same input and does not cause side effects. It does not modify external state, global variables, or the input data. For example, a function that adds two numbers is pure because the same inputs always produce the same result. Pure functions are easier to test, debug, reuse, and optimize. They are also useful for techniques like memoization because their results are predictable.”**
+
+    ### Interview Follow-up
+
+    **Q: Kya pure function object ko modify kar sakta hai?**
+
+    Technically kar sakta hai, but agar input object modify karega to **side effect** create hoga, so function pure nahi rahega.
+
+    ❌ Impure:
+
+    ```javascript id="pure11"
+    function update(user) {
+    user.age = 30;
+    return user;
+    }
+    ```
+
+    ✅ Pure approach:
+
+    ```javascript id="pure12"
+    function update(user) {
+    return {
+        ...user,
+        age: 30
+    };
+    }
+    ```
+
+    **Q: Kya `console.log()` pure function ko impure bana deta hai?**
+
+    Strict functional-programming definition me **haan, `console.log()` ek side effect hai**, kyunki function external output system ko affect kar raha hai.
+
+    ```javascript id="pure13"
+    function add(a, b) {
+    console.log("Calculating");
+    return a + b;
+    }
+    ```
+
+    Calculation predictable hai, but function technically pure nahi hai because of the logging side effect.
+
+    ### ⭐ One-line memory trick
+
+    **Pure Function = Same Input → Same Output + No Side Effects.**
+
+
+
 45. Side effects kya hai?
 46. Functional programming kya hai?
 47. Event delegation?
