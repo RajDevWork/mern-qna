@@ -8080,6 +8080,221 @@ Browser automatically validation kar dega.
 
 
 46. Functional programming kya hai?
+
+    ## Hinglish Explanation
+
+    **Functional Programming (FP)** ek programming style/paradigm hai jisme program ko **functions aur data transformations** ke around design kiya jata hai.
+
+    JavaScript me functional programming ke important concepts hain:
+
+    ```text
+    Functional Programming
+            │
+            ├── Pure Functions
+            ├── Immutability
+            ├── Higher-Order Functions
+            ├── First-Class Functions
+            ├── Function Composition
+            └── Minimize Side Effects
+    ```
+
+    ### 1. Pure Functions
+
+    Same input → same output, aur unnecessary side effects nahi.
+
+    ```javascript id="fp01"
+    function add(a, b) {
+    return a + b;
+    }
+    ```
+
+    ---
+
+    ### 2. Immutability
+
+    Existing data ko directly modify karne ke bajay **new data create** karna.
+
+    ❌ Direct modification:
+
+    ```javascript id="fp02"
+    const user = {
+    name: "Raj",
+    age: 25
+    };
+
+    user.age = 30;
+    ```
+
+    ✅ Immutable approach:
+
+    ```javascript id="fp03"
+    const updatedUser = {
+    ...user,
+    age: 30
+    };
+    ```
+
+    ---
+
+    ### 3. Functions as Values
+
+    JavaScript me functions ko variable me store, argument ke roop me pass aur return kar sakte hain.
+
+    ```javascript id="fp04"
+    const greet = (name) => `Hello ${name}`;
+
+    function execute(fn, value) {
+    return fn(value);
+    }
+
+    console.log(execute(greet, "Raj"));
+    // Hello Raj
+    ```
+
+    ---
+
+    ### 4. Higher-Order Functions
+
+    Jo function **another function ko argument leta hai ya function return karta hai**, usse Higher-Order Function kehte hain.
+
+    Common examples:
+
+    ```javascript id="fp05"
+    const numbers = [1, 2, 3, 4];
+
+    const result = numbers.map(num => num * 2);
+
+    console.log(result);
+    // [2, 4, 6, 8]
+    ```
+
+    `map()` ko callback function diya gaya hai.
+
+    Other examples:
+
+    ```text id="fp06"
+    map()
+    filter()
+    reduce()
+    forEach()
+    ```
+
+    ---
+
+    ### 5. Function Composition
+
+    Multiple small functions ko combine karke bigger operation banana.
+
+    ```javascript id="fp07"
+    const double = x => x * 2;
+    const square = x => x * x;
+
+    const result = square(double(5));
+
+    console.log(result);
+    // 100
+    ```
+
+    Flow:
+
+    ```text id="fp08"
+    5
+    ↓
+    double()
+    ↓
+    10
+    ↓
+    square()
+    ↓
+    100
+    ```
+
+    ### Functional Programming ka Main Goal
+
+    Code ko:
+
+    * predictable
+    * reusable
+    * testable
+    * maintainable
+
+    banana, especially by keeping transformations clear and controlling side effects.
+
+    **Important:** JavaScript **purely functional language nahi hai**. Ye multi-paradigm language hai, matlab functional, object-oriented aur procedural styles sab support karti hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Functional programming is a programming paradigm where we design applications around functions and data transformations. Important concepts include pure functions, immutability, first-class functions, higher-order functions, and function composition. The goal is to make code more predictable, reusable, and easier to test by reducing unnecessary side effects and avoiding direct mutation where practical. JavaScript supports functional programming, but it is a multi-paradigm language, so we can also use object-oriented and procedural approaches.”**
+
+    ### Interview Follow-up
+
+    **Q: Functional Programming aur OOP me basic difference kya hai?**
+
+    Simple way:
+
+    ```text id="fp09"
+    Functional Programming
+    → Functions + Data transformations
+    → Pure functions
+    → Immutability
+    → Side effects controlled
+
+
+    OOP
+    → Objects + State + Methods
+    → Encapsulation
+    → Inheritance
+    → Polymorphism
+    ```
+
+    Example FP:
+
+    ```javascript id="fp10"
+    const total = prices.reduce(
+    (sum, price) => sum + price,
+    0
+    );
+    ```
+
+    Yahan data ko function ke through transform kiya.
+
+    OOP approach:
+
+    ```javascript id="fp11"
+    class Cart {
+    constructor() {
+        this.items = [];
+    }
+
+    addItem(item) {
+        this.items.push(item);
+    }
+    }
+    ```
+
+    Yahan object ke andar **state + methods** hain.
+
+    **Q: Kya Functional Programming ka matlab side effects bilkul nahi honge?**
+
+    **No.** Real applications me database calls, API calls, logging etc. necessary hain.
+
+    Better approach:
+
+    ```text id="fp12"
+    Business Logic
+        ↓
+    Pure Functions where practical
+        ↓
+    Controlled Side Effects
+        ↓
+    Database / API / External Systems
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Functional Programming = Functions + Immutability + Pure Logic + Controlled Side Effects.**
+
+
 47. Event delegation?
 48. Garbage collection?
 49. Memory leak kya hai?
