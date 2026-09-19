@@ -8710,6 +8710,217 @@ Browser automatically validation kar dega.
 
 
 49. Memory leak kya hai?
+
+    ## Hinglish Explanation
+
+    **Memory Leak** tab hota hai jab application ko kisi object/data ki **ab zarurat nahi hai**, lekin uska reference abhi bhi maintained hai, isliye **Garbage Collector uski memory reclaim nahi kar pata**.
+
+    Simple:
+
+    > **Memory Leak = Unused memory occupied reh gayi because reference abhi bhi exist karta hai.**
+
+    ### Simple Example
+
+    ```javascript id="ml01"
+    const users = [];
+
+    setInterval(() => {
+    users.push({
+        name: "Raj"
+    });
+    }, 1000);
+    ```
+
+    Har second ek naya object `users` array me add ho raha hai.
+
+    ```text id="ml02"
+    users
+    ↓
+    Object
+    Object
+    Object
+    Object
+    Object
+    Object
+    ...
+    ```
+
+    Array continuously grow karega, aur objects reachable hain.
+
+    Isliye:
+
+    ```text id="ml03"
+    Object no longer needed?
+            ↓
+        Maybe ❌
+            ↓
+    users still references it
+            ↓
+    GC cannot reclaim it
+            ↓
+    Memory keeps growing
+    ```
+
+    Agar ye long-running Node.js server me ho, eventually **high memory usage / Out Of Memory** problem ho sakti hai.
+
+    ### Common Causes
+
+    #### 1. Unbounded Global Data
+
+    ```javascript id="ml04"
+    const cache = {};
+
+    function saveData(id, data) {
+    cache[id] = data;
+    }
+    ```
+
+    Agar cache me entries continuously add hoti rahein aur kabhi remove na hon:
+
+    ```text id="ml05"
+    cache → thousands/millions of objects
+    ```
+
+    Memory continuously increase ho sakti hai.
+
+    ---
+
+    #### 2. Event Listeners
+
+    Browser applications me agar listeners repeatedly add ho rahe hain aur remove nahi kiye ja rahe:
+
+    ```javascript id="ml06"
+    function setup() {
+    window.addEventListener("resize", handleResize);
+    }
+    ```
+
+    Agar `setup()` baar-baar call hota hai without proper cleanup, unnecessary listeners accumulate ho sakte hain.
+
+    ---
+
+    #### 3. Timers / Intervals
+
+    ```javascript id="ml07"
+    const timer = setInterval(() => {
+    // work
+    }, 1000);
+    ```
+
+    Agar timer ki zarurat khatam ho gayi but clear nahi kiya:
+
+    ```javascript id="ml08"
+    clearInterval(timer);
+    ```
+
+    to timer unnecessarily running reh sakta hai aur referenced data ko retain kar sakta hai.
+
+    ---
+
+    #### 4. Closures
+
+    Closures useful hain, but agar long-lived function unnecessary large objects ko reference karta rahe, memory unnecessarily retained ho sakti hai.
+
+    ---
+
+    ### Memory Leak vs Garbage Collection
+
+    ```text id="ml09"
+    Object created
+        ↓
+    Object no longer needed
+        ↓
+    Reference still exists
+        ↓
+    Object remains reachable
+        ↓
+    GC cannot reclaim
+        ↓
+    Memory Leak
+    ```
+
+    Correct approach:
+
+    ```text id="ml10"
+    Object no longer needed
+        ↓
+    Remove unnecessary reference
+        ↓
+    Object becomes unreachable
+        ↓
+    GC can eventually reclaim memory
+    ```
+
+    ### Node.js me Memory Leak kaise detect karoge?
+
+    Production debugging me generally:
+
+    ```text id="ml11"
+    High Memory Usage
+        ↓
+    Check process memory
+        ↓
+    Heap Snapshot
+        ↓
+    Compare snapshots
+        ↓
+    Find retained objects/references
+        ↓
+    Fix reference/cache/listener/timer
+        ↓
+    Monitor again
+    ```
+
+    Node.js me `process.memoryUsage()` se basic memory metrics dekh sakte ho:
+
+    ```javascript id="ml12"
+    console.log(process.memoryUsage());
+    ```
+
+    Heap snapshots aur profiling tools retained objects identify karne me useful hote hain.
+
+    ## 🎯 English Interview Answer
+
+    > **“A memory leak occurs when an application no longer needs some objects, but references to those objects are still maintained, so the garbage collector cannot reclaim their memory. Common causes include unbounded caches, global references, unremoved event listeners, timers, and long-lived closures. In a Node.js application, I can monitor memory usage and use heap snapshots or profiling tools to identify objects that are being retained unnecessarily. After finding the reference causing the leak, I remove or properly clean it up and monitor memory usage again.”**
+
+    ### Interview Follow-up
+
+    **Q: Memory leak aur high memory usage same hai?**
+
+    **No.**
+
+    High memory usage kaafi reasons se ho sakta hai:
+
+    ```text id="ml13"
+    High Memory
+    ├── Large legitimate workload
+    ├── Temporary memory usage
+    ├── Cache
+    └── Memory leak
+    ```
+
+    **Memory leak** specifically tab hai jab unnecessary objects **expectedly release nahi ho rahe** because references remain.
+
+    **Q: Kya garbage collector memory leak ko automatically solve kar dega?**
+
+    **Not if the object is still reachable.**
+
+    ```javascript id="ml14"
+    const cache = [];
+
+    cache.push(largeObject);
+    ```
+
+    Agar `cache` reachable hai, `largeObject` bhi reachable hai.
+
+    GC usse garbage nahi samjhega.
+
+    ### ⭐ One-line memory trick
+
+    **Memory Leak = Object ki zarurat khatam → Reference abhi bhi alive → GC memory reclaim nahi kar pata.**
+
+
+
 50. Closures se leak kaise hota hai?
 51. Proxy kya hai?
 52. Reflect API kya hai?
