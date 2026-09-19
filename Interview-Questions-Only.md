@@ -8472,6 +8472,243 @@ Browser automatically validation kar dega.
 
 
 48. Garbage collection?
+
+    ## Hinglish Explanation
+
+    **Garbage Collection (GC)** JavaScript runtime ka automatic memory management mechanism hai.
+
+    Simple:
+
+    > **Garbage Collection = Jo objects/program data ab reachable nahi hain, unki memory automatically reclaim karna.**
+
+    JavaScript me normally hume manually `free()` nahi karna padta, unlike languages like C/C++.
+
+    ### Basic Example
+
+    ```javascript id="gc01"
+    function createUser() {
+    const user = {
+        name: "Raj"
+    };
+
+    console.log(user);
+    }
+
+    createUser();
+    ```
+
+    `createUser()` complete hone ke baad agar `user` ka koi reference nahi hai:
+
+    ```text id="gc02"
+    createUser()
+        ↓
+    user object created
+        ↓
+    function finished
+        ↓
+    No reference to user
+        ↓
+    Garbage Collector can reclaim memory
+    ```
+
+    ### Reachability — Important Concept
+
+    GC generally **reachability** ke concept par kaam karta hai.
+
+    Agar object kisi reachable reference se connected hai:
+
+    ```javascript id="gc03"
+    const user = {
+    name: "Raj"
+    };
+
+    console.log(user);
+    ```
+
+    `user` reachable hai, so object garbage nahi hai.
+
+    Agar reference remove kar diya:
+
+    ```javascript id="gc04"
+    let user = {
+    name: "Raj"
+    };
+
+    user = null;
+    ```
+
+    Agar object ko koi aur reference nahi karta:
+
+    ```text id="gc05"
+    user variable
+        ↓
+    null
+
+    Old Object
+        ↓
+    No reachable reference
+        ↓
+    GC can reclaim it
+    ```
+
+    ### Mark-and-Sweep
+
+    JavaScript engines commonly **mark-and-sweep style garbage collection** use karte hain.
+
+    Simplified flow:
+
+    ```text id="gc06"
+    GC starts
+    ↓
+    Reachable objects ko MARK karo
+    ↓
+    Unreachable objects identify karo
+    ↓
+    Unreachable memory SWEEP/reclaim karo
+    ```
+
+    Example:
+
+    ```javascript id="gc07"
+    let user = {
+    name: "Raj"
+    };
+
+    let admin = user;
+
+    user = null;
+    ```
+
+    Object abhi garbage nahi hai because:
+
+    ```text id="gc08"
+    admin ─────→ Object
+    ```
+
+    `admin` abhi object ko reference kar raha hai.
+
+    Agar:
+
+    ```javascript id="gc09"
+    admin = null;
+    ```
+
+    Ab koi reachable reference nahi hai, so GC eventually memory reclaim kar sakta hai.
+
+    ### Garbage Collection Immediately nahi hota
+
+    Ye important interview point hai.
+
+    ```javascript id="gc10"
+    let user = { name: "Raj" };
+
+    user = null;
+    ```
+
+    Iska matlab ye nahi ki **usi moment memory free ho gayi**.
+
+    It means object **eligible for garbage collection** ho gaya.
+
+    GC kab run karega, ye JavaScript engine decide karta hai.
+
+    ### Memory Leak kya hai?
+
+    Agar application ko objects ki zarurat nahi hai, but references accidentally maintain ho rahe hain, memory unnecessarily occupied reh sakti hai.
+
+    Example:
+
+    ```javascript id="gc11"
+    const users = [];
+
+    setInterval(() => {
+    users.push({
+        name: "Raj"
+    });
+    }, 1000);
+    ```
+
+    Array continuously grow kar raha hai.
+
+    ```text id="gc12"
+    users
+    ↓
+    Object
+    Object
+    Object
+    Object
+    Object
+    ...
+    ```
+
+    Objects reachable hain because `users` array unko reference kar raha hai, so GC unhe remove nahi karega.
+
+    Ye **memory leak / unbounded memory growth** ka example ho sakta hai.
+
+    ### Common Causes of Memory Leaks
+
+    * Unremoved event listeners
+    * Timers/intervals
+    * Growing global variables
+    * Unbounded caches
+    * Long-lived closures retaining objects
+    * Unnecessary references
+    * Large data structures kept indefinitely
+
+    ### WeakMap ka Connection
+
+    `WeakMap` useful ho sakta hai jab object-associated metadata store karna ho without strongly keeping the key object alive.
+
+    ```javascript id="gc13"
+    const metadata = new WeakMap();
+
+    let user = {
+    name: "Raj"
+    };
+
+    metadata.set(user, {
+    lastLogin: "Today"
+    });
+
+    user = null;
+    ```
+
+    Agar koi aur strong reference nahi hai, to `user` object GC ke liye eligible ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Garbage collection is the automatic memory management process used by JavaScript engines to reclaim memory occupied by objects that are no longer reachable by the application. JavaScript engines commonly use mark-and-sweep based techniques. The garbage collector identifies reachable objects, and objects that are no longer reachable can eventually have their memory reclaimed. Garbage collection is automatic and does not happen immediately when an object becomes unreachable. In production applications, I also watch for memory leaks caused by things like unbounded caches, timers, event listeners, or unnecessary references.”**
+
+    ### Interview Follow-up
+
+    **Q: Kya `user = null` karne se object immediately delete ho jata hai?**
+
+    **No.**
+
+    ```javascript id="gc14"
+    let user = {
+    name: "Raj"
+    };
+
+    user = null;
+    ```
+
+    Isse sirf `user` ka reference remove hua.
+
+    Agar object ka koi aur reachable reference nahi hai, to object **eligible for GC** ho jata hai.
+
+    **Q: Memory leak kya hota hai?**
+
+    > **“Memory leak happens when an application keeps references to objects that it no longer needs, preventing the garbage collector from reclaiming their memory.”**
+
+    **Q: Kya JavaScript me manually garbage collection kar sakte hain?**
+
+    Normally application code se **directly GC control nahi karte**. JavaScript engine automatically garbage collection manage karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Garbage Collection = Unreachable objects → GC identifies them → Memory eventually reclaim hoti hai.**
+
+
 49. Memory leak kya hai?
 50. Closures se leak kaise hota hai?
 51. Proxy kya hai?
