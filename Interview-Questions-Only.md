@@ -8296,6 +8296,181 @@ Browser automatically validation kar dega.
 
 
 47. Event delegation?
+
+    ## Hinglish Explanation
+
+    **Event Delegation** ek JavaScript technique hai jisme hum **har child element par alag event listener lagane ke bajay parent element par ek listener** lagate hain.
+
+    Ye **Event Bubbling** ka use karti hai.
+
+    ### Without Event Delegation
+
+    Agar list me 100 buttons hain:
+
+    ```javascript id="ed01"
+    document.querySelectorAll(".delete").forEach(button => {
+    button.addEventListener("click", () => {
+        console.log("Delete");
+    });
+    });
+    ```
+
+    Yahan potentially 100 elements par listeners lag rahe hain.
+
+    ### With Event Delegation
+
+    Parent par ek hi listener:
+
+    ```javascript id="ed02"
+    const list = document.querySelector("#userList");
+
+    list.addEventListener("click", (event) => {
+    if (event.target.matches(".delete")) {
+        console.log("Delete clicked");
+    }
+    });
+    ```
+
+    HTML:
+
+    ```html id="ed03"
+    <ul id="userList">
+    <li>
+        Raj
+        <button class="delete">Delete</button>
+    </li>
+
+    <li>
+        Amit
+        <button class="delete">Delete</button>
+    </li>
+    </ul>
+    ```
+
+    Flow:
+
+    ```text id="ed04"
+    User clicks Delete button
+            ↓
+    Button event
+            ↓
+    Event bubbles
+            ↓
+    #userList listener
+            ↓
+    event.target identify
+            ↓
+    Delete action
+    ```
+
+    ### Why useful?
+
+    **1. Fewer event listeners**
+
+    100 buttons → potentially 100 listeners ki jagah **1 parent listener**.
+
+    **2. Dynamic elements ke saath kaam karta hai**
+
+    Ye important hai.
+
+    ```javascript id="ed05"
+    list.innerHTML += `
+    <li>
+        New User
+        <button class="delete">Delete</button>
+    </li>
+    `;
+    ```
+
+    New button ke liye separately `addEventListener()` lagane ki zarurat nahi, because parent ka listener already hai.
+
+    ### `target` vs `currentTarget`
+
+    Interview me frequently poocha ja sakta hai.
+
+    ```javascript id="ed06"
+    list.addEventListener("click", (event) => {
+    console.log(event.target);
+    console.log(event.currentTarget);
+    });
+    ```
+
+    **`event.target`** → jis actual element par click hua.
+
+    **`event.currentTarget`** → jis element par listener attached hai.
+
+    ```text id="ed07"
+    <button>
+    ↑
+    target
+
+    <ul>
+    ↑
+    currentTarget
+    ```
+
+    ### Important: `closest()`
+
+    Agar button ke andar icon/span click ho sakta hai:
+
+    ```html id="ed08"
+    <button class="delete">
+    <span>🗑</span>
+    </button>
+    ```
+
+    `event.target` `span` ho sakta hai.
+
+    Better:
+
+    ```javascript id="ed09"
+    list.addEventListener("click", (event) => {
+    const button = event.target.closest(".delete");
+
+    if (!button) return;
+
+    console.log("Delete clicked");
+    });
+    ```
+
+    Ye practical projects me kaafi useful hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Event delegation is a technique where we attach a single event listener to a parent element instead of attaching separate listeners to multiple child elements. It works mainly because of event bubbling. When a child element is clicked, the event bubbles up to the parent, and we can use event.target or closest to identify which child triggered the event. It reduces the number of event listeners and is especially useful for dynamically created elements.”**
+
+    ### Interview Follow-up
+
+    **Q: Event delegation kis concept par depend karta hai?**
+
+    Primarily **event bubbling** par.
+
+    ```text id="ed10"
+    Child Event
+        ↓
+    Parent
+        ↓
+    Grandparent
+        ↓
+    Document
+    ```
+
+    **Q: Kya har event bubbling karta hai?**
+
+    **No.** Most common events such as `click` bubble, but some events do not bubble by default. Isliye event delegation use karne se pehle event ke propagation behavior ko consider karna chahiye.
+
+    **Q: Event delegation ka disadvantage?**
+
+    * `event.target` ko carefully identify karna padta hai.
+    * Har event delegation ke liye suitable nahi hota.
+    * Complex DOM structure me selector logic complicated ho sakta hai.
+    * Agar parent par bahut broad listener ho, to unnecessary event handling ho sakti hai.
+
+    ### ⭐ One-line memory trick
+
+    **Event Delegation = Child par listener nahi → Parent par one listener → Bubbling se child identify karo.**
+
+
 48. Garbage collection?
 49. Memory leak kya hai?
 50. Closures se leak kaise hota hai?
