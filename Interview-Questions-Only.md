@@ -8922,6 +8922,226 @@ Browser automatically validation kar dega.
 
 
 50. Closures se leak kaise hota hai?
+
+    ## Hinglish Explanation
+
+    Closure khud **memory leak nahi hota**. Problem tab hoti hai jab **long-lived closure kisi unnecessary large object/reference ko hold karke rakhta hai**.
+
+    Simple:
+
+    > **Closure = Function apne outer scope ke variables ko remember karta hai.**
+    > **Leak = Wo closure unnecessarily long time tak alive rahe aur large data ko retain kare.**
+
+    ### Simple Example
+
+    ```javascript id="cl01"
+    function createHandler() {
+    const bigData = new Array(1000000).fill("data");
+
+    return function () {
+        console.log(bigData.length);
+    };
+    }
+
+    const handler = createHandler();
+    ```
+
+    `createHandler()` execute hone ke baad normally `bigData` local variable hota.
+
+    Lekin returned function `handler` ko `bigData` ki zarurat hai, isliye closure us reference ko retain karta hai:
+
+    ```text id="cl02"
+    handler
+    ↓
+    closure
+    ↓
+    bigData
+    ↓
+    Large Array
+    ```
+
+    Jab tak `handler` reachable hai, `bigData` bhi reachable reh sakta hai.
+
+    ### Actual Leak Kab Banega?
+
+    Suppose koi long-lived global structure handlers ko continuously store kar raha hai:
+
+    ```javascript id="cl03"
+    const handlers = [];
+
+    function createHandler() {
+    const bigData = new Array(1000000).fill("data");
+
+    return function () {
+        console.log(bigData.length);
+    };
+    }
+
+    setInterval(() => {
+    handlers.push(createHandler());
+    }, 1000);
+    ```
+
+    Ab:
+
+    ```text id="cl04"
+    handlers
+    ↓
+    handler 1 → bigData 1
+    handler 2 → bigData 2
+    handler 3 → bigData 3
+    handler 4 → bigData 4
+    ...
+    ```
+
+    `handlers` continuously grow kar raha hai.
+
+    Isliye old closures aur unke captured data reachable hain.
+
+    ```text id="cl05"
+    Closure alive
+        ↓
+    Captured reference alive
+        ↓
+    Large data alive
+        ↓
+    GC cannot reclaim
+        ↓
+    Memory keeps growing
+    ```
+
+    ### Event Listener me Common Case
+
+    Browser me:
+
+    ```javascript id="cl06"
+    function setup() {
+    const bigData = new Array(1000000).fill("data");
+
+    const handler = () => {
+        console.log(bigData.length);
+    };
+
+    window.addEventListener("resize", handler);
+    }
+
+    setup();
+    ```
+
+    `handler` closure ke through `bigData` ko reference kar raha hai.
+
+    Agar listener ki zarurat khatam ho gayi but remove nahi kiya:
+
+    ```text id="cl07"
+    window
+    ↓
+    resize listener
+    ↓
+    closure
+    ↓
+    bigData
+    ```
+
+    Window/listener long-lived hai, isliye captured data unnecessarily retain ho sakta hai.
+
+    ### Better Approach
+
+    Listener ko remove karo:
+
+    ```javascript id="cl08"
+    function setup() {
+    const bigData = new Array(1000000).fill("data");
+
+    const handler = () => {
+        console.log(bigData.length);
+    };
+
+    window.addEventListener("resize", handler);
+
+    return () => {
+        window.removeEventListener("resize", handler);
+    };
+    }
+
+    const cleanup = setup();
+
+    // Jab zarurat khatam ho:
+    cleanup();
+    ```
+
+    Ab listener remove ho sakta hai, aur agar koi aur reference nahi hai to closure/data **GC ke liye eligible** ho sakta hai.
+
+    ### Important Interview Point
+
+    Ye mat bolna:
+
+    > ❌ “Closures cause memory leaks.”
+
+    Better bolo:
+
+    > ✅ **“Closures can contribute to memory leaks when a long-lived closure unnecessarily retains references to large or otherwise unreachable data.”**
+
+    Closure actually JavaScript ka **normal aur useful feature** hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“A closure itself does not cause a memory leak. A memory leak can happen when a long-lived closure retains references to data that the application no longer needs. For example, if an event listener, timer, or global collection keeps a closure alive, the variables captured by that closure can also remain reachable and cannot be garbage collected. To prevent this, I remove unused event listeners and timers, clean up subscriptions, and avoid keeping unnecessary large objects inside long-lived closures.”**
+
+    ### Interview Follow-up
+
+    **Q: Closure me exactly kya memory me retain hota hai?**
+
+    Simplified way me:
+
+    ```text id="cl09"
+    Function
+    ↓
+    References to required outer variables
+    ↓
+    Closure Environment
+    ```
+
+    JavaScript engine implementation details vary, so ye kehna better hai ki closure **outer lexical environment ke required bindings ko retain/keep accessible** rakhta hai, rather than saying it always copies the entire outer scope.
+
+    **Q: Kya function return hone ke baad uske local variables destroy ho jaate hain?**
+
+    Normally, agar unka koi reachable reference nahi hai, to wo GC ke liye eligible ho sakte hain.
+
+    But closure case:
+
+    ```javascript id="cl10"
+    function outer() {
+    let count = 0;
+
+    return function () {
+        return ++count;
+    };
+    }
+
+    const counter = outer();
+
+    console.log(counter()); // 1
+    console.log(counter()); // 2
+    ```
+
+    `outer()` finish ho chuka hai, but `count` accessible hai because returned function usse close over karta hai.
+
+    ```text id="cl11"
+    counter
+    ↓
+    closure
+    ↓
+    count = 2
+    ```
+
+    Ye **memory leak nahi**, balki closure ka intended behavior hai.
+
+    ### ⭐ One-line memory trick
+
+    **Closure leak = Long-lived function → unnecessary captured data retain → GC reclaim nahi kar pata.**
+
+
+
 51. Proxy kya hai?
 52. Reflect API kya hai?
 53. Generators kya hain?
