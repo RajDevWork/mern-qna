@@ -9349,6 +9349,214 @@ Browser automatically validation kar dega.
 
 
 52. Reflect API kya hai?
+
+    ## Hinglish Explanation
+
+    **Reflect API** JavaScript ka built-in object hai jo **object operations ko perform karne ke liye standard methods** provide karta hai.
+
+    Simple:
+
+    > **Reflect = Object operations ko programmatically perform karne ka clean/standard API.**
+
+    Iska use **Proxy ke saath bahut commonly** hota hai.
+
+    ### Basic Example
+
+    ```javascript id="ref01"
+    const user = {
+    name: "Raj"
+    };
+
+    console.log(Reflect.get(user, "name"));
+    // Raj
+    ```
+
+    Ye roughly:
+
+    ```javascript id="ref02"
+    user.name
+    ```
+
+    ke equivalent hai.
+
+    ### `Reflect.set()`
+
+    ```javascript id="ref03"
+    const user = {
+    name: "Raj"
+    };
+
+    Reflect.set(user, "name", "Amit");
+
+    console.log(user.name);
+    // Amit
+    ```
+
+    Ye:
+
+    ```javascript id="ref04"
+    user.name = "Amit";
+    ```
+
+    jaisa operation perform karta hai.
+
+    ---
+
+    ### Proxy ke saath Reflect — Important
+
+    Ye interview me **bahut important combination** hai.
+
+    ```javascript id="ref05"
+    const user = {
+    name: "Raj"
+    };
+
+    const proxyUser = new Proxy(user, {
+    get(target, property, receiver) {
+        console.log(`Getting ${property}`);
+
+        return Reflect.get(target, property, receiver);
+    },
+
+    set(target, property, value, receiver) {
+        console.log(`Setting ${property}`);
+
+        return Reflect.set(target, property, value, receiver);
+    }
+    });
+
+    console.log(proxyUser.name);
+
+    proxyUser.name = "Amit";
+    ```
+
+    Yahan:
+
+    ```text id="ref06"
+    proxyUser.name
+        ↓
+    Proxy get trap
+        ↓
+    Reflect.get()
+        ↓
+    Original object
+    ```
+
+    `Reflect` ka benefit ye hai ki hume manually:
+
+    ```javascript id="ref07"
+    return target[property];
+    ```
+
+    ya:
+
+    ```javascript id="ref08"
+    target[property] = value;
+    return true;
+    ```
+
+    likhne ki zarurat nahi.
+
+    ---
+
+    ### Important Reflect Methods
+
+    ```text id="ref09"
+    Reflect.get()
+    Reflect.set()
+    Reflect.has()
+    Reflect.deleteProperty()
+    Reflect.defineProperty()
+    Reflect.getOwnPropertyDescriptor()
+    Reflect.ownKeys()
+    Reflect.apply()
+    Reflect.construct()
+    ```
+
+    Examples:
+
+    ```javascript id="ref10"
+    Reflect.has(user, "name");
+    // true
+
+    Reflect.deleteProperty(user, "name");
+    // true
+
+    Reflect.ownKeys(user);
+    // ["age", ...]
+    ```
+
+    ### Reflect vs Object
+
+    Kuch operations dono se kiye ja sakte hain:
+
+    ```javascript id="ref11"
+    Object.keys(user);
+
+    Reflect.ownKeys(user);
+    ```
+
+    But dono exactly same nahi hain.
+
+    `Object.keys()` only **enumerable string keys** deta hai.
+
+    `Reflect.ownKeys()` **string + Symbol own keys** return karta hai, including non-enumerable keys.
+
+    ## 🎯 English Interview Answer
+
+    > **“Reflect is a built-in JavaScript object that provides standard methods for performing object operations programmatically. Methods like Reflect.get, Reflect.set, Reflect.has, and Reflect.deleteProperty correspond to common object operations. Reflect is especially useful with Proxy because proxy traps can delegate the default behavior to Reflect methods instead of manually accessing or modifying the target object. This makes proxy implementations cleaner and more consistent with JavaScript's standard object behavior.”**
+
+    ### Interview Follow-up
+
+    **Q: Proxy aur Reflect ka relation kya hai?**
+
+    Simple:
+
+    ```text id="ref12"
+    Proxy
+    ↓
+    Intercept operation
+    ↓
+    Reflect
+    ↓
+    Perform default operation
+    ```
+
+    Example:
+
+    ```javascript id="ref13"
+    const proxy = new Proxy(user, {
+    get(target, property, receiver) {
+        console.log("Accessing property");
+
+        return Reflect.get(target, property, receiver);
+    }
+    });
+    ```
+
+    **Proxy = Intercept/Control**
+
+    **Reflect = Default object operation perform**
+
+    ---
+
+    **Q: `Reflect.get()` aur `obj[prop]` same hain?**
+
+    Basic cases me similar result de sakte hain:
+
+    ```javascript id="ref14"
+    obj[prop];
+
+    Reflect.get(obj, prop);
+    ```
+
+    But `Reflect.get()` explicitly provides the object-operation API and accepts an optional **receiver**, which becomes important with getters and prototype behavior, especially inside Proxy traps.
+
+    ### ⭐ One-line memory trick
+
+    **Reflect = Object operations ka standard API | Proxy = Operation intercept karo | Reflect = Default behavior perform karo.**
+
+
 53. Generators kya hain?
 54. Iterators kya hain?
 55. for...in vs for...of?
