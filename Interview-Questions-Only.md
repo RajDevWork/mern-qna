@@ -9558,6 +9558,241 @@ Browser automatically validation kar dega.
 
 
 53. Generators kya hain?
+
+    ## Hinglish Explanation
+
+    **Generator** JavaScript ka special function hai jo execution ko **pause aur resume** kar sakta hai.
+
+    Normal function:
+
+    ```text
+    Call → Execute → Return → Finish
+    ```
+
+    Generator:
+
+    ```text
+    Call → Execute → Pause → Resume → Pause → Resume → Finish
+    ```
+
+    Generator function ko `function*` syntax se define karte hain aur `yield` execution ko pause karta hai.
+
+    ### Basic Example
+
+    ```javascript id="gen01"
+    function* numbers() {
+    yield 1;
+    yield 2;
+    yield 3;
+    }
+
+    const generator = numbers();
+
+    console.log(generator.next());
+    // { value: 1, done: false }
+
+    console.log(generator.next());
+    // { value: 2, done: false }
+
+    console.log(generator.next());
+    // { value: 3, done: false }
+
+    console.log(generator.next());
+    // { value: undefined, done: true }
+    ```
+
+    Important:
+
+    ```text id="gen02"
+    yield → pause
+    next() → resume
+    done: true → generator finished
+    ```
+
+    ### Generator call karne par function immediately execute nahi hota
+
+    ```javascript id="gen03"
+    function* test() {
+    console.log("Started");
+    yield 1;
+    console.log("Finished");
+    }
+
+    const gen = test();
+
+    console.log("Generator created");
+    ```
+
+    Output:
+
+    ```text id="gen04"
+    Generator created
+    ```
+
+    `"Started"` abhi print nahi hua.
+
+    Jab:
+
+    ```javascript id="gen05"
+    gen.next();
+    ```
+
+    call karoge:
+
+    ```text id="gen06"
+    Started
+    ```
+
+    Generator `yield` tak execute karega aur pause ho jayega.
+
+    ---
+
+    ### Generator ka return object
+
+    `next()` ek object return karta hai:
+
+    ```javascript id="gen07"
+    {
+    value: 1,
+    done: false
+    }
+    ```
+
+    * `value` → current yielded value
+    * `done` → generator finished hai ya nahi
+
+    ---
+
+    ### Generator ko `for...of` ke saath use karna
+
+    Generators iterable hote hain:
+
+    ```javascript id="gen08"
+    function* numbers() {
+    yield 10;
+    yield 20;
+    yield 30;
+    }
+
+    for (const number of numbers()) {
+    console.log(number);
+    }
+    ```
+
+    Output:
+
+    ```text id="gen09"
+    10
+    20
+    30
+    ```
+
+    ---
+
+    ### Practical Use: Large Data
+
+    Generator useful ho sakta hai jab tumhe **saara data ek saath memory me load nahi karna**, balki values one-by-one produce karni ho.
+
+    ```javascript id="gen10"
+    function* generateIds() {
+    let id = 1;
+
+    while (true) {
+        yield id++;
+    }
+    }
+
+    const ids = generateIds();
+
+    console.log(ids.next().value); // 1
+    console.log(ids.next().value); // 2
+    console.log(ids.next().value); // 3
+    ```
+
+    Ye infinite sequence hai, but saare IDs memory me ek saath create nahi ho rahe.
+
+    ```text id="gen11"
+    next()
+    ↓
+    Generate 1
+    ↓
+    Pause
+
+    next()
+    ↓
+    Generate 2
+    ↓
+    Pause
+    ```
+
+    ### Generator vs Normal Function
+
+    | Normal Function              | Generator                        |
+    | ---------------------------- | -------------------------------- |
+    | `function`                   | `function*`                      |
+    | `return`                     | `yield`                          |
+    | Execution generally one-shot | Pause/resume possible            |
+    | One final result             | Multiple values over time        |
+    | Direct value return          | `next()` returns `{value, done}` |
+
+    ## 🎯 English Interview Answer
+
+    > **“A generator is a special type of JavaScript function that can pause and resume its execution. We define a generator using the `function*` syntax and use the `yield` keyword to pause execution and produce a value. Calling `next()` resumes the generator and returns an object containing the yielded value and a done flag. Generators are useful for creating iterators, lazy sequences, and processing large or potentially infinite data without generating all values in memory at once.”**
+
+    ### Interview Follow-up
+
+    **Q: `yield` aur `return` me difference kya hai?**
+
+    `return` function ko finish kar deta hai:
+
+    ```javascript id="gen12"
+    function test() {
+    return 10;
+    }
+    ```
+
+    Generator me `yield` execution ko **pause** karta hai:
+
+    ```javascript id="gen13"
+    function* test() {
+    yield 10;
+    yield 20;
+    }
+    ```
+
+    Flow:
+
+    ```text id="gen14"
+    yield 10
+    ↓
+    pause
+    ↓
+    next()
+    ↓
+    yield 20
+    ↓
+    pause
+    ```
+
+    **Q: Generator ka main benefit kya hai?**
+
+    **Lazy evaluation.**
+
+    Matlab value tab generate hoti hai jab actually required ho.
+
+    ```text id="gen15"
+    Normal Array:
+    All values → Memory me
+
+    Generator:
+    Next value → Jab required ho tab generate
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Generator = `function*` + `yield` → Pause/Resume → `next()` se next value.**
+
+
 54. Iterators kya hain?
 55. for...in vs for...of?
 56. Module system kya hai?
