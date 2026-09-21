@@ -9143,6 +9143,211 @@ Browser automatically validation kar dega.
 
 
 51. Proxy kya hai?
+
+    ## Hinglish Explanation
+
+    JavaScript me **Proxy** ek object ko wrap karta hai aur us object ke operations ko **intercept/control** karne deta hai.
+
+    Simple:
+
+    > **Proxy = Original object ke saamne ek layer → property read/write/function operations ko intercept karo.**
+
+    JavaScript me `Proxy` built-in feature hai.
+
+    ### Basic Example
+
+    ```javascript id="proxy01"
+    const user = {
+    name: "Raj",
+    age: 25
+    };
+
+    const proxyUser = new Proxy(user, {
+    get(target, property) {
+        console.log(`Reading: ${property}`);
+        return target[property];
+    }
+    });
+
+    console.log(proxyUser.name);
+    ```
+
+    Output roughly:
+
+    ```text id="proxy02"
+    Reading: name
+    Raj
+    ```
+
+    Jab hum:
+
+    ```javascript id="proxy03"
+    proxyUser.name
+    ```
+
+    karte hain, Proxy ka `get()` trap execute hota hai.
+
+    Flow:
+
+    ```text id="proxy04"
+    proxyUser.name
+        ↓
+    Proxy
+        ↓
+    get() trap
+        ↓
+    user.name
+        ↓
+    "Raj"
+    ```
+
+    ### `set()` Trap
+
+    Property change ko bhi intercept kar sakte hain:
+
+    ```javascript id="proxy05"
+    const user = {
+    name: "Raj"
+    };
+
+    const proxyUser = new Proxy(user, {
+    set(target, property, value) {
+        console.log(`Setting ${property} = ${value}`);
+
+        target[property] = value;
+
+        return true;
+    }
+    });
+
+    proxyUser.name = "Amit";
+    ```
+
+    Output:
+
+    ```text id="proxy06"
+    Setting name = Amit
+    ```
+
+    ### Validation Example
+
+    Proxy ka practical use validation me ho sakta hai:
+
+    ```javascript id="proxy07"
+    const user = {
+    age: 25
+    };
+
+    const proxyUser = new Proxy(user, {
+    set(target, property, value) {
+        if (property === "age" && value < 0) {
+        throw new Error("Age cannot be negative");
+        }
+
+        target[property] = value;
+        return true;
+    }
+    });
+
+    proxyUser.age = 30;  // ✅
+    proxyUser.age = -10; // ❌
+    ```
+
+    Yahan Proxy object property assignment ko control kar raha hai.
+
+    ### Common Proxy Traps
+
+    Kuch common traps:
+
+    ```text id="proxy08"
+    get       → property read
+    set       → property write
+    deleteProperty → property delete
+    has       → "in" operator
+    apply     → function call
+    construct → new operator
+    ```
+
+    ### Important: Proxy aur Reverse Proxy alag hain
+
+    Interview me confuse mat karna.
+
+    **JavaScript Proxy:**
+
+    ```text id="proxy09"
+    Code
+    ↓
+    Proxy
+    ↓
+    Object
+    ```
+
+    Object operations intercept karta hai.
+
+    **Reverse Proxy (Nginx):**
+
+    ```text id="proxy10"
+    Client
+    ↓
+    Nginx / Reverse Proxy
+    ↓
+    Backend Server
+    ```
+
+    Network/server level par requests forward karta hai.
+
+    Dono ka naam "Proxy" hai, but **concept aur layer completely different** hain.
+
+    ## 🎯 English Interview Answer
+
+    > **“A Proxy in JavaScript is an object that wraps another object and allows us to intercept and customize operations performed on that object. We create it using the Proxy constructor with a target object and handler. The handler can define traps such as get, set, deleteProperty, has, apply, and construct. For example, we can use a Proxy to validate property updates, log property access, or control how an object behaves. The Proxy does not automatically copy the target object; it provides an interception layer around it.”**
+
+    ### Interview Follow-up
+
+    **Q: Proxy ka real-world use kya hai?**
+
+    Common use cases:
+
+    * Property validation
+    * Logging/debugging
+    * Access control
+    * Reactive systems
+    * Data binding
+    * Change tracking
+    * API wrappers
+
+    For example, reactive frameworks me Proxy-based techniques use ki ja sakti hain to detect property changes.
+
+    **Q: Proxy original object ko modify karta hai?**
+
+    Proxy khud automatically modify nahi karta.
+
+    ```javascript id="proxy11"
+    const user = {
+    name: "Raj"
+    };
+
+    const proxy = new Proxy(user, {
+    get(target, property) {
+        return target[property];
+    }
+    });
+    ```
+
+    `proxy` ek wrapper/interception layer hai. Agar `set` trap ke andar:
+
+    ```javascript id="proxy12"
+    target[property] = value;
+    ```
+
+    karoge, tab original target object modify hoga.
+
+    ### ⭐ One-line memory trick
+
+    **JavaScript Proxy = Object ke saamne interception layer → `get`, `set`, etc. operations ko control karo.**
+
+
+
 52. Reflect API kya hai?
 53. Generators kya hain?
 54. Iterators kya hain?
