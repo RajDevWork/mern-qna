@@ -10692,6 +10692,186 @@ Browser automatically validation kar dega.
 
 
 58. Strict mode kya hai?
+
+    ## Hinglish Explanation
+
+    **Strict Mode** JavaScript ka ek mode hai jo code ko **stricter rules ke saath execute** karta hai aur kuch common mistakes ko automatically error bana deta hai.
+
+    Enable karne ke liye:
+
+    ```javascript id="strict01"
+    "use strict";
+    ```
+
+    Ye file ke top par ya function ke andar use kar sakte ho.
+
+    ### 1. Accidental Global Variable Prevent karta hai
+
+    Without strict mode:
+
+    ```javascript id="strict02"
+    name = "Raj";
+
+    console.log(name);
+    ```
+
+    Non-strict code me ye accidentally global variable create kar sakta hai.
+
+    Strict mode:
+
+    ```javascript id="strict03"
+    "use strict";
+
+    name = "Raj";
+    // ❌ ReferenceError
+    ```
+
+    Ye bug ko early detect karne me help karta hai.
+
+    ---
+
+    ### 2. `this` ka Behavior
+
+    Strict mode me standalone normal function call ka `this`:
+
+    ```javascript id="strict04"
+    "use strict";
+
+    function test() {
+    console.log(this);
+    }
+
+    test();
+    // undefined
+    ```
+
+    Non-strict mode me browser ke traditional behavior me `this` global object (`window`) se map ho sakta hai.
+
+    ---
+
+    ### 3. Read-only Property Modify Karna
+
+    Strict mode me non-writable property ko modify karne par error mil sakta hai:
+
+    ```javascript id="strict05"
+    "use strict";
+
+    const obj = {};
+
+    Object.defineProperty(obj, "name", {
+    value: "Raj",
+    writable: false
+    });
+
+    obj.name = "Amit";
+    // ❌ TypeError
+    ```
+
+    Ye silent failure ko error me convert kar deta hai.
+
+    ---
+
+    ### 4. Duplicate Parameter Names
+
+    Strict mode me:
+
+    ```javascript id="strict06"
+    "use strict";
+
+    function test(a, a) {
+    return a;
+    }
+    ```
+
+    ❌ Syntax error.
+
+    Ye accidental mistakes ko prevent karta hai.
+
+    ---
+
+    ### 5. `delete` Restrictions
+
+    Strict mode me kuch invalid `delete` operations error generate karte hain:
+
+    ```javascript id="strict07"
+    "use strict";
+
+    delete x;
+    // ❌ ReferenceError
+    ```
+
+    ---
+
+    ### Important: ES Modules Already Strict
+
+    Agar tum ES Module use kar rahe ho:
+
+    ```javascript id="strict08"
+    export function add(a, b) {
+    return a + b;
+    }
+    ```
+
+    to module code **automatically strict mode me execute hota hai**.
+
+    Isliye ESM files me generally manually:
+
+    ```javascript id="strict09"
+    "use strict";
+    ```
+
+    likhne ki zarurat nahi hoti.
+
+    ## 🎯 English Interview Answer
+
+    > **“Strict mode is a JavaScript mode that enables stricter language rules and helps catch common programming mistakes. We can enable it using the `'use strict'` directive. For example, assigning to an undeclared variable throws an error in strict mode instead of creating an accidental global variable. It also changes some behaviors, such as the value of `this` in standalone functions, and makes certain invalid operations throw errors instead of failing silently. ES modules are automatically executed in strict mode.”**
+
+    ### Interview Follow-up
+
+    **Q: Strict mode ka main benefit kya hai?**
+
+    Main benefit hai **silent bugs ko early errors me convert karna**.
+
+    ```text id="strict10"
+    Normal Mode
+    Mistake
+    ↓
+    Sometimes silently allowed
+    ↓
+    Bug later
+
+
+    Strict Mode
+    Mistake
+    ↓
+    Error immediately
+    ↓
+    Bug early detect
+    ```
+
+    **Q: Kya strict mode automatically poore application par apply hota hai?**
+
+    Nahi.
+
+    ```javascript id="strict11"
+    "use strict";
+    ```
+
+    Script/function ke applicable scope me strict mode enable hota hai.
+
+    Lekin:
+
+    ```text id="strict12"
+    ES Module
+    ↓
+    Automatically Strict Mode
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Strict Mode = JavaScript ko stricter banao → Silent mistakes ko errors me convert karo.**
+
+
 59. Type coercion kya hai?
 60. == vs ===?
 61. NaN kya hai?
