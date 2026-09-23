@@ -10873,6 +10873,206 @@ Browser automatically validation kar dega.
 
 
 59. Type coercion kya hai?
+
+    ## Hinglish Explanation
+
+    **Type Coercion** ka matlab hai JavaScript ka ek data type ko **automatically ya explicitly doosre data type me convert karna**.
+
+    Simple:
+
+    > **Type Coercion = Ek type ki value ko doosri type me convert karna.**
+
+    JavaScript **dynamically typed** language hai, isliye ye conversions frequently dekhne ko milte hain.
+
+    ### 1. Implicit Type Coercion
+
+    JavaScript khud conversion karta hai.
+
+    ```javascript id="tc01"
+    const result = "10" + 5;
+
+    console.log(result);
+    // "105"
+    ```
+
+    Yahan `5` ko string me convert kar diya gaya.
+
+    ```text id="tc02"
+    "10" + 5
+    ↓
+    "10" + "5"
+    ↓
+    "105"
+    ```
+
+    Lekin `-` ke case me:
+
+    ```javascript id="tc03"
+    console.log("10" - 5);
+    // 5
+    ```
+
+    Yahan string `"10"` number me convert ho gayi.
+
+    ---
+
+    ### 2. Equality me Type Coercion
+
+    `==` comparison ke time type coercion kar sakta hai:
+
+    ```javascript id="tc04"
+    console.log(5 == "5");
+    // true
+    ```
+
+    JavaScript `"5"` ko number ke context me convert karke compare karta hai.
+
+    But strict equality:
+
+    ```javascript id="tc05"
+    console.log(5 === "5");
+    // false
+    ```
+
+    `===` type coercion nahi karta; **value + type dono compare** karta hai.
+
+    Interview me generally:
+
+    > **Prefer `===` over `==` when you don't intentionally need coercion.**
+
+    ---
+
+    ### 3. Boolean Coercion
+
+    JavaScript values ko Boolean context me convert karta hai.
+
+    ```javascript id="tc06"
+    console.log(Boolean(0));
+    // false
+
+    console.log(Boolean("hello"));
+    // true
+    ```
+
+    Common falsy values:
+
+    ```text id="tc07"
+    false
+    0
+    -0
+    0n
+    ""
+    null
+    undefined
+    NaN
+    ```
+
+    Baaki normal values generally truthy hoti hain, including:
+
+    ```javascript id="tc08"
+    Boolean([]); // true
+    Boolean({}); // true
+    ```
+
+    Ye interview me commonly trap question hai.
+
+    ---
+
+    ### 4. Explicit Type Conversion
+
+    Agar hum khud conversion karein, ise **explicit conversion/type casting** bolte hain.
+
+    ```javascript id="tc09"
+    const value = "123";
+
+    const number = Number(value);
+
+    console.log(number);
+    // 123
+    ```
+
+    String:
+
+    ```javascript id="tc10"
+    const value = 123;
+
+    const text = String(value);
+
+    console.log(text);
+    // "123"
+    ```
+
+    Boolean:
+
+    ```javascript id="tc11"
+    Boolean(1);
+    // true
+    ```
+
+    ---
+
+    ### 5. `null` aur `undefined` ka Interesting Difference
+
+    ```javascript id="tc12"
+    console.log(Number(null));
+    // 0
+
+    console.log(Number(undefined));
+    // NaN
+    ```
+
+    Aur:
+
+    ```javascript id="tc13"
+    console.log(null == undefined);
+    // true
+
+    console.log(null === undefined);
+    // false
+    ```
+
+    Ye `==` ki type coercion behavior ka example hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Type coercion is the conversion of a value from one data type to another. In JavaScript, coercion can be implicit, where the language automatically converts the type, or explicit, where we convert it ourselves using functions like Number, String, or Boolean. For example, the expression `'10' - 5` results in 5 because the string is converted to a number. The loose equality operator `==` can also perform type coercion, while strict equality `===` compares both type and value without performing this coercion.”**
+
+    ### Interview Follow-up
+
+    **Q: `==` aur `===` me difference?**
+
+    ```javascript id="tc14"
+    5 == "5";
+    // true
+
+    5 === "5";
+    // false
+    ```
+
+    ```text id="tc15"
+    ==   → Type coercion possible
+    ===  → Type + Value compare
+    ```
+
+    **Q: `"10" + 5` aur `"10" - 5` ka result different kyun?**
+
+    ```javascript id="tc16"
+    "10" + 5
+    // "105"
+
+    "10" - 5
+    // 5
+    ```
+
+    `+` strings ke saath **concatenation** perform kar sakta hai, isliye `5` string ban gaya.
+
+    `-` string subtraction nahi kar sakta, isliye JavaScript `"10"` ko number me convert karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Type Coercion = JavaScript automatically/explicitly type convert karta hai | `==` coercion kar sakta hai | `===` nahi.**
+
+
 60. == vs ===?
 61. NaN kya hai?
 62. undefined vs null?
