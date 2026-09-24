@@ -11074,6 +11074,100 @@ Browser automatically validation kar dega.
 
 
 60. == vs ===?
+
+    ## Hinglish Explanation
+
+    `==` aur `===` dono comparison operators hain, but **main difference type checking ka hai**.
+
+    * `==` → **Loose Equality** → value compare karne se pehle type coercion kar sakta hai.
+    * `===` → **Strict Equality** → **value + data type dono** compare karta hai.
+    * Isliye `===` generally safer and preferred hota hai.
+
+    ### Example
+
+    ```javascript
+    console.log(5 == "5");   // true
+    console.log(5 === "5");  // false
+
+    console.log(10 == 10);   // true
+    console.log(10 === 10);  // true
+
+    console.log(true == 1);  // true
+    console.log(true === 1); // false
+    ```
+
+    ### Real-world Example
+
+    ```javascript
+    const userId = "101"; // API se string aayi
+
+    if (userId === 101) {
+    console.log("User found");
+    }
+    ```
+
+    Yahan condition `false` hogi because:
+
+    ```text
+    "101" → string
+    101   → number
+    ```
+
+    Agar intentionally conversion karna hai, pehle explicitly convert karo:
+
+    ```javascript
+    if (Number(userId) === 101) {
+    console.log("User found");
+    }
+    ```
+
+    ### Important Interview Cases
+
+    ```javascript
+    null == undefined    // true
+    null === undefined   // false
+
+    0 == false           // true
+    0 === false          // false
+
+    "" == false          // true
+    "" === false         // false
+    ```
+
+    Isliye production code mein generally:
+
+    ```javascript
+    === 
+    !== 
+    ```
+
+    prefer karte hain.
+
+    ## 🎯 English Interview Answer
+
+    > **“The main difference between `==` and `===` is type coercion. `==` is loose equality, so JavaScript may convert the types before comparing. `===` is strict equality, so it compares both value and data type without implicit type conversion. For example, `5 == "5"` is true, but `5 === "5"` is false. In most cases, I prefer `===` because it makes comparisons more predictable.”**
+
+    ### Interview Follow-up
+
+    **Q: Is `==` always bad?**
+
+    No. It is not always bad, but it can produce unexpected results because of type coercion. In production code, I generally use `===` unless I intentionally need loose equality behavior.
+
+    **Q: What is the difference between `!=` and `!==`?**
+
+    ```javascript
+    5 != "5"   // false
+    5 !== "5"  // true
+    ```
+
+    `!=` allows type coercion, while `!==` checks both value and type strictly.
+
+    ### ⭐ One-line memory trick
+
+    **`==` = value compare + coercion possible | `===` = value + type, no coercion.**
+
+
+
 61. NaN kya hai?
 62. undefined vs null?
 63. typeof operator?
