@@ -11169,6 +11169,91 @@ Browser automatically validation kar dega.
 
 
 61. NaN kya hai?
+
+    ## Hinglish Explanation
+
+    `NaN` ka full form **Not-a-Number** hai. Ye JavaScript ka ek special **Number value** hai jo tab milta hai jab koi operation **valid numeric result produce nahi kar pata**.
+
+    Important point: **`NaN` ka type `"number"` hota hai.**
+
+    ```javascript
+    console.log(typeof NaN); // "number"
+    ```
+
+    ### Example
+
+    ```javascript
+    console.log("hello" - 5);     // NaN
+    console.log(Number("abc"));   // NaN
+    console.log(0 / 0);           // NaN
+    ```
+
+    Lekin dhyan rahe:
+
+    ```javascript
+    console.log("10" - 5); // 5
+    ```
+
+    Kyuki JavaScript `"10"` ko number me convert kar sakta hai.
+
+    ### `NaN` ko check kaise karein?
+
+    ❌ Ye reliable nahi hai:
+
+    ```javascript
+    console.log(NaN === NaN); // false
+    ```
+
+    `NaN` **khud ke equal bhi nahi hota**.
+
+    ✅ Use:
+
+    ```javascript
+    Number.isNaN(NaN); // true
+
+    Number.isNaN(10);  // false
+    ```
+
+    `isNaN()` aur `Number.isNaN()` mein difference bhi important hai:
+
+    ```javascript
+    isNaN("hello");        // true
+    Number.isNaN("hello"); // false
+    ```
+
+    `isNaN()` pehle coercion kar sakta hai, jabki `Number.isNaN()` strict check karta hai ki actual value `NaN` hai ya nahi.
+
+    ### Real-world Example
+
+    ```javascript
+    const age = Number("abc");
+
+    if (Number.isNaN(age)) {
+    console.log("Invalid age");
+    }
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“NaN stands for Not-a-Number. It is a special numeric value in JavaScript that represents an invalid or undefined numeric result. Interestingly, its type is `number`. For example, `Number('abc')` returns `NaN`. Also, `NaN === NaN` is false, so I use `Number.isNaN()` to check whether a value is actually NaN.”**
+
+    ### Interview Follow-up
+
+    **Q: Why is `NaN === NaN` false?**
+
+    Because JavaScript follows the IEEE-754 floating-point standard, where `NaN` is defined as an unordered value and is not equal to itself.
+
+    **Q: `typeof NaN` kya return karega?**
+
+    ```javascript
+    typeof NaN; // "number"
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`NaN` = Invalid numeric result | `typeof NaN` = `"number"` | Check with `Number.isNaN()`.**
+
+
 62. undefined vs null?
 63. typeof operator?
 64. instanceof?
