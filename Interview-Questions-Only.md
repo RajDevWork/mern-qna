@@ -11255,6 +11255,136 @@ Browser automatically validation kar dega.
 
 
 62. undefined vs null?
+
+    ## Hinglish Explanation
+
+    `undefined` aur `null` dono ka matlab roughly **“value nahi hai”** hota hai, but intent different hai.
+
+    * `undefined` → JavaScript bol raha hai **value assigned/provided nahi hui**.
+    * `null` → Developer intentionally bol raha hai **“abhi koi value nahi hai.”**
+
+    ### Example
+
+    ```javascript
+    let name;
+
+    console.log(name); // undefined
+    ```
+
+    Yahan variable declare hua, but value assign nahi hui.
+
+    ```javascript
+    let user = null;
+
+    console.log(user); // null
+    ```
+
+    Yahan developer ne intentionally indicate kiya ki user ki koi value nahi hai.
+
+    ### Main Difference
+
+    | Point   | `undefined`                            | `null`                                    |
+    | ------- | -------------------------------------- | ----------------------------------------- |
+    | Meaning | Value missing/not assigned             | Intentionally empty                       |
+    | Type    | `"undefined"`                          | `"object"` ⚠️                             |
+    | Usually | JS automatically produce kar sakta hai | Developer/API intentionally set karta hai |
+    | Example | Missing function return                | No user found                             |
+
+    ```javascript
+    console.log(typeof undefined); // "undefined"
+    console.log(typeof null);      // "object"
+    ```
+
+    `typeof null === "object"` JavaScript ka **historical language quirk/bug** hai.
+
+    ### Function Example
+
+    ```javascript
+    function test() {
+    // no return
+    }
+
+    console.log(test()); // undefined
+    ```
+
+    ### API Example
+
+    ```javascript
+    const user = {
+    name: "Raj",
+    middleName: null
+    };
+    ```
+
+    Yahan `middleName: null` ka meaning ho sakta hai:
+
+    > Field exist karti hai, but currently koi value nahi hai.
+
+    Aur agar:
+
+    ```javascript
+    const user = {
+    name: "Raj"
+    };
+    ```
+
+    To:
+
+    ```javascript
+    console.log(user.middleName); // undefined
+    ```
+
+    Yani property hi available nahi hai.
+
+    ### Important Interview Point
+
+    ```javascript
+    null == undefined   // true
+    null === undefined  // false
+    ```
+
+    `==` type coercion allow karta hai, while `===` strict comparison karta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Both `undefined` and `null` represent the absence of a value, but they have different meanings. `undefined` usually means a value has not been assigned or a property does not exist. `null` is an intentional empty value, usually assigned by the developer or returned by an API to indicate no value. Also, `typeof undefined` is `undefined`, while `typeof null` is `object`, which is a historical JavaScript quirk.”**
+
+    ### Interview Follow-up
+
+    **Q: `typeof null` kya return karega?**
+
+    ```javascript
+    typeof null; // "object"
+    ```
+
+    This is a historical behavior in JavaScript.
+
+    **Q: `null == undefined` kya hoga?**
+
+    ```javascript
+    null == undefined;  // true
+    null === undefined; // false
+    ```
+
+    **Q: Practical code mein kaunsa use karoge?**
+
+    Agar intentionally empty value represent karni hai:
+
+    ```javascript
+    let selectedUser = null;
+    ```
+
+    Agar value assign hi nahi hui:
+
+    ```javascript
+    let selectedUser;
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`undefined` = value nahi mili | `null` = intentionally empty value.**
+
+
 63. typeof operator?
 64. instanceof?
 65. Array methods (map/filter/reduce)?
