@@ -11632,6 +11632,162 @@ Browser automatically validation kar dega.
     **`typeof` = “Ye kis type ka hai?” | `instanceof` = “Ye kis class/constructor ke prototype chain se belong karta hai?”**
 
 65. Array methods (map/filter/reduce)?
+
+    ## Hinglish Explanation
+
+    `map()`, `filter()` aur `reduce()` JavaScript ke **higher-order array methods** hain. Teeno original array ko normally mutate nahi karte; callback ke basis par result create karte hain.
+
+    ### 1. `map()` → Transform
+
+    Har element par operation karta hai aur **same length ka new array** return karta hai.
+
+    ```javascript id="map01"
+    const numbers = [1, 2, 3, 4];
+
+    const doubled = numbers.map(num => num * 2);
+
+    console.log(doubled);
+    // [2, 4, 6, 8]
+    ```
+
+    **Use:** Data transform karna — API response format change, prices calculate, names extract etc.
+
+    ---
+
+    ### 2. `filter()` → Select
+
+    Condition ke basis par elements ko select karta hai aur **new filtered array** return karta hai.
+
+    ```javascript id="filter01"
+    const numbers = [1, 2, 3, 4, 5];
+
+    const evenNumbers = numbers.filter(num => num % 2 === 0);
+
+    console.log(evenNumbers);
+    // [2, 4]
+    ```
+
+    **Use:** Search/filtering, active users, products by price, etc.
+
+    ---
+
+    ### 3. `reduce()` → Accumulate
+
+    Array ke multiple elements ko process karke **usually ek final value** banata hai.
+
+    ```javascript id="reduce01"
+    const numbers = [1, 2, 3, 4];
+
+    const total = numbers.reduce((sum, num) => {
+    return sum + num;
+    }, 0);
+
+    console.log(total);
+    // 10
+    ```
+
+    **Use:** Total, count, grouping, object creation, calculations etc.
+
+    ### Real-world Example
+
+    ```javascript id="real123"
+    const users = [
+    { name: "Raj", age: 29, active: true },
+    { name: "Amit", age: 25, active: false },
+    { name: "Neha", age: 30, active: true }
+    ];
+
+    // map → names
+    const names = users.map(user => user.name);
+
+    // filter → active users
+    const activeUsers = users.filter(user => user.active);
+
+    // reduce → total age
+    const totalAge = users.reduce((sum, user) => sum + user.age, 0);
+
+    console.log(names);
+    // ["Raj", "Amit", "Neha"]
+
+    console.log(activeUsers);
+    // Raj, Neha
+
+    console.log(totalAge);
+    // 84
+    ```
+
+    ### Quick Comparison
+
+    | Method     | Purpose    | Return               |
+    | ---------- | ---------- | -------------------- |
+    | `map()`    | Transform  | New array            |
+    | `filter()` | Select     | New array            |
+    | `reduce()` | Accumulate | Usually single value |
+
+    Ek important interview point:
+
+    ```javascript
+    map()    → same number of elements
+    filter() → same ya fewer elements
+    reduce() → any type of final result
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“`map`, `filter`, and `reduce` are higher-order array methods. I use `map` when I want to transform every element and create a new array. I use `filter` when I want to select elements based on a condition. And I use `reduce` when I want to accumulate array values into a single result, such as a total, count, or object. They help write clean and declarative array-processing code.”**
+
+    ### Interview Follow-up
+
+    **Q: `map()` aur `forEach()` mein difference?**
+
+    ```javascript id="foreach01"
+    const numbers = [1, 2, 3];
+
+    const result = numbers.map(n => n * 2);
+
+    numbers.forEach(n => {
+    console.log(n * 2);
+    });
+    ```
+
+    `map()` **new array return karta hai**, while `forEach()` normally return value provide nahi karta.
+
+    ```javascript
+    numbers.map(...);     // [2, 4, 6]
+    numbers.forEach(...); // undefined
+    ```
+
+    **Q: `filter()` kya original array ko modify karta hai?**
+
+    Normally nahi.
+
+    ```javascript id="filter02"
+    const numbers = [1, 2, 3, 4];
+
+    const result = numbers.filter(n => n > 2);
+
+    console.log(numbers); // [1, 2, 3, 4]
+    console.log(result);  // [3, 4]
+    ```
+
+    **Q: `reduce()` ka initial value dena important kyun hai?**
+
+    ```javascript id="reduce02"
+    const numbers = [1, 2, 3];
+
+    const total = numbers.reduce(
+    (sum, num) => sum + num,
+    0
+    );
+    ```
+
+    `0` accumulator ka initial value hai. Explicit initial value dena predictable behavior deta hai, especially empty arrays aur different data types ke cases mein.
+
+    ### ⭐ One-line memory trick
+
+    **`map()` = Transform | `filter()` = Select | `reduce()` = Accumulate.**
+
+
 66. Reduce ka use?
 67. Flatten array kaise?
 68. Deep clone kaise?
