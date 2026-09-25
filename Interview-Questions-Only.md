@@ -11494,6 +11494,143 @@ Browser automatically validation kar dega.
 
 
 64. instanceof?
+
+    ## Hinglish Explanation
+
+    `instanceof` JavaScript ka operator hai jo check karta hai ki **koi object kisi constructor/class ke prototype chain se related hai ya nahi**.
+
+    Syntax:
+
+    ```javascript
+    object instanceof Constructor
+    ```
+
+    Result hamesha `true` ya `false` hota hai.
+
+    ### Basic Example
+
+    ```javascript
+    class User {}
+
+    const user = new User();
+
+    console.log(user instanceof User); // true
+    ```
+
+    Yahan `user` ka prototype chain `User.prototype` se connected hai.
+
+    ### Array Example
+
+    ```javascript
+    const numbers = [1, 2, 3];
+
+    console.log(numbers instanceof Array);  // true
+    console.log(numbers instanceof Object); // true
+    ```
+
+    Array bhi ultimately object prototype chain ka part hai.
+
+    ### Inheritance Example
+
+    ```javascript
+    class Animal {}
+
+    class Dog extends Animal {}
+
+    const dog = new Dog();
+
+    console.log(dog instanceof Dog);    // true
+    console.log(dog instanceof Animal); // true
+    console.log(dog instanceof Object); // true
+    ```
+
+    Because:
+
+    ```text
+    dog
+    ↓
+    Dog.prototype
+    ↓
+    Animal.prototype
+    ↓
+    Object.prototype
+    ↓
+    null
+    ```
+
+    `instanceof` isi **prototype chain** ko check karta hai.
+
+    ### `typeof` vs `instanceof`
+
+    ```javascript
+    const user = {};
+
+    typeof user;        // "object"
+    user instanceof Object; // true
+    ```
+
+    **`typeof`** → broad data type batata hai.
+
+    **`instanceof`** → object ka prototype/class relationship check karta hai.
+
+    ### Important Limitation
+
+    Primitive values ke saath `instanceof` generally useful nahi hai:
+
+    ```javascript
+    "hello" instanceof String; // false
+    ```
+
+    Because `"hello"` primitive string hai, `String` object nahi.
+
+    ```javascript
+    const name = new String("hello");
+
+    name instanceof String; // true
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“`instanceof` is an operator used to check whether an object is an instance of a particular constructor or class based on its prototype chain. It returns either true or false. For example, if I create an object using `new User()`, then `user instanceof User` returns true. It is mainly useful for checking object relationships, inheritance, and class instances.”**
+
+    ### Interview Follow-up
+
+    **Q: `instanceof` internally kya check karta hai?**
+
+    It checks whether the constructor's `prototype` exists somewhere in the object's prototype chain.
+
+    ```javascript
+    dog instanceof Animal
+    ```
+
+    Conceptually:
+
+    ```text
+    dog
+    ↓
+    Dog.prototype
+    ↓
+    Animal.prototype ← found
+    ```
+
+    So result is `true`.
+
+    **Q: `typeof` aur `instanceof` mein main difference?**
+
+    ```javascript
+    typeof "hello";          // "string"
+    typeof [];               // "object"
+
+    [] instanceof Array;     // true
+    [] instanceof Object;    // true
+    ```
+
+    `typeof` **type category** batata hai, while `instanceof` **prototype/constructor relationship** check karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **`typeof` = “Ye kis type ka hai?” | `instanceof` = “Ye kis class/constructor ke prototype chain se belong karta hai?”**
+
 65. Array methods (map/filter/reduce)?
 66. Reduce ka use?
 67. Flatten array kaise?
