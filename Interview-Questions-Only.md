@@ -11386,6 +11386,113 @@ Browser automatically validation kar dega.
 
 
 63. typeof operator?
+
+    ## Hinglish Explanation
+
+    `typeof` JavaScript ka **unary operator** hai jo kisi value ka **data type batata hai**.
+
+    Syntax:
+
+    ```javascript
+    typeof value
+    ```
+
+    ### Common Examples
+
+    ```javascript
+    typeof "Raj";        // "string"
+    typeof 100;          // "number"
+    typeof true;         // "boolean"
+    typeof undefined;    // "undefined"
+    typeof null;         // "object" ⚠️
+    typeof 123n;         // "bigint"
+    typeof Symbol();     // "symbol"
+    typeof {};           // "object"
+    typeof [];            // "object"
+    typeof function(){}; // "function"
+    ```
+
+    ### `typeof null` — Important Interview Question
+
+    ```javascript
+    typeof null; // "object"
+    ```
+
+    Ye JavaScript ka **historical behavior** hai. `null` actually null value hai, but `typeof` uske liye `"object"` return karta hai.
+
+    Agar specifically `null` check karna hai:
+
+    ```javascript
+    value === null
+    ```
+
+    ### Array ke saath Important
+
+    ```javascript
+    typeof []; // "object"
+    ```
+
+    Isliye array check karne ke liye:
+
+    ```javascript
+    Array.isArray([]); // true
+    ```
+
+    ### Undefined Variable
+
+    ```javascript
+    console.log(typeof abc);
+    ```
+
+    Agar `abc` declared hi nahi hai, normally `ReferenceError` aayega. Lekin:
+
+    ```javascript
+    typeof abc; // "undefined"
+    ```
+
+    `typeof` undeclared identifier ke case mein bhi `"undefined"` return kar sakta hai. Ye iska ek useful special behavior hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“`typeof` is a JavaScript operator used to determine the type of a value. It returns a string such as `string`, `number`, `boolean`, `undefined`, `object`, `bigint`, `symbol`, or `function`. One important interview point is that `typeof null` returns `object`, which is a historical behavior in JavaScript. Also, `typeof []` returns `object`, so I use `Array.isArray()` when I specifically need to check for an array.”**
+
+    ### Interview Follow-up
+
+    **Q: `typeof null` kya return karta hai?**
+
+    ```javascript
+    typeof null; // "object"
+    ```
+
+    **Q: `typeof []` kya return karta hai?**
+
+    ```javascript
+    typeof []; // "object"
+    ```
+
+    Array check:
+
+    ```javascript
+    Array.isArray([]); // true
+    ```
+
+    **Q: `typeof function(){}`?**
+
+    ```javascript
+    typeof function(){}; // "function"
+    ```
+
+    **Q: `typeof NaN`?**
+
+    ```javascript
+    typeof NaN; // "number"
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`typeof` = Value ka type batao; but remember: `null → object`, `[] → object`, `NaN → number`.**
+
+
 64. instanceof?
 65. Array methods (map/filter/reduce)?
 66. Reduce ka use?
