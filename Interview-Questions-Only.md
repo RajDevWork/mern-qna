@@ -11941,6 +11941,123 @@ Browser automatically validation kar dega.
 
 
 67. Flatten array kaise?
+
+    ## Hinglish Explanation
+
+    **Flatten array** ka matlab hai nested array ko **single-level array** mein convert karna.
+
+    Example:
+
+    ```javascript
+    const arr = [1, [2, 3], [4, [5, 6]]];
+    ```
+
+    Flatten karne ke baad:
+
+    ```javascript
+    [1, 2, 3, 4, 5, 6]
+    ```
+
+    ### 1. `flat()` — easiest way
+
+    Modern JavaScript mein directly:
+
+    ```javascript
+    const arr = [1, [2, 3], [4, [5, 6]]];
+
+    console.log(arr.flat(2));
+    // [1, 2, 3, 4, 5, 6]
+    ```
+
+    `flat()` ka argument depth batata hai.
+
+    ```javascript
+    arr.flat(1);        // 1 level
+    arr.flat(2);        // 2 levels
+    arr.flat(Infinity); // all levels
+    ```
+
+    Agar completely flatten karna ho:
+
+    ```javascript
+    const result = arr.flat(Infinity);
+    ```
+
+    ### 2. `reduce()` se flatten
+
+    Interview mein ye **important coding question** ho sakta hai:
+
+    ```javascript
+    const arr = [1, [2, 3], [4, [5, 6]]];
+
+    const result = arr.reduce((acc, item) => {
+    return acc.concat(
+        Array.isArray(item) ? item.flat(Infinity) : item
+    );
+    }, []);
+
+    console.log(result);
+    // [1, 2, 3, 4, 5, 6]
+    ```
+
+    Lekin agar interviewer specifically **recursive flatten without `flat()`** pooche:
+
+    ```javascript
+    function flatten(arr) {
+    return arr.reduce((result, item) => {
+        if (Array.isArray(item)) {
+        result.push(...flatten(item));
+        } else {
+        result.push(item);
+        }
+
+        return result;
+    }, []);
+    }
+
+    console.log(flatten([1, [2, [3, 4]], 5]));
+    // [1, 2, 3, 4, 5]
+    ```
+
+    Yahan recursion nested arrays ke andar jaati hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Flattening an array means converting a nested array into a single-level array. In modern JavaScript, I can use the `flat()` method. For example, `arr.flat(Infinity)` can flatten an array at all levels. If the interviewer asks me to implement it without `flat()`, I can use `reduce()` with recursion and `Array.isArray()` to recursively flatten nested arrays.”**
+
+    ### Interview Follow-up
+
+    **Q: `flat()` original array ko modify karta hai?**
+
+    No. It returns a **new array**.
+
+    ```javascript
+    const arr = [1, [2, 3]];
+
+    const result = arr.flat();
+
+    console.log(arr);    // [1, [2, 3]]
+    console.log(result); // [1, 2, 3]
+    ```
+
+    **Q: `flatMap()` kya karta hai?**
+
+    `map()` + one-level `flat()` combine karta hai.
+
+    ```javascript
+    const numbers = [1, 2, 3];
+
+    const result = numbers.flatMap(n => [n, n * 2]);
+
+    console.log(result);
+    // [1, 2, 2, 4, 3, 6]
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Flatten = Nested Array → Single Array | `flat()` easiest | Recursive `reduce()` = common interview implementation.**
+
+
 68. Deep clone kaise?
 69. Object comparison?
 70. Immutable data kya hai?
