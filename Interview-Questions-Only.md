@@ -12210,6 +12210,145 @@ Browser automatically validation kar dega.
 
 
 69. Object comparison?
+
+    ## Hinglish Explanation
+
+    JavaScript mein **objects ko compare karte waqt important point hai: objects reference se compare hote hain, values se nahi.**
+
+    ```javascript id="objcmp01"
+    const user1 = { name: "Raj" };
+    const user2 = { name: "Raj" };
+
+    console.log(user1 === user2); // false
+    ```
+
+    Dono objects ka data same hai, but dono **different objects in memory** hain.
+
+    ### Same Reference
+
+    ```javascript id="objcmp02"
+    const user1 = { name: "Raj" };
+    const user2 = user1;
+
+    console.log(user1 === user2); // true
+    ```
+
+    Yahan dono variables **same object ko point** kar rahe hain.
+
+    ### `==` bhi Reference Compare karta hai
+
+    ```javascript id="objcmp03"
+    const a = { x: 10 };
+    const b = { x: 10 };
+
+    console.log(a == b);  // false
+    console.log(a === b); // false
+    ```
+
+    Objects ke case mein `==` use karne se value-based comparison nahi hota.
+
+    ---
+
+    ### Objects ki Values Compare Karni Ho
+
+    Simple objects ke liye:
+
+    ```javascript id="objcmp04"
+    const a = { name: "Raj", age: 29 };
+    const b = { name: "Raj", age: 29 };
+
+    const isEqual =
+    a.name === b.name &&
+    a.age === b.age;
+
+    console.log(isEqual); // true
+    ```
+
+    Lekin large/nested objects mein manually compare karna difficult ho sakta hai.
+
+    ### JSON.stringify — Limited Approach
+
+    ```javascript id="objcmp05"
+    const a = { name: "Raj", age: 29 };
+    const b = { name: "Raj", age: 29 };
+
+    console.log(
+    JSON.stringify(a) === JSON.stringify(b)
+    );
+    // true
+    ```
+
+    But **blindly JSON.stringify ko deep equality solution mat samajhna**.
+
+    Property order difference:
+
+    ```javascript id="objcmp06"
+    const a = { name: "Raj", age: 29 };
+    const b = { age: 29, name: "Raj" };
+
+    console.log(JSON.stringify(a) === JSON.stringify(b));
+    // false
+    ```
+
+    Values logically same hain, but serialized strings different ho sakti hain.
+
+    ### Deep Equality
+
+    Production mein complex/nested objects ke liye usually **deep equality utility/library** use karte hain, ya requirements ke according custom comparator.
+
+    Conceptually:
+
+    ```text
+    Object
+    ↓
+    Keys same?
+    ↓
+    Values same?
+    ↓
+    Nested object?
+    ↓
+    Recursively compare
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“In JavaScript, objects are compared by reference, not by their contents. So two separately created objects with the same properties are not equal using `==` or `===`. If I want value-based comparison, I need to compare their properties or use a proper deep-equality approach for nested objects. `JSON.stringify()` can work for simple cases, but I would not use it as a general deep-equality solution because property order and unsupported data types can cause problems.”**
+
+    ### Interview Follow-up
+
+    **Q: `const a = {x: 1}; const b = a;` then `a === b`?**
+
+    ```javascript id="objcmp07"
+    const a = { x: 1 };
+    const b = a;
+
+    console.log(a === b); // true
+    ```
+
+    Because both variables reference the **same object**.
+
+    **Q: Arrays ka comparison bhi same hai?**
+
+    Yes.
+
+    ```javascript id="objcmp08"
+    [1, 2] === [1, 2]; // false
+    ```
+
+    Because both are different array objects.
+
+    ```javascript id="objcmp09"
+    const a = [1, 2];
+    const b = a;
+
+    a === b; // true
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Objects/Arrays = reference comparison | Same data ≠ same object | Same reference = `true`.**
+
+
 70. Immutable data kya hai?
 71. Currying kya hai?
 72. Partial application?
