@@ -12350,6 +12350,166 @@ Browser automatically validation kar dega.
 
 
 70. Immutable data kya hai?
+
+    ## Hinglish Explanation
+
+    **Immutable data** ka matlab hai: **ek baar value create ho gayi, us existing value ko directly change nahi karte.** Change chahiye to **new value/object/array create** karte hain.
+
+    JavaScript mein strings, numbers, booleans jaise primitives immutable hote hain.
+
+    ```javascript id="imm01"
+    let name = "Raj";
+
+    name[0] = "M"; // direct change nahi hoga
+
+    console.log(name);
+    // "Raj"
+    ```
+
+    Agar change karna hai:
+
+    ```javascript id="imm02"
+    let name = "Raj";
+
+    name = "Rahul";
+
+    console.log(name);
+    // Rahul
+    ```
+
+    Yahan `"Raj"` string ko modify nahi kiya gaya; variable ko new value assign hui.
+
+    ### Objects by default immutable nahi hote
+
+    ```javascript id="imm03"
+    const user = {
+    name: "Raj",
+    age: 29
+    };
+
+    user.age = 30;
+
+    console.log(user);
+    // { name: "Raj", age: 30 }
+    ```
+
+    `const` ka matlab object immutable nahi hai. `const` sirf **variable reference ko reassign hone se rokta hai**.
+
+    ### Immutable way se object update
+
+    ```javascript id="imm04"
+    const user = {
+    name: "Raj",
+    age: 29
+    };
+
+    const updatedUser = {
+    ...user,
+    age: 30
+    };
+
+    console.log(user.age);
+    // 29
+
+    console.log(updatedUser.age);
+    // 30
+    ```
+
+    Original object unchanged raha aur new object create hua.
+
+    ### Array Example
+
+    ❌ Mutation:
+
+    ```javascript id="imm05"
+    const numbers = [1, 2, 3];
+
+    numbers.push(4);
+
+    console.log(numbers);
+    // [1, 2, 3, 4]
+    ```
+
+    ✅ Immutable approach:
+
+    ```javascript id="imm06"
+    const numbers = [1, 2, 3];
+
+    const newNumbers = [...numbers, 4];
+
+    console.log(numbers);
+    // [1, 2, 3]
+
+    console.log(newNumbers);
+    // [1, 2, 3, 4]
+    ```
+
+    ### React mein Important
+
+    React mein state ko directly mutate nahi karte:
+
+    ❌
+
+    ```javascript id="imm07"
+    user.name = "Rahul";
+    ```
+
+    ✅
+
+    ```javascript id="imm08"
+    setUser({
+    ...user,
+    name: "Rahul"
+    });
+    ```
+
+    Isse React ko new state reference milta hai aur update properly detect ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Immutable data means we don't directly modify an existing value. Instead, when we need a change, we create a new value, object, or array. Primitive values like strings and numbers are immutable in JavaScript, while objects and arrays are mutable by default. In React, immutability is important because we usually create a new state object or array instead of directly modifying the existing state.”**
+
+    ### Interview Follow-up
+
+    **Q: `const` object ko immutable bana deta hai?**
+
+    No.
+
+    ```javascript id="imm09"
+    const user = { name: "Raj" };
+
+    user.name = "Rahul"; // allowed
+    ```
+
+    But:
+
+    ```javascript id="imm10"
+    user = {}; // Error
+    ```
+
+    `const` **reference reassignment prevent karta hai**, object ke internal properties ko modify karna nahi.
+
+    **Q: `Object.freeze()` kya karta hai?**
+
+    ```javascript id="imm11"
+    const user = Object.freeze({
+    name: "Raj"
+    });
+
+    user.name = "Rahul";
+
+    console.log(user.name);
+    // "Raj"
+    ```
+
+    `Object.freeze()` object ki direct/top-level properties ko modification se prevent karta hai. **Deep nested objects automatically freeze nahi hote.**
+
+    ### ⭐ One-line memory trick
+
+    **Immutable = Existing data ko mutate mat karo → Change ke liye new data create karo.**
+
+
+
 71. Currying kya hai?
 72. Partial application?
 73. Compose function?
