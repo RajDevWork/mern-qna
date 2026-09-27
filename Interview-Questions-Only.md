@@ -12640,6 +12640,140 @@ Browser automatically validation kar dega.
 
 
 72. Partial application?
+
+    ## Hinglish Explanation
+
+    **Partial Application** ka matlab hai kisi function ke **kuch arguments pehle se fix karke ek new function banana**.
+
+    Simple words:
+
+    > **Original function → kuch values fix karo → reusable new function**
+
+    ### Basic Example
+
+    ```javascript id="pa01"
+    function multiply(a, b, c) {
+    return a * b * c;
+    }
+
+    const multiplyBy2 = (b, c) => multiply(2, b, c);
+
+    console.log(multiplyBy2(3, 4));
+    // 24
+    ```
+
+    Yahan `a = 2` pehle hi fix kar diya.
+
+    ```text id="pa02"
+    multiply(a, b, c)
+        ↓
+    a = 2 fixed
+        ↓
+    multiplyBy2(b, c)
+    ```
+
+    ### Currying se Difference
+
+    **Currying:**
+
+    ```javascript id="pa03"
+    const multiply = a => b => c => a * b * c;
+
+    multiply(2)(3)(4);
+    ```
+
+    Arguments **one-by-one** functions ke through diye ja rahe hain.
+
+    **Partial Application:**
+
+    ```javascript id="pa04"
+    function multiply(a, b, c) {
+    return a * b * c;
+    }
+
+    const multiplyBy2 = (b, c) => multiply(2, b, c);
+
+    multiplyBy2(3, 4);
+    ```
+
+    Yahan **sirf kuch arguments (`a`) fix** kiye gaye aur baaki baad mein diye.
+
+    ### Practical Example
+
+    Suppose API request mein base URL baar-baar same hai:
+
+    ```javascript id="pa05"
+    function request(baseUrl, endpoint, method) {
+    return `${method} ${baseUrl}${endpoint}`;
+    }
+
+    const apiRequest = (endpoint, method) => {
+    return request("https://api.example.com", endpoint, method);
+    };
+
+    console.log(apiRequest("/users", "GET"));
+    // GET https://api.example.com/users
+    ```
+
+    Base URL ek baar fix ho gaya, ab reusable function mil gaya.
+
+    ### `bind()` se Partial Application
+
+    JavaScript ka `bind()` bhi partial application ke liye use ho sakta hai:
+
+    ```javascript id="pa06"
+    function multiply(a, b, c) {
+    return a * b * c;
+    }
+
+    const multiplyBy2 = multiply.bind(null, 2);
+
+    console.log(multiplyBy2(3, 4));
+    // 24
+    ```
+
+    Yahan `2` pehle argument ke roop mein fix ho gaya.
+
+    ## 🎯 English Interview Answer
+
+    > **“Partial application means fixing some arguments of a function in advance and creating a new function with the remaining arguments. For example, if a function takes three arguments, I can fix the first argument and create a new function that accepts the other two. It is useful for creating reusable and specialized functions.”**
+
+    ### Interview Follow-up
+
+    **Q: Currying aur Partial Application mein main difference?**
+
+    | Currying                                                           | Partial Application                       |
+    | ------------------------------------------------------------------ | ----------------------------------------- |
+    | Function ko one-argument functions ki chain mein convert karta hai | Kuch arguments pehle fix karta hai        |
+    | `add(a)(b)(c)`                                                     | `add(a, b, c)` → `addWithA(b, c)`         |
+    | One-by-one arguments                                               | Any number of arguments can be pre-filled |
+
+    Example:
+
+    ```javascript id="pa07"
+    const addCurried = a => b => c => a + b + c;
+
+    addCurried(1)(2)(3);
+    ```
+
+    vs.
+
+    ```javascript id="pa08"
+    function add(a, b, c) {
+    return a + b + c;
+    }
+
+    const addOne = add.bind(null, 1);
+
+    addOne(2, 3);
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Partial Application = Kuch arguments abhi fix karo → Baaki arguments baad mein do.**
+
+
+
 73. Compose function?
 74. Pipe kya hai?
 75. Promise.all?
