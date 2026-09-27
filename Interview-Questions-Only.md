@@ -12775,6 +12775,170 @@ Browser automatically validation kar dega.
 
 
 73. Compose function?
+
+    ## Hinglish Explanation
+
+    **Function Composition** ka matlab hai **multiple functions ko combine karke ek new function banana**, jahan ek function ka output next function ka input ban jata hai.
+
+    Simple:
+
+    ```text
+    Input → Function A → Function B → Function C → Output
+    ```
+
+    ### Basic Example
+
+    ```javascript id="comp01"
+    const double = x => x * 2;
+    const addOne = x => x + 1;
+
+    const result = addOne(double(5));
+
+    console.log(result);
+    // 11
+    ```
+
+    Yahan:
+
+    ```text
+    5
+    ↓
+    double → 10
+    ↓
+    addOne → 11
+    ```
+
+    Ab in functions ko compose karke reusable function bana sakte hain:
+
+    ```javascript id="comp02"
+    const compose = (f, g) => x => f(g(x));
+
+    const doubleThenAddOne = compose(addOne, double);
+
+    console.log(doubleThenAddOne(5));
+    // 11
+    ```
+
+    **Important:** `compose(f, g)` mein generally **right-to-left** execution hota hai:
+
+    ```text
+    compose(addOne, double)
+
+    5 → double → 10 → addOne → 11
+    ```
+
+    ### Multiple Functions
+
+    ```javascript id="comp03"
+    const compose = (...functions) => value =>
+    functions.reduceRight((result, fn) => fn(result), value);
+
+    const double = x => x * 2;
+    const addOne = x => x + 1;
+    const square = x => x * x;
+
+    const calculate = compose(square, addOne, double);
+
+    console.log(calculate(5));
+    // 441
+    ```
+
+    Flow:
+
+    ```text
+    5
+    ↓ double
+    10
+    ↓ addOne
+    11
+    ↓ square
+    121
+    ```
+
+    > Note: above result is **121**, because `11 × 11 = 121`.
+
+    ### `compose()` vs `pipe()`
+
+    Ye interview mein commonly poocha ja sakta hai.
+
+    **Compose → Right to Left**
+
+    ```javascript
+    compose(f3, f2, f1)(value);
+    ```
+
+    Flow:
+
+    ```text
+    value → f1 → f2 → f3
+    ```
+
+    **Pipe → Left to Right**
+
+    ```javascript
+    pipe(f1, f2, f3)(value);
+    ```
+
+    Flow:
+
+    ```text
+    value → f1 → f2 → f3
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“Function composition means combining multiple functions so that the output of one function becomes the input of the next function. It helps us build complex operations from small reusable functions. A common `compose` implementation executes functions from right to left, while `pipe` usually executes them from left to right.”**
+
+    ### Interview Follow-up
+
+    **Q: Composition ka benefit kya hai?**
+
+    Main benefits:
+
+    * Small reusable functions
+    * Less duplicated logic
+    * Easier testing
+    * Complex logic ko smaller steps mein divide kar sakte hain
+    * Functional programming mein commonly used
+
+    **Q: `compose` aur `pipe` mein difference?**
+
+    ```text
+    compose → Right to Left
+    pipe    → Left to Right
+    ```
+
+    Example:
+
+    ```javascript
+    compose(c, b, a)(x);
+    ```
+
+    means:
+
+    ```text
+    x → a → b → c
+    ```
+
+    While:
+
+    ```javascript
+    pipe(a, b, c)(x);
+    ```
+
+    also means:
+
+    ```text
+    x → a → b → c
+    ```
+
+    Difference **functions likhne ke order** ka hai.
+
+    ### ⭐ One-line memory trick
+
+    **Function Composition = Ek function ka output → Next function ka input → Multiple functions combine karke one workflow.**
+
+
 74. Pipe kya hai?
 75. Promise.all?
 76. Promise.race?
