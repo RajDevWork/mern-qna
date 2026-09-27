@@ -12939,6 +12939,8 @@ Browser automatically validation kar dega.
     **Function Composition = Ek function ka output → Next function ka input → Multiple functions combine karke one workflow.**
 
 
+
+
 74. Pipe kya hai?
 75. Promise.all?
 76. Promise.race?
