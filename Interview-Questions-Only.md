@@ -12511,6 +12511,134 @@ Browser automatically validation kar dega.
 
 
 71. Currying kya hai?
+
+    ## Hinglish Explanation
+
+    **Currying** ka matlab hai ek function jo normally **multiple arguments** leta hai, usko **multiple single-argument functions** mein convert karna.
+
+    Simple example:
+
+    ```javascript id="cur01"
+    function add(a, b, c) {
+    return a + b + c;
+    }
+
+    add(10, 20, 30);
+    // 60
+    ```
+
+    Currying ke baad:
+
+    ```javascript id="cur02"
+    function add(a) {
+    return function (b) {
+        return function (c) {
+        return a + b + c;
+        };
+    };
+    }
+
+    console.log(add(10)(20)(30));
+    // 60
+    ```
+
+    Yahan:
+
+    ```text
+    add(10)
+    ↓
+    function(b)
+
+    (20)
+    ↓
+    function(c)
+
+    (30)
+    ↓
+    60
+    ```
+
+    ### Arrow Function se
+
+    ```javascript id="cur03"
+    const add = a => b => c => a + b + c;
+
+    console.log(add(10)(20)(30));
+    // 60
+    ```
+
+    ### Practical Use — Reusable Function
+
+    Currying ka useful benefit hai **partial application / reusable functions** banana.
+
+    ```javascript id="cur04"
+    const multiply = a => b => a * b;
+
+    const double = multiply(2);
+    const triple = multiply(3);
+
+    console.log(double(5)); // 10
+    console.log(double(10)); // 20
+
+    console.log(triple(5)); // 15
+    ```
+
+    Yahan `multiply(2)` se ek reusable `double()` function ban gaya.
+
+    ### Currying vs Normal Function
+
+    Normal:
+
+    ```javascript id="cur05"
+    calculate(price, tax, discount);
+    ```
+
+    Curried:
+
+    ```javascript id="cur06"
+    calculate(price)(tax)(discount);
+    ```
+
+    Currying ka main idea **function ko ek-ek argument dena aur next function return karna** hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Currying is a technique where a function that takes multiple arguments is transformed into a sequence of functions, where each function takes one argument. For example, instead of calling `add(10, 20, 30)`, we can call `add(10)(20)(30)`. Currying is useful for creating reusable functions and partial application.”**
+
+    ### Interview Follow-up
+
+    **Q: Currying ka real-world use kya hai?**
+
+    Reusable functions create karne ke liye:
+
+    ```javascript id="cur07"
+    const hasRole = role => user => user.role === role;
+
+    const isAdmin = hasRole("admin");
+
+    isAdmin({ name: "Raj", role: "admin" });
+    // true
+    ```
+
+    Yahan `hasRole("admin")` se reusable `isAdmin` function create ho gaya.
+
+    **Q: Currying aur closure ka relation kya hai?**
+
+    Curried functions commonly **closures** use karte hain. Outer function ke variables inner function ke paas available rehte hain.
+
+    ```javascript id="cur08"
+    const multiply = a => b => a * b;
+
+    const double = multiply(2);
+    ```
+
+    `double` closure ke through `a = 2` ko remember karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Currying = Multiple arguments → One-by-one functions → `add(a)(b)(c)`.**
+
+
 72. Partial application?
 73. Compose function?
 74. Pipe kya hai?
