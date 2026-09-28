@@ -13118,6 +13118,163 @@ Browser automatically validation kar dega.
 
 
 75. Promise.all?
+
+    ## Hinglish Explanation
+
+    `Promise.all()` ka use tab karte hain jab **multiple independent Promises ko concurrently run** karna ho aur hume **sabhi ke results** chahiye.
+
+    ```javascript id="pa1001"
+    const p1 = fetch("/users");
+    const p2 = fetch("/products");
+    const p3 = fetch("/orders");
+
+    const results = await Promise.all([p1, p2, p3]);
+    ```
+
+    Yahan teen requests **ek ke baad ek nahi**, concurrently start ho sakti hain.
+
+    ### Basic Example
+
+    ```javascript id="pa1002"
+    const p1 = Promise.resolve("Users");
+    const p2 = Promise.resolve("Products");
+    const p3 = Promise.resolve("Orders");
+
+    const result = await Promise.all([p1, p2, p3]);
+
+    console.log(result);
+    // ["Users", "Products", "Orders"]
+    ```
+
+    ### Important: Result Order
+
+    Promises jis order mein complete hongi, result us order mein nahi aata.
+
+    Result **input array ke order** mein aata hai.
+
+    ```javascript id="pa1003"
+    const p1 = new Promise(resolve =>
+    setTimeout(() => resolve("First"), 1000)
+    );
+
+    const p2 = new Promise(resolve =>
+    setTimeout(() => resolve("Second"), 100)
+    );
+
+    const result = await Promise.all([p1, p2]);
+
+    console.log(result);
+    // ["First", "Second"]
+    ```
+
+    `p2` pehle complete hua, phir bhi result order same raha:
+
+    ```text
+    [p1 result, p2 result]
+    ```
+
+    ### Error Handling — Very Important
+
+    Agar `Promise.all()` mein **ek Promise reject ho jata hai**, `Promise.all()` bhi reject ho jata hai.
+
+    ```javascript id="pa1004"
+    const p1 = Promise.resolve("Success");
+
+    const p2 = Promise.reject("Something went wrong");
+
+    const p3 = Promise.resolve("Success");
+
+    try {
+    const result = await Promise.all([p1, p2, p3]);
+    } catch (error) {
+    console.log(error);
+    }
+    ```
+
+    Yahan overall `Promise.all()` rejected hoga.
+
+    ### Real-world Example
+
+    Suppose dashboard ke liye 3 independent APIs chahiye:
+
+    ```javascript id="pa1005"
+    const [users, products, orders] = await Promise.all([
+    getUsers(),
+    getProducts(),
+    getOrders()
+    ]);
+    ```
+
+    Agar sequentially karoge:
+
+    ```javascript id="pa1006"
+    const users = await getUsers();
+    const products = await getProducts();
+    const orders = await getOrders();
+    ```
+
+    To unnecessary waiting ho sakti hai.
+
+    Independent operations ke case mein `Promise.all()` better concurrency provide kar sakta hai.
+
+    ### Kab `Promise.all()` use nahi karna?
+
+    Agar second operation first ke result par depend karta hai:
+
+    ```javascript id="pa1007"
+    const user = await getUser();
+
+    const orders = await getOrders(user.id);
+    ```
+
+    Yahan parallel nahi kar sakte because `orders` ko `user.id` chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > **“`Promise.all()` is used when I have multiple independent asynchronous operations and I want to run them concurrently and wait for all of them to complete. It returns the results in the same order as the input promises. If any one of the promises rejects, `Promise.all()` rejects with that error. I commonly use it for independent API calls where all results are required.”**
+
+    ### Interview Follow-up
+
+    **Q: `Promise.all()` aur `Promise.allSettled()` mein difference?**
+
+    ```text id="pa1008"
+    Promise.all()
+    → One rejects → Overall Promise rejects
+
+    Promise.allSettled()
+    → Waits for all
+    → Gives status of each Promise
+    ```
+
+    Example:
+
+    ```javascript id="pa1009"
+    const result = await Promise.allSettled([
+    Promise.resolve("Success"),
+    Promise.reject("Failed")
+    ]);
+
+    console.log(result);
+    ```
+
+    Result conceptually:
+
+    ```javascript id="pa1010"
+    [
+    { status: "fulfilled", value: "Success" },
+    { status: "rejected", reason: "Failed" }
+    ]
+    ```
+
+    **Q: `Promise.all()` sequential hai ya concurrent?**
+
+    It starts the supplied promises without awaiting each one individually, so independent async operations can run concurrently. It does **not** mean JavaScript executes CPU-heavy code in parallel threads.
+
+    ### ⭐ One-line memory trick
+
+    **`Promise.all()` = Independent async tasks → Concurrently start → Sabke results chahiye → Ek reject hua to overall reject.**
+
+
 76. Promise.race?
 77. Promise.any?
 78. Promise.allSettled?
