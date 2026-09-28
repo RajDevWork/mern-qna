@@ -12942,6 +12942,181 @@ Browser automatically validation kar dega.
 
 
 74. Pipe kya hai?
+
+    ## Hinglish Explanation
+
+    **Pipe (`pipe`)** ka matlab hai multiple functions ko **left-to-right order** mein execute karna, jahan ek function ka output next function ka input ban jata hai.
+
+    Simple:
+
+    ```text
+    Input → Function 1 → Function 2 → Function 3 → Output
+    ```
+
+    ### Basic Example
+
+    ```javascript id="pipe01"
+    const double = x => x * 2;
+    const addOne = x => x + 1;
+
+    const pipe = (f, g) => x => g(f(x));
+
+    const calculate = pipe(double, addOne);
+
+    console.log(calculate(5));
+    // 11
+    ```
+
+    Flow:
+
+    ```text
+    5
+    ↓
+    double(5) → 10
+    ↓
+    addOne(10) → 11
+    ```
+
+    ### Multiple Functions ke liye
+
+    ```javascript id="pipe02"
+    const pipe = (...functions) => value =>
+    functions.reduce((result, fn) => fn(result), value);
+
+    const double = x => x * 2;
+    const addOne = x => x + 1;
+    const square = x => x * x;
+
+    const calculate = pipe(
+    double,
+    addOne,
+    square
+    );
+
+    console.log(calculate(5));
+    // 121
+    ```
+
+    Flow:
+
+    ```text
+    5
+    ↓ double
+    10
+    ↓ addOne
+    11
+    ↓ square
+    121
+    ```
+
+    ### Pipe vs Compose
+
+    Ye interview mein important hai:
+
+    ```javascript id="pipe03"
+    pipe(double, addOne, square);
+    ```
+
+    Execution:
+
+    ```text
+    5 → double → addOne → square
+    ```
+
+    **Left → Right**
+
+    Whereas:
+
+    ```javascript id="pipe04"
+    compose(square, addOne, double);
+    ```
+
+    Execution internally:
+
+    ```text
+    5 → double → addOne → square
+    ```
+
+    **Right → Left**
+
+    Dono same workflow bana sakte hain, bas functions ko likhne ka order different hota hai.
+
+    ### Real-world Thinking
+
+    Suppose user input ko process karna hai:
+
+    ```text
+    Raw Input
+    ↓
+    Trim
+    ↓
+    Lowercase
+    ↓
+    Validate
+    ↓
+    Final Result
+    ```
+
+    Pipe is tarah ka readable workflow banane mein useful hota hai.
+
+    ```javascript id="pipe05"
+    const trim = str => str.trim();
+    const lower = str => str.toLowerCase();
+    const addPrefix = str => `user_${str}`;
+
+    const process = pipe(
+    trim,
+    lower,
+    addPrefix
+    );
+
+    console.log(process("  RAJ  "));
+    // user_raj
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“A pipe function is a functional programming pattern where multiple functions are executed from left to right. The output of one function becomes the input of the next function. It helps make data-processing workflows more readable and allows us to combine small reusable functions.”**
+
+    ### Interview Follow-up
+
+    **Q: Pipe aur Compose mein difference?**
+
+    ```text
+    Pipe    → Left → Right
+    Compose → Right → Left
+    ```
+
+    Example:
+
+    ```javascript id="pipe06"
+    pipe(a, b, c)(value);
+    ```
+
+    means:
+
+    ```text
+    value → a → b → c
+    ```
+
+    While:
+
+    ```javascript id="pipe07"
+    compose(c, b, a)(value);
+    ```
+
+    means:
+
+    ```text
+    value → a → b → c
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Pipe = Data ko functions ki pipeline mein Left → Right flow karao.**
+
+
+
 75. Promise.all?
 76. Promise.race?
 77. Promise.any?
