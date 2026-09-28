@@ -13276,6 +13276,159 @@ Browser automatically validation kar dega.
 
 
 76. Promise.race?
+
+    ## Hinglish Explanation
+
+    `Promise.race()` ka use tab karte hain jab multiple Promises mein se **jo Promise sabse pehle settle ho — fulfilled ya rejected — uska result/rejection chahiye**.
+
+    Simple:
+
+    ```text
+    Promise A ──→ 2 sec
+    Promise B ──→ 1 sec  ✅ Winner
+    Promise C ──→ 3 sec
+
+    Promise.race() → Promise B ka result
+    ```
+
+    ### Basic Example
+
+    ```javascript id="race01"
+    const p1 = new Promise(resolve =>
+    setTimeout(() => resolve("First"), 1000)
+    );
+
+    const p2 = new Promise(resolve =>
+    setTimeout(() => resolve("Second"), 2000)
+    );
+
+    const result = await Promise.race([p1, p2]);
+
+    console.log(result);
+    // "First"
+    ```
+
+    `p1` pehle settle hua, isliye `"First"` mila.
+
+    ### Important: Rejection bhi Winner ho sakta hai
+
+    `Promise.race()` sirf successful Promise ka wait nahi karta.
+
+    ```javascript id="race02"
+    const p1 = new Promise(resolve =>
+    setTimeout(() => resolve("Success"), 2000)
+    );
+
+    const p2 = new Promise((resolve, reject) =>
+    setTimeout(() => reject("Failed"), 500)
+    );
+
+    try {
+    const result = await Promise.race([p1, p2]);
+    console.log(result);
+    } catch (error) {
+    console.log(error);
+    }
+
+    // Failed
+    ```
+
+    Kyuki `p2` **sabse pehle settle** hua — rejection ke saath.
+
+    ### Practical Use — Timeout
+
+    `Promise.race()` ka common use **API timeout** implement karna hai:
+
+    ```javascript id="race03"
+    const timeout = new Promise((_, reject) => {
+    setTimeout(() => {
+        reject(new Error("Request timeout"));
+    }, 3000);
+    });
+
+    const request = fetch("/api/users");
+
+    try {
+    const response = await Promise.race([
+        request,
+        timeout
+    ]);
+
+    console.log(await response.json());
+    } catch (error) {
+    console.log(error.message);
+    }
+    ```
+
+    Agar API 3 seconds se pehle settle ho gayi → API result.
+
+    Agar timeout pehle settle hua → timeout error.
+
+    **Important:** `Promise.race()` timeout winner hone par automatically underlying `fetch()` ko cancel nahi karta. Actual cancellation ke liye `AbortController` use kar sakte hain.
+
+    ### `Promise.all()` vs `Promise.race()`
+
+    ```text id="race04"
+    Promise.all()
+    → Sab complete hone ka wait
+    → Sabke results
+
+    Promise.race()
+    → First settled Promise
+    → Pehla result/rejection
+    ```
+
+    Example:
+
+    ```javascript id="race05"
+    await Promise.all([p1, p2, p3]);
+    // [result1, result2, result3]
+
+    await Promise.race([p1, p2, p3]);
+    // first settled result/rejection
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“`Promise.race()` is used when I want the result of the first Promise that settles, whether it is fulfilled or rejected. For example, I can use it to implement a timeout for an API request. If the API responds first, I get the API result. If the timeout Promise settles first, I get the timeout error. One important point is that `Promise.race()` does not automatically cancel the other pending operations.”**
+
+    ### Interview Follow-up
+
+    **Q: `Promise.race()` mein agar first Promise reject ho gaya to kya hoga?**
+
+    Overall `Promise.race()` immediately reject ho jayega.
+
+    ```javascript id="race06"
+    Promise.race([
+    Promise.reject("Error"),
+    Promise.resolve("Success")
+    ]);
+    ```
+
+    Result:
+
+    ```text
+    Rejected → "Error"
+    ```
+
+    **Q: `Promise.race()` aur `Promise.any()` mein difference?**
+
+    ```text id="race07"
+    Promise.race()
+    → First SETTLED
+    → fulfilled OR rejected
+
+    Promise.any()
+    → First FULFILLED
+    → rejections ignore until all reject
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`Promise.race()` = Jo Promise sabse pehle settle ho — success ya error — wahi winner.**
+
+
+
 77. Promise.any?
 78. Promise.allSettled?
 79. Retry mechanism kaise likho?
