@@ -14472,6 +14472,166 @@ Browser automatically validation kar dega.
 
 
 83. stopPropagation?
+
+    ## Hinglish Explanation
+
+    `event.stopPropagation()` ka use **event ko DOM ke next parent/ancestor elements tak propagate hone se rokne** ke liye hota hai.
+
+    Simple:
+
+    ```text
+    Button click
+    ↓
+    Button handler
+    ↓
+    Parent handler ❌ STOP
+    ```
+
+    ### Basic Example
+
+    ```html
+    <div id="parent">
+    <button id="child">Click Me</button>
+    </div>
+    ```
+
+    ```javascript
+    const parent = document.querySelector("#parent");
+    const child = document.querySelector("#child");
+
+    parent.addEventListener("click", () => {
+    console.log("Parent clicked");
+    });
+
+    child.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    console.log("Child clicked");
+    });
+    ```
+
+    Button click:
+
+    ```text
+    Child clicked
+    ```
+
+    Parent ka handler execute nahi hoga because propagation stop kar di.
+
+    ### Without `stopPropagation()`
+
+    ```javascript
+    child.addEventListener("click", () => {
+    console.log("Child clicked");
+    });
+    ```
+
+    Output:
+
+    ```text
+    Child clicked
+    Parent clicked
+    ```
+
+    Kyuki click event **bubble** hoke parent tak pahunch gaya.
+
+    ### `stopPropagation()` vs `preventDefault()`
+
+    Ye interview mein **bahut important** difference hai.
+
+    #### `stopPropagation()`
+
+    Event ki **propagation** rokta hai.
+
+    ```javascript
+    event.stopPropagation();
+    ```
+
+    #### `preventDefault()`
+
+    Browser ka **default action** rokta hai.
+
+    ```javascript
+    event.preventDefault();
+    ```
+
+    Example:
+
+    ```html
+    <a href="https://example.com" id="link">Open</a>
+    ```
+
+    ```javascript
+    link.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    console.log("Link navigation stopped");
+    });
+    ```
+
+    Yahan event propagation necessarily stop nahi hui; sirf browser ka default navigation action prevent hua.
+
+    ### `stopImmediatePropagation()`
+
+    Agar **same element par multiple listeners** hain, `stopPropagation()` unhe normally stop nahi karta.
+
+    ```javascript
+    button.addEventListener("click", () => {
+    console.log("Handler 1");
+    });
+
+    button.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
+
+    console.log("Handler 2");
+    });
+
+    button.addEventListener("click", () => {
+    console.log("Handler 3");
+    });
+    ```
+
+    `Handler 3` execute nahi hoga.
+
+    So:
+
+    ```text
+    stopPropagation()
+    → Parent/ancestor propagation stop
+
+    stopImmediatePropagation()
+    → Same element ke remaining listeners + propagation stop
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“`event.stopPropagation()` prevents an event from propagating further through the DOM, such as from a child element to its parent during bubbling. It is useful when I don't want a parent event handler to run for a particular child action. It is different from `preventDefault()`, which prevents the browser's default behavior.”**
+
+    ### Interview Follow-up
+
+    **Q: `stopPropagation()` aur `preventDefault()` mein difference?**
+
+    ```text
+    stopPropagation()
+    → Event propagation stop karta hai.
+
+    preventDefault()
+    → Browser ka default action stop karta hai.
+    ```
+
+    **Q: `stopImmediatePropagation()` kya karta hai?**
+
+    ```text
+    Current element ke remaining event listeners
+    + further propagation
+    → stop
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`stopPropagation()` = Event ko parent tak mat jaane do | `preventDefault()` = Browser ka default action mat hone do.**
+
+
 84. preventDefault?
 85. DOM manipulation basics?
 86. Virtual DOM kya hai?
