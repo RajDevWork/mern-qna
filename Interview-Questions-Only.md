@@ -13963,6 +13963,170 @@ Browser automatically validation kar dega.
 
 
 80. Rate limiter function?
+
+    ## Hinglish Explanation
+
+    **Rate Limiter** ka use API ko excessive requests se protect karne ke liye hota hai.
+
+    Example:
+
+    > Ek user/IP maximum **5 requests per minute** kar sakta hai.
+
+    ```text
+    Request
+    ↓
+    Identify user/IP
+    ↓
+    Limit check
+    ↓
+    Under limit → Allow ✅
+    Over limit  → 429 ❌
+    ```
+
+    ### Simple Rate Limiter — In-Memory
+
+    Interview ke liye basic implementation:
+
+    ```javascript id="rl01"
+    const requests = new Map();
+
+    function rateLimiter(limit, windowMs) {
+    return function (req, res, next) {
+        const key = req.ip;
+        const now = Date.now();
+
+        const record = requests.get(key);
+
+        if (!record || now - record.start >= windowMs) {
+        requests.set(key, {
+            start: now,
+            count: 1
+        });
+
+        return next();
+        }
+
+        if (record.count >= limit) {
+        return res.status(429).json({
+            message: "Too many requests"
+        });
+        }
+
+        record.count++;
+        next();
+    };
+    }
+    ```
+
+    Use:
+
+    ```javascript id="rl02"
+    app.use(rateLimiter(5, 60 * 1000));
+    ```
+
+    Meaning:
+
+    ```text
+    5 requests
+    ↓
+    60 seconds window
+    ```
+
+    6th request:
+
+    ```text
+    HTTP 429 Too Many Requests
+    ```
+
+    ### Problem with In-Memory Rate Limiter
+
+    Ye implementation **single Node.js instance** ke liye basic/demo level hai.
+
+    Agar production mein:
+
+    ```text
+    Load Balancer
+        ↓
+    ┌────┼────┐
+    ↓    ↓    ↓
+    Node Node Node
+    ```
+
+    Har Node process ka apna `Map` hoga.
+
+    Toh limit globally accurate nahi rahegi.
+
+    ### Production mein Redis
+
+    Distributed Node.js application mein Redis commonly use kar sakte hain:
+
+    ```text
+    Client
+    ↓
+    Load Balancer
+    ↓
+    Node.js instances
+    ↓
+    Redis ← Shared request counter
+    ```
+
+    Sab instances same counter access karte hain.
+
+    ### Important Algorithms
+
+    Interview mein rate limiting ke common algorithms:
+
+    * **Fixed Window**
+    * **Sliding Window**
+    * **Token Bucket**
+    * **Leaky Bucket**
+
+    Simple `Map` implementation basically fixed-window style behavior demonstrate karta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“A rate limiter controls how many requests a client can make within a specific time period. For example, I can allow five requests per minute per IP. In a simple implementation, I can store the request count and window in memory and return HTTP 429 when the limit is exceeded. In a distributed production system, I would use a shared store such as Redis so that multiple Node.js instances share the same rate-limit state.”**
+
+    ### Interview Follow-up
+
+    **Q: HTTP status code for rate limiting?**
+
+    ```text
+    429 Too Many Requests
+    ```
+
+    **Q: Production mein in-memory `Map` kyun problematic hai?**
+
+    Because multiple server instances don't share process memory:
+
+    ```text
+    Node 1 → Map A
+    Node 2 → Map B
+    Node 3 → Map C
+    ```
+
+    Isliye distributed environment mein shared storage like Redis is commonly used.
+
+    **Q: Rate limiting aur throttling same hai?**
+
+    Not exactly.
+
+    ```text
+    Rate Limiting
+    → Maximum allowed requests define karta hai
+
+    Throttling
+    → Excess requests ko slow/delay/control karta hai
+    ```
+
+    In real systems, the terms can overlap depending on implementation.
+
+    ### ⭐ One-line memory trick
+
+    **Rate Limiter = Client/IP identify karo → Request count track karo → Limit cross → `429 Too Many Requests`.**
+
+
+
 81. Event bubbling kya hai?
 82. Event capturing?
 83. stopPropagation?
