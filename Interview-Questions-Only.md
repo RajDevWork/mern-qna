@@ -14128,6 +14128,167 @@ Browser automatically validation kar dega.
 
 
 81. Event bubbling kya hai?
+
+    ## Hinglish Explanation
+
+    **Event Bubbling** ka matlab hai jab kisi **child element par event hota hai**, to event DOM hierarchy mein **child se parent ki taraf bubble** karta hai.
+
+    Example:
+
+    ```text
+    div (Parent)
+    ↓
+    button (Child) ← Click
+    ```
+
+    Click hone ke baad event:
+
+    ```text
+    button → div → body → document
+    ```
+
+    ### Basic Example
+
+    ```javascript id="bubble01"
+    const parent = document.querySelector("#parent");
+    const child = document.querySelector("#child");
+
+    parent.addEventListener("click", () => {
+    console.log("Parent clicked");
+    });
+
+    child.addEventListener("click", () => {
+    console.log("Child clicked");
+    });
+    ```
+
+    HTML:
+
+    ```html id="bubble02"
+    <div id="parent">
+    <button id="child">Click Me</button>
+    </div>
+    ```
+
+    Button click karne par:
+
+    ```text id="bubble03"
+    Child clicked
+    Parent clicked
+    ```
+
+    Kyuki event child se parent ki taraf bubble hua.
+
+    ### `event.target` vs `event.currentTarget`
+
+    Ye interview mein **bahut important** hai.
+
+    ```javascript id="bubble04"
+    parent.addEventListener("click", (event) => {
+    console.log(event.target);
+    console.log(event.currentTarget);
+    });
+    ```
+
+    Agar button click hua:
+
+    ```text id="bubble05"
+    event.target
+    → Actual element jis par click hua
+    → button
+
+    event.currentTarget
+    → Jis element par listener laga hai
+    → parent
+    ```
+
+    ### Bubbling Stop Karna
+
+    Agar event ko parent tak nahi pahunchne dena:
+
+    ```javascript id="bubble06"
+    child.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    console.log("Child clicked");
+    });
+    ```
+
+    Ab parent ka click handler execute nahi hoga.
+
+    ### Event Delegation mein Use
+
+    Event bubbling ki wajah se hum parent par **single event listener** laga sakte hain:
+
+    ```javascript id="bubble07"
+    const list = document.querySelector("#users");
+
+    list.addEventListener("click", (event) => {
+    if (event.target.matches(".delete")) {
+        console.log("Delete clicked");
+    }
+    });
+    ```
+
+    Is technique ko **Event Delegation** kehte hain.
+
+    ```text id="bubble08"
+    Parent
+    ↓
+    Child 1
+    Child 2
+    Child 3
+    ↓
+    One listener on Parent
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“Event bubbling is a DOM event propagation mechanism where an event starts from the target element and then propagates upward through its parent elements. For example, if I click a button inside a div, the button's click handler runs and then the event can bubble to the div. We can stop bubbling using `event.stopPropagation()`. Event bubbling is also commonly used for event delegation.”**
+
+    ### Interview Follow-up
+
+    **Q: Event bubbling aur event capturing mein difference?**
+
+    ```text id="bubble09"
+    Capturing:
+    document → parent → child
+
+    Target:
+    child
+
+    Bubbling:
+    child → parent → document
+    ```
+
+    Default event listeners generally use the **bubbling phase**:
+
+    ```javascript id="bubble10"
+    element.addEventListener("click", handler);
+    ```
+
+    Capturing explicitly enable kar sakte hain:
+
+    ```javascript id="bubble11"
+    element.addEventListener("click", handler, {
+    capture: true
+    });
+    ```
+
+    **Q: `stopPropagation()` kya karta hai?**
+
+    Current event ki further propagation ko stop karta hai.
+
+    ```javascript id="bubble12"
+    event.stopPropagation();
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Event Bubbling = Child par event → Parent → Grandparent → Document, yani bottom → top.**
+
+
+
 82. Event capturing?
 83. stopPropagation?
 84. preventDefault?
