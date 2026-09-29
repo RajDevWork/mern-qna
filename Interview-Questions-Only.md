@@ -13767,6 +13767,201 @@ Browser automatically validation kar dega.
 
 
 79. Retry mechanism kaise likho?
+
+    ## Hinglish Explanation
+
+    **Retry mechanism** ka matlab hai agar API/network operation **temporary failure** ki wajah se fail ho, to us operation ko automatically **limited number of times dobara try** karna.
+
+    Typical flow:
+
+    ```text
+    API Call
+    ↓
+    Success? ── Yes → Return Result
+    │
+    No
+    ↓
+    Retry Count Check
+    ↓
+    Wait / Backoff
+    ↓
+    Retry
+    ↓
+    Max Attempts? → Yes → Throw Error
+    ```
+
+    ### Simple Retry Implementation
+
+    ```javascript id="retry01"
+    async function retry(fn, retries = 3) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+        return await fn();
+        } catch (error) {
+        if (attempt === retries) {
+            throw error;
+        }
+
+        console.log(`Retrying... Attempt ${attempt + 1}`);
+        }
+    }
+    }
+    ```
+
+    Use:
+
+    ```javascript id="retry02"
+    const result = await retry(() => fetch("/api/users"), 3);
+    ```
+
+    Agar first attempt fail hua:
+
+    ```text
+    Attempt 1 ❌
+    Attempt 2 ❌
+    Attempt 3 ✅
+    ```
+
+    To result return ho jayega.
+
+    ---
+
+    ### Retry + Delay
+
+    Production mein continuously immediately retry karna avoid karte hain.
+
+    ```javascript id="retry03"
+    const sleep = ms =>
+    new Promise(resolve => setTimeout(resolve, ms));
+
+    async function retry(fn, retries = 3, delay = 1000) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+        return await fn();
+        } catch (error) {
+        if (attempt === retries) {
+            throw error;
+        }
+
+        await sleep(delay);
+        }
+    }
+    }
+    ```
+
+    ---
+
+    ### Exponential Backoff
+
+    Production/interview mein ye **important point** hai.
+
+    Har retry ke saath delay increase:
+
+    ```text
+    Attempt 1 → fail → 1 sec wait
+    Attempt 2 → fail → 2 sec wait
+    Attempt 3 → fail → 4 sec wait
+    Attempt 4 → fail → error
+    ```
+
+    Implementation:
+
+    ```javascript id="retry04"
+    const sleep = ms =>
+    new Promise(resolve => setTimeout(resolve, ms));
+
+    async function retry(
+    fn,
+    maxRetries = 3,
+    baseDelay = 500
+    ) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+        return await fn();
+        } catch (error) {
+        if (attempt === maxRetries) {
+            throw error;
+        }
+
+        const delay = baseDelay * 2 ** attempt;
+
+        await sleep(delay);
+        }
+    }
+    }
+    ```
+
+    ### Production mein ek aur important point
+
+    **Har error ko retry nahi karna chahiye.**
+
+    Example:
+
+    ```text
+    500 / 502 / 503 / 504 → Often retryable
+    429 → Retry after server guidance / backoff
+    Network timeout → Often retryable
+
+    400 → Usually don't retry
+    401 → Usually authentication issue
+    403 → Usually authorization issue
+    404 → Usually resource issue
+    ```
+
+    Actual retry policy **API/service semantics** par depend karti hai.
+
+    Aur `POST` requests ke case mein blindly retry karna dangerous ho sakta hai, kyunki operation duplicate ho sakta hai. Idempotency keys useful ho sakti hain.
+
+    ## 🎯 English Interview Answer
+
+    > **“A retry mechanism automatically retries a failed operation when the failure may be temporary. I usually limit the number of retries, add a delay between attempts, and preferably use exponential backoff. I also retry only errors that are considered transient, such as certain network or server errors. For non-idempotent operations like POST, I need to be careful about duplicate operations and may use an idempotency key.”**
+
+    ### Interview Follow-up
+
+    **Q: Exponential backoff kya hai?**
+
+    Retry ke beech ka delay har attempt ke saath increase karna.
+
+    ```javascript id="retry05"
+    const delay = baseDelay * 2 ** attempt;
+    ```
+
+    Example:
+
+    ```text
+    500ms
+    1000ms
+    2000ms
+    4000ms
+    ```
+
+    **Q: Retry mechanism mein maximum retry kyun rakhte hain?**
+
+    Taaki:
+
+    * Infinite retry na ho
+    * Server par unnecessary load na aaye
+    * Response indefinitely delay na ho
+    * Temporary failure permanent failure banne par request eventually fail ho
+
+    **Q: Retry + Circuit Breaker mein difference?**
+
+    ```text
+    Retry
+    → Same operation ko limited times dobara try karo
+
+    Circuit Breaker
+    → Repeated failures detect karo
+    → Temporarily requests ko stop/short-circuit karo
+    → Recovery ke baad requests allow karo
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Retry = Limited attempts + Delay/Backoff + Only transient errors + Final failure propagate.**
+
+
+
 80. Rate limiter function?
 81. Event bubbling kya hai?
 82. Event capturing?
