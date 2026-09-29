@@ -13430,6 +13430,155 @@ Browser automatically validation kar dega.
 
 
 77. Promise.any?
+
+    ## Hinglish Explanation
+
+    `Promise.any()` ka use tab karte hain jab multiple Promises mein se **jo sabse pehle successfully fulfill ho**, uska result chahiye.
+
+    Important difference:
+
+    > **`Promise.any()` rejection ko ignore karta hai jab tak koi Promise fulfill nahi hota.**
+
+    ### Basic Example
+
+    ```javascript id="any01"
+    const p1 = new Promise((resolve, reject) =>
+    setTimeout(() => reject("Server 1 failed"), 500)
+    );
+
+    const p2 = new Promise(resolve =>
+    setTimeout(() => resolve("Server 2 success"), 1000)
+    );
+
+    const p3 = new Promise(resolve =>
+    setTimeout(() => resolve("Server 3 success"), 1500)
+    );
+
+    const result = await Promise.any([p1, p2, p3]);
+
+    console.log(result);
+    // "Server 2 success"
+    ```
+
+    Flow:
+
+    ```text
+    p1 → 500ms → ❌ Reject
+    p2 → 1000ms → ✅ Fulfilled ← Winner
+    p3 → 1500ms → ✅ Fulfilled
+
+    Promise.any() → "Server 2 success"
+    ```
+
+    ### Agar sabhi Reject ho jaayein?
+
+    Tab `Promise.any()` reject hota hai aur **`AggregateError`** deta hai.
+
+    ```javascript id="any02"
+    try {
+    await Promise.any([
+        Promise.reject("Error 1"),
+        Promise.reject("Error 2"),
+        Promise.reject("Error 3")
+    ]);
+    } catch (error) {
+    console.log(error instanceof AggregateError);
+    // true
+
+    console.log(error.errors);
+    // ["Error 1", "Error 2", "Error 3"]
+    }
+    ```
+
+    ### Practical Use Case
+
+    Suppose same data ke liye multiple servers/CDN available hain:
+
+    ```text
+    API Server 1 → Failed
+    API Server 2 → Slow
+    API Server 3 → Fast Success
+    ```
+
+    Aapko **kisi bhi ek successful response** se kaam hai:
+
+    ```javascript id="any03"
+    const data = await Promise.any([
+    fetch("https://server1.example.com/data"),
+    fetch("https://server2.example.com/data"),
+    fetch("https://server3.example.com/data")
+    ]);
+    ```
+
+    Jaise hi first request successfully fulfill hoti hai, `Promise.any()` us result ke saath settle ho jata hai.
+
+    ### `all`, `race`, `any`, `allSettled`
+
+    | Method                 | Kab settle hota hai?                           |
+    | ---------------------- | ---------------------------------------------- |
+    | `Promise.all()`        | Sab fulfill → success; ek reject → reject      |
+    | `Promise.race()`       | First settled → success ya reject              |
+    | `Promise.any()`        | First fulfilled → success; sab reject → reject |
+    | `Promise.allSettled()` | Sab settle hone ke baad                        |
+
+    ### `race()` vs `any()` — Most Important
+
+    ```javascript id="any04"
+    Promise.race([
+    Promise.reject("Failed"),
+    Promise.resolve("Success")
+    ]);
+    ```
+
+    → **Reject**, because rejection pehle settle hua.
+
+    ```javascript id="any05"
+    Promise.any([
+    Promise.reject("Failed"),
+    Promise.resolve("Success")
+    ]);
+    ```
+
+    → **Success**, because `any()` successful fulfillment ka wait karta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“`Promise.any()` is used when I have multiple asynchronous operations and I only need the first successful result. It ignores rejected promises until one promise fulfills. If all promises reject, it rejects with an `AggregateError` containing the individual errors. A common use case is trying multiple servers or fallback APIs where any successful response is acceptable.”**
+
+    ### Interview Follow-up
+
+    **Q: `Promise.any()` aur `Promise.race()` mein main difference?**
+
+    **`Promise.race()` → first settled Promise wins, whether fulfilled or rejected.**
+
+    **`Promise.any()` → first fulfilled Promise wins; rejected promises are ignored unless all reject.**
+
+    ```text id="any06"
+    race → First settled
+    any  → First successful
+    ```
+
+    **Q: `Promise.any()` ke sabhi Promises reject ho gaye to?**
+
+    ```javascript id="any07"
+    try {
+    await Promise.any([
+        Promise.reject("A"),
+        Promise.reject("B")
+    ]);
+    } catch (error) {
+    console.log(error instanceof AggregateError);
+    // true
+    }
+    ```
+
+    It rejects with `AggregateError`.
+
+    ### ⭐ One-line memory trick
+
+    **`Promise.any()` = “Mujhe koi bhi ek successful result chahiye” → First fulfilled Promise wins.**
+
+
 78. Promise.allSettled?
 79. Retry mechanism kaise likho?
 80. Rate limiter function?
