@@ -13580,6 +13580,192 @@ Browser automatically validation kar dega.
 
 
 78. Promise.allSettled?
+
+    ## Hinglish Explanation
+
+    `Promise.allSettled()` ka use tab karte hain jab **multiple Promises ko run karna ho aur hume har Promise ka final status chahiye**, chahe wo **fulfilled ho ya rejected**.
+
+    Important point:
+
+    > **Ek Promise reject hone par `allSettled()` reject nahi hota.**
+    > Ye **sabhi Promises ke settle hone ka wait** karta hai.
+
+    ### Basic Example
+
+    ```javascript id="settle01"
+    const results = await Promise.allSettled([
+    Promise.resolve("Users loaded"),
+    Promise.reject("Products failed"),
+    Promise.resolve("Orders loaded")
+    ]);
+
+    console.log(results);
+    ```
+
+    Result:
+
+    ```javascript id="settle02"
+    [
+    {
+        status: "fulfilled",
+        value: "Users loaded"
+    },
+    {
+        status: "rejected",
+        reason: "Products failed"
+    },
+    {
+        status: "fulfilled",
+        value: "Orders loaded"
+    }
+    ]
+    ```
+
+    Notice karo:
+
+    ```text id="settle03"
+    Users    → ✅ fulfilled
+    Products → ❌ rejected
+    Orders   → ✅ fulfilled
+
+                ↓
+        allSettled()
+                ↓
+        Sabka result/status
+    ```
+
+    ### `Promise.all()` se Difference
+
+    ```javascript id="settle04"
+    await Promise.all([
+    Promise.resolve("A"),
+    Promise.reject("B"),
+    Promise.resolve("C")
+    ]);
+    ```
+
+    `Promise.all()` → **immediately reject** karega.
+
+    But:
+
+    ```javascript id="settle05"
+    await Promise.allSettled([
+    Promise.resolve("A"),
+    Promise.reject("B"),
+    Promise.resolve("C")
+    ]);
+    ```
+
+    `allSettled()` → **sabke complete hone ka wait** karega.
+
+    ### Real-world Use Case
+
+    Suppose dashboard mein 4 independent APIs hain:
+
+    ```javascript id="settle06"
+    const results = await Promise.allSettled([
+    getUsers(),
+    getOrders(),
+    getProducts(),
+    getNotifications()
+    ]);
+    ```
+
+    Agar:
+
+    ```text id="settle07"
+    Users         → Success
+    Orders        → Success
+    Products      → Failed
+    Notifications → Success
+    ```
+
+    Toh aap successful APIs ka data dikha sakte ho aur failed API ko separately handle kar sakte ho.
+
+    ### Success aur Failure Separate Karna
+
+    ```javascript id="settle08"
+    const results = await Promise.allSettled([
+    getUsers(),
+    getOrders(),
+    getProducts()
+    ]);
+
+    const successful = results
+    .filter(result => result.status === "fulfilled")
+    .map(result => result.value);
+
+    const failed = results
+    .filter(result => result.status === "rejected")
+    .map(result => result.reason);
+
+    console.log(successful);
+    console.log(failed);
+    ```
+
+    ### Four Promise Methods — Easy Comparison
+
+    ```text id="settle09"
+    Promise.all()
+    → Sab successful chahiye
+    → Ek reject → reject
+
+    Promise.race()
+    → First settled wins
+    → Fulfilled OR rejected
+
+    Promise.any()
+    → First fulfilled wins
+    → Sab reject → AggregateError
+
+    Promise.allSettled()
+    → Sabka final status chahiye
+    → Fulfilled + Rejected
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“`Promise.allSettled()` is used when I want to execute multiple asynchronous operations and get the final result of every operation, whether it was fulfilled or rejected. Unlike `Promise.all()`, one rejection does not cause the whole operation to reject. It waits for all promises to settle and returns an array containing the status and either the value or reason for each promise. It is useful for dashboards, batch operations, or independent API calls where I want to know both successful and failed operations.”**
+
+    ### Interview Follow-up
+
+    **Q: `Promise.all()` aur `Promise.allSettled()` mein difference?**
+
+    ```text id="settle10"
+    Promise.all()
+    → One rejection → Overall rejection
+
+    Promise.allSettled()
+    → Rejection allowed
+    → Waits for everyone
+    → Gives status of everyone
+    ```
+
+    **Q: `allSettled()` ka result ka format kya hota hai?**
+
+    Fulfilled:
+
+    ```javascript id="settle11"
+    {
+    status: "fulfilled",
+    value: result
+    }
+    ```
+
+    Rejected:
+
+    ```javascript id="settle12"
+    {
+    status: "rejected",
+    reason: error
+    }
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **`Promise.allSettled()` = “Sabko complete hone do → Har Promise ka Success/Failure status batao.”**
+
+
 79. Retry mechanism kaise likho?
 80. Rate limiter function?
 81. Event bubbling kya hai?
