@@ -14290,6 +14290,187 @@ Browser automatically validation kar dega.
 
 
 82. Event capturing?
+
+    ## Hinglish Explanation
+
+    **Event Capturing** event propagation ka wo phase hai jahan event **parent se child ki taraf** travel karta hai.
+
+    Simple:
+
+    ```text
+    Document
+    ↓
+    Parent
+    ↓
+    Child ← Actual Click
+    ```
+
+    Bubbling iska opposite hai:
+
+    ```text
+    Child
+    ↑
+    Parent
+    ↑
+    Document
+    ```
+
+    ### Basic Example
+
+    HTML:
+
+    ```html
+    <div id="parent">
+    <button id="child">Click Me</button>
+    </div>
+    ```
+
+    JavaScript:
+
+    ```javascript
+    const parent = document.querySelector("#parent");
+    const child = document.querySelector("#child");
+
+    parent.addEventListener(
+    "click",
+    () => {
+        console.log("Parent");
+    },
+    true
+    );
+
+    child.addEventListener("click", () => {
+    console.log("Child");
+    });
+    ```
+
+    Button click karne par:
+
+    ```text
+    Parent
+    Child
+    ```
+
+    Kyuki parent listener **capture phase** mein execute hua.
+
+    ### `capture: true` — Modern Syntax
+
+    `true` ki jagah:
+
+    ```javascript
+    parent.addEventListener(
+    "click",
+    () => {
+        console.log("Parent");
+    },
+    { capture: true }
+    );
+    ```
+
+    Ye explicitly bolta hai:
+
+    > Is listener ko capturing phase mein run karo.
+
+    ### Event Propagation ke 3 Phases
+
+    Actually event propagation ko broadly 3 phases mein samajh sakte hain:
+
+    ```text
+    1. Capturing Phase
+    Document → Parent → Child
+
+    2. Target Phase
+    Child / actual target
+
+    3. Bubbling Phase
+    Child → Parent → Document
+    ```
+
+    Example:
+
+    ```text
+    Document
+    ↓
+    Parent
+    ↓
+    Button ← Target
+    ↑
+    Parent
+    ↑
+    Document
+    ```
+
+    ### Capturing vs Bubbling
+
+    | Capturing           | Bubbling           |
+    | ------------------- | ------------------ |
+    | Parent → Child      | Child → Parent     |
+    | Top → Bottom        | Bottom → Top       |
+    | `{ capture: true }` | Default behavior   |
+    | Less commonly used  | Very commonly used |
+
+    ### Important Interview Point
+
+    Agar:
+
+    ```javascript
+    element.addEventListener("click", handler);
+    ```
+
+    to default:
+
+    ```text
+    capture: false
+    ```
+
+    hota hai, meaning listener **bubbling phase** mein execute hota hai.
+
+    Capturing ke liye:
+
+    ```javascript
+    element.addEventListener("click", handler, {
+    capture: true
+    });
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“Event capturing is a phase of DOM event propagation where an event travels from the top of the DOM hierarchy down toward the target element. It happens before the target and bubbling phases. By default, event listeners are registered for the bubbling phase, but we can enable capturing by passing `{ capture: true }` to `addEventListener`.”**
+
+    ### Interview Follow-up
+
+    **Q: Event propagation ke kitne phases hote hain?**
+
+    Mainly 3:
+
+    ```text
+    Capturing → Target → Bubbling
+    ```
+
+    **Q: Capturing enable kaise karte hain?**
+
+    ```javascript
+    element.addEventListener("click", handler, {
+    capture: true
+    });
+    ```
+
+    **Q: Bubbling ko stop kar sakte hain?**
+
+    Yes:
+
+    ```javascript
+    event.stopPropagation();
+    ```
+
+    Ye event ki further propagation ko stop karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Capturing = Top → Down | Target = Actual element | Bubbling = Bottom → Up.**
+
+
+
 83. stopPropagation?
 84. preventDefault?
 85. DOM manipulation basics?
