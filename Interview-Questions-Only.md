@@ -14633,6 +14633,142 @@ Browser automatically validation kar dega.
 
 
 84. preventDefault?
+
+    ## Hinglish Explanation
+
+`event.preventDefault()` ka use browser ke **default action ko rokne** ke liye hota hai.
+
+Simple:
+
+> **Event ko stop nahi karta, sirf browser ka default behavior prevent karta hai.**
+
+### Link Example
+
+Normally `<a>` click karne par browser URL par navigate karta hai:
+
+```javascript id="pd01"
+const link = document.querySelector("#link");
+
+link.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  console.log("Navigation prevented");
+});
+```
+
+HTML:
+
+```html
+<a id="link" href="https://example.com">
+  Open Website
+</a>
+```
+
+Ab click karne par page navigate nahi karega.
+
+### Form Example — Most Common
+
+Normally form submit hone par browser page reload/navigation kar sakta hai.
+
+```javascript id="pd02"
+const form = document.querySelector("#loginForm");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  console.log("Form submission stopped");
+
+  // API call
+});
+```
+
+React/SPA applications mein ye bahut common hai:
+
+```text
+Form Submit
+   ↓
+preventDefault()
+   ↓
+Page reload nahi
+   ↓
+JavaScript / API call
+```
+
+### `preventDefault()` vs `stopPropagation()`
+
+Ye interview ka **very important difference** hai.
+
+```text
+preventDefault()
+→ Browser ka default action rokta hai
+
+stopPropagation()
+→ Event ki DOM propagation rokta hai
+```
+
+Example:
+
+```javascript id="pd03"
+button.addEventListener("click", (event) => {
+  event.preventDefault();
+});
+```
+
+Isse event parent tak bubble hona automatically stop nahi hota.
+
+Agar dono chahiye:
+
+```javascript id="pd04"
+button.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+});
+```
+
+### Common Default Actions
+
+`preventDefault()` commonly use hota hai:
+
+* `<a>` → navigation prevent karna
+* `<form>` → default submission/reload prevent karna
+* Checkbox/radio → default state change prevent karna
+* Drag/drop → browser ke default behavior ko control karna
+
+## 🎯 English Interview Answer
+
+> **“`event.preventDefault()` is used to prevent the browser's default behavior for an event. For example, I can prevent a form from submitting and reloading the page so that I can handle the submission using JavaScript or an API call. It is important to remember that `preventDefault()` does not stop event propagation; for that, we use `stopPropagation()`.”**
+
+### Interview Follow-up
+
+**Q: `preventDefault()` aur `stopPropagation()` difference?**
+
+```text
+preventDefault()
+→ Default browser action stop
+
+stopPropagation()
+→ Event parent/child propagation stop
+```
+
+**Q: Form submit ko JavaScript se handle kaise karoge?**
+
+```javascript id="pd05"
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const data = new FormData(form);
+
+  // API call
+});
+```
+
+### ⭐ One-line memory trick
+
+**`preventDefault()` = Browser ka default kaam roko | `stopPropagation()` = Event ka DOM travel roko.**
+
+
+
+
 85. DOM manipulation basics?
 86. Virtual DOM kya hai?
 87. Browser rendering flow?
