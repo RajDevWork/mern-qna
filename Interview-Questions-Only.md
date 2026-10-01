@@ -14770,6 +14770,140 @@ form.addEventListener("submit", async (event) => {
 
 
 85. DOM manipulation basics?
+
+    ## Hinglish Explanation
+
+**DOM (Document Object Model)** browser ke HTML page ko ek **tree of objects** ke form mein represent karta hai.
+JavaScript ke through hum DOM ko **select, read, modify, create aur delete** kar sakte hain.
+
+Basic DOM manipulation mein mainly ye kaam aate hain:
+
+* Element select karna → `querySelector()`, `getElementById()`
+* Content change karna → `textContent`, `innerHTML`
+* Style/class change karna → `style`, `classList`
+* Attributes change karna → `setAttribute()`
+* New element banana → `createElement()`
+* Element add/remove karna → `append()`, `remove()`
+* Events handle karna → `addEventListener()`
+
+### Small Implementation
+
+HTML:
+
+```html
+<div id="user">
+  <h2>Hello</h2>
+  <button id="btn">Change</button>
+</div>
+```
+
+JavaScript:
+
+```javascript
+const heading = document.querySelector("#user h2");
+const button = document.getElementById("btn");
+
+button.addEventListener("click", () => {
+  heading.textContent = "Hello Raj!";
+  heading.style.color = "blue";
+});
+```
+
+Yahan:
+
+```javascript
+document.querySelector()
+```
+
+element select karta hai.
+
+```javascript
+textContent
+```
+
+text change karta hai.
+
+```javascript
+style.color
+```
+
+CSS change karta hai.
+
+```javascript
+addEventListener()
+```
+
+event handle karta hai.
+
+### Create New Element
+
+```javascript
+const p = document.createElement("p");
+
+p.textContent = "New paragraph";
+
+document.body.append(p);
+```
+
+### Class Manipulation
+
+```javascript
+heading.classList.add("active");
+heading.classList.remove("active");
+heading.classList.toggle("active");
+```
+
+### Attribute Manipulation
+
+```javascript
+const image = document.querySelector("img");
+
+image.setAttribute("src", "profile.jpg");
+image.setAttribute("alt", "Profile");
+```
+
+Production code mein user-provided content ke liye unnecessarily `innerHTML` use nahi karna chahiye; plain text ke liye `textContent` safer choice hai.
+
+## 🎯 English Interview Answer
+
+> **“DOM manipulation means using JavaScript to interact with and modify HTML elements on a web page. We can select elements using methods like `querySelector()` or `getElementById()`, change their content using `textContent`, modify classes and styles, update attributes, create new elements, remove elements, and handle events using `addEventListener()`. For example, I can select a button and change the text of a heading when the button is clicked.”**
+
+### Interview Follow-up
+
+**Q: `textContent` vs `innerHTML`?**
+
+`textContent` treats the value as plain text, while `innerHTML` parses the value as HTML.
+
+```javascript
+element.textContent = "<b>Hello</b>";
+```
+
+Output literally `<b>Hello</b>`.
+
+```javascript
+element.innerHTML = "<b>Hello</b>";
+```
+
+Output **Hello** in bold.
+
+**Q: `querySelector()` vs `getElementById()`?**
+
+`getElementById()` selects an element by its ID, while `querySelector()` accepts any valid CSS selector.
+
+```javascript
+document.getElementById("user");
+
+document.querySelector("#user");
+document.querySelector(".card");
+```
+
+### ⭐ One-line memory trick
+
+**DOM Manipulation = Select → Read/Change → Create → Add/Remove → Events.**
+
+
+
+
 86. Virtual DOM kya hai?
 87. Browser rendering flow?
 88. Reflow vs repaint?
