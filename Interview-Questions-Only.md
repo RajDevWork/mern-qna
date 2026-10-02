@@ -15370,6 +15370,130 @@ Browser automatically validation kar dega.
 
 
 90. Fetch vs Axios?
+
+    ## Hinglish Explanation
+
+    **Fetch** aur **Axios** dono HTTP requests/API calls ke liye use hote hain.
+
+    Main difference:
+
+    * **Fetch** → Browser ka built-in Web API; separate package install nahi karna.
+    * **Axios** → Third-party HTTP client library; package install karna padta hai.
+    * Fetch mein response JSON ke liye manually `response.json()` karna padta hai.
+    * Axios response data ko generally `response.data` mein directly provide karta hai.
+    * Axios mein request/response **interceptors** built-in feature hain.
+    * Axios mein non-2xx HTTP status par promise normally reject hota hai; Fetch mein `404/500` par promise automatically reject nahi hota—`response.ok` check karna padta hai.
+
+    ### Fetch Example
+
+    ```javascript id="c8v5k2"
+    const response = await fetch("/api/users");
+
+    if (!response.ok) {
+    throw new Error("Request failed");
+    }
+
+    const data = await response.json();
+
+    console.log(data);
+    ```
+
+    ### Axios Example
+
+    ```javascript id="n4k7pz"
+    import axios from "axios";
+
+    const response = await axios.get("/api/users");
+
+    console.log(response.data);
+    ```
+
+    ### Axios Interceptor
+
+    Real projects mein Axios ka ek important benefit **interceptors** hai.
+
+    ```javascript id="s8w2qx"
+    axios.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+    });
+    ```
+
+    Isse har request mein common logic centrally handle kar sakte hain.
+
+    For example:
+
+    ```text id="a3h9lm"
+    Request
+    ↓
+    Axios Interceptor
+    ↓
+    Add Token
+    ↓
+    API
+    ↓
+    Response Interceptor
+    ↓
+    Handle 401 / common errors
+    ```
+
+    ### Quick Comparison
+
+    | Feature                         | Fetch                        | Axios            |
+    | ------------------------------- | ---------------------------- | ---------------- |
+    | Built-in browser API            | ✅                            | ❌                |
+    | Installation                    | ❌                            | ✅                |
+    | JSON parsing                    | Manual `response.json()`     | `response.data`  |
+    | Non-2xx handling                | Manually check `response.ok` | Normally rejects |
+    | Interceptors                    | ❌ Built-in nahi              | ✅                |
+    | Timeout                         | `AbortController`            | Built-in config  |
+    | Request/response transformation | More manual                  | Convenient       |
+    | Node.js                         | Available in modern Node     | Available        |
+    | Dependency                      | No extra package             | Extra package    |
+
+    ## 🎯 English Interview Answer
+
+    > **“Fetch and Axios are both used for making HTTP requests. Fetch is a built-in Web API, so we don't need to install an additional package. Axios is a third-party HTTP client library. With Fetch, we usually need to call `response.json()` manually and check `response.ok` for HTTP errors. Axios provides the response data through `response.data` and normally rejects the promise for non-2xx responses. Axios also provides useful features like interceptors, request configuration, and convenient timeout handling. I would choose based on the project requirements rather than saying one is always better.”**
+
+    ### Interview Follow-up
+
+    **Q: Fetch 404 par `catch()` mein kyun nahi jaata?**
+
+    Because Fetch rejects the Promise mainly for **network-level failures**, not simply because the server returned an HTTP error status.
+
+    ```javascript id="e5q1vr"
+    const response = await fetch("/api/users/999");
+
+    if (!response.ok) {
+    throw new Error(`HTTP Error: ${response.status}`);
+    }
+    ```
+
+    **Q: Axios mein 404 handle kaise karoge?**
+
+    ```javascript id="u9c3wx"
+    try {
+    const response = await axios.get("/api/users/999");
+    } catch (error) {
+    console.log(error.response?.status);
+    }
+    ```
+
+    **Q: Axios interceptor ka real-world use?**
+
+    Commonly:
+
+    * JWT/access token attach karna
+    * Common 401 handling
+    * Request logging
+    * Response error handling
+    * Token refresh flow
+
+    ### ⭐ One-line memory trick
+
+    **Fetch = Built-in + Lightweight + Manual handling | Axios = Library + Convenient API + Interceptors + Centralized handling.**
+
+
 91. LocalStorage vs SessionStorage?
 92. Cookies kya hain?
 93. CORS kya hai?
