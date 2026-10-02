@@ -14636,135 +14636,135 @@ Browser automatically validation kar dega.
 
     ## Hinglish Explanation
 
-`event.preventDefault()` ka use browser ke **default action ko rokne** ke liye hota hai.
+    `event.preventDefault()` ka use browser ke **default action ko rokne** ke liye hota hai.
 
-Simple:
+    Simple:
 
-> **Event ko stop nahi karta, sirf browser ka default behavior prevent karta hai.**
+    > **Event ko stop nahi karta, sirf browser ka default behavior prevent karta hai.**
 
-### Link Example
+    ### Link Example
 
-Normally `<a>` click karne par browser URL par navigate karta hai:
+    Normally `<a>` click karne par browser URL par navigate karta hai:
 
-```javascript id="pd01"
-const link = document.querySelector("#link");
+    ```javascript id="pd01"
+    const link = document.querySelector("#link");
 
-link.addEventListener("click", (event) => {
-  event.preventDefault();
+    link.addEventListener("click", (event) => {
+    event.preventDefault();
 
-  console.log("Navigation prevented");
-});
-```
+    console.log("Navigation prevented");
+    });
+    ```
 
-HTML:
+    HTML:
 
-```html
-<a id="link" href="https://example.com">
-  Open Website
-</a>
-```
+    ```html
+    <a id="link" href="https://example.com">
+    Open Website
+    </a>
+    ```
 
-Ab click karne par page navigate nahi karega.
+    Ab click karne par page navigate nahi karega.
 
-### Form Example — Most Common
+    ### Form Example — Most Common
 
-Normally form submit hone par browser page reload/navigation kar sakta hai.
+    Normally form submit hone par browser page reload/navigation kar sakta hai.
 
-```javascript id="pd02"
-const form = document.querySelector("#loginForm");
+    ```javascript id="pd02"
+    const form = document.querySelector("#loginForm");
 
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
+    form.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-  console.log("Form submission stopped");
+    console.log("Form submission stopped");
 
-  // API call
-});
-```
+    // API call
+    });
+    ```
 
-React/SPA applications mein ye bahut common hai:
+    React/SPA applications mein ye bahut common hai:
 
-```text
-Form Submit
-   ↓
-preventDefault()
-   ↓
-Page reload nahi
-   ↓
-JavaScript / API call
-```
+    ```text
+    Form Submit
+    ↓
+    preventDefault()
+    ↓
+    Page reload nahi
+    ↓
+    JavaScript / API call
+    ```
 
-### `preventDefault()` vs `stopPropagation()`
+    ### `preventDefault()` vs `stopPropagation()`
 
-Ye interview ka **very important difference** hai.
+    Ye interview ka **very important difference** hai.
 
-```text
-preventDefault()
-→ Browser ka default action rokta hai
+    ```text
+    preventDefault()
+    → Browser ka default action rokta hai
 
-stopPropagation()
-→ Event ki DOM propagation rokta hai
-```
+    stopPropagation()
+    → Event ki DOM propagation rokta hai
+    ```
 
-Example:
+    Example:
 
-```javascript id="pd03"
-button.addEventListener("click", (event) => {
-  event.preventDefault();
-});
-```
+    ```javascript id="pd03"
+    button.addEventListener("click", (event) => {
+    event.preventDefault();
+    });
+    ```
 
-Isse event parent tak bubble hona automatically stop nahi hota.
+    Isse event parent tak bubble hona automatically stop nahi hota.
 
-Agar dono chahiye:
+    Agar dono chahiye:
 
-```javascript id="pd04"
-button.addEventListener("click", (event) => {
-  event.preventDefault();
-  event.stopPropagation();
-});
-```
+    ```javascript id="pd04"
+    button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    });
+    ```
 
-### Common Default Actions
+    ### Common Default Actions
 
-`preventDefault()` commonly use hota hai:
+    `preventDefault()` commonly use hota hai:
 
-* `<a>` → navigation prevent karna
-* `<form>` → default submission/reload prevent karna
-* Checkbox/radio → default state change prevent karna
-* Drag/drop → browser ke default behavior ko control karna
+    * `<a>` → navigation prevent karna
+    * `<form>` → default submission/reload prevent karna
+    * Checkbox/radio → default state change prevent karna
+    * Drag/drop → browser ke default behavior ko control karna
 
-## 🎯 English Interview Answer
+    ## 🎯 English Interview Answer
 
-> **“`event.preventDefault()` is used to prevent the browser's default behavior for an event. For example, I can prevent a form from submitting and reloading the page so that I can handle the submission using JavaScript or an API call. It is important to remember that `preventDefault()` does not stop event propagation; for that, we use `stopPropagation()`.”**
+    > **“`event.preventDefault()` is used to prevent the browser's default behavior for an event. For example, I can prevent a form from submitting and reloading the page so that I can handle the submission using JavaScript or an API call. It is important to remember that `preventDefault()` does not stop event propagation; for that, we use `stopPropagation()`.”**
 
-### Interview Follow-up
+    ### Interview Follow-up
 
-**Q: `preventDefault()` aur `stopPropagation()` difference?**
+    **Q: `preventDefault()` aur `stopPropagation()` difference?**
 
-```text
-preventDefault()
-→ Default browser action stop
+    ```text
+    preventDefault()
+    → Default browser action stop
 
-stopPropagation()
-→ Event parent/child propagation stop
-```
+    stopPropagation()
+    → Event parent/child propagation stop
+    ```
 
-**Q: Form submit ko JavaScript se handle kaise karoge?**
+    **Q: Form submit ko JavaScript se handle kaise karoge?**
 
-```javascript id="pd05"
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
+    ```javascript id="pd05"
+    form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const data = new FormData(form);
+    const data = new FormData(form);
 
-  // API call
-});
-```
+    // API call
+    });
+    ```
 
-### ⭐ One-line memory trick
+    ### ⭐ One-line memory trick
 
-**`preventDefault()` = Browser ka default kaam roko | `stopPropagation()` = Event ka DOM travel roko.**
+    **`preventDefault()` = Browser ka default kaam roko | `stopPropagation()` = Event ka DOM travel roko.**
 
 
 
@@ -14773,138 +14773,206 @@ form.addEventListener("submit", async (event) => {
 
     ## Hinglish Explanation
 
-**DOM (Document Object Model)** browser ke HTML page ko ek **tree of objects** ke form mein represent karta hai.
-JavaScript ke through hum DOM ko **select, read, modify, create aur delete** kar sakte hain.
+    **DOM (Document Object Model)** browser ke HTML page ko ek **tree of objects** ke form mein represent karta hai.
+    JavaScript ke through hum DOM ko **select, read, modify, create aur delete** kar sakte hain.
 
-Basic DOM manipulation mein mainly ye kaam aate hain:
+    Basic DOM manipulation mein mainly ye kaam aate hain:
 
-* Element select karna → `querySelector()`, `getElementById()`
-* Content change karna → `textContent`, `innerHTML`
-* Style/class change karna → `style`, `classList`
-* Attributes change karna → `setAttribute()`
-* New element banana → `createElement()`
-* Element add/remove karna → `append()`, `remove()`
-* Events handle karna → `addEventListener()`
+    * Element select karna → `querySelector()`, `getElementById()`
+    * Content change karna → `textContent`, `innerHTML`
+    * Style/class change karna → `style`, `classList`
+    * Attributes change karna → `setAttribute()`
+    * New element banana → `createElement()`
+    * Element add/remove karna → `append()`, `remove()`
+    * Events handle karna → `addEventListener()`
 
-### Small Implementation
+    ### Small Implementation
 
-HTML:
+    HTML:
 
-```html
-<div id="user">
-  <h2>Hello</h2>
-  <button id="btn">Change</button>
-</div>
-```
+    ```html
+    <div id="user">
+    <h2>Hello</h2>
+    <button id="btn">Change</button>
+    </div>
+    ```
 
-JavaScript:
+    JavaScript:
 
-```javascript
-const heading = document.querySelector("#user h2");
-const button = document.getElementById("btn");
+    ```javascript
+    const heading = document.querySelector("#user h2");
+    const button = document.getElementById("btn");
 
-button.addEventListener("click", () => {
-  heading.textContent = "Hello Raj!";
-  heading.style.color = "blue";
-});
-```
+    button.addEventListener("click", () => {
+    heading.textContent = "Hello Raj!";
+    heading.style.color = "blue";
+    });
+    ```
 
-Yahan:
+    Yahan:
 
-```javascript
-document.querySelector()
-```
+    ```javascript
+    document.querySelector()
+    ```
 
-element select karta hai.
+    element select karta hai.
 
-```javascript
-textContent
-```
+    ```javascript
+    textContent
+    ```
 
-text change karta hai.
+    text change karta hai.
 
-```javascript
-style.color
-```
+    ```javascript
+    style.color
+    ```
 
-CSS change karta hai.
+    CSS change karta hai.
 
-```javascript
-addEventListener()
-```
+    ```javascript
+    addEventListener()
+    ```
 
-event handle karta hai.
+    event handle karta hai.
 
-### Create New Element
+    ### Create New Element
 
-```javascript
-const p = document.createElement("p");
+    ```javascript
+    const p = document.createElement("p");
 
-p.textContent = "New paragraph";
+    p.textContent = "New paragraph";
 
-document.body.append(p);
-```
+    document.body.append(p);
+    ```
 
-### Class Manipulation
+    ### Class Manipulation
 
-```javascript
-heading.classList.add("active");
-heading.classList.remove("active");
-heading.classList.toggle("active");
-```
+    ```javascript
+    heading.classList.add("active");
+    heading.classList.remove("active");
+    heading.classList.toggle("active");
+    ```
 
-### Attribute Manipulation
+    ### Attribute Manipulation
 
-```javascript
-const image = document.querySelector("img");
+    ```javascript
+    const image = document.querySelector("img");
 
-image.setAttribute("src", "profile.jpg");
-image.setAttribute("alt", "Profile");
-```
+    image.setAttribute("src", "profile.jpg");
+    image.setAttribute("alt", "Profile");
+    ```
 
-Production code mein user-provided content ke liye unnecessarily `innerHTML` use nahi karna chahiye; plain text ke liye `textContent` safer choice hai.
+    Production code mein user-provided content ke liye unnecessarily `innerHTML` use nahi karna chahiye; plain text ke liye `textContent` safer choice hai.
 
-## 🎯 English Interview Answer
+    ## 🎯 English Interview Answer
 
-> **“DOM manipulation means using JavaScript to interact with and modify HTML elements on a web page. We can select elements using methods like `querySelector()` or `getElementById()`, change their content using `textContent`, modify classes and styles, update attributes, create new elements, remove elements, and handle events using `addEventListener()`. For example, I can select a button and change the text of a heading when the button is clicked.”**
+    > **“DOM manipulation means using JavaScript to interact with and modify HTML elements on a web page. We can select elements using methods like `querySelector()` or `getElementById()`, change their content using `textContent`, modify classes and styles, update attributes, create new elements, remove elements, and handle events using `addEventListener()`. For example, I can select a button and change the text of a heading when the button is clicked.”**
 
-### Interview Follow-up
+    ### Interview Follow-up
 
-**Q: `textContent` vs `innerHTML`?**
+    **Q: `textContent` vs `innerHTML`?**
 
-`textContent` treats the value as plain text, while `innerHTML` parses the value as HTML.
+    `textContent` treats the value as plain text, while `innerHTML` parses the value as HTML.
 
-```javascript
-element.textContent = "<b>Hello</b>";
-```
+    ```javascript
+    element.textContent = "<b>Hello</b>";
+    ```
 
-Output literally `<b>Hello</b>`.
+    Output literally `<b>Hello</b>`.
 
-```javascript
-element.innerHTML = "<b>Hello</b>";
-```
+    ```javascript
+    element.innerHTML = "<b>Hello</b>";
+    ```
 
-Output **Hello** in bold.
+    Output **Hello** in bold.
 
-**Q: `querySelector()` vs `getElementById()`?**
+    **Q: `querySelector()` vs `getElementById()`?**
 
-`getElementById()` selects an element by its ID, while `querySelector()` accepts any valid CSS selector.
+    `getElementById()` selects an element by its ID, while `querySelector()` accepts any valid CSS selector.
 
-```javascript
-document.getElementById("user");
+    ```javascript
+    document.getElementById("user");
 
-document.querySelector("#user");
-document.querySelector(".card");
-```
+    document.querySelector("#user");
+    document.querySelector(".card");
+    ```
 
-### ⭐ One-line memory trick
+    ### ⭐ One-line memory trick
 
-**DOM Manipulation = Select → Read/Change → Create → Add/Remove → Events.**
+    **DOM Manipulation = Select → Read/Change → Create → Add/Remove → Events.**
 
 
 
 
 86. Virtual DOM kya hai?
+
+    ## Hinglish Explanation
+
+    **Virtual DOM** React ka ek **lightweight JavaScript representation of the real DOM** hai.
+    React jab state ya props change hone par UI update karta hai, toh directly poore Real DOM ko manually update nahi karta.
+
+    Basic flow:
+
+    **State/Props Change → New Virtual DOM → Old vs New Virtual DOM comparison → Required DOM changes → Real DOM update**
+
+    Is comparison ko generally **reconciliation** kehte hain.
+
+    Example:
+
+    ```jsx
+    function App() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+        <h1>Count: {count}</h1>
+        <button onClick={() => setCount(count + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+    ```
+
+    Agar `count` `0` se `1` hota hai, React conceptual level par new UI representation banata hai, previous representation se compare karta hai, aur required DOM update karta hai.
+
+    ### Important Interview Point
+
+    Virtual DOM ka matlab **Real DOM ki exact copy** nahi hai.
+    Ye React elements ka lightweight in-memory representation hai.
+
+    Aur ye kehna ki **“Virtual DOM always makes React faster than everything else”** technically correct nahi hai. Performance actual component structure, rendering work, reconciliation, browser DOM work, etc. par depend karti hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Virtual DOM is a lightweight JavaScript representation of the UI used by React. When state or props change, React creates a new representation and compares it with the previous one. This process is part of reconciliation. React then determines the necessary changes and updates the real DOM accordingly. The main benefit is that developers can work with a declarative UI model instead of manually updating DOM elements.”**
+
+    ### Interview Follow-up
+
+    **Q: Virtual DOM aur Real DOM mein difference?**
+
+    | Virtual DOM                         | Real DOM                               |
+    | ----------------------------------- | -------------------------------------- |
+    | JavaScript/in-memory representation | Browser's actual DOM                   |
+    | Lightweight representation          | Actual HTML document structure         |
+    | React uses it for reconciliation    | Browser renders and updates it         |
+    | Directly visible nahi hota          | Page par actual UI represent karta hai |
+
+    **Q: Reconciliation kya hai?**
+
+    Reconciliation is the process where React compares the previous UI representation with the new one and determines what needs to be updated in the real DOM.
+
+    **Q: Virtual DOM kya actual DOM ko update karta hai?**
+
+    Nahi. Virtual DOM khud browser mein render nahi hota. React us representation ka use karke **required changes determine** karta hai, phir Real DOM ko update karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Virtual DOM = UI ka lightweight representation → Compare → Required changes → Real DOM update.**
+
+
+
+
 87. Browser rendering flow?
 88. Reflow vs repaint?
 89. Web APIs kya hain?
