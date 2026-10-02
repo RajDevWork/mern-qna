@@ -15149,6 +15149,114 @@ Browser automatically validation kar dega.
 
 
 88. Reflow vs repaint?
+
+
+    ## Hinglish Explanation
+
+    **Reflow (Layout)** aur **Repaint** browser rendering ke do important concepts hain.
+
+    ### 1. Reflow / Layout
+
+    Jab kisi element ki **size, position ya layout** change hoti hai, browser ko layout dobara calculate karna padta hai.
+
+    Examples:
+
+    ```javascript
+    box.style.width = "500px";
+    box.style.height = "200px";
+    box.style.margin = "20px";
+    ```
+
+    Isse browser ko calculate karna pad sakta hai ki **ye element aur surrounding elements kahan aur kitne size ke honge**.
+
+    👉 Reflow generally **expensive** hota hai, especially large DOM mein.
+
+    ### 2. Repaint
+
+    Jab element ka **visual appearance** change hota hai, lekin layout/position change nahi hoti, browser ko pixels dobara draw karne padte hain.
+
+    Example:
+
+    ```javascript
+    box.style.color = "red";
+    box.style.backgroundColor = "blue";
+    ```
+
+    Yahan generally element ki position/size same hai, sirf appearance change hui hai.
+
+    👉 Repaint usually reflow se less expensive hota hai, but cost property aur browser rendering path par depend karti hai.
+
+    ### Simple Example
+
+    ```javascript
+    // Reflow + likely repaint
+    box.style.width = "500px";
+
+    // Repaint
+    box.style.backgroundColor = "red";
+    ```
+
+    ### Performance Tip
+
+    Repeated layout changes avoid karne ke liye multiple individual style changes ki jagah class toggle karna useful ho sakta hai:
+
+    ```javascript
+    box.classList.add("active");
+    ```
+
+    ```css
+    .active {
+    width: 500px;
+    height: 200px;
+    background: red;
+    }
+    ```
+
+    Aur animations ke liye generally `transform` aur `opacity` browser ke compositing path ke liye better candidates hote hain than repeatedly changing layout properties like `top`, `left`, `width`, etc. Exact behavior browser/property par depend karta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Reflow, also called layout, happens when the browser needs to recalculate the size or position of elements after a layout-related change. For example, changing width, height, margin, or other layout properties can cause reflow. Repaint happens when the browser needs to redraw the visual appearance, such as color or background, without necessarily recalculating layout. Reflow is generally more expensive than repaint, so in performance-sensitive applications we try to minimize unnecessary layout changes.”**
+
+    ### Interview Follow-up
+
+    **Q: Reflow expensive kyun hota hai?**
+
+    Because changing one element's layout can affect the position or size of **other elements**, so the browser may need to recalculate a larger part of the layout tree.
+
+    **Q: Kaunsi properties layout trigger kar sakti hain?**
+
+    Common examples:
+
+    ```text
+    width
+    height
+    margin
+    padding
+    top
+    left
+    font-size
+    display
+    ```
+
+    Exact rendering cost browser aur context par depend karta hai.
+
+    **Q: `transform` aur `opacity` performance ke liye commonly kyun use hote hain?**
+
+    Because they can often be handled without recalculating normal document layout and may be composited efficiently.
+
+    ```css
+    .box {
+    transform: translateX(100px);
+    opacity: 0.5;
+    }
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Reflow = Layout dobara calculate | Repaint = Pixels dobara draw.**
+
+
 89. Web APIs kya hain?
 90. Fetch vs Axios?
 91. LocalStorage vs SessionStorage?
