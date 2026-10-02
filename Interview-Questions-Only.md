@@ -14974,6 +14974,180 @@ Browser automatically validation kar dega.
 
 
 87. Browser rendering flow?
+
+    ## Hinglish Explanation
+
+    Browser rendering flow ka matlab hai **HTML/CSS/JS se browser actual screen par UI kaise display karta hai**.
+
+    Typical flow:
+
+    **HTML → DOM**
+    **CSS → CSSOM**
+    **DOM + CSSOM → Render Tree**
+    **Render Tree → Layout**
+    **Layout → Paint**
+    **Paint → Compositing → Screen**
+
+    ### 1. HTML Parsing → DOM
+
+    Browser HTML ko parse karke **DOM tree** banata hai.
+
+    ```html
+    <h1>Hello</h1>
+    <p>Welcome</p>
+    ```
+
+    Browser roughly tree representation banata hai:
+
+    ```text
+    Document
+    ├── h1
+    └── p
+    ```
+
+    ### 2. CSS Parsing → CSSOM
+
+    Browser CSS ko parse karke **CSSOM (CSS Object Model)** banata hai.
+
+    ```css
+    h1 {
+    color: blue;
+    font-size: 30px;
+    }
+    ```
+
+    ### 3. DOM + CSSOM → Render Tree
+
+    Browser decide karta hai ki **kaunse elements actually render hone hain aur unki styles kya hongi**.
+
+    Important: `display: none` wale elements Render Tree mein include nahi hote.
+
+    ### 4. Layout
+
+    Browser calculate karta hai:
+
+    * Element ki width
+    * Height
+    * Position
+    * Margin/padding
+    * Parent-child positioning
+
+    Is process ko **Layout / Reflow** kehte hain.
+
+    ### 5. Paint
+
+    Ab browser actual visual pixels draw karta hai:
+
+    * Text
+    * Colors
+    * Background
+    * Borders
+    * Shadows
+    * Images
+
+    ### 6. Compositing
+
+    Browser different layers ko combine karke final image screen par display karta hai.
+
+    ---
+
+    ### Small Implementation
+
+    ```html
+    <div id="box">Hello</div>
+    ```
+
+    ```css
+    #box {
+    width: 200px;
+    background: blue;
+    }
+    ```
+
+    ```javascript
+    const box = document.querySelector("#box");
+
+    box.style.width = "400px";
+    ```
+
+    Width change hone par browser ko **layout recalculation** karna pad sakta hai, aur uske baad paint/compositing bhi ho sakta hai.
+
+    ### Performance Interview Point
+
+    Frequent DOM/layout changes expensive ho sakte hain.
+
+    Instead of:
+
+    ```javascript
+    box.style.width = "100px";
+    box.style.height = "100px";
+    box.style.margin = "20px";
+    ```
+
+    Often better approach:
+
+    ```javascript
+    box.classList.add("active");
+    ```
+
+    ```css
+    .active {
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+    }
+    ```
+
+    Browser rendering performance improve karne ke liye unnecessary **layout/reflow and paint** avoid karna important hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“The browser rendering flow starts by parsing HTML and creating the DOM, and parsing CSS to create the CSSOM. The browser then combines them to create the Render Tree. After that, it performs layout to calculate the size and position of elements, then paints the visual properties like text, colors, borders, and images. Finally, the browser composites the layers and displays the result on the screen. Frequent DOM or layout changes can cause additional rendering work, so we should avoid unnecessary updates for better performance.”**
+
+    ### Interview Follow-up
+
+    **Q: Reflow vs Repaint?**
+
+    **Reflow/Layout** means browser recalculates element size and position.
+
+    **Repaint** means browser redraws visual properties without necessarily recalculating layout.
+
+    Example:
+
+    ```javascript
+    box.style.width = "500px";
+    ```
+
+    May trigger **layout + paint**.
+
+    While:
+
+    ```javascript
+    box.style.color = "red";
+    ```
+
+    Usually needs **paint**, but not layout.
+
+    **Q: `display: none` vs `visibility: hidden`?**
+
+    ```css
+    display: none;
+    ```
+
+    Element layout se bhi remove ho jata hai.
+
+    ```css
+    visibility: hidden;
+    ```
+
+    Element invisible hota hai but **layout space retain** karta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Browser Rendering = HTML → DOM + CSS → CSSOM → Render Tree → Layout → Paint → Composite → Screen.**
+
+
+
 88. Reflow vs repaint?
 89. Web APIs kya hain?
 90. Fetch vs Axios?
