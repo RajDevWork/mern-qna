@@ -15258,6 +15258,117 @@ Browser automatically validation kar dega.
 
 
 89. Web APIs kya hain?
+
+    ## Hinglish Explanation
+
+    **Web APIs** browser/runtime ke dwara provide kiye gaye interfaces hain, jinke through JavaScript browser ke features aur external capabilities ke saath interact kar sakta hai.
+
+    Simple words mein:
+
+    **JavaScript language → Web APIs → Browser functionality**
+
+    Examples:
+
+    * `DOM API` → HTML elements ko access/manipulate karna
+    * `Fetch API` → HTTP/API requests
+    * `setTimeout()` → Timer
+    * `localStorage` → Browser storage
+    * `Geolocation API` → User location access
+    * `WebSocket API` → Real-time communication
+    * `Canvas API` → Graphics/drawing
+    * `Notification API` → Browser notifications
+
+    ### Important Interview Point
+
+    **Web APIs JavaScript language ka core part nahi hain.**
+    Ye browser environment provide karta hai.
+
+    For example:
+
+    ```javascript id="7x4q1a"
+    setTimeout(() => {
+    console.log("Hello");
+    }, 1000);
+    ```
+
+    `setTimeout()` ko JavaScript engine khud execute nahi karta as a timer mechanism. Browser runtime timer API provide karta hai. Timer complete hone ke baad callback ko appropriate task queue mein schedule kiya jata hai, aur event loop eventually usse call stack par execute karwata hai.
+
+    Similarly:
+
+    ```javascript id="4x7k8m"
+    fetch("/api/users")
+    .then(response => response.json())
+    .then(data => console.log(data));
+    ```
+
+    `fetch()` HTTP request ke liye Web API/runtime facility provide karta hai.
+
+    ### Browser Flow
+
+    ```text id="q6q7ly"
+    JavaScript
+        ↓
+    Web API
+        ↓
+    Browser handles operation
+        ↓
+    Callback/Promise reaction scheduled
+        ↓
+    Event Loop
+        ↓
+    JavaScript executes result
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > **“Web APIs are interfaces provided by the browser that allow JavaScript to interact with browser features and external capabilities. Examples include the DOM API, Fetch API, Web Storage API, Geolocation API, WebSocket API, and timers like setTimeout. These APIs are not part of the core JavaScript language; they are provided by the browser environment. For asynchronous operations, the browser handles the operation and later schedules the callback or Promise reaction so JavaScript can process the result.”**
+
+    ### Interview Follow-up
+
+    **Q: Web API aur JavaScript engine mein difference?**
+
+    **JavaScript Engine** JavaScript code execute karta hai.
+
+    Examples:
+
+    * V8 → Chrome/Node.js
+    * SpiderMonkey → Firefox
+    * JavaScriptCore → Safari
+
+    **Web APIs** environment ki facilities provide karti hain.
+
+    ```text id="4n4h9j"
+    JS Engine
+    → JavaScript execute
+
+    Browser Web APIs
+    → DOM
+    → Fetch
+    → Timers
+    → Storage
+    → Geolocation
+    ```
+
+    **Q: Kya Node.js mein Web APIs hoti hain?**
+
+    Node.js browser nahi hai, isliye traditional browser Web APIs like **DOM** available nahi hoti.
+
+    Lekin Node.js apne runtime APIs provide karta hai, jaise:
+
+    ```javascript id="1l5r8q"
+    fs
+    http
+    process
+    Buffer
+    ```
+
+    Modern Node.js mein kuch browser-style APIs, such as `fetch`, `URL`, `WebSocket`, etc., bhi available hain.
+
+    ### ⭐ One-line memory trick
+
+    **Web APIs = Browser/runtime ki facilities jo JavaScript ko DOM, HTTP, Timer, Storage jaise features use karne deti hain.**
+
+
 90. Fetch vs Axios?
 91. LocalStorage vs SessionStorage?
 92. Cookies kya hain?
