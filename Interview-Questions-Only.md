@@ -15600,6 +15600,146 @@ Browser automatically validation kar dega.
 
 
 92. Cookies kya hain?
+
+    ## Hinglish Explanation
+
+    **Cookie** browser mein store hone wala **small piece of data** hai, jo mainly website aur server ke beech state maintain karne ke liye use hota hai.
+
+    Common use cases:
+
+    * Login/session management
+    * Authentication
+    * User preferences
+    * Tracking/analytics
+    * Shopping cart/session information
+
+    Sabse important difference: **Cookies HTTP requests ke saath automatically server ko send ho sakti hain**, agar cookie ka domain/path aur other rules match karte hain.
+
+    ### Small Implementation
+
+    JavaScript se cookie set karna:
+
+    ```javascript id="c7n4xp"
+    document.cookie = "theme=dark; Max-Age=3600; Path=/";
+    ```
+
+    Read:
+
+    ```javascript id="k2m8vz"
+    console.log(document.cookie);
+    ```
+
+    Lekin important security feature hai **HttpOnly**.
+
+    ```text id="j4r8qs"
+    HttpOnly Cookie
+        ↓
+    Browser stores cookie
+        ↓
+    JavaScript cannot read it
+        ↓
+    Browser can send it with matching HTTP requests
+    ```
+
+    `HttpOnly` cookie ko JavaScript se `document.cookie` ke through access nahi kiya ja sakta.
+
+    ### Important Cookie Attributes
+
+    #### 1. `HttpOnly`
+
+    ```text id="5n3xqa"
+    HttpOnly = JavaScript se cookie access nahi
+    ```
+
+    XSS ke impact ko reduce karne mein help karta hai.
+
+    #### 2. `Secure`
+
+    ```text id="7m9vkd"
+    Secure = Cookie HTTPS connection par hi send ho
+    ```
+
+    #### 3. `SameSite`
+
+    Controls when cookies are sent in cross-site contexts.
+
+    Common values:
+
+    ```text id="h2q6wx"
+    Strict
+    Lax
+    None
+    ```
+
+    `SameSite=None` ke saath `Secure` required hota hai.
+
+    #### 4. `Max-Age` / `Expires`
+
+    Cookie kitne time tak valid rahegi.
+
+    ```javascript id="d8p1rs"
+    document.cookie = "theme=dark; Max-Age=3600; Path=/";
+    ```
+
+    Yahan cookie approximately **1 hour** ke liye valid hai.
+
+    ### Cookie vs localStorage
+
+    | Feature                                  | Cookie                     | localStorage                     |
+    | ---------------------------------------- | -------------------------- | -------------------------------- |
+    | Browser mein store                       | ✅                          | ✅                                |
+    | Automatically HTTP request ke saath send | ✅                          | ❌                                |
+    | `HttpOnly` possible                      | ✅                          | ❌                                |
+    | JavaScript access                        | Depends; HttpOnly cookie ❌ | ✅                                |
+    | Typical auth use                         | ✅                          | Possible but security trade-offs |
+    | Size                                     | Small                      | Usually larger                   |
+
+    Authentication ke case mein commonly **HttpOnly + Secure + appropriate SameSite cookie** use ki ja sakti hai. Cookie-based authentication mein CSRF protection ko bhi properly consider karna hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Cookies are small pieces of data stored by the browser and are commonly used to maintain sessions, authentication state, and user preferences. One important feature of cookies is that the browser can automatically send matching cookies with HTTP requests. Cookies also support security attributes such as HttpOnly, Secure, and SameSite. HttpOnly prevents JavaScript from reading the cookie, Secure restricts transmission to HTTPS, and SameSite helps control cross-site cookie sending. For authentication, HttpOnly and Secure cookies are commonly used along with proper CSRF protection.”**
+
+    ### Interview Follow-up
+
+    **Q: HttpOnly cookie kya hai?**
+
+    `HttpOnly` cookie JavaScript se access nahi ki ja sakti.
+
+    ```text id="q9x3mv"
+    document.cookie
+        ↓
+    HttpOnly cookie → Accessible nahi
+    ```
+
+    Lekin browser matching request ke saath cookie send kar sakta hai.
+
+    **Q: Secure aur HttpOnly mein difference?**
+
+    * **HttpOnly** → JavaScript access restrict karta hai.
+    * **Secure** → Cookie ko HTTPS par send karne tak restrict karta hai.
+
+    **Q: Cookie aur session mein difference?**
+
+    Cookie browser-side stored data hai. **Session** server-side state/concept ho sakta hai, jise identify karne ke liye session ID cookie mein store ki ja sakti hai.
+
+    Example:
+
+    ```text id="f4z7kp"
+    Browser
+    │
+    │ sessionId cookie
+    ▼
+    Server
+    │
+    └── Session data
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **Cookie = Browser data + HTTP request ke saath automatically send ho sakta hai | `HttpOnly` = JS se hidden | `Secure` = HTTPS only.**
+
+
 93. CORS kya hai?
 94. Same-origin policy?
 95. Web workers?
