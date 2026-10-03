@@ -15495,6 +15495,110 @@ Browser automatically validation kar dega.
 
 
 91. LocalStorage vs SessionStorage?
+
+    ## Hinglish Explanation
+
+    **localStorage** aur **sessionStorage** dono Browser Web Storage APIs hain, jo browser mein **key-value data** store karne ke liye use hote hain.
+
+    Main difference **lifetime** ka hai:
+
+    * **localStorage** → Data browser sessions ke across persist karta hai; tab/browser close karne ke baad bhi normally available rehta hai.
+    * **sessionStorage** → Data current **browser tab/session** ke liye hota hai; tab close hone par normally clear ho jata hai.
+    * Dono mein data **string format** mein store hota hai.
+    * Dono ka API almost same hai: `setItem()`, `getItem()`, `removeItem()`, `clear()`.
+    * Sensitive data jaise **passwords, long-lived JWTs, secrets** ko blindly Web Storage mein store nahi karna chahiye, especially XSS risk ke context mein.
+
+    ### Small Implementation
+
+    #### localStorage
+
+    ```javascript id="k7p3zx"
+    localStorage.setItem("theme", "dark");
+
+    const theme = localStorage.getItem("theme");
+
+    console.log(theme); // dark
+
+    localStorage.removeItem("theme");
+    ```
+
+    Browser/tab close karne ke baad bhi `theme` normally available rahega.
+
+    #### sessionStorage
+
+    ```javascript id="q2m8vd"
+    sessionStorage.setItem("step", "2");
+
+    const step = sessionStorage.getItem("step");
+
+    console.log(step); // 2
+    ```
+
+    Current tab/session close hone par data normally remove ho jata hai.
+
+    ### Object Store Karna
+
+    Direct object store nahi hota. JSON mein convert karna padta hai:
+
+    ```javascript id="r4x9na"
+    const user = {
+    name: "Raj",
+    role: "Developer"
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+
+    const data = JSON.parse(
+    localStorage.getItem("user")
+    );
+
+    console.log(data.name);
+    ```
+
+    ### Quick Comparison
+
+    | Feature                        | localStorage                                   | sessionStorage                  |
+    | ------------------------------ | ---------------------------------------------- | ------------------------------- |
+    | Lifetime                       | Persistent                                     | Current tab/session             |
+    | Tab close                      | Data remains                                   | Data normally removed           |
+    | API                            | `setItem/getItem`                              | `setItem/getItem`               |
+    | Data type                      | Strings                                        | Strings                         |
+    | Server automatically receives? | ❌                                              | ❌                               |
+    | Typical use                    | Theme, preferences, non-sensitive client state | Temporary form/wizard/tab state |
+
+    ## 🎯 English Interview Answer
+
+    > **“Both localStorage and sessionStorage are browser Web Storage APIs used to store key-value data as strings. The main difference is their lifetime. localStorage persists across browser sessions, so the data normally remains after closing and reopening the browser. sessionStorage is associated with the current browser tab or session and is normally cleared when that tab is closed. Both provide methods like setItem, getItem, removeItem, and clear. I would avoid storing sensitive information in either storage because JavaScript running on the page can access it.”**
+
+    ### Interview Follow-up
+
+    **Q: localStorage mein JWT token store karna safe hai?**
+
+    Blindly **safe nahi maana jata**. Agar XSS vulnerability hai, malicious JavaScript `localStorage` se token read kar sakta hai.
+
+    For authentication, an **HttpOnly + Secure + appropriate SameSite cookie** can reduce direct JavaScript access to the token, though cookie-based authentication needs proper CSRF protection.
+
+    **Q: localStorage mein object directly store kar sakte hain?**
+
+    Nahi. Web Storage values strings hoti hain.
+
+    ```javascript id="p8w2lc"
+    localStorage.setItem("user", JSON.stringify(user));
+
+    const user = JSON.parse(
+    localStorage.getItem("user")
+    );
+    ```
+
+    **Q: `sessionStorage` aur cookies mein difference?**
+
+    Important difference: cookies HTTP requests ke saath automatically server ko bheje ja sakte hain, while `localStorage`/`sessionStorage` automatically HTTP request ke saath nahi bheje jaate.
+
+    ### ⭐ One-line memory trick
+
+    **localStorage = Long-term browser storage | sessionStorage = Current tab/session storage.**
+
+
 92. Cookies kya hain?
 93. CORS kya hai?
 94. Same-origin policy?
