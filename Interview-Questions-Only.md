@@ -15741,6 +15741,118 @@ Browser automatically validation kar dega.
 
 
 93. CORS kya hai?
+
+    ## Hinglish Explanation
+
+    **CORS (Cross-Origin Resource Sharing)** browser ka security mechanism hai jo decide karta hai ki **ek origin ka frontend, doosre origin ki API ko browser se access kar sakta hai ya nahi**.
+
+    Example:
+
+    ```text
+    Frontend: http://localhost:3000
+    Backend:  http://localhost:5000
+    ```
+
+    Port different hai, isliye ye **different origins** hain.
+
+    Agar frontend backend ko request kare:
+
+    ```javascript id="p7x4ka"
+    fetch("http://localhost:5000/api/users");
+    ```
+
+    Browser CORS rules check karega. Backend ko allowed origin specify karna pad sakta hai:
+
+    ```http id="v2m8qn"
+    Access-Control-Allow-Origin: http://localhost:3000
+    ```
+
+    ### Express mein CORS
+
+    ```javascript id="d5k9rw"
+    import cors from "cors";
+
+    app.use(cors({
+    origin: "http://localhost:3000"
+    }));
+    ```
+
+    Ab `localhost:3000` se browser requests allow ki ja sakti hain.
+
+    ### Preflight Request
+
+    Kuch cross-origin requests se pehle browser **OPTIONS request** bhejta hai. Isko **preflight request** kehte hain.
+
+    Example:
+
+    ```text
+    Browser
+    │
+    │ OPTIONS /api/users
+    ▼
+    Backend
+    │
+    │ CORS permission
+    ▼
+    Browser
+    │
+    │ Actual request
+    ▼
+    Backend
+    ```
+
+    Ye commonly tab relevant hota hai jab request mein non-simple method/headers ya certain content types use ho rahe hon.
+
+    ### Important Interview Point
+
+    **CORS authentication nahi hai.**
+
+    CORS mainly **browser ko control karta hai ki frontend JavaScript cross-origin response ko access kar sakti hai ya nahi.**
+
+    Postman/cURL browser CORS enforcement follow nahi karte.
+
+    Also, ye insecure hai:
+
+    ```javascript id="r3w8tc"
+    app.use(cors({
+    origin: "*"
+    }));
+    ```
+
+    Especially agar credentials/cookies involved hain. Credentials ke saath wildcard `*` allowed nahi hota; specific trusted origins configure karne chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > **“CORS stands for Cross-Origin Resource Sharing. It is a browser security mechanism that controls whether a web page from one origin can access resources from another origin. For example, if my React frontend runs on port 3000 and my Node.js API runs on port 5000, they have different origins. The backend can allow the frontend by returning appropriate CORS headers such as Access-Control-Allow-Origin. For some requests, the browser first sends an OPTIONS preflight request. CORS is enforced by browsers and it is not an authentication or authorization mechanism.”**
+
+    ### Interview Follow-up
+
+    **Q: CORS error Postman mein kyun nahi aata?**
+
+    Because CORS is primarily a **browser security mechanism**. Postman and cURL don't enforce browser CORS rules.
+
+    **Q: `Access-Control-Allow-Origin: *` kya karta hai?**
+
+    It allows browser cross-origin access from any origin for requests where that policy is applicable.
+
+    But credentials ke saath:
+
+    ```http
+    Access-Control-Allow-Origin: *
+    Access-Control-Allow-Credentials: true
+    ```
+
+    valid CORS configuration nahi hai. Credentials use karte waqt specific origin dena chahiye.
+
+    **Q: Preflight request kya hai?**
+
+    Browser actual cross-origin request se pehle `OPTIONS` request bhejta hai to check whether the server permits the intended method/headers.
+
+    ### ⭐ One-line memory trick
+
+    **CORS = “Kaunse frontend origins meri API ko browser se access kar sakte hain?”**
+
+
 94. Same-origin policy?
 95. Web workers?
 96. Service workers?
