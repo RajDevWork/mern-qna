@@ -16332,6 +16332,175 @@ Browser automatically validation kar dega.
 
 
 97. IndexedDB kya hai?
+
+    ## Hinglish Explanation
+
+    **IndexedDB** browser ka built-in **client-side NoSQL database** hai, jisme hum browser ke andar **large amount of structured data** store kar sakte hain.
+
+    Simple comparison:
+
+    ```text
+    localStorage  → Small key-value data
+    IndexedDB     → Large structured application data
+    ```
+
+    IndexedDB mein hum **objects, arrays, files/blobs, records** etc. store kar sakte hain.
+
+    ### Main Features
+
+    - Browser ke andar database
+    - Large amount of data store kar sakte hain
+    - Key-value/object-based storage
+    - **Indexes** support karta hai
+    - Transactions support karta hai
+    - Asynchronous API
+    - Offline applications/PWA ke liye useful
+    - Same-origin security model follow karta hai
+
+    ### Small Example
+
+    Database open/create:
+
+    ```javascript id="n7q3km"
+    const request = indexedDB.open("MyAppDB", 1);
+
+    request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+
+    db.createObjectStore("users", {
+        keyPath: "id"
+    });
+    };
+
+    request.onsuccess = (event) => {
+    const db = event.target.result;
+    console.log("Database connected");
+    };
+    ```
+
+    Data store karna:
+
+    ```javascript id="p4x8vz"
+    const transaction = db.transaction("users", "readwrite");
+
+    const store = transaction.objectStore("users");
+
+    store.put({
+    id: 1,
+    name: "Raj",
+    role: "Developer"
+    });
+    ```
+
+    Data read karna:
+
+    ```javascript id="c6m2qa"
+    const transaction = db.transaction("users", "readonly");
+
+    const store = transaction.objectStore("users");
+
+    const request = store.get(1);
+
+    request.onsuccess = () => {
+    console.log(request.result);
+    };
+    ```
+
+    ### IndexedDB vs localStorage
+
+    | Feature | localStorage | IndexedDB |
+    |---|---|---|
+    | Type | Key-value storage | NoSQL database |
+    | Data | Mainly strings | Structured data |
+    | Large data | Not ideal | Better suited |
+    | Indexes | ❌ | ✅ |
+    | Transactions | ❌ | ✅ |
+    | Async | Synchronous API | Asynchronous |
+    | Files/Blobs | Limited | ✅ |
+    | Complexity | Very simple | More complex |
+
+    ### Real-World Use
+
+    Suppose tum ek **offline-first React application** bana rahe ho:
+
+    ```text id="z9v4px"
+    API
+    ↓
+    IndexedDB
+    ↓
+    React App
+    ```
+
+    Internet available ho → API se data lo aur IndexedDB mein save karo.
+
+    Internet nahi ho → IndexedDB se cached data read karke UI show karo.
+
+    Internet wapas aaye → data synchronize karo.
+
+    ## 🎯 English Interview Answer
+
+    > **“IndexedDB is a browser-based NoSQL database used to store large amounts of structured data on the client side. Unlike localStorage, IndexedDB can store structured objects, supports indexes and transactions, and provides an asynchronous API. It is useful for offline-first applications, Progressive Web Apps, caching application data, and storing larger client-side datasets. It follows the browser's same-origin security model.”**
+
+    ### Interview Follow-up
+
+    **Q: IndexedDB aur localStorage mein kab kya use karoge?**
+
+    Simple preference:
+
+    ```text id="e3n7cw"
+    Small preferences
+        ↓
+    localStorage
+
+    Large structured/offline data
+        ↓
+    IndexedDB
+    ```
+
+    Example:
+
+    **localStorage:**
+
+    ```javascript id="w5r2kp"
+    localStorage.setItem("theme", "dark");
+    ```
+
+    **IndexedDB:**
+
+    ```text id="b8q4mz"
+    users
+    products
+    offline orders
+    cached API data
+    large structured records
+    ```
+
+    **Q: IndexedDB synchronous hai ya asynchronous?**
+
+    IndexedDB API **asynchronous** hai. Isliye large database operations ke dauran main UI thread ko unnecessarily block karne se bachata hai.
+
+    **Q: Kya IndexedDB server database ka replacement hai?**
+
+    No.
+
+    IndexedDB **client-side browser storage** hai.
+
+    ```text id="s6x9vd"
+    PostgreSQL / MongoDB
+            ↓
+    Server-side database
+
+    IndexedDB
+            ↓
+    Browser-side database
+    ```
+
+    ### ⭐ One-line memory trick
+
+    **IndexedDB = Browser ka client-side NoSQL DB → Large structured data + Indexes + Transactions + Offline apps.**
+
+
+
 98. Memory profiling?
 99. Performance profiling?
 100. JS engine kya hai?
