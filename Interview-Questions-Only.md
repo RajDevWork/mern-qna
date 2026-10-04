@@ -16701,6 +16701,186 @@ Browser automatically validation kar dega.
 
 
 99. Performance profiling?
+
+    ## Hinglish Explanation
+
+    **Performance Profiling** ka matlab hai application ko measure karke identify karna ki **slowdown exactly kahan ho raha hai**.
+
+    Hum mainly check karte hain:
+
+    - Kaunsa function slow hai?
+    - API response mein kitna time lag raha hai?
+    - CPU kaha zyada use ho raha hai?
+    - Database query slow hai?
+    - Event loop block ho raha hai?
+    - Browser mein rendering/JavaScript expensive hai?
+    - External API latency kitni hai?
+
+    ### Browser Performance Profiling
+
+    Chrome DevTools mein:
+
+    ```text id="p7x4km"
+    DevTools
+    ↓
+    Performance
+    ↓
+    Record
+    ↓
+    User action perform
+    ↓
+    Stop
+    ↓
+    Analyze
+    ```
+
+    Example:
+
+    ```javascript id="m8q2vz"
+    function heavyTask() {
+    for (let i = 0; i < 1000000000; i++) {
+        // expensive work
+    }
+    }
+
+    heavyTask();
+    ```
+
+    Performance profiler se hum identify kar sakte hain ki `heavyTask()` main thread ko kitne time tak block kar raha hai.
+
+    ### Node.js Performance Profiling
+
+    Node.js application mein:
+
+    ```javascript id="r3k9qa"
+    console.time("operation");
+
+    await someOperation();
+
+    console.timeEnd("operation");
+    ```
+
+    Isse basic execution time measure kar sakte hain.
+
+    Production mein hum broader metrics dekhte hain:
+
+    ```text id="v6m2wx"
+    API Latency
+    ↓
+    CPU Usage
+    ↓
+    Memory Usage
+    ↓
+    Event Loop Lag
+    ↓
+    DB Query Time
+    ↓
+    External API Latency
+    ↓
+    Error Rate
+    ```
+
+    ### Practical Example
+
+    Suppose API slow hai:
+
+    ```text id="n4x8cp"
+    GET /users → 3 seconds
+    ```
+
+    Blindly code change karne ke bajay profile karenge:
+
+    ```text id="k2q7mz"
+    API
+    ↓
+    Middleware = 50ms
+    ↓
+    Business Logic = 100ms
+    ↓
+    DB Query = 2700ms  ← Bottleneck
+    ↓
+    Response = 150ms
+    ```
+
+    Ab clear hai ki Node.js ko optimize karne ke bajay **database query/index** investigate karna chahiye.
+
+    ### Performance Profiling vs Memory Profiling
+
+    | Performance Profiling | Memory Profiling |
+    |---|---|
+    | Speed/performance analyze | Memory usage analyze |
+    | CPU usage | Heap usage |
+    | Slow functions | Retained objects |
+    | API latency | Memory leaks |
+    | Event loop lag | GC/memory growth |
+
+    ### Important Interview Point
+
+    **Optimization se pehle measurement zaroori hai.**
+
+    ```text id="x9c5vd"
+    Measure
+    ↓
+    Find Bottleneck
+    ↓
+    Optimize
+    ↓
+    Benchmark Again
+    ```
+
+    Guess-based optimization se unnecessary complexity aa sakti hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“Performance profiling is the process of measuring an application's performance to identify bottlenecks. I look at metrics such as execution time, CPU usage, API latency, database query time, event loop lag, and external service latency. In the browser, I can use Chrome DevTools Performance panel to record and analyze slow JavaScript or rendering work. In Node.js, I can use timing measurements, the Node inspector, CPU profiling, and monitoring tools. My approach is to measure first, identify the bottleneck, optimize it, and then benchmark again to verify the improvement.”**
+
+    ### Interview Follow-up
+
+    **Q: API slow hai, kaise debug karoge?**
+
+    Main layer-by-layer measure karunga:
+
+    ```text id="b5m8qx"
+    Request
+    ↓
+    Middleware
+    ↓
+    Controller
+    ↓
+    Business Logic
+    ↓
+    Database
+    ↓
+    External API
+    ↓
+    Response
+    ```
+
+    Phir identify karunga ki latency kis layer mein hai.
+
+    For example:
+
+    **DB query = 2.5 sec**
+
+    Toh query plan, indexes, data volume aur query structure check karunga.
+
+    **External API = 2 sec**
+
+    Toh timeout, caching, parallel requests, retry strategy aur external service latency investigate karunga.
+
+    **CPU = 100%**
+
+    Toh CPU-heavy function identify karke optimize ya Worker Threads jaise options consider karunga.
+
+    **Q: Event Loop lag kya indicate karta hai?**
+
+    Agar Node.js ka main thread long-running synchronous/CPU-heavy work se busy hai, toh incoming callbacks timely execute nahi ho paate. Isse **event loop lag** increase ho sakta hai.
+
+    ### ⭐ One-line memory trick
+
+    **Performance Profiling = Measure → Bottleneck identify → Optimize → Benchmark again.**
+
+
 100. JS engine kya hai?
 101. V8 engine?
 102. Garbage collector kaise kaam karta hai?
