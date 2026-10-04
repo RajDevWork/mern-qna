@@ -17167,6 +17167,141 @@ Browser automatically validation kar dega.
 
 
 102. Garbage collector kaise kaam karta hai?
+
+    ## Hinglish Explanation
+
+    JavaScript me **Garbage Collector (GC)** automatically un objects ko memory se remove karta hai jo ab application me **use/reachable nahi hain**.
+
+    Simple flow:
+
+    1. Jab hum object/variable banate hain, V8 uske liye **heap memory** allocate karta hai.
+    2. Application un objects ko references ke through use karti hai.
+    3. GC periodically check karta hai ki kaunse objects **reachable** hain.
+    4. Jo objects **unreachable** hain, unki memory reclaim kar di jaati hai.
+    5. Isliye JavaScript me normally manually `free()` ya `delete object` karne ki zarurat nahi hoti.
+    6. `delete` object ko directly memory se remove nahi karta; ye mainly object ki property remove karta hai.
+    7. Common concept **Mark-and-Sweep** hai: reachable objects ko mark karo, unmarked objects ko clean karo.
+    8. Modern V8 me generational GC bhi hota hai—young objects aur old/long-lived objects ko different strategies se manage kiya jata hai.
+
+    ### Small Implementation
+
+    ```javascript
+    let user = {
+    name: "Raj"
+    };
+
+    let admin = user;
+
+    user = null;
+
+    // Object abhi bhi reachable hai
+    // because admin usko reference kar raha hai
+
+    admin = null;
+
+    // Ab object ke paas koi reference nahi hai
+    // GC future me iski memory reclaim kar sakta hai
+    ```
+
+    Important point:
+
+    ```text
+    user ───────┐
+                ↓
+            { name: "Raj" }
+                ↑
+    admin ──────┘
+    ```
+
+    `user = null` ke baad:
+
+    ```text
+    admin ─────→ { name: "Raj" }
+    ```
+
+    Object abhi reachable hai.
+
+    Phir:
+
+    ```js
+    admin = null;
+    ```
+
+    Ab:
+
+    ```text
+    { name: "Raj" }  ← unreachable
+    ```
+
+    GC ise identify karke future collection me memory reclaim kar sakta hai.
+
+    ### Mark-and-Sweep
+
+    ```text
+    Objects in Heap
+        ↓
+    Find Reachable Objects
+        ↓
+    Mark them
+        ↓
+    Unmarked Objects
+        ↓
+    Sweep / Reclaim Memory
+    ```
+
+    ### Memory Leak ka connection
+
+    Agar unnecessary object ka reference accidentally maintain karte rahe, GC usko remove nahi kar sakta.
+
+    ```javascript
+    const cache = [];
+
+    function addUser(user) {
+    cache.push(user);
+    }
+    ```
+
+    Agar `cache` continuously grow hota raha aur old users ki zarurat nahi hai, objects reachable rahenge:
+
+    ```text
+    cache
+    ↓
+    user1
+    user2
+    user3
+    user4
+    ...
+    ```
+
+    GC bolega: **"Ye objects abhi bhi reachable hain, main inhe delete nahi kar sakta."**
+
+    Isi type ki situation **memory leak** create kar sakti hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Garbage Collector is responsible for automatically managing memory in JavaScript. When we create objects, they are stored in heap memory. The garbage collector checks which objects are still reachable from active references. Objects that are no longer reachable are considered garbage, and their memory can be reclaimed. A common concept is Mark-and-Sweep, where reachable objects are marked and unreachable objects are cleaned up. Modern V8 also uses generational garbage collection to optimize this process.”**
+
+    ### Interview Follow-up
+
+    **Q: Can JavaScript Garbage Collector remove an object immediately when we set it to null?**
+
+    No. Setting the reference to `null` only makes the object potentially unreachable. The GC decides **when** to perform collection.
+
+    **Q: Does `delete` manually free memory?**
+
+    No. `delete` removes a property from an object. Garbage collection is handled separately by the JavaScript engine.
+
+    **Q: Can Garbage Collector prevent memory leaks?**
+
+    Not always. If an unnecessary object is still reachable through a reference, GC considers it alive and cannot reclaim it.
+
+    ### ⭐ One-line memory trick
+
+    **“GC = Reachable object ko rakho, unreachable object ki memory reclaim karo.”**
+
+
 103. Async parallel vs sequential?
 104. Concurrency vs parallelism?
 105. Race condition kya hai?
