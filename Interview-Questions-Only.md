@@ -17303,6 +17303,118 @@ Browser automatically validation kar dega.
 
 
 103. Async parallel vs sequential?
+
+    ## Hinglish Explanation
+
+    **Sequential** ka matlab hai kaam **ek ke baad ek** execute karna. Pehla complete hoga, tab doosra start hoga.
+
+    **Parallel/Concurrent async execution** me independent async operations ko **saath start** kar dete hain, phir unke results ka wait karte hain.
+
+    Example:
+
+    ```text
+    Sequential:
+    API 1 ─────→ API 2 ─────→ API 3
+    2s            2s            2s
+    Total ≈ 6s
+    ```
+
+    ```text
+    Parallel:
+    API 1 ─────→
+    API 2 ─────→
+    API 3 ─────→
+        ↓
+    Total ≈ 2s
+    ```
+
+    ### Sequential Example
+
+    ```javascript
+    const user = await getUser();
+
+    const orders = await getOrders();
+
+    const products = await getProducts();
+    ```
+
+    Yahan `getOrders()` tab start hoga jab `getUser()` complete ho jayega.
+
+    ### Parallel Example
+
+    Agar teeno operations independent hain:
+
+    ```javascript
+    const [user, orders, products] = await Promise.all([
+    getUser(),
+    getOrders(),
+    getProducts()
+    ]);
+    ```
+
+    Teeno promises immediately start ho jaate hain aur `Promise.all()` sabke complete hone ka wait karta hai.
+
+    ### Important Interview Point
+
+    **Har jagah parallel nahi karna chahiye.**
+
+    Agar second operation first ke result par depend karta hai:
+
+    ```javascript
+    const user = await getUser();
+
+    const orders = await getOrders(user.id);
+    ```
+
+    To sequential execution necessary hai.
+
+    Simple rule:
+
+    ```text
+    Independent tasks → Parallel
+    Dependent tasks   → Sequential
+    ```
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Sequential execution means we wait for one asynchronous operation to complete before starting the next one. Parallel async execution means we start independent operations together and wait for their results, usually using Promise.all. Parallel execution can reduce total response time when tasks are independent. But if one operation depends on the result of another, we should use sequential execution.”**
+
+    ### Interview Follow-up
+
+    **Q: Which is better, sequential or parallel?**
+
+    It depends on the dependency.
+
+    - Independent operations → parallel
+    - Dependent operations → sequential
+
+    **Q: What happens if one promise fails in `Promise.all()`?**
+
+    `Promise.all()` rejects as soon as one promise rejects, although other already-started operations may still continue in the background.
+
+    ```javascript
+    try {
+    const result = await Promise.all([
+        api1(),
+        api2(),
+        api3()
+    ]);
+    } catch (error) {
+    console.log("One API failed");
+    }
+    ```
+
+    **Q: Is `Promise.all()` truly multi-threaded parallelism?**
+
+    Not necessarily. `Promise.all()` coordinates multiple promises; it does **not itself create multiple CPU threads**. For typical API/I/O operations, multiple operations can be in progress concurrently.
+
+    ### ⭐ One-line memory trick
+
+    **“Independent = Parallel, Dependent = Sequential.”**
+
+
 104. Concurrency vs parallelism?
 105. Race condition kya hai?
 106. Deadlock kya hai?
