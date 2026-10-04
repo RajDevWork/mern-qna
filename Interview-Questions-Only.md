@@ -16002,6 +16002,175 @@ Browser automatically validation kar dega.
 
 
 95. Web workers?
+
+    ## Hinglish Explanation
+
+    **Web Worker** browser ka feature hai jo JavaScript ko **main UI thread se alag background thread** mein run karne deta hai.
+
+    Normally JavaScript ka main thread hi:
+
+    ```text id="k4p7zx"
+    JavaScript
+    ↓
+    Main Thread
+    ↓
+    DOM + UI + User Interaction
+    ```
+
+    Agar hum main thread par heavy calculation karenge, UI **freeze/lag** kar sakta hai.
+
+    Web Worker se heavy computation background mein move kar sakte hain:
+
+    ```text id="n8c2qa"
+    Main Thread                 Worker Thread
+        │                           │
+        │  send data ─────────────> │
+        │                           │ Heavy calculation
+        │  <──────────── result ─── │
+        │
+        ↓
+    Update UI
+    ```
+
+    ### Small Implementation
+
+    **main.js**
+
+    ```javascript id="z5m8rw"
+    const worker = new Worker("worker.js");
+
+    worker.postMessage(100000000);
+
+    worker.onmessage = (event) => {
+    console.log("Result:", event.data);
+    };
+    ```
+
+    **worker.js**
+
+    ```javascript id="p3x7vd"
+    self.onmessage = (event) => {
+    const number = event.data;
+
+    let result = 0;
+
+    for (let i = 0; i < number; i++) {
+        result += i;
+    }
+
+    self.postMessage(result);
+    };
+    ```
+
+    Yahan:
+
+    ```javascript id="c9q2lm"
+    worker.postMessage()
+    ```
+
+    Main thread se Worker ko data bhejta hai.
+
+    ```javascript id="v6k4pa"
+    self.postMessage()
+    ```
+
+    Worker result wapas main thread ko bhejta hai.
+
+    ### Important Limitations
+
+    Web Worker ke paas normal page DOM ka direct access nahi hota.
+
+    So Worker mein generally:
+
+    ```javascript id="j2x8bn"
+    document.querySelector(...)
+    ```
+
+    ❌ nahi kar sakte.
+
+    Worker ka use mostly:
+
+    - Heavy calculations
+    - Large data processing
+    - Image/data processing
+    - Complex parsing
+    - CPU-intensive JavaScript work
+
+    ke liye hota hai.
+
+    ### Worker ke Types
+
+    **Dedicated Worker**
+
+    Ek specific page/script ke saath associated hota hai.
+
+    ```javascript id="m8q3yk"
+    new Worker("worker.js");
+    ```
+
+    **Shared Worker**
+
+    Multiple browsing contexts same worker share kar sakte hain.
+
+    **Service Worker**
+
+    Ye different purpose ka hai—mainly **network interception, caching, offline support, push notifications** etc. ke liye.
+
+    Service Worker ko normal Web Worker ka simple replacement nahi samajhna chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > **“Web Workers allow JavaScript code to run in a background thread instead of the main UI thread. They are useful for CPU-intensive tasks because heavy computation on the main thread can block the UI and make the application unresponsive. The main thread and worker communicate using `postMessage()` and message events. A normal Web Worker does not have direct access to the page DOM, so it is mainly used for background computation and data processing.”**
+
+    ### Interview Follow-up
+
+    **Q: Web Worker use karne ka main benefit kya hai?**
+
+    Main benefit hai **main UI thread ko blocking se bachana**.
+
+    For example, agar 5-second ka heavy calculation main thread par chale:
+
+    ```text id="s7v2kx"
+    Heavy calculation
+        ↓
+    Main Thread blocked
+        ↓
+    UI lag / freeze
+    ```
+
+    Worker ke saath:
+
+    ```text id="a4n9qp"
+    Heavy calculation
+        ↓
+    Worker Thread
+        ↓
+    Main UI responsive
+    ```
+
+    **Q: Kya Web Worker DOM manipulate kar sakta hai?**
+
+    Normal Web Worker **directly DOM access nahi kar sakta**.
+
+    ```javascript id="r6w1mc"
+    document.querySelector("#app");
+    ```
+
+    Worker mein ❌.
+
+    Result ko `postMessage()` se main thread par bhejkar main thread DOM update kar sakta hai.
+
+    **Q: Web Worker vs Service Worker?**
+
+    - **Web Worker** → Background computation
+    - **Service Worker** → Network interception, caching, offline support, push notifications
+
+    ### ⭐ One-line memory trick
+
+    **Web Worker = Heavy JavaScript work → Background thread → Main UI thread responsive.**
+
+
+
 96. Service workers?
 97. IndexedDB kya hai?
 98. Memory profiling?
