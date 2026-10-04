@@ -16172,6 +16172,165 @@ Browser automatically validation kar dega.
 
 
 96. Service workers?
+
+    ## Hinglish Explanation
+
+    **Service Worker** browser mein background mein run hone wala special JavaScript worker hai jo **web page se separate** hota hai aur mainly **network requests, caching aur offline functionality** handle karta hai.
+
+    Simple flow:
+
+    ```text id="w6r2ka"
+    Web Page
+    ↓
+    Service Worker
+    ↓
+    Cache / Network
+    ↓
+    Response
+    ```
+
+    Service Worker ka sabse common use **PWA (Progressive Web App)** mein hota hai.
+
+    ### Main Use Cases
+
+    - **Offline support**
+    - **Caching static assets**
+    - **Network request interception**
+    - **PWA**
+    - **Background tasks**
+    - **Push notifications**
+    - **Offline-first applications**
+
+    ### Small Implementation
+
+    Register karna:
+
+    ```javascript id="p8v4nx"
+    if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+        .then(() => console.log("Service Worker registered"));
+    }
+    ```
+
+    `sw.js`:
+
+    ```javascript id="k3m7qa"
+    self.addEventListener("install", () => {
+    console.log("Service Worker installed");
+    });
+
+    self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        fetch(event.request)
+    );
+    });
+    ```
+
+    Yahan:
+
+    ```javascript id="x9c2vw"
+    self.addEventListener("fetch", ...)
+    ```
+
+    browser ke network requests ko intercept karne ka opportunity deta hai.
+
+    ### Caching Example
+
+    ```javascript id="r5n8lz"
+    const CACHE_NAME = "app-v1";
+
+    self.addEventListener("install", (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+        return cache.addAll([
+            "/",
+            "/index.html",
+            "/style.css"
+        ]);
+        })
+    );
+    });
+    ```
+
+    Ab application required assets ko cache kar sakti hai.
+
+    ### Important: Service Worker vs Web Worker
+
+    | Web Worker | Service Worker |
+    |---|---|
+    | Background computation | Network/cache/background capabilities |
+    | Page ke context se related | Page se independent lifecycle |
+    | DOM access nahi | DOM access nahi |
+    | `postMessage()` communication | `fetch`, `push`, `notification` etc. events |
+    | Heavy calculations | PWA/offline/network handling |
+
+    ### Important Interview Point
+
+    Service Worker **directly DOM manipulate nahi kar sakta**.
+
+    Aur Service Worker ko normally **HTTPS secure context** chahiye. Development mein `localhost` ko browsers generally secure context ke roop mein treat karte hain.
+
+    ## 🎯 English Interview Answer
+
+    > **“A Service Worker is a special type of web worker that runs separately from the web page and is mainly used for network and background capabilities. It can intercept network requests, manage caches, support offline functionality, and enable features like push notifications. Service Workers are commonly used in Progressive Web Apps. They don't have direct access to the DOM, and they usually require a secure context such as HTTPS. A key difference from a normal Web Worker is that a Service Worker has its own lifecycle and is designed around events such as install, activate, fetch, and push.”**
+
+    ### Interview Follow-up
+
+    **Q: Service Worker ka lifecycle kya hota hai?**
+
+    Basic lifecycle:
+
+    ```text id="q7m3vx"
+    Register
+    ↓
+    Install
+    ↓
+    Waiting
+    ↓
+    Activate
+    ↓
+    Fetch / Push / Other Events
+    ```
+
+    **Install** → Service Worker install hota hai, commonly initial cache setup ke liye.
+
+    **Activate** → New worker active hota hai, commonly old caches cleanup ke liye.
+
+    **Fetch** → Network requests ko intercept kar sakta hai.
+
+    ---
+
+    **Q: Service Worker offline application kaise banata hai?**
+
+    Common strategy:
+
+    ```text id="j4p8kc"
+    First Visit
+    ↓
+    Service Worker
+    ↓
+    Cache important assets
+    ↓
+    User offline
+    ↓
+    Service Worker
+    ↓
+    Serve from Cache
+    ```
+
+    Isse application kuch functionality **internet ke bina bhi** provide kar sakti hai.
+
+    ---
+
+    **Q: Kya Service Worker JavaScript DOM ko directly access kar sakta hai?**
+
+    No. Service Worker ke paas `window`/page DOM ka direct access nahi hota. Page ke saath communication ke liye messaging mechanisms use kiye ja sakte hain.
+
+    ### ⭐ One-line memory trick
+
+    **Service Worker = Network Intercept + Cache + Offline + PWA + Background Events.**
+
+
 97. IndexedDB kya hai?
 98. Memory profiling?
 99. Performance profiling?
