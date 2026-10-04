@@ -15854,6 +15854,153 @@ Browser automatically validation kar dega.
 
 
 94. Same-origin policy?
+
+    ## Hinglish Explanation
+
+    **Same-Origin Policy (SOP)** browser ka important **security mechanism** hai. Iska purpose ye hai ki ek website ka JavaScript **dusre origin ke resources/data ko freely read na kar sake**.
+
+    Browser mein **origin = Scheme + Host + Port**
+
+    Example:
+
+    ```text id="9k4m2p"
+    https://example.com:443
+    │       │           │
+    Scheme  Host        Port
+    ```
+
+    Agar inmein se **koi bhi different** ho, origin different hai.
+
+    ### Example
+
+    ```text id="w7c3qa"
+    https://example.com
+    https://example.com/users
+    ```
+
+    ✅ Same origin — path different hai, but origin same.
+
+    ```text id="x5n8vd"
+    https://example.com
+    http://example.com
+    ```
+
+    ❌ Different origin — scheme different.
+
+    ```text id="r2k6mz"
+    https://example.com:443
+    https://example.com:8080
+    ```
+
+    ❌ Different origin — port different.
+
+    ```text id="p8q4lw"
+    https://example.com
+    https://api.example.com
+    ```
+
+    ❌ Different origin — host different.
+
+    ### SOP ka main purpose
+
+    Imagine user `bank.com` par logged in hai.
+
+    Agar koi malicious website `evil.com` freely `bank.com` ka sensitive response read kar sake, toh security problem hogi.
+
+    SOP browser ko generally **cross-origin response/data reading** se restrict karta hai.
+
+    ```text id="k3v9bx"
+    evil.com JavaScript
+        ↓
+    bank.com API
+        ↓
+    Browser checks SOP
+        ↓
+    Cross-origin read restricted
+    ```
+
+    ### SOP vs CORS
+
+    Ye interview mein **bahut important** difference hai:
+
+    **SOP = Default security restriction**
+
+    **CORS = Server-controlled mechanism to allow specific cross-origin browser access**
+
+    ```text id="m6t2rz"
+    Same-Origin Policy
+            ↓
+    Cross-origin access restricted
+            ↓
+    Server CORS headers
+            ↓
+    Specific cross-origin access allowed
+    ```
+
+    Example:
+
+    ```http id="a7q3nk"
+    Access-Control-Allow-Origin: https://frontend.example.com
+    ```
+
+    Server browser ko indicate karta hai ki specified origin ko response access karne diya ja sakta hai.
+
+    ### Important Point
+
+    SOP ka matlab ye nahi ki browser **cross-origin requests kabhi send hi nahi karta**.
+
+    Browser kuch cross-origin requests/resources ko allow karta hai, but JavaScript ko response read karne par restrictions ho sakti hain depending on the mechanism and server policy.
+
+    ## 🎯 English Interview Answer
+
+    > **“Same-Origin Policy is a browser security mechanism that restricts a web page from freely reading data from a different origin. An origin is defined by the scheme, host, and port. For example, `https://example.com` and `https://api.example.com` are different origins because their hosts are different. SOP helps prevent malicious websites from reading sensitive data from other websites. CORS provides a controlled way for a server to allow specific cross-origin browser access.”**
+
+    ### Interview Follow-up
+
+    **Q: Origin kya hota hai?**
+
+    Origin is:
+
+    ```text
+    Scheme + Host + Port
+    ```
+
+    For example:
+
+    ```text
+    https://example.com:443
+    ```
+
+    - Scheme → `https`
+    - Host → `example.com`
+    - Port → `443`
+
+    **Q: SOP aur CORS mein main difference?**
+
+    | SOP | CORS |
+    |---|---|
+    | Browser security policy | Controlled cross-origin access mechanism |
+    | Cross-origin access ko restrict karta hai | Server allowed origins specify kar sakta hai |
+    | Browser enforced | Browser CORS headers ko enforce karta hai |
+    | Default restriction | Exception/permission mechanism |
+
+    **Q: Same-origin mein path ka role hai?**
+
+    Nahi.
+
+    ```text
+    https://example.com/users
+    https://example.com/products
+    ```
+
+    Dono ka origin same hai because **scheme, host aur port same** hain.
+
+    ### ⭐ One-line memory trick
+
+    **Same-Origin Policy = Same Scheme + Host + Port → trusted origin; different origin → browser cross-origin data access ko restrict karta hai.**
+
+
+
 95. Web workers?
 96. Service workers?
 97. IndexedDB kya hai?
