@@ -16882,6 +16882,154 @@ Browser automatically validation kar dega.
 
 
 100. JS engine kya hai?
+
+    ## Hinglish Explanation
+
+    **JavaScript Engine** ek software component hai jo **JavaScript code ko read, execute aur optimize** karta hai.
+
+    Simple words mein:
+
+    ```text
+    JavaScript Code
+        ↓
+    JavaScript Engine
+        ↓
+    Machine-level instructions
+        ↓
+    CPU executes
+    ```
+
+    Popular JavaScript engines:
+
+    - **V8** → Chrome, Node.js
+    - **SpiderMonkey** → Firefox
+    - **JavaScriptCore** → Safari
+
+    ### JS Engine ka Basic Flow
+
+    Jab hum likhte hain:
+
+    ```javascript
+    const a = 10;
+    const b = 20;
+
+    console.log(a + b);
+    ```
+
+    Engine roughly:
+
+    ```text
+    Source Code
+        ↓
+    Parsing
+        ↓
+    AST
+        ↓
+    Bytecode / Intermediate representation
+        ↓
+    Execution
+        ↓
+    Optimization
+    ```
+
+    Modern engines different techniques use karte hain, including **JIT (Just-In-Time) compilation**, jisse frequently executed code ko optimize karke faster execution achieve ki ja sakti hai.
+
+    ### V8 Example
+
+    Chrome aur Node.js dono **V8 engine** use karte hain:
+
+    ```text
+    Chrome
+    ↓
+    V8
+    ↓
+    JavaScript execution
+
+    Node.js
+    ↓
+    V8 + Node runtime APIs
+    ↓
+    JavaScript execution
+    ```
+
+    Important distinction:
+
+    **V8 ≠ Node.js**
+
+    V8 JavaScript engine hai, jabki Node.js ek **runtime environment** hai jo V8 ke saath Node-specific APIs aur runtime features provide karta hai.
+
+    ### Engine vs Browser
+
+    Browser sirf JavaScript engine nahi hota.
+
+    ```text
+    Browser
+    ├── JavaScript Engine → JS execute
+    ├── DOM API
+    ├── Fetch API
+    ├── Web Storage
+    ├── Timer APIs
+    └── Rendering Engine
+    ```
+
+    Isliye `document.querySelector()` jaise APIs JavaScript language ka core part nahi hain; browser environment provide karta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“A JavaScript engine is a software component that executes JavaScript code. It parses the source code, creates an internal representation, executes it, and can optimize frequently executed code using techniques such as JIT compilation. V8 is used by Chrome and Node.js, SpiderMonkey is used by Firefox, and JavaScriptCore is used by Safari. The JavaScript engine is different from a runtime like Node.js because Node.js provides additional runtime APIs and features around the engine.”**
+
+    ### Interview Follow-up
+
+    **Q: JavaScript Engine aur Node.js mein difference?**
+
+    ```text
+    V8
+    ↓
+    JavaScript code execute karta hai
+
+    Node.js
+    ↓
+    V8
+    +
+    fs
+    +
+    http
+    +
+    process
+    +
+    Buffer
+    +
+    other runtime APIs
+    ```
+
+    So:
+
+    **V8 = Engine**
+
+    **Node.js = Runtime**
+
+    ---
+
+    **Q: JIT compilation kya hai?**
+
+    **JIT = Just-In-Time compilation.**
+
+    Engine runtime par code ko analyze karta hai aur frequently executed code ko optimize/compile kar sakta hai, jisse execution faster ho sakta hai.
+
+    ---
+
+    **Q: JavaScript interpreted hai ya compiled?**
+
+    Interview mein best answer:
+
+    > JavaScript ko simply only interpreted ya only compiled kehna outdated oversimplification hai. Modern engines parsing, interpretation/bytecode execution aur JIT compilation/optimization techniques ka combination use karte hain.
+
+    ### ⭐ One-line memory trick
+
+    **JS Engine = JavaScript code ko parse → execute → optimize karne wala software.**
+
+
+
 101. V8 engine?
 102. Garbage collector kaise kaam karta hai?
 103. Async parallel vs sequential?
