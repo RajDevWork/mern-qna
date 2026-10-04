@@ -17031,6 +17031,141 @@ Browser automatically validation kar dega.
 
 
 101. V8 engine?
+
+    ## Hinglish Explanation
+
+    **V8 Engine** Google ka **open-source JavaScript engine** hai, jo JavaScript code ko execute karta hai. Ye mainly **Chrome browser** aur **Node.js** mein use hota hai.
+
+    Simple flow:
+
+    ```text
+    JavaScript Code
+        ↓
+    V8 Engine
+        ↓
+    Parse + Compile
+        ↓
+    Execute
+        ↓
+    Optimize frequently executed code
+    ```
+
+    ### V8 ke Important Components
+
+    **1. Parser**
+
+    JavaScript source code ko parse karta hai aur internal representation/AST banane mein help karta hai.
+
+    **2. Ignition**
+
+    V8 ka **interpreter** hai jo JavaScript ko bytecode mein convert karke execute karta hai.
+
+    **3. Sparkplug / Maglev / TurboFan**
+
+    V8 runtime information ke basis par frequently executed ("hot") code ko optimize/compile kar sakta hai.
+
+    Simplified interview flow:
+
+    ```text
+    Source Code
+        ↓
+    Parser
+        ↓
+    AST
+        ↓
+    Ignition
+        ↓
+    Bytecode
+        ↓
+    Execution
+        ↓
+    Optimization/JIT
+        ↓
+    Optimized Machine Code
+    ```
+
+    Exact internal pipeline V8 versions ke saath evolve hoti rehti hai, isliye interview mein overly rigid pipeline claim nahi karna chahiye.
+
+    ### V8 aur Node.js
+
+    Ye bahut important interview question hai:
+
+    ```text
+    Node.js
+    │
+    ├── V8 Engine
+    │      └── JavaScript execute karta hai
+    │
+    ├── Node APIs
+    │      ├── fs
+    │      ├── http
+    │      ├── process
+    │      └── Buffer
+    │
+    └── libuv
+            └── async I/O / event-loop related runtime functionality
+    ```
+
+    Isliye:
+
+    **V8 ≠ Node.js**
+
+    V8 JavaScript engine hai, jabki Node.js ek runtime environment hai jo V8 aur Node-specific APIs/runtime components provide karta hai.
+
+    ### Garbage Collection
+
+    V8 automatic **Garbage Collection** bhi provide karta hai.
+
+    Agar object reachable nahi hai:
+
+    ```javascript id="x7p2qm"
+    let user = {
+    name: "Raj"
+    };
+
+    user = null;
+    ```
+
+    Agar us object ka koi aur reference nahi hai, toh eventually V8 uski memory reclaim kar sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > **“V8 is Google's open-source JavaScript engine. It is used by Chrome and Node.js to execute JavaScript. V8 parses JavaScript, generates an internal representation and bytecode, executes the code, and can optimize frequently executed code using JIT compilation techniques. V8 also manages JavaScript memory and garbage collection. Node.js uses V8 for JavaScript execution, but Node.js itself is a runtime that provides additional APIs and capabilities such as file system, HTTP, process, and networking functionality.”**
+
+    ### Interview Follow-up
+
+    **Q: V8 ka role Node.js mein kya hai?**
+
+    V8 ka main role **JavaScript code execute karna** hai.
+
+    ```text
+    JS Code
+    ↓
+    V8
+    ↓
+    Execution
+    ```
+
+    Node.js V8 ke around additional runtime functionality provide karta hai.
+
+    **Q: V8 kaunse browsers mein use hota hai?**
+
+    Primarily **Google Chrome** aur Chromium-based browsers use the V8 engine.
+
+    **Q: V8 memory kaise manage karta hai?**
+
+    V8 JavaScript objects ko heap mein manage karta hai aur **Garbage Collector** ke through unreachable objects ki memory eventually reclaim karta hai.
+
+    **Q: V8 aur libuv ka difference?**
+
+    - **V8** → JavaScript execution + JS memory/GC
+    - **libuv** → Node.js ke asynchronous I/O aur event-loop related runtime functionality
+
+    ### ⭐ One-line memory trick
+
+    **V8 = JavaScript Engine → Parse + Execute + Optimize + Garbage Collection.**
+
+
 102. Garbage collector kaise kaam karta hai?
 103. Async parallel vs sequential?
 104. Concurrency vs parallelism?
