@@ -17627,6 +17627,113 @@ Browser automatically validation kar dega.
     **“Race Condition = Same resource + Multiple async operations + Timing decides the result.”**
 
 106. Deadlock kya hai?
+
+    ## Hinglish Explanation
+
+    **Deadlock** tab hota hai jab **2 ya more tasks ek-dusre ke resource ka wait karte rahte hain**, aur koi bhi aage nahi badh pata.
+
+    Simple example:
+
+    ```text id="qzqvbx"
+    Task A → Resource 1 locked → Resource 2 ka wait
+
+    Task B → Resource 2 locked → Resource 1 ka wait
+
+        ↓
+    Both waiting forever
+        ↓
+        DEADLOCK
+    ```
+
+    ### Real-world Example
+
+    Socho:
+
+    - Person A ke paas **Pen** hai aur woh **Notebook** ka wait kar raha hai.
+    - Person B ke paas **Notebook** hai aur woh **Pen** ka wait kar raha hai.
+
+    Dono bol rahe hain:
+
+    > "Pehle tum do."
+
+    Result → **koi bhi kaam complete nahi hota.**
+
+    ### Programming Example
+
+    Conceptually:
+
+    ```javascript
+    // Task A
+    lock(resourceA);
+    await lock(resourceB);
+
+    // Task B
+    lock(resourceB);
+    await lock(resourceA);
+    ```
+
+    Agar A ne `resourceA` lock kar liya aur B ne `resourceB`, then:
+
+    ```text id="l4t8uj"
+    A → waiting for B
+    B → waiting for A
+
+        ↓
+    DEADLOCK
+    ```
+
+    ### JavaScript Interview Point
+
+    JavaScript ka normal main thread traditional mutex-based deadlocks se generally protected hota hai because normal JS execution single-threaded hai.
+
+    Lekin **Node.js applications me concurrency-related deadlock-like situations** possible hain, especially when using:
+
+    - Worker Threads
+    - Locks/mutexes
+    - Database transactions
+    - Multiple resources
+    - Distributed systems
+
+    Database transactions me deadlocks kaafi common interview topic hain.
+
+    ### Race Condition vs Deadlock
+
+    | Race Condition | Deadlock |
+    |---|---|
+    | Timing/order problem | Waiting problem |
+    | Result unpredictable ho sakta hai | Tasks stuck ho sakte hain |
+    | "Kaun pehle finish hua?" | "Kaun kiska wait kar raha hai?" |
+    | Wrong data/result | No progress |
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“A deadlock occurs when two or more tasks are waiting for resources held by each other, so none of them can continue. For example, Task A holds Resource 1 and waits for Resource 2, while Task B holds Resource 2 and waits for Resource 1. Both keep waiting, so the system makes no progress. Deadlocks can occur with locks, database transactions, worker threads, or multiple shared resources.”**
+
+    ### Interview Follow-up
+
+    **Q: How can we prevent deadlocks?**
+
+    Common approaches:
+
+    1. Always acquire locks in the **same order**.
+    2. Keep lock duration as short as possible.
+    3. Avoid unnecessary locks.
+    4. Use **timeouts** where appropriate.
+    5. Detect and retry failed/deadlocked transactions.
+
+    **Q: Race condition aur deadlock me main difference?**
+
+    > **Race condition = timing determines the result.**  
+    > **Deadlock = tasks are waiting and cannot make progress.**
+
+    ### ⭐ One-line memory trick
+
+    **“Deadlock = Tum mere resource ka wait karo, main tumhare resource ka wait karun.”**
+
+
+
 107. Event loop internals?
 108. Node vs browser JS?
 109. Polyfills kya hain?
