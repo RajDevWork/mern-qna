@@ -17500,6 +17500,132 @@ Browser automatically validation kar dega.
 
 
 105. Race condition kya hai?
+
+    ## Hinglish Explanation
+
+    **Race Condition** tab hoti hai jab **multiple async operations same data/resource ko access ya update kar rahe hote hain**, aur final result depend karta hai ki **kaunsa operation pehle complete hua**.
+
+    Simple example:
+
+    ```text id="5g4w5x"
+    Request A ───────────────→ Result A
+    Request B ───────→ Result B
+
+    Expected: A ka result
+    Actual:   B ka result, because B pehle complete hua
+    ```
+
+    Problem ye hai ki humne operations start karte waqt assume kiya tha ki order predictable hoga, but async environment me completion order different ho sakta hai.
+
+    ### Real-world Example
+
+    Suppose user rapidly search kar raha hai:
+
+    ```text
+    "react"  → API Request A
+    "react js" → API Request B
+    ```
+
+    Ho sakta hai:
+
+    ```text
+    Request A → 500ms
+    Request B → 200ms
+    ```
+
+    B pehle complete hoga aur UI me `"react js"` show karega.
+
+    Lekin agar A baad me complete hokar UI update kar de:
+
+    ```text
+    UI → "react"
+    ```
+
+    To latest search ka result overwrite ho gaya.
+
+    ### Simple Code
+
+    ```javascript id="3l4c4p"
+    let result = "";
+
+    async function fetchData(value, delay) {
+    await new Promise(resolve => setTimeout(resolve, delay));
+    result = value;
+    }
+
+    fetchData("A", 1000);
+    fetchData("B", 200);
+
+    setTimeout(() => {
+    console.log(result);
+    }, 1200);
+    ```
+
+    Output:
+
+    ```text
+    A
+    ```
+
+    Although `B` newer operation tha, **A later complete hua aur result overwrite kar diya**.
+
+    ### Common Solutions
+
+    **1. AbortController**
+
+    Previous API request cancel kar do.
+
+    ```javascript id="q4gl1f"
+    const controller = new AbortController();
+
+    fetch("/api/users", {
+    signal: controller.signal
+    });
+
+    controller.abort();
+    ```
+
+    **2. Request ID / Latest Request Check**
+
+    ```javascript id="2q8p7r"
+    let requestId = 0;
+
+    async function search(query) {
+    const id = ++requestId;
+
+    const result = await fetchData(query);
+
+    if (id !== requestId) return;
+
+    showResult(result);
+    }
+    ```
+
+    **3. Lock / Mutex**
+
+    Agar critical shared resource hai, ek time par ek operation ko access dena.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“A race condition occurs when multiple asynchronous operations access or modify the same resource, and the final result depends on which operation finishes first. This can produce unpredictable or incorrect results. For example, if two API requests are running and the older request finishes after the newer request, it may overwrite the latest data. We can handle race conditions using AbortController, request IDs, mutexes, or proper synchronization depending on the situation.”**
+
+    ### Interview Follow-up
+
+    **Q: Is JavaScript single-threaded, so can it have race conditions?**
+
+    **Yes.** JavaScript's main thread is single-threaded, but asynchronous operations can be in progress concurrently. Their callbacks/results can complete in an unexpected order, causing race conditions when shared state is involved.
+
+    **Q: Race condition vs deadlock?**
+
+    - **Race condition** → result depends on timing/order.
+    - **Deadlock** → tasks wait for each other and cannot proceed.
+
+    ### ⭐ One-line memory trick
+
+    **“Race Condition = Same resource + Multiple async operations + Timing decides the result.”**
+
 106. Deadlock kya hai?
 107. Event loop internals?
 108. Node vs browser JS?
