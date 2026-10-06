@@ -17416,6 +17416,89 @@ Browser automatically validation kar dega.
 
 
 104. Concurrency vs parallelism?
+
+    ## Hinglish Explanation
+
+    **Concurrency** aur **Parallelism** similar lagte hain, but difference important hai.
+
+    - **Concurrency** = multiple tasks **progress/in-flight** hain, but necessarily same exact moment par execute nahi ho rahe.
+    - **Parallelism** = multiple tasks **actually same time** par execute ho rahe hain, usually multiple CPU cores/threads ki help se.
+    - JavaScript ka **single main thread** concurrency achieve kar sakta hai using Event Loop + async APIs.
+    - CPU-heavy work ko truly parallel karne ke liye **Worker Threads / Web Workers** use kiye ja sakte hain.
+    - Async API calls ka `Promise.all()` **concurrency** ka example hai; isse automatically multiple CPU threads create nahi hote.
+
+    ### Simple Example
+
+    **Concurrency:**
+
+    ```text
+    Task A: ███     ███
+    Task B:    ███     ███
+    Task C:       ███
+    ```
+
+    Tasks progress kar rahe hain, but ek single thread time share kar sakta hai.
+
+    **Parallelism:**
+
+    ```text
+    Core 1 → Task A █████████
+    Core 2 → Task B █████████
+    Core 3 → Task C █████████
+    ```
+
+    Tasks genuinely same time execute ho sakte hain.
+
+    ### JavaScript Example
+
+    ```javascript
+    const result = await Promise.all([
+    getUser(),
+    getOrders(),
+    getProducts()
+    ]);
+    ```
+
+    Yahan APIs concurrently in-flight ho sakti hain.
+
+    But:
+
+    ```javascript
+    Promise.all(...)
+    ```
+
+    **parallel CPU execution guarantee nahi karta.**
+
+    CPU-heavy example:
+
+    ```javascript
+    const worker = new Worker("./worker.js");
+    ```
+
+    Worker separate thread par computation kar sakta hai, allowing true parallel CPU work.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Concurrency means multiple tasks can make progress during the same period, but they do not necessarily execute at the exact same time. Parallelism means multiple tasks are actually executing at the same time, usually using multiple CPU cores or threads. In JavaScript, the event loop provides concurrency on the main thread, while Worker Threads or Web Workers can be used for parallel CPU-intensive work.”**
+
+    ### Interview Follow-up
+
+    **Q: Is `Promise.all()` concurrency or parallelism?**
+
+    It is primarily a **concurrency mechanism**. It starts multiple asynchronous operations without waiting for each one sequentially, but it does not mean JavaScript is executing all code on multiple CPU threads.
+
+    **Q: Can JavaScript do parallelism?**
+
+    Yes. For CPU-intensive tasks, JavaScript can use **Web Workers in browsers** or **Worker Threads in Node.js**.
+
+    ### ⭐ One-line memory trick
+
+    **“Concurrency = multiple tasks in progress; Parallelism = multiple tasks executing at the same time.”**
+
+
+
 105. Race condition kya hai?
 106. Deadlock kya hai?
 107. Event loop internals?
