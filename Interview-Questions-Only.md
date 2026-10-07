@@ -18316,6 +18316,127 @@ Browser automatically validation kar dega.
 
 
 111. Babel kya hai?
+
+    ## Hinglish Explanation
+
+    **Babel** ek **JavaScript compiler/transpiler toolchain** hai jo modern JavaScript code ko target environment ke according compatible JavaScript me transform karta hai.
+
+    Simple example:
+
+    ```javascript
+    // Modern JavaScript
+    const add = (a, b) => a + b;
+    ```
+
+    Babel isko older-compatible syntax me transform kar sakta hai:
+
+    ```javascript
+    // Transformed JavaScript
+    var add = function (a, b) {
+    return a + b;
+    };
+    ```
+
+    ### Babel kya-kya kar sakta hai?
+
+    1. **Modern JavaScript syntax transform**
+    - Arrow functions
+    - Classes
+    - Optional chaining, depending on target/config
+    - Other modern syntax
+
+    2. **JSX transform**
+
+    React me:
+
+    ```jsx
+    const element = <h1>Hello Raj</h1>;
+    ```
+
+    Build process me JSX ko JavaScript representation me transform kiya ja sakta hai.
+
+    3. **Browser compatibility**
+
+    Aap modern syntax me code likhte ho:
+
+    ```text id="1zmxm4"
+    Developer
+    ↓
+    Modern JS / JSX
+    ↓
+    Babel
+    ↓
+    Target-compatible JS
+    ↓
+    Browser
+    ```
+
+    ### Babel vs Polyfill
+
+    Ye interview me **bahut important** difference hai.
+
+    **Babel:**
+
+    > Code ka **syntax transform** karta hai.
+
+    **Polyfill:**
+
+    > Missing **runtime API/feature** provide karta hai.
+
+    Example:
+
+    ```javascript
+    const fn = () => "Hello";
+    ```
+
+    Babel arrow function ko transform kar sakta hai.
+
+    But:
+
+    ```javascript
+    const result = [1, 2, 3].includes(2);
+    ```
+
+    Agar old environment me `includes()` available nahi hai, sirf Babel syntax transform karne se API magically available nahi hogi. Appropriate polyfill/runtime support ki zarurat ho sakti hai.
+
+    ### Important: Babel khud Bundler nahi hai
+
+    Babel ka main job **code transformation** hai.
+
+    Tools like:
+
+    - Vite
+    - Webpack
+    - Rollup
+
+    broader build/bundling workflow handle kar sakte hain, though modern tooling often uses different transformation engines internally.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Babel is a JavaScript compiler and transpiler toolchain used to transform modern JavaScript syntax and JSX into code that can run in the target environment. For example, it can transform arrow functions or JSX into compatible JavaScript. Babel mainly handles code transformation, while polyfills are used when the target environment does not provide a required runtime API.”**
+
+    ### Interview Follow-up
+
+    **Q: Is Babel only used with React?**
+
+    No. Babel is a general JavaScript transformation toolchain. React projects commonly use it for JSX and modern JavaScript, but it is not limited to React.
+
+    **Q: Babel vs Vite?**
+
+    - **Babel** → primarily code transformation.
+    - **Vite** → development server + build tooling/module handling, and it may use other transformation tools depending on the setup.
+
+    **Q: Does Babel make code faster?**
+
+    Not necessarily. Its primary purpose is **compatibility and transformation**, not performance optimization.
+
+    ### ⭐ One-line memory trick
+
+    **“Babel = Modern JS/JSX ko target-compatible JavaScript me transform karne wala tool.”**
+
+
 112. Tree shaking kya hai?
 113. Bundling kya hai?
 114. Webpack kya karta hai?
