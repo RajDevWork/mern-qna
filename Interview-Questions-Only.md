@@ -18889,6 +18889,152 @@ Browser automatically validation kar dega.
 
 
 115. Code splitting?
+
+    ## Hinglish Explanation
+
+    **Code Splitting** ka matlab hai poore application ka JavaScript ek hi large bundle me load karne ke bajay usko **multiple smaller chunks** me divide karna.
+
+    Goal:
+
+    > **“Jo code abhi required hai, wahi pehle load karo; baaki code later load karo.”**
+
+    Suppose application me:
+
+    ```text
+    Dashboard
+    Admin Panel
+    Reports
+    Settings
+    Profile
+    ```
+
+    Agar sab ek bundle me hai:
+
+    ```text
+    app.js → 5 MB
+    ```
+
+    Initial loading slow ho sakti hai.
+
+    Code splitting ke baad:
+
+    ```text
+    main.js          → 500 KB
+    dashboard.js     → 300 KB
+    admin.js         → 700 KB
+    reports.js       → 400 KB
+    settings.js      → 200 KB
+    ```
+
+    User pehle Dashboard open karega → mainly required code load hoga.
+
+    ### Dynamic Import
+
+    JavaScript me common way:
+
+    ```javascript id="3c7q8m"
+    button.addEventListener("click", async () => {
+    const module = await import("./reports.js");
+
+    module.showReports();
+    });
+    ```
+
+    `reports.js` ko initial bundle me eagerly load karne ke bajay later load kiya ja sakta hai.
+
+    ### React Example
+
+    React me:
+
+    ```javascript id="k8x2pf"
+    import { lazy, Suspense } from "react";
+
+    const Reports = lazy(() => import("./Reports"));
+
+    function App() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+        <Reports />
+        </Suspense>
+    );
+    }
+    ```
+
+    Yahan `Reports` component ka code **separate chunk** me generate/load ho sakta hai.
+
+    ### Route-based Code Splitting
+
+    Real projects me ye bahut common hai:
+
+    ```text id="6x7m2n"
+    /dashboard  → dashboard chunk
+    /users      → users chunk
+    /reports    → reports chunk
+    /settings   → settings chunk
+    ```
+
+    User `/dashboard` par hai to `/reports` ka heavy code immediately download karna unnecessary ho sakta hai.
+
+    ### Code Splitting vs Bundling
+
+    **Bundling:**
+
+    ```text id="w8j3v1"
+    Multiple modules
+        ↓
+    Bundles/chunks
+    ```
+
+    **Code Splitting:**
+
+    ```text id="s2k5q9"
+    Large application
+        ↓
+    Multiple smaller chunks
+        ↓
+    Load when required
+    ```
+
+    Actually modern bundlers dono concepts ko saath use karte hain.
+
+    ### ⚠️ Important
+
+    Code splitting ka matlab **total application code remove karna nahi** hai.
+
+    Code same application ka part hai, but usko **different chunks me divide** karke required time par load kiya jata hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Code splitting is a performance optimization technique where we divide a large JavaScript application into smaller chunks instead of loading the entire application upfront. These chunks can be loaded on demand when a particular route or feature is required. Dynamic imports are commonly used for code splitting. In React, React.lazy can be used for component-level code splitting. This reduces the initial JavaScript that the browser needs to download and execute.”**
+
+    ### Interview Follow-up
+
+    **Q: How do you implement code splitting in React?**
+
+    Commonly with `React.lazy()` and dynamic `import()`:
+
+    ```javascript id="j6x9rv"
+    const Admin = lazy(() => import("./Admin"));
+    ```
+
+    **Q: What is the main benefit?**
+
+    **Smaller initial bundle → faster initial loading → better performance**, especially for large applications.
+
+    **Q: Code splitting vs lazy loading?**
+
+    They are closely related but not exactly the same:
+
+    > **Code splitting = code ko chunks me divide karna.**  
+    > **Lazy loading = required time par chunk/resource load karna.**
+
+    ### ⭐ One-line memory trick
+
+    **“Code Splitting = Big bundle ko small chunks me divide karo, jo chahiye wahi pehle load karo.”**
+
+
 116. Lazy loading?
 117. Hot reload?
 118. Source maps kya hain?
