@@ -18438,6 +18438,145 @@ Browser automatically validation kar dega.
 
 
 112. Tree shaking kya hai?
+
+    ## Hinglish Explanation
+
+    **Tree Shaking** ek **build-time optimization technique** hai jisme bundler final production bundle se **unused code ko remove** kar deta hai.
+
+    Simple words me:
+
+    > **“Jo code use nahi ho raha, usko production bundle me mat bhejo.”**
+
+    Example:
+
+    ```javascript id="h1v8j4"
+    export function add(a, b) {
+    return a + b;
+    }
+
+    export function subtract(a, b) {
+    return a - b;
+    }
+    ```
+
+    Agar aap sirf `add()` use karte ho:
+
+    ```javascript id="qf8k2w"
+    import { add } from "./math.js";
+
+    console.log(add(10, 20));
+    ```
+
+    Bundler analyze kar sakta hai ki:
+
+    ```text id="6y3g7u"
+    add()       → USED ✅
+    subtract()  → UNUSED ❌
+    ```
+
+    Production bundle me `subtract()` remove ho sakta hai.
+
+    ### Why "Tree Shaking"?
+
+    Bundler dependency graph ko ek **tree** ki tarah analyze karta hai:
+
+    ```text id="3e8t0k"
+    App
+    ├── add()        ✅ Used
+    ├── subtract()   ❌ Unused
+    └── multiply()   ❌ Unused
+    ```
+
+    Unused branches ko "shake off" kar diya jata hai.
+
+    ### ES Modules important hain
+
+    Tree shaking **static module structure** ke saath best work karta hai:
+
+    ```javascript id="8j2x7n"
+    import { add } from "./math.js";
+    ```
+
+    Because `import/export` statically analyze kiye ja sakte hain.
+
+    Modern bundlers like **Vite/Rollup/Webpack** production builds me tree-shaking techniques use kar sakte hain, depending on configuration/module format.
+
+    ### CommonJS vs ES Modules
+
+    ESM:
+
+    ```javascript id="w3q4r8"
+    import { add } from "./math.js";
+    ```
+
+    Bundler ke liye statically analyze karna easier hai.
+
+    CommonJS:
+
+    ```javascript id="m2j8qx"
+    const math = require("./math");
+    ```
+
+    Dynamic patterns ki wajah se static analysis comparatively difficult ho sakta hai.
+
+    ### Tree Shaking vs Minification
+
+    Ye dono same nahi hain.
+
+    **Tree Shaking:**
+
+    ```text
+    Unused code → Remove
+    ```
+
+    **Minification:**
+
+    ```text
+    function calculateTotal() {
+        return 100 + 200;
+    }
+    ```
+
+    →
+
+    ```javascript id="q6d9x2"
+    function calculateTotal(){return 300}
+    ```
+
+    Minifier code ko smaller banata hai; tree shaking unnecessary code ko remove karta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Tree shaking is a build-time optimization technique used to remove unused code from the final production bundle. It works especially well with ES modules because their imports and exports can be analyzed statically. For example, if a module exports three functions but the application only imports one, the unused functions can be removed from the production bundle. This reduces bundle size and can improve application loading performance.”**
+
+    ### Interview Follow-up
+
+    **Q: Is tree shaking a runtime feature?**
+
+    No. It is mainly a **build-time optimization**.
+
+    **Q: Why is ES Module better for tree shaking?**
+
+    Because `import` and `export` have a relatively static structure, so bundlers can determine which exports are actually used.
+
+    **Q: Does tree shaking always remove unused code?**
+
+    No. It depends on the bundler, module format, configuration, and whether the code has side effects.
+
+    For example:
+
+    ```javascript id="b8y3wm"
+    import "./analytics.js";
+    ```
+
+    Even if no exported function is used, the module itself may have a side effect, so blindly removing it could change application behavior.
+
+    ### ⭐ One-line memory trick
+
+    **“Tree Shaking = Unused code ko production bundle se shake karke remove karna.”**
+
 113. Bundling kya hai?
 114. Webpack kya karta hai?
 115. Code splitting?
