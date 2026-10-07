@@ -17953,6 +17953,105 @@ Browser automatically validation kar dega.
 
 
 108. Node vs browser JS?
+
+    ## Hinglish Explanation
+
+    **Browser JavaScript** aur **Node.js JavaScript** dono JavaScript language use karte hain, but **runtime environment different** hai.
+
+    - Browser me JS ka main purpose **web page/UI ke saath interact karna** hota hai.
+    - Node.js me JS ka use **server-side/backend applications** ke liye hota hai.
+    - Browser JS ko **DOM, Window, Web APIs** milte hain.
+    - Node.js ko **File System, HTTP server, process, streams, Buffer** jaise Node APIs milte hain.
+    - Browser me `document` available hota hai; Node.js me normally `document` nahi hota.
+    - Node.js browser ke bahar JavaScript run karne ke liye **V8 engine** use karta hai.
+    - Dono environments async programming support karte hain, but runtime APIs aur event-loop implementation different hoti hai.
+
+    ### Quick Comparison
+
+    | Feature | Browser JS | Node.js |
+    |---|---|---|
+    | Runtime | Browser | Node.js |
+    | Engine | V8/SpiderMonkey/JavaScriptCore etc. | V8 |
+    | DOM | ✅ Yes | ❌ No |
+    | `window` | ✅ | ❌ |
+    | `document` | ✅ | ❌ |
+    | File System | Restricted/browser APIs | ✅ `fs` |
+    | HTTP Server | Not normally | ✅ |
+    | `process` | ❌ | ✅ |
+    | Web APIs | ✅ | Some modern APIs available |
+    | Backend | Usually no | ✅ |
+    | UI manipulation | ✅ | ❌ |
+
+    ### Example
+
+    Browser:
+
+    ```javascript
+    document.getElementById("title").textContent = "Hello";
+    ```
+
+    Ye DOM ko manipulate karta hai.
+
+    Node.js:
+
+    ```javascript
+    const fs = require("fs");
+
+    const data = fs.readFileSync("users.txt", "utf8");
+
+    console.log(data);
+    ```
+
+    Ye server machine ki file system ke saath interact kar raha hai.
+
+    ### Important Interview Point
+
+    **Node.js JavaScript language nahi hai.**
+
+    ```text id="v3m1bz"
+    JavaScript
+        ↓
+    Runtime Environment
+        ├── Browser → DOM + Web APIs + JS Engine
+        └── Node.js → Node APIs + V8 + libuv
+    ```
+
+    Isliye interview me ye mat bolna:
+
+    > "Node.js is a different version of JavaScript."
+
+    Better:
+
+    > **“Node.js is a JavaScript runtime environment that allows JavaScript to run outside the browser.”**
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“The main difference between browser JavaScript and Node.js is the runtime environment. Browser JavaScript runs inside a browser and provides APIs like DOM, Window, and browser Web APIs for building user interfaces. Node.js runs JavaScript outside the browser and provides server-side APIs such as File System, HTTP, Streams, Buffer, and Process. Node.js uses the V8 JavaScript engine, but it adds its own runtime APIs and asynchronous I/O capabilities.”**
+
+    ### Interview Follow-up
+
+    **Q: Can we use `document` in Node.js?**
+
+    No, not normally. `document` is part of the browser's DOM environment. Node.js does not provide a browser DOM by default.
+
+    **Q: Is Node.js single-threaded?**
+
+    The JavaScript execution model is primarily single-threaded, but Node.js can handle asynchronous I/O efficiently and can use additional threads through its runtime/thread pool and **Worker Threads** for certain workloads.
+
+    **Q: Is Node.js a programming language?**
+
+    No.
+
+    > **Node.js is a runtime environment for executing JavaScript outside the browser.**
+
+    ### ⭐ One-line memory trick
+
+    **“Browser JS = UI + DOM; Node.js = Server + System APIs.”**
+
+
+
 109. Polyfills kya hain?
 110. Transpilation kya hai?
 111. Babel kya hai?
