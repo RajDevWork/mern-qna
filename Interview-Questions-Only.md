@@ -18178,6 +18178,143 @@ Browser automatically validation kar dega.
 
 
 110. Transpilation kya hai?
+
+    ## Hinglish Explanation
+
+    **Transpilation** ka matlab hai **source code ko ek language/version ke code se another equivalent language/version ke code me convert karna**, while keeping the same overall behavior.
+
+    Frontend me commonly hum **modern JavaScript ko older JavaScript syntax me convert** karte hain taaki older browsers bhi code ko samajh saken.
+
+    Example:
+
+    ```javascript
+    // Modern JavaScript
+    const add = (a, b) => a + b;
+    ```
+
+    Transpiler ise approximately:
+
+    ```javascript
+    // Older JavaScript
+    var add = function (a, b) {
+    return a + b;
+    };
+    ```
+
+    me convert kar sakta hai.
+
+    ### Babel ka role
+
+    **Babel** JavaScript ka popular transpiler hai.
+
+    Typical flow:
+
+    ```text id="9d5x6k"
+    Modern JS / JSX
+        ↓
+        Babel
+        ↓
+    Older / compatible JS
+        ↓
+    Browser
+    ```
+
+    React project me bhi Babel historically/commonly JSX aur modern syntax transformation ke liye use hua hai, although modern React build tools may use other compilers/transforms as well.
+
+    ### Transpilation vs Compilation
+
+    Simple interview understanding:
+
+    **Compilation:**
+
+    ```text
+    Source Code
+        ↓
+    Machine Code / Lower-level code
+    ```
+
+    **Transpilation:**
+
+    ```text
+    Source Code
+        ↓
+    Another equivalent source code
+    ```
+
+    Example:
+
+    ```text id="0h0j8k"
+    ES6+ JavaScript
+        ↓
+    Transpiler
+        ↓
+    Older JavaScript
+    ```
+
+    ### Transpilation vs Polyfill
+
+    Ye difference yaad rakhna bahut important hai:
+
+    | Transpilation | Polyfill |
+    |---|---|
+    | Code ko transform karta hai | Missing API provide karta hai |
+    | Build time par usually hota hai | Runtime me feature provide karta hai |
+    | Arrow function → function | `Array.includes()` ka fallback |
+    | Babel example | `core-js` example |
+
+    Example:
+
+    ```javascript
+    const square = x => x * x;
+    ```
+
+    **Transpilation** → older syntax.
+
+    But:
+
+    ```javascript
+    [1, 2, 3].includes(2);
+    ```
+
+    Agar environment me `includes()` available nahi hai, **polyfill** required ho sakta hai.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Transpilation is the process of converting source code from one version or form of a language into another equivalent form, while keeping its behavior mostly the same. In frontend development, a common example is converting modern JavaScript syntax into older JavaScript syntax for browser compatibility. Babel is a popular tool used for JavaScript transpilation.”**
+
+    ### Interview Follow-up
+
+    **Q: Why do we need transpilation?**
+
+    Mainly **compatibility** ke liye. Developers modern JavaScript features use kar sakte hain, while the build system generates code that older target environments can understand.
+
+    **Q: Does transpilation add missing browser APIs?**
+
+    Not by itself.
+
+    For example:
+
+    ```javascript
+    const add = (a, b) => a + b;
+    ```
+
+    Transpiler syntax convert kar sakta hai.
+
+    But:
+
+    ```javascript
+    arr.includes(10);
+    ```
+
+    Agar target environment me `includes()` API hi nahi hai, to **polyfill** ki zarurat ho sakti hai.
+
+    ### ⭐ One-line memory trick
+
+    **“Transpilation = Modern code ko compatible code me transform karna.”**
+
+
 111. Babel kya hai?
 112. Tree shaking kya hai?
 113. Bundling kya hai?
