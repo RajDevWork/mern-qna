@@ -18728,6 +18728,166 @@ Browser automatically validation kar dega.
 
 
 114. Webpack kya karta hai?
+
+    ## Hinglish Explanation
+
+    **Webpack ek module bundler hai.** Ye application ke different files/modules ko analyze karke **dependency graph** banata hai aur unhe process karke optimized output bundles generate karta hai.
+
+    Simple flow:
+
+    ```text id="z7d3f1"
+    JS / CSS / Images / Fonts
+            ↓
+        Webpack
+            ↓
+    Dependency Graph
+            ↓
+    Loaders + Plugins
+            ↓
+    Optimization
+            ↓
+        dist/
+    ├── main.js
+    └── chunks.js
+    ```
+
+    ### 1. Dependency Graph
+
+    Suppose:
+
+    ```javascript id="yq4b0k"
+    // app.js
+    import { add } from "./math.js";
+    import "./style.css";
+
+    console.log(add(10, 20));
+    ```
+
+    Webpack samjhega:
+
+    ```text id="j3f8k2"
+    app.js
+    ├── math.js
+    └── style.css
+    ```
+
+    Aur in dependencies ko process karega.
+
+    ### 2. Loaders
+
+    Webpack **loaders** ka use different file types ko process karne ke liye karta hai.
+
+    Example:
+
+    ```text id="h8p3q1"
+    .js / .jsx  → JS transformation
+    .css        → CSS processing
+    .png        → Asset handling
+    ```
+
+    For example, Babel ko Webpack ke saath loader ke through integrate kiya ja sakta hai:
+
+    ```text id="s4v7nx"
+    JavaScript
+    ↓
+    babel-loader
+    ↓
+    Babel
+    ↓
+    Transformed JavaScript
+    ```
+
+    ### 3. Plugins
+
+    **Plugins** Webpack ke build process ko extend karte hain.
+
+    For example:
+
+    - HTML generation
+    - Environment variables
+    - Optimization
+    - Bundle analysis
+    - Asset processing
+
+    ### 4. Optimization
+
+    Production build me Webpack configuration ke according:
+
+    - Tree shaking
+    - Minification
+    - Code splitting
+    - Chunk optimization
+    - Asset optimization
+
+    jaise tasks perform kar sakta hai.
+
+    ### Webpack vs Babel
+
+    Ye difference interview me important hai:
+
+    ```text id="q2n6vr"
+    Babel
+    ↓
+    Code transformation
+
+    Webpack
+    ↓
+    Modules + Dependencies
+    ↓
+    Bundle / Chunks
+    ↓
+    Build optimization
+    ```
+
+    Webpack **Babel ka replacement nahi hai**. Dono ek project me saath kaam kar sakte hain.
+
+    ### Webpack vs Vite
+
+    Simple interview answer:
+
+    | Webpack | Vite |
+    |---|---|
+    | Mature module bundler/build tool | Modern frontend build/dev tool |
+    | Traditional bundling-focused workflow | Dev me native ESM-based approach |
+    | Highly configurable | Generally simpler/faster DX |
+    | Large ecosystem | Modern tooling ecosystem |
+    | Production bundling supported | Production build supported |
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Webpack is a module bundler used to build JavaScript applications. It analyzes the application's dependency graph, processes different modules and assets, and generates optimized bundles or chunks for the browser. Webpack can also support features like code splitting, tree shaking, minification, loaders, and plugins. Babel can be integrated with Webpack to transform modern JavaScript or JSX before the final bundle is generated.”**
+
+    ### Interview Follow-up
+
+    **Q: What is the difference between loader and plugin in Webpack?**
+
+    **Loader** generally transforms/processes a particular type of module or file.
+
+    **Plugin** can extend or modify the overall Webpack build process.
+
+    Simple memory:
+
+    ```text id="q5t2xv"
+    Loader → File/module ko process karo
+
+    Plugin → Build process ko extend karo
+    ```
+
+    **Q: Is Webpack only for JavaScript?**
+
+    No. Webpack primarily builds module-based applications but can process CSS, images, fonts and other assets through loaders/plugins/configuration.
+
+    **Q: Does Webpack do transpilation?**
+
+    Webpack itself is mainly a bundler. It can **use Babel or other loaders/tools** to perform transpilation during the build.
+
+    ### ⭐ One-line memory trick
+
+    **“Webpack = Dependency graph banao → modules process karo → bundle/chunks generate + optimize karo.”**
+
+
 115. Code splitting?
 116. Lazy loading?
 117. Hot reload?
