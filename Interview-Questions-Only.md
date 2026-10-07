@@ -18578,6 +18578,155 @@ Browser automatically validation kar dega.
     **“Tree Shaking = Unused code ko production bundle se shake karke remove karna.”**
 
 113. Bundling kya hai?
+
+    ## Hinglish Explanation
+
+    **Bundling** ka matlab hai application ke multiple source files/modules ko **process karke one or more optimized output files (bundles/chunks)** me package karna, jise browser efficiently load kar sake.
+
+    Example project:
+
+    ```text id="8u0j2m"
+    src/
+    ├── main.js
+    ├── utils.js
+    ├── api.js
+    └── component.js
+    ```
+
+    Bundler dependency graph analyze karta hai:
+
+    ```text id="l4w2na"
+    main.js
+    ├── utils.js
+    ├── api.js
+    └── component.js
+            ↓
+        Bundler
+            ↓
+    dist/
+    ├── assets/index-abc.js
+    └── assets/index-xyz.css
+    ```
+
+    ### Bundler kya karta hai?
+
+    Modern build tools/bundlers typically multiple tasks perform kar sakte hain:
+
+    - Modules ko resolve karna
+    - Dependency graph banana
+    - JavaScript/CSS/assets ko process karna
+    - Code splitting/chunks create karna
+    - Tree shaking
+    - Minification (production configuration me)
+    - Assets optimize/process karna
+
+    ### Simple Example
+
+    Suppose:
+
+    ```javascript id="p9z3rx"
+    // math.js
+    export const add = (a, b) => a + b;
+    ```
+
+    ```javascript id="c7w5km"
+    // app.js
+    import { add } from "./math.js";
+
+    console.log(add(10, 20));
+    ```
+
+    Bundler dependency samjhega:
+
+    ```text id="h9v4ra"
+    app.js
+    ↓
+    math.js
+    ```
+
+    Aur production build me in modules ko process karke browser-ready output generate karega.
+
+    ### Bundling vs Transpilation vs Tree Shaking
+
+    Ye teen interview me confuse mat karna:
+
+    ```text id="4k5x7p"
+    Transpilation
+        ↓
+    Code syntax transform
+
+    Bundling
+        ↓
+    Modules/dependencies ko output bundles/chunks me package
+
+    Tree Shaking
+        ↓
+    Unused code remove
+    ```
+
+    Example:
+
+    ```text id="s6q1km"
+    Source Modules
+    ↓
+    Transpile/Transform
+    ↓
+    Tree Shake
+    ↓
+    Bundle / Code Split
+    ↓
+    Minify
+    ↓
+    Production Assets
+    ```
+
+    Exact pipeline tool ke according different ho sakti hai.
+
+    ### Vite ka example
+
+    Vite development me fast dev server aur native ESM-based workflow provide karta hai. Production build ke liye Vite modern bundling/build tooling use karta hai.
+
+    Isliye:
+
+    > **Vite sirf bundler nahi hai; ye complete frontend build/development tool hai.**
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“Bundling is the process of processing an application's modules and dependencies into one or more optimized output files or chunks that can be served to the browser. A bundler analyzes the dependency graph and can also perform tasks like tree shaking, code splitting, asset processing, and minification depending on the configuration. The main goal is to prepare application code efficiently for production.”**
+
+    ### Interview Follow-up
+
+    **Q: Why do we need bundling?**
+
+    Large applications contain many modules and assets. Build tools process these dependencies and generate optimized production assets that can be loaded efficiently by the browser.
+
+    **Q: Is bundling always one JavaScript file?**
+
+    No.
+
+    Modern applications often use **multiple chunks**:
+
+    ```text id="2f6d8n"
+    main.js
+    vendor.js
+    dashboard.chunk.js
+    settings.chunk.js
+    ```
+
+    This is called **code splitting**.
+
+    **Q: Bundling vs Tree Shaking?**
+
+    > **Bundling = modules ko output bundles/chunks me package karna.**  
+    > **Tree shaking = unused code ko remove karna.**
+
+    ### ⭐ One-line memory trick
+
+    **“Bundling = Multiple modules ko process karke optimized production bundles/chunks banana.”**
+
+
 114. Webpack kya karta hai?
 115. Code splitting?
 116. Lazy loading?
