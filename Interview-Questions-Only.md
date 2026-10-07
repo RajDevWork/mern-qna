@@ -17735,6 +17735,223 @@ Browser automatically validation kar dega.
 
 
 107. Event loop internals?
+
+    ## Hinglish Explanation
+
+    **Event Loop** JavaScript ke async execution ka core mechanism hai. Iska main kaam hai **call stack ko monitor karna** aur jab stack empty ho, queued callbacks/microtasks ko JavaScript execution ke liye schedule karna.
+
+    Browser me simplified flow:
+
+    ```text id="8o2r5f"
+    JavaScript
+    ↓
+    Call Stack
+    ↓
+    Web APIs
+    ↓
+    Queues
+    ↓
+    Event Loop
+    ↓
+    Call Stack
+    ```
+
+    ### 1. Call Stack
+
+    Synchronous code pehle **Call Stack** par execute hota hai.
+
+    ```javascript id="5zq2sa"
+    console.log("A");
+    console.log("B");
+    ```
+
+    Output:
+
+    ```text id="m1x7qf"
+    A
+    B
+    ```
+
+    ### 2. Web APIs / Runtime
+
+    Async operation runtime handle karta hai:
+
+    ```javascript id="x6h8bf"
+    setTimeout(() => {
+    console.log("Timer");
+    }, 0);
+    ```
+
+    Timer ko runtime handle karta hai. Callback immediately Call Stack me nahi aata.
+
+    ### 3. Queues
+
+    Important distinction:
+
+    **Microtask Queue**
+    - `Promise.then()`
+    - `catch()`
+    - `finally()`
+    - `queueMicrotask()`
+    - `async/await` ke promise continuations
+
+    **Task/Macrotask Queue**
+    - `setTimeout`
+    - `setInterval`
+    - many event callbacks
+    - other task sources
+
+    ### 4. Event Loop
+
+    Simplified browser model:
+
+    ```text id="2r8t7n"
+    Run current JS
+        ↓
+    Call Stack empty?
+        ↓
+    Microtasks drain
+        ↓
+    Browser may render/update
+        ↓
+    Next task
+        ↓
+    Repeat
+    ```
+
+    ### Important Example
+
+    ```javascript id="j7r2kw"
+    console.log("1");
+
+    setTimeout(() => {
+    console.log("2");
+    }, 0);
+
+    Promise.resolve().then(() => {
+    console.log("3");
+    });
+
+    console.log("4");
+    ```
+
+    Output:
+
+    ```text id="j1f5zr"
+    1
+    4
+    3
+    2
+    ```
+
+    **Why?**
+
+    ```text id="9q7z1p"
+    console.log("1")       → synchronous
+    setTimeout             → task scheduled
+    Promise.then()         → microtask scheduled
+    console.log("4")       → synchronous
+
+    Call Stack empty
+            ↓
+    Microtask → "3"
+            ↓
+    Next task → "2"
+    ```
+
+    ### ⚠️ Important Interview Point
+
+    `setTimeout(fn, 0)` ka matlab **"exactly 0ms baad execute"** nahi hota.
+
+    It means roughly:
+
+    > callback ko minimum delay ke baad eligible task ke roop me schedule karo.
+
+    Agar Call Stack busy hai ya microtasks pending hain, callback later execute hoga.
+
+    ### Node.js me
+
+    Node.js ka event loop browser ke event loop se different runtime implementation rakhta hai. Node.js me **libuv** event loop aur asynchronous I/O infrastructure ka important part hai.
+
+    High-level Node flow:
+
+    ```text id="7y8f4m"
+    JavaScript
+        ↓
+    Call Stack
+        ↓
+    Node.js APIs / libuv
+        ↓
+    Event Loop
+        ↓
+    Queues / callbacks
+        ↓
+    JavaScript
+    ```
+
+    Node.js event loop me phases bhi hote hain, jaise:
+
+    ```text id="j5v2qx"
+    Timers
+    ↓
+    Pending Callbacks
+    ↓
+    Poll
+    ↓
+    Check
+    ↓
+    Close Callbacks
+    ```
+
+    Node-specific APIs jaise `setImmediate()` aur `process.nextTick()` ki scheduling semantics interview me important ho sakti hain.
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“The event loop is the mechanism that allows JavaScript to handle asynchronous operations while JavaScript execution itself runs on a single main thread. Synchronous code runs on the call stack. Asynchronous operations are handled by the runtime, and their callbacks or promise reactions are queued. When the call stack becomes empty, the event loop schedules the queued work for execution. Microtasks such as Promise callbacks are processed before moving to the next regular task. In Node.js, libuv provides the underlying event-loop and asynchronous I/O infrastructure.”**
+
+    ### Interview Follow-up
+
+    **Q: Which executes first, Promise or setTimeout with 0 milliseconds?**
+
+    Normally the Promise callback:
+
+    ```javascript
+    Promise.resolve().then(() => console.log("Promise"));
+
+    setTimeout(() => console.log("Timer"), 0);
+    ```
+
+    Output:
+
+    ```text
+    Promise
+    Timer
+    ```
+
+    Because Promise continuation is a **microtask**, and microtasks are drained before the next task.
+
+    **Q: Can microtasks block the event loop?**
+
+    Yes. If code continuously creates microtasks, the runtime can spend a long time draining them before moving to the next task/render opportunity.
+
+    ```javascript
+    function loop() {
+    queueMicrotask(loop);
+    }
+
+    loop();
+    ```
+
+    This can starve normal tasks.
+
+    ### ⭐ One-line memory trick
+
+    **“Sync → Call Stack, Async → Runtime → Queue, Microtasks → drain, then next Task.”**
+
+
+
 108. Node vs browser JS?
 109. Polyfills kya hain?
 110. Transpilation kya hai?
