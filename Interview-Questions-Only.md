@@ -18053,6 +18053,130 @@ Browser automatically validation kar dega.
 
 
 109. Polyfills kya hain?
+
+    ## Hinglish Explanation
+
+    **Polyfill** ek piece of JavaScript code hota hai jo **new/modern browser feature ko older environment me available karne ke liye** us feature ka alternative implementation provide karta hai.
+
+    Simple words me:
+
+    > **“Agar environment me koi feature available nahi hai, to hum JavaScript se us feature ka fallback implementation provide kar dete hain.”**
+
+    Example: maan lo old browser me `Array.prototype.includes()` supported nahi hai.
+
+    Hum polyfill de sakte hain:
+
+    ```javascript
+    if (!Array.prototype.includes) {
+    Array.prototype.includes = function (value) {
+        return this.indexOf(value) !== -1;
+    };
+    }
+
+    const numbers = [10, 20, 30];
+
+    console.log(numbers.includes(20)); // true
+    ```
+
+    Ab old environment me bhi:
+
+    ```javascript
+    numbers.includes(20)
+    ```
+
+    kaam kar sakta hai.
+
+    ### Polyfill ka basic pattern
+
+    ```javascript
+    if (!featureExists) {
+    // fallback implementation
+    }
+    ```
+
+    Example:
+
+    ```javascript
+    if (!Array.prototype.myMethod) {
+    Array.prototype.myMethod = function () {
+        // implementation
+    };
+    }
+    ```
+
+    ### Polyfill vs Transpiler
+
+    Ye interview me important hai.
+
+    **Polyfill:**
+
+    ```text
+    Missing API/feature
+        ↓
+    JavaScript fallback
+        ↓
+    Old environment me support
+    ```
+
+    **Transpiler (Babel):**
+
+    ```text
+    Modern JavaScript syntax
+        ↓
+    Older JavaScript syntax
+    ```
+
+    Example:
+
+    ```javascript
+    const add = (a, b) => a + b;
+    ```
+
+    Babel ise older syntax me transform kar sakta hai:
+
+    ```javascript
+    var add = function (a, b) {
+    return a + b;
+    };
+    ```
+
+    Lekin Babel automatically missing runtime API ko implement nahi karta; uske liye polyfills/runtime support ki zarurat ho sakti hai.
+
+    ### Real-world Usage
+
+    Modern projects me manually har polyfill likhne ke bajay tools/libraries use kiye ja sakte hain, depending on browser support requirements.
+
+    Examples:
+
+    - `core-js`
+    - `Babel` + appropriate polyfill strategy
+    - Browser compatibility tooling
+
+    ---
+
+    ## 🎯 English Interview Answer
+
+    > **“A polyfill is JavaScript code that provides an implementation of a modern feature when the current environment does not support it. For example, if an older browser does not support `Array.prototype.includes()`, we can provide a fallback implementation so the application can still use that functionality. Polyfills mainly provide runtime feature compatibility, while transpilers like Babel transform newer JavaScript syntax into older syntax.”**
+
+    ### Interview Follow-up
+
+    **Q: Is Babel a polyfill?**
+
+    No. **Babel is primarily a transpiler.** It transforms JavaScript syntax. Polyfills provide missing runtime APIs/features.
+
+    **Q: Can polyfills add every new JavaScript feature?**
+
+    No. Many APIs can be polyfilled, but some features depend on capabilities that JavaScript cannot reproduce fully in an older environment.
+
+    **Q: Why do we need polyfills in frontend applications?**
+
+    To support browsers/environments that don't natively implement APIs required by the application.
+
+    ### ⭐ One-line memory trick
+
+    **“Polyfill = Missing feature ka JavaScript fallback.”**
+
+
 110. Transpilation kya hai?
 111. Babel kya hai?
 112. Tree shaking kya hai?
