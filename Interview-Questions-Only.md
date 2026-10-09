@@ -19134,6 +19134,83 @@ Browser automatically validation kar dega.
 
 
 117. Hot reload?
+
+    ## Hinglish Explanation
+
+    Hot Reload ek development feature hai jisme code change karne par application updated code ko quickly apply karti hai, bina developer ko manually application restart ya page refresh karne ki zarurat ke.
+
+    Example: Aap React component me button ka color blue se red karte ho. Hot reload enabled hai, to change development environment me jaldi reflect ho sakta hai.
+
+    ### 1. Hot Reload kaise kaam karta hai?
+
+    ```
+    Code Change
+        ↓
+    Development Tool Detects Change
+        ↓
+    Updated Module Apply
+        ↓
+    UI Updates
+    ```
+
+    - Development server file changes detect karta hai.
+    - Updated module browser ko deliver hota hai.
+    - Compatible changes apply hote hain.
+    - Supported setups me component state preserve bhi ho sakti hai.
+
+    ### 2. React Example
+
+    ```
+    function Counter() {
+    const [count, setCount] = React.useState(0);
+
+    return (
+        <button onClick={() => setCount(count + 1)}>
+        Count: {count}
+        </button>
+    );
+    }
+    ```
+
+    Aap component ke text ya styling ko change karte ho, to supported Fast Refresh setup me UI update ho sakti hai, aur compatible cases me `count` state preserve reh sakti hai.
+
+    ### 3. Hot Reload vs Live Reload
+
+    | Hot Reload / Fast Refresh                        | Live Reload                                       |
+    | ------------------------------------------------ | ------------------------------------------------- |
+    | Updated modules apply karne ki koshish karta hai | Change par page reload karta hai                  |
+    | Compatible React state preserve ho sakti hai     | Page reload hone par state usually reset hoti hai |
+    | Development experience smoother                  | Full page reload hota hai                         |
+
+    Important: React ecosystem me commonly Fast Refresh term use hota hai. Exact behavior tool aur code changes par depend karta hai.
+
+    ### 4. Hot Reload vs HMR
+
+    - HMR (Hot Module Replacement): Development tooling ka mechanism jo changed modules ko running application me replace kar sakta hai.
+    - React Fast Refresh: React components ko update karne aur compatible state preserve karne ke liye HMR ke saath kaam karne wali technology.
+
+    Vite aur Webpack jaise tools development me HMR support provide kar sakte hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Hot Reload is a development feature that applies code changes to a running application without requiring a full manual restart or page reload. In React, Fast Refresh can update components while preserving their state when the changes are compatible. It improves developer productivity by making code changes visible quickly. Hot reload is mainly a development feature and is different from production deployment.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between HMR and Fast Refresh?
+
+    HMR is the module replacement mechanism provided by development tooling. Fast Refresh adds React-specific behavior to update components while preserving state where possible.
+
+    Q: Is Hot Reload used in production?
+
+    Usually, no. It is primarily a development feature. Production builds serve the compiled application assets.
+
+    ### ⭐ One-line memory trick
+
+    “Hot Reload = Code change apply karo without full page reload, where supported.”
+
+
+
 118. Source maps kya hain?
 119. Security issues JS mein?
 120. Best practices JS coding?
