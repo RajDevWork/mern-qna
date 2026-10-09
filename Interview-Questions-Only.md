@@ -19212,6 +19212,97 @@ Browser automatically validation kar dega.
 
 
 118. Source maps kya hain?
+
+    ## Hinglish Explanation
+
+    Source Maps aisi files hoti hain jo browser ke compiled, minified ya bundled code ko original source code se map karti hain.
+
+    Production me aapka code transpile aur minify ho sakta hai, jiski wajah se error samajhna difficult ho jata hai. Source maps developer ko original file aur line number identify karne me help karti hain.
+
+    ### 1. Source Maps ki zarurat kyun hoti hai?
+
+    Maan lo original code hai:
+
+    ```
+    // src/utils.js
+    function calculateTotal(price, tax) {
+    return price + tax;
+    }
+
+    calculateTotal(100, 20);
+    ```
+
+    Production build me ye minify hokar kuch aisa dikh sakta hai:
+
+    ```
+    function a(b,c){return b+c}a(100,20);
+    ```
+
+    Agar error aata hai, to minified code debug karna difficult ho sakta hai.
+
+    Source map browser ke developer tools ko original source se corresponding location identify karne me help karti hai:
+
+    ```
+    Production bundle error
+            ↓
+        Source Map
+            ↓
+    src/utils.js
+    Original line number
+    ```
+
+    ### 2. Source Map file kaise dikhti hai?
+
+    Build output me commonly:
+
+    ```
+    dist/
+    ├── assets/
+    │   ├── index.js
+    │   └── index.js.map
+    ```
+
+    `.map` file original source aur generated code ke beech mapping information store karti hai. Configuration ke according isme original source content bhi ho sakta hai.
+
+    ### 3. Browser me kaise use hoti hai?
+
+    Chrome DevTools me:
+
+    1. Sources tab open karein.
+    2. JavaScript file ya stack trace dekhein.
+    3. Source maps enabled aur available hon to original source file aur line number inspect kar sakte hain.
+
+    React/Vite ya Webpack projects me source maps build configuration se generate ki ja sakti hain.
+
+    ### 4. Important Security Point
+
+    Production source maps me original source code ya sensitive implementation details expose ho sakte hain, especially jab `sourcesContent` include ho.
+
+    Isliye deployment ke time decide karna chahiye ki source maps public honi chahiye, private error-monitoring service ko upload karni chahiye, ya disable rakhni chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “Source maps are files that map generated JavaScript code back to the original source code. During development and production builds, code may be transpiled, bundled, or minified, making debugging difficult. Source maps help browser developer tools show the original file names, line numbers, and source locations for errors. They improve debugging, but production source maps should be configured carefully because they may expose source code.”
+
+    ### Interview Follow-up
+
+    Q: Are source maps required for JavaScript execution?
+
+    No. Browsers can execute generated JavaScript without source maps. Source maps are mainly used for debugging.
+
+    Q: Do source maps make the application faster?
+
+    Not directly. Their main purpose is debugging, not runtime performance optimization.
+
+    Q: Should we deploy source maps to production?
+
+    It depends on the security and monitoring strategy. Teams may keep them private and upload them to error-monitoring services rather than exposing them publicly.
+
+    ### ⭐ One-line memory trick
+
+    “Source Map = Generated code ke error ko original source file aur line se connect karne wala map.”
+
+
 119. Security issues JS mein?
 120. Best practices JS coding?
 
