@@ -19304,6 +19304,132 @@ Browser automatically validation kar dega.
 
 
 119. Security issues JS mein?
+
+
+    ## Hinglish Explanation
+
+    JavaScript applications me security issues tab aate hain jab attacker user input, browser behavior, API requests ya application ki weaknesses ka misuse karta hai.
+
+    Aap MERN Stack interviews ke liye ye 8 important security issues zaroor prepare karein.
+
+    ### 1. XSS (Cross-Site Scripting)
+
+    Attacker malicious JavaScript ko webpage par execute karwa deta hai, often unsafe user input ke through.
+
+    ```
+    // Avoid: untrusted input ko HTML ki tarah render karna
+    element.innerHTML = userInput;
+
+    // Safer for plain text
+    element.textContent = userInput;
+    ```
+
+    Prevention: Output encoding, safe rendering, sanitization where HTML is required, aur Content Security Policy (CSP).
+
+    ### 2. CSRF (Cross-Site Request Forgery)
+
+    Attacker victim ke authenticated browser se unwanted request trigger karne ki koshish karta hai, particularly jab browser automatically authentication cookies bhejta hai.
+
+    Prevention: CSRF tokens, appropriate `SameSite` cookie settings, aur `Origin`/`Referer` validation where appropriate.
+
+    ### 3. Injection Attacks
+
+    Untrusted input ko unsafe tarike se database queries ya commands me use karne se injection vulnerabilities ho sakti hain.
+
+    ```
+    // Safer pattern: parameterized query
+    const user = await db.query(
+    "SELECT * FROM users WHERE id = ?",
+    [userId]
+    );
+    ```
+
+    Prevention: Parameterized queries, ORM/query-builder safeguards, aur input validation.
+
+    ### 4. Broken Authentication & Authorization
+
+    - Authentication: User kaun hai?
+    - Authorization: User kya kar sakta hai?
+
+    Sirf frontend par button hide karna security nahi hai. Backend ko har protected operation par permission verify karni chahiye.
+
+    ### 5. Sensitive Data Exposure
+
+    API keys, passwords, access tokens ya personal information ko galti se expose karna.
+
+    Prevention:
+
+    - Secrets ko frontend code me hardcode na karein.
+    - Environment variables aur secret-management tools use karein.
+    - HTTPS use karein.
+    - Passwords ko secure password-hashing algorithms se store karein.
+    - Tokens ko logs me expose na karein.
+
+    Important: `VITE_*` jaise frontend build variables browser bundle me public ho sakte hain; unme private secrets na rakhein.
+
+    ### 6. CORS Misconfiguration
+
+    Agar backend unnecessarily untrusted origins ko access allow karta hai, to browser-based cross-origin access ka risk badh sakta hai.
+
+    ```
+    app.use(cors({
+    origin: "https://myapp.example.com"
+    }));
+    ```
+
+    Prevention: Trusted origins ko explicitly allow karein. CORS authentication ka replacement nahi hai.
+
+    ### 7. Prototype Pollution
+
+    Untrusted object keys ko unsafe tarike se merge karne se JavaScript objects ke prototypes ya application behavior affect ho sakte hain.
+
+    Prevention: Safe object-merging libraries/patterns, input validation, aur untrusted keys jaise `__proto__`, `constructor`, aur `prototype` ko carefully handle karna.
+
+    ### 8. Dependency Vulnerabilities
+
+    NPM packages me outdated versions ya known vulnerabilities ho sakti hain.
+
+    ```
+    npm audit
+    ```
+
+    Is command se dependency vulnerabilities identify karne me help milti hai. Fix karne se pehle proposed changes aur breaking changes review karein.
+
+    ## 🎯 English Interview Answer
+
+    > “Common JavaScript application security issues include Cross-Site Scripting, Cross-Site Request Forgery, injection attacks, broken authentication and authorization, sensitive data exposure, CORS misconfiguration, prototype pollution, and vulnerable dependencies. I prevent these issues by validating inputs, safely handling user-generated content, using parameterized database queries, enforcing authorization on the backend, protecting authentication tokens, configuring CORS and cookies correctly, and keeping dependencies updated. I also use HTTPS, security headers, and appropriate logging and monitoring.”
+
+    ### Interview Follow-up
+
+    Q1. XSS vs CSRF?
+
+    - XSS: Malicious script executes in the context of a trusted website.
+    - CSRF: Victim's browser is tricked into sending an unwanted authenticated request.
+
+    Q2. Is frontend validation enough?
+
+    No. Client-side validation improves user experience, but attackers can bypass it. The backend must independently validate input and enforce authorization.
+
+    Q3. Is storing JWT in localStorage completely safe?
+
+    No. JavaScript-accessible storage can be read by injected scripts during an XSS attack. HttpOnly cookies can reduce direct token access from JavaScript, but cookie-based authentication also needs appropriate CSRF protection.
+
+    Q4. How do you secure a Node.js API?
+
+    - Validate input using a schema validator.
+    - Authenticate requests and check permissions on the server.
+    - Use parameterized queries.
+    - Configure CORS and security headers.
+    - Apply rate limiting where appropriate.
+    - Keep secrets out of source control and public frontend bundles.
+    - Audit dependencies and log security-relevant events safely.
+
+    ### ⭐ One-line memory trick
+
+    “Validate input, encode output, protect authentication, enforce backend authorization, secure secrets, and update dependencies.”
+
+
+
 120. Best practices JS coding?
 
 ---
