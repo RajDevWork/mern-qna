@@ -19036,6 +19036,103 @@ Browser automatically validation kar dega.
 
 
 116. Lazy loading?
+
+    ## Hinglish Explanation
+
+    Lazy Loading ek performance optimization technique hai jisme kisi resource ya code ko tab load kiya jata hai jab uski zarurat hoti hai, instead of loading everything at the beginning.
+
+    Simple example: Aapke application me 10 pages hain, lekin user sirf Dashboard open karta hai. To baaki pages ka code immediately load karna zaroori nahi hai.
+
+    ### 1. Normal Loading vs Lazy Loading
+
+    Normal Loading
+
+    Application starts
+
+    Dashboard + Reports + Admin + Settings load
+
+    Lazy Loading
+
+    Application starts
+
+    Dashboard loads first
+
+    Reports loads when opened
+
+    ### 2. React me Lazy Loading
+
+    React me `React.lazy()` aur `Suspense` use kar sakte hain.
+
+    ```
+    import { lazy, Suspense } from "react";
+
+    const Reports = lazy(() => import("./Reports"));
+
+    function App() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+        <Reports />
+        </Suspense>
+    );
+    }
+
+    export default App;
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `lazy()` component ko dynamically import karta hai.
+    2. Build tool component ka separate chunk generate kar sakta hai.
+    3. Component render hone par uska code load hota hai, agar pehle load nahi hua ho.
+    4. Loading ke dauran `Suspense` ka fallback show hota hai.
+
+    ### 3. Images me Lazy Loading
+
+    Images ke liye browser ka native lazy loading bhi available hai:
+
+    ```
+    <img
+    src="product.jpg"
+    alt="Product"
+    loading="lazy"
+    />
+    ```
+
+    Image ko browser tab load kar sakta hai jab woh viewport ke paas aane wali ho.
+
+    Note: Hero image ya above-the-fold important image ko lazy load karna avoid karein, kyunki usse initial display delay ho sakta hai.
+
+    ### 4. Lazy Loading vs Code Splitting
+
+    | Code Splitting                       | Lazy Loading                                              |
+    | ------------------------------------ | --------------------------------------------------------- |
+    | Code ko chunks me divide karta hai   | Resource ko zarurat par load karta hai                    |
+    | Build-time technique                 | Loading strategy                                          |
+    | Multiple chunks create ho sakte hain | Existing chunks/resources ko on demand load kar sakta hai |
+
+    Dono saath use karne se initial JavaScript bundle chhota ho sakta hai aur application faster feel ho sakti hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Lazy loading is a performance optimization technique in which a resource or component is loaded only when it is needed. In React, we can use React.lazy with Suspense to load components dynamically. For example, a Reports page can be loaded only when the user opens it instead of loading it during the initial application startup. This can reduce initial loading time and improve performance.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between lazy loading and eager loading?
+
+    - Lazy loading: Load when required.
+    - Eager loading: Load immediately, even if the resource may be needed later.
+
+    Q: Does lazy loading always improve performance?
+
+    No. It can reduce initial loading work, but it may introduce a delay when the resource is first requested. Too many small chunks or unnecessary network requests can also affect performance.
+
+    ### ⭐ One-line memory trick
+
+    “Lazy Loading = Load when needed; Eager Loading = Load upfront.”
+
+
+
 117. Hot reload?
 118. Source maps kya hain?
 119. Security issues JS mein?
