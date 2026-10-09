@@ -19432,6 +19432,165 @@ Browser automatically validation kar dega.
 
 120. Best practices JS coding?
 
+    ## Hinglish Explanation
+
+    JavaScript ki best coding practices ka main goal hai code ko readable, maintainable, reusable, secure aur reliable banana. Interview me sirf rules yaad karne ke bajay practical examples explain karna important hai.
+
+    ### 1. `const` aur `let` use karein
+
+    Variables declare karne ke liye `var` ko generally avoid karein.
+
+    ```
+    const name = "Raj";
+    let age = 29;
+
+    age = 30;
+    ```
+
+    - `const` — jab variable ko reassign nahi karna.
+    - `let` — jab reassignment required ho.
+    - `var` — legacy code me mil sakta hai; iska function-scoped behavior confusion create kar sakta hai.
+
+    Note: `const` object ko immutable nahi banata; object ki properties change ho sakti hain.
+
+    ### 2. Meaningful names use karein
+
+    ```
+    // Bad
+    const x = 500;
+
+    // Good
+    const monthlySalary = 50000;
+    ```
+
+    Variable aur function names se unka purpose clear hona chahiye.
+
+    ### 3. Functions ko small aur focused rakhein
+
+    ```
+    function calculateTotal(price, tax) {
+    return price + tax;
+    }
+
+    function formatCurrency(amount) {
+    return `₹${amount.toFixed(2)}`;
+    }
+    ```
+
+    Ek function ideally ek clear responsibility handle kare. Isse testing aur debugging easy hoti hai.
+
+    ### 4. `===` prefer karein
+
+    ```
+    console.log(5 == "5");  // true
+    console.log(5 === "5"); // false
+    ```
+
+    `===` type coercion nahi karta, isliye comparisons generally more predictable hote hain.
+
+    ### 5. Async errors properly handle karein
+
+    ```
+    async function getUsers() {
+    try {
+        const response = await fetch("/api/users");
+
+        if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to fetch users:", error);
+        throw error;
+    }
+    }
+    ```
+
+    `fetch()` normally HTTP 404/500 par reject nahi karta, isliye `response.ok` check karna important hai.
+
+    ### 6. Repeated code ko reusable banayein
+
+    ```
+    function calculateDiscount(price, percentage) {
+    return price - (price * percentage) / 100;
+    }
+
+    calculateDiscount(1000, 10);
+    calculateDiscount(2000, 15);
+    ```
+
+    Duplicate logic kam karne se future changes maintain karna easier hota hai.
+
+    ### 7. User input ko safely handle karein
+
+    ```
+    // Plain text ke liye safer
+    element.textContent = userInput;
+    ```
+
+    Untrusted user input ko directly `innerHTML` me insert karna XSS vulnerability create kar sakta hai. Agar HTML render karna necessary ho, to appropriate sanitization use karein.
+
+    ### 8. Magic numbers avoid karein
+
+    ```
+    // Bad
+    if (age >= 18) {
+    // ...
+    }
+
+    // Better
+    const MINIMUM_AGE = 18;
+
+    if (age >= MINIMUM_AGE) {
+    // ...
+    }
+    ```
+
+    Meaningful constants code ko understandable banate hain.
+
+    ### 9. Immutability aur side effects ka dhyan rakhein
+
+    ```
+    const updatedUser = {
+    ...user,
+    name: "Raj"
+    };
+    ```
+
+    Existing object ko unnecessarily mutate karne ke bajay new object banana state management ko predictable bana sakta hai, especially React me.
+
+    ### 10. Testing aur tools use karein
+
+    - ESLint: Coding issues aur common mistakes detect karne ke liye.
+    - Prettier: Consistent formatting ke liye.
+    - Jest/Vitest: Automated tests ke liye.
+    - TypeScript: Static type checking ke liye, jab project ke liye appropriate ho.
+
+    ## 🎯 English Interview Answer
+
+    > “My JavaScript coding best practices include using const and let appropriately, choosing meaningful variable and function names, writing small reusable functions, and preferring strict equality. I handle asynchronous errors properly, validate untrusted input, avoid unnecessary mutations, and keep functions focused on a single responsibility. I also use ESLint, Prettier, and automated tests to maintain code quality. For production applications, I focus on readability, security, performance, and maintainability rather than premature optimization.”
+
+    ### Interview Follow-up
+
+    Q: What makes JavaScript code maintainable?
+
+    Readable naming, small focused functions, low duplication, clear error handling, consistent formatting, and meaningful automated tests.
+
+    Q: Should we always optimize JavaScript for performance?
+
+    We should write efficient code, but avoid premature optimization. First identify actual bottlenecks through profiling, then optimize and measure again.
+
+    Q: What is the difference between `const` and immutability?
+
+    `const` prevents reassignment of a binding. It does not prevent modifying properties inside an object or elements inside an array.
+
+    ### ⭐ One-line memory trick
+
+    “Readable + Reusable + Secure + Tested + Measured = Good JavaScript.”
+
+
+
 ---
 
 ## ⚛️ React (121-220)
