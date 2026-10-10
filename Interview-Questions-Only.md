@@ -19681,6 +19681,137 @@ Browser automatically validation kar dega.
 
 
 122. JSX kya hai?
+
+    ## Hinglish Explanation
+
+    JSX (JavaScript XML) ek syntax extension hai jo React me JavaScript ke andar HTML-like UI code likhne deta hai.
+
+    Simple words me, JSX ki help se hum UI ko readable aur maintainable tarike se describe kar sakte hain. Browser directly JSX execute nahi karta; build tools JSX ko JavaScript me transform karte hain.
+
+    ### 1. JSX Example
+
+    ```
+    function Welcome() {
+    const name = "Raj";
+
+    return <h1>Hello, {name}!</h1>;
+    }
+    ```
+
+    Output:
+
+    ```
+    Hello, Raj!
+    ```
+
+    Yahan:
+
+    - `<h1>` HTML-like JSX syntax hai.
+    - `{name}` ke andar JavaScript expression likha gaya hai.
+    - `Welcome` ek React component hai.
+
+    ### 2. JSX internally kaise kaam karta hai?
+
+    JSX:
+
+    ```
+    const element = <h1>Hello Raj</h1>;
+    ```
+
+    Modern JSX transform conceptually ise aise code me convert kar sakta hai:
+
+    ```
+    import { jsx } from "react/jsx-runtime";
+
+    const element = jsx("h1", {
+    children: "Hello Raj"
+    });
+    ```
+
+    Exact generated code compiler aur configuration par depend karta hai.
+
+    Important: JSX directly browser me run nahi hota. Babel ya doosre compatible build tools ise transform kar sakte hain.
+
+    ### 3. JSX ke important rules
+
+    Rule 1: Single parent element
+
+    ```
+    return (
+    <div>
+        <h1>Hello</h1>
+        <p>Welcome</p>
+    </div>
+    );
+    ```
+
+    Ya Fragment use karein:
+
+    ```
+    return (
+    <>
+        <h1>Hello</h1>
+        <p>Welcome</p>
+    </>
+    );
+    ```
+
+    Rule 2: JavaScript expressions ke liye `{}`
+
+    ```
+    const age = 29;
+
+    return <p>Age: {age}</p>;
+    ```
+
+    Rule 3: `className` use karein
+
+    ```
+    return <div className="container">Hello</div>;
+    ```
+
+    JSX me HTML ke `class` attribute ke badle `className` use hota hai.
+
+    Rule 4: Event handlers camelCase me
+
+    ```
+    <button onClick={() => alert("Clicked!")}>
+    Click Me
+    </button>
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > “JSX stands for JavaScript XML. It is a syntax extension used in React that allows us to write HTML-like markup inside JavaScript. JSX makes UI code more readable and easier to maintain. Browsers do not execute JSX directly, so a compiler or build tool transforms it into JavaScript that React can use to describe the UI.”
+
+    ### Interview Follow-up
+
+    Q: Is JSX mandatory in React?
+
+    No. React can be used without JSX, but JSX makes component UI code more readable.
+
+    Q: Can we write JavaScript inside JSX?
+
+    Yes. We use curly braces `{}` to include JavaScript expressions.
+
+    ```
+    const total = 100;
+
+    return <h2>Total: {total}</h2>;
+    ```
+
+    Q: JSX vs HTML?
+
+    - JSX JavaScript ke andar use hota hai.
+    - JSX me `className`, camelCase event handlers aur JavaScript expressions ke liye `{}` use hote hain.
+    - JSX ko browser execution se pehle JavaScript me transform karna hota hai.
+
+    ### ⭐ One-line memory trick
+
+    “JSX = JavaScript ke andar HTML-like UI syntax, jo build time par JavaScript me transform hota hai.”
+
+
+
 123. Virtual DOM?
 124. Real DOM vs Virtual DOM?
 125. Components kya hote hain?
