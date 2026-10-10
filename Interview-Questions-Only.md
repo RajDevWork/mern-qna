@@ -19596,6 +19596,90 @@ Browser automatically validation kar dega.
 ## ⚛️ React (121-220)
 
 121. React kya hai?
+
+    ## Hinglish Explanation
+
+    React ek JavaScript library hai jo user interfaces (UI) build karne ke liye use hoti hai. Iska use interactive aur reusable frontend applications banane ke liye hota hai.
+
+    Simple example: Aap ek CRM bana rahe ho jisme Navbar, Sidebar, Dashboard, Users Table aur Login Form hain. React me aap inhe separate components bana sakte ho aur different pages par reuse kar sakte ho.
+
+    ### 1. React ke main features
+
+    - Components: UI ko reusable parts me divide karna.
+    - JSX: JavaScript ke andar HTML-like syntax likhna.
+    - Props: Parent component se child component ko data pass karna.
+    - State: Component ka changing data manage karna.
+    - Hooks: Functional components me state aur other React features use karna, jaise `useState` aur `useEffect`.
+    - Declarative UI: Aap batate ho ki state ke according UI kaisi honi chahiye; React DOM updates manage karta hai.
+
+    ### 2. Small Coding Implementation
+
+    ```
+    import { useState } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+        <h2>Count: {count}</h2>
+
+        <button onClick={() => setCount(count + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+
+    export default Counter;
+    ```
+
+    Is code me kya ho raha hai?
+
+    1. `Counter` ek React component hai.
+    2. `useState(0)` initial state `0` set karta hai.
+    3. Button click par `setCount()` state update karta hai.
+    4. React updated state ke according UI ko re-render karta hai.
+
+    ### 3. React vs JavaScript
+
+    | JavaScript                                                 | React                                           |
+    | ---------------------------------------------------------- | ----------------------------------------------- |
+    | Programming language                                       | UI library                                      |
+    | General-purpose programming                                | UI development par focused                      |
+    | DOM manually manipulate kar sakte hain                     | React declarative UI approach provide karta hai |
+    | Browser aur Node.js jaise environments me run ho sakti hai | Mainly UI build karne ke liye use hota hai      |
+
+    Important: React JavaScript ka replacement nahi hai. React use karne ke liye JavaScript fundamentals samajhna zaroori hai.
+
+    ## 🎯 English Interview Answer
+
+    > “React is an open-source JavaScript library used to build interactive user interfaces. It allows developers to divide the UI into reusable components and manage changing data using state and props. React follows a declarative approach, where we describe how the UI should look for a given state, and React manages the necessary DOM updates. It is commonly used to build single-page applications and complex frontend interfaces.”
+
+    ### Interview Follow-up
+
+    Q: Is React a framework or a library?
+
+    React is a JavaScript library focused mainly on building user interfaces. Routing and other application features can be added using separate libraries or tools.
+
+    Q: What is a component in React?
+
+    A component is a reusable piece of UI. For example, a Navbar, Button, Login Form or User Table can each be a component.
+
+    Q: What is the difference between props and state?
+
+    - Props: Data passed from a parent component.
+    - State: Data managed by a component that can change over time.
+
+    Q: Why use React instead of manually manipulating the DOM?
+
+    React provides a declarative and component-based approach that makes complex, interactive UIs easier to organize and maintain.
+
+    ### ⭐ One-line memory trick
+
+    “React = JavaScript UI Library + Reusable Components + State + Declarative Rendering.”
+
+
 122. JSX kya hai?
 123. Virtual DOM?
 124. Real DOM vs Virtual DOM?
