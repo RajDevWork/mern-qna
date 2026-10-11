@@ -20207,6 +20207,114 @@ Browser automatically validation kar dega.
 
 
 127. Props kya hain?
+
+    ## Hinglish Explanation
+
+    Props (Properties) React mein data pass karne ka tarika hain, jisse parent component apne child component ko information bhej sakta hai.
+
+    Simple example: Aapke CRM mein `UserCard` component hai. Har user ka name aur role different hai. Props ki help se same component ko different data ke saath reuse kar sakte hain.
+
+    ### 1. Props kaise kaam karte hain?
+
+    ```
+    function UserCard(props) {
+    return (
+        <div>
+        <h2>{props.name}</h2>
+        <p>{props.role}</p>
+        </div>
+    );
+    }
+
+    function App() {
+    return (
+        <>
+        <UserCard name="Raj" role="Developer" />
+        <UserCard name="Amit" role="Manager" />
+        </>
+    );
+    }
+    ```
+
+    Output:
+
+    ```
+    Raj
+    Developer
+
+    Amit
+    Manager
+    ```
+
+    Yahan `App` parent component hai aur `UserCard` child component hai.
+
+    - `name` aur `role` props hain.
+    - Parent component values pass karta hai.
+    - Child component props se values read karta hai.
+
+    ### 2. Props destructuring
+
+    Modern React code mein props ko destructure karna common hai.
+
+    ```
+    function UserCard({ name, role }) {
+    return (
+        <div>
+        <h2>{name}</h2>
+        <p>{role}</p>
+        </div>
+    );
+    }
+    ```
+
+    Isse `props.name` likhne ki zarurat nahi hoti.
+
+    ### 3. Props ki important properties
+
+    - Props parent se child ko data pass karte hain.
+    - Props read-only hote hain; child ko unhe directly mutate nahi karna chahiye.
+    - Props strings, numbers, arrays, objects, functions aur JSX bhi ho sakte hain.
+    - Parent updated props pass kare, to child component dobara render ho sakta hai.
+    - Child interaction ke through parent ka data update karwana ho, to parent callback function prop ke through pass kar sakta hai.
+
+    ### 4. Props vs State
+
+    | Props                    | State                              |
+    | ------------------------ | ---------------------------------- |
+    | Parent se milte hain     | Component khud manage karta hai    |
+    | Read-only input          | Setter/dispatch se update hoti hai |
+    | Parent control karta hai | Owning component manage karta hai  |
+    | Data pass karne ke liye  | Changing UI data ke liye           |
+
+    ## 🎯 English Interview Answer
+
+    > “Props stands for properties in React. Props are used to pass data from a parent component to a child component. They make components reusable because the same component can display different data based on the props it receives. Props should be treated as read-only, and if the parent passes updated props, React can render the child with the new data.”
+
+    ### Interview Follow-up
+
+    Q: Can we modify props inside a child component?
+
+    No. Props should be treated as read-only. If data needs to change, the parent can update its state and pass the new value, or the child can invoke a callback passed through props.
+
+    Q: Can we pass a function as a prop?
+
+    Yes. Callback functions are commonly passed as props to let child components notify parents about user actions.
+
+    ```
+    function Child({ onClick }) {
+    return <button onClick={onClick}>Click Me</button>;
+    }
+    ```
+
+    Q: Props vs State — main difference?
+
+    > Props are inputs received from a parent; state is data managed by a component.
+
+    ### ⭐ One-line memory trick
+
+    “Props = Parent se Child ko data; Read-only + Reusable Components.”
+
+
 128. State kya hai?
 129. Controlled components?
 130. Uncontrolled components?
