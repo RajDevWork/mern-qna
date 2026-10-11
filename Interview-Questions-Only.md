@@ -20523,6 +20523,110 @@ Browser automatically validation kar dega.
 
 
 130. Uncontrolled components?
+
+    ## Hinglish Explanation
+
+    Uncontrolled Component React mein aisa form element hota hai jiska current value primarily browser ka DOM manage karta hai, React state nahi.
+
+    Simple example: Aap ek form bana rahe ho jisme user email enter karta hai. Har keystroke par React state update karne ke bajay, submit hone par `useRef()` se input ki value read kar sakte ho.
+
+    ### 1. Uncontrolled Component Example
+
+    ```
+    import { useRef } from "react";
+
+    function LoginForm() {
+    const emailRef = useRef(null);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        console.log(emailRef.current.value);
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+        <input
+            type="email"
+            ref={emailRef}
+            defaultValue=""
+            placeholder="Enter email"
+        />
+
+        <button type="submit">Submit</button>
+        </form>
+    );
+    }
+
+    export default LoginForm;
+    ```
+
+    ### 2. Ye kaise kaam karta hai?
+
+    1. `useRef(null)` ek ref create karta hai.
+    2. `ref={emailRef}` actual DOM input ko ref se connect karta hai.
+    3. `defaultValue` initial value set kar sakta hai.
+    4. User input type karta hai, to browser DOM current value maintain karta hai.
+    5. Submit par `emailRef.current.value` se current value read kar lete hain.
+
+    Important: `useRef()` change hone par component automatically re-render nahi karta.
+
+    ### 3. Controlled vs Uncontrolled
+
+    | Feature         | Controlled       | Uncontrolled                     |
+    | --------------- | ---------------- | -------------------------------- |
+    | Value control   | React state      | DOM                              |
+    | Current value   | State se         | `ref.current.value` se           |
+    | Input change    | State setter     | Browser DOM update               |
+    | Live validation | Generally easier | Possible, but different approach |
+    | Initial value   | `value`          | `defaultValue`                   |
+    | Best suited     | Dynamic forms    | Simple forms ya DOM-based access |
+
+    ### 4. Kab use karein?
+
+    - Controlled: Live validation, conditional fields, search filters, dynamically changing forms.
+    - Uncontrolled: Simple forms, submit par values read karna, file inputs.
+
+    File input ka common example:
+
+    ```
+    const fileRef = useRef(null);
+
+    function handleUpload() {
+    const file = fileRef.current.files[0];
+    console.log(file);
+    }
+
+    return <input type="file" ref={fileRef} />;
+    ```
+
+    File inputs normally uncontrolled hote hain; browser security restrictions ke kaaran unka selected file path/value programmatically set nahi kar sakte.
+
+    ## 🎯 English Interview Answer
+
+    > “An uncontrolled component is a form element whose current value is managed by the DOM rather than React state. We can use a ref to access its value when needed, such as during form submission. Unlike controlled components, uncontrolled components do not require updating React state on every input change. They are useful for simple forms and cases like file inputs.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `value` and `defaultValue`?
+
+    - `value` controls the input's current value in a controlled component.
+    - `defaultValue` sets its initial value for an uncontrolled input.
+
+    Q: Does an uncontrolled input mean React cannot access its value?
+
+    No. React can access the DOM value through a ref or form APIs.
+
+    Q: Which one is better?
+
+    Neither is universally better. Controlled components are generally convenient for complex forms, while uncontrolled components can simplify straightforward forms.
+
+    ### ⭐ One-line memory trick
+
+    “Uncontrolled Component = DOM manages the input value; React reads it through a ref.”
+
+
+
 131. Keys ka use?
 132. Lists render kaise?
 133. Conditional rendering?
