@@ -19984,6 +19984,116 @@ Browser automatically validation kar dega.
 
 
 125. Components kya hote hain?
+
+    ## Hinglish Explanation
+
+    React Components UI ke reusable building blocks hote hain. Inki help se hum bade application ko chhote, manageable parts mein divide karte hain.
+
+    Example: Aapke CRM dashboard mein Navbar, Sidebar, User Table, Search Bar aur Pagination hain. In sabko separate components bana sakte hain.
+
+    ### 1. Component ka example
+
+    ```
+    function Welcome() {
+    return <h1>Welcome to React!</h1>;
+    }
+
+    export default Welcome;
+    ```
+
+    Yahan `Welcome` ek React component hai. Isko doosre component mein use kar sakte hain:
+
+    ```
+    function App() {
+    return (
+        <div>
+        <Welcome />
+        <Welcome />
+        </div>
+    );
+    }
+    ```
+
+    Isse same component do jagah render hoga.
+
+    ### 2. Components ke types
+
+    Functional Components: JavaScript functions jo JSX ya React elements return karte hain. Modern React mein ye standard approach hai.
+
+    ```
+    function Button() {
+    return <button>Click Me</button>;
+    }
+    ```
+
+    Class Components: ES6 classes ke through define kiye jaate hain. Ye legacy React codebases mein mil sakte hain.
+
+    ```
+    import { Component } from "react";
+
+    class Welcome extends Component {
+    render() {
+        return <h1>Hello!</h1>;
+    }
+    }
+    ```
+
+    ### 3. Props ke saath reusable component
+
+    ```
+    function UserCard({ name, role }) {
+    return (
+        <div>
+        <h2>{name}</h2>
+        <p>{role}</p>
+        </div>
+    );
+    }
+
+    function App() {
+    return (
+        <>
+        <UserCard name="Raj" role="Developer" />
+        <UserCard name="Amit" role="Manager" />
+        </>
+    );
+    }
+    ```
+
+    Yahan ek hi `UserCard` component different data ke saath reuse ho raha hai.
+
+    ### 4. Components ke benefits
+
+    - Reusability: Same UI multiple places par use kar sakte hain.
+    - Maintainability: Changes ko manage karna easier hota hai.
+    - Separation of concerns: UI ko logical parts mein organize kar sakte hain.
+    - Testing: Individual components ko separately test kar sakte hain.
+
+    Important: React component ka naam generally capital letter se start hona chahiye, jaise `UserCard`, `Navbar`, `LoginForm`.
+
+    ## 🎯 English Interview Answer
+
+    > “Components are the reusable building blocks of a React application. They allow us to divide the user interface into smaller, independent, and manageable parts. A component can accept data through props and can manage its own state when needed. For example, a Navbar, UserCard, or LoginForm can be separate components. This improves code reusability, maintainability, and testability.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between a component and an element?
+
+    - Component: A function or class that defines UI behavior and rendering.
+    - Element: A description of what React should render, such as `<UserCard name="Raj" />`.
+
+    Q: Can a component have its own state?
+
+    Yes. Functional components can use hooks such as `useState` to manage state.
+
+    Q: Why should component names start with a capital letter?
+
+    React uses capitalization to distinguish custom React components from built-in HTML elements. For example, `<UserCard />` is a component, while `<div />` is a built-in HTML element.
+
+    ### ⭐ One-line memory trick
+
+    “Component = Reusable UI building block + Props + Optional State.”
+
 126. Functional vs class components?
 127. Props kya hain?
 128. State kya hai?
