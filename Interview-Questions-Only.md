@@ -20316,6 +20316,104 @@ Browser automatically validation kar dega.
 
 
 128. State kya hai?
+
+    ## Hinglish Explanation
+
+    State React component ka data hota hai jo time ke saath change ho sakta hai. Jab state update hoti hai, React component ko re-render karta hai taaki UI updated data show kar sake.
+
+    Example: Aapke CRM dashboard mein notification count, search input, logged-in user ya selected filter state ho sakte hain.
+
+    ### 1. State kaise kaam karti hai?
+
+    React mein functional components ke andar state manage karne ke liye `useState()` Hook use karte hain.
+
+    ```
+    import { useState } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+        <h2>Count: {count}</h2>
+
+        <button onClick={() => setCount(count + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+
+    export default Counter;
+    ```
+
+    Step-by-step:
+
+    1. `useState(0)` initial state `0` set karta hai.
+    2. `count` current state value hai.
+    3. `setCount()` state update karne ka function hai.
+    4. Button click par state update hoti hai.
+    5. React component ko re-render karta hai aur updated count display hota hai.
+
+    ### 2. State ko directly modify kyun nahi karna chahiye?
+
+    ❌ Incorrect:
+
+    ```
+    count = count + 1;
+    ```
+
+    ✅ Correct:
+
+    ```
+    setCount(count + 1);
+    ```
+
+    React ke state setter ka use karne se React ko update schedule karne ka signal milta hai. Direct assignment se React update reliably trigger nahi hota.
+
+    Objects aur arrays ke liye bhi generally new value create karein:
+
+    ```
+    setUser({
+    ...user,
+    name: "Raj"
+    });
+    ```
+
+    ### 3. State vs Props
+
+    | State                                            | Props                                  |
+    | ------------------------------------------------ | -------------------------------------- |
+    | Component ka changing data                       | Parent se received data                |
+    | Setter/dispatch se update hoti hai               | Child mein read-only treat hoti hai    |
+    | Input, counter, toggle jaise data ke liye        | Parent-child data passing ke liye      |
+    | Component ya shared state owner manage karta hai | Parent ya data provider pass karta hai |
+
+    Important: Har variable ko state banana zaroori nahi hai. State tab use karein jab value change hone par UI update honi chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “State is data managed by a React component that can change over time. In functional components, we commonly use the useState Hook to create state and update it through a setter function. When the state changes, React schedules a re-render so the UI can reflect the updated value. State is useful for managing things like form inputs, counters, selected filters, and toggles.”
+
+    ### Interview Follow-up
+
+    Q: What happens when state changes?
+
+    React schedules a re-render of the component. React then determines and commits any necessary UI updates.
+
+    Q: Can we update state directly?
+
+    No. We should use the state setter or reducer dispatch rather than directly mutating state.
+
+    Q: Does every variable need to be state?
+
+    No. If a value doesn't need to trigger a UI update when it changes, a normal variable or another appropriate mechanism may be enough.
+
+    ### ⭐ One-line memory trick
+
+    “State = Component ka changing data; State update → Re-render → Updated UI.”
+
+
 129. Controlled components?
 130. Uncontrolled components?
 131. Keys ka use?
