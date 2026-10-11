@@ -20095,6 +20095,117 @@ Browser automatically validation kar dega.
     “Component = Reusable UI building block + Props + Optional State.”
 
 126. Functional vs class components?
+
+    ## Hinglish Explanation
+
+    React mein Functional Components aur Class Components dono UI banane ke tarike hain. Main difference inke syntax aur state/lifecycle manage karne ke tarike mein hai.
+
+    - Functional Component: JavaScript function hota hai jo JSX return karta hai. State aur lifecycle-related behavior ke liye Hooks use kar sakte hain.
+    - Class Component: ES6 class hoti hai jo `React.Component` extend karti hai. Isme UI render karne ke liye `render()` method hota hai.
+    - Modern React development mein Functional Components + Hooks preferred approach hai.
+    - Class Components legacy projects mein abhi bhi milte hain, aur React unhe support karta hai.
+
+    ### 1. Functional Component
+
+    ```
+    import { useState } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <button onClick={() => setCount(count + 1)}>
+        Count: {count}
+        </button>
+    );
+    }
+
+    export default Counter;
+    ```
+
+    Kaise kaam karta hai?
+
+    - `useState()` state manage karta hai.
+    - `setCount()` state update karta hai.
+    - State update hone par React component ko re-render karta hai.
+    - Lifecycle-related behavior ke liye `useEffect()` jaise Hooks use kar sakte hain.
+
+    ### 2. Class Component
+
+    ```
+    import { Component } from "react";
+
+    class Counter extends Component {
+    state = {
+        count: 0
+    };
+
+    render() {
+        return (
+        <button
+            onClick={() =>
+            this.setState({ count: this.state.count + 1 })
+            }
+        >
+            Count: {this.state.count}
+        </button>
+        );
+    }
+    }
+
+    export default Counter;
+    ```
+
+    Kaise kaam karta hai?
+
+    - State `this.state` mein rakhi jaati hai.
+    - State update karne ke liye `this.setState()` use hota hai.
+    - UI `render()` method se return hota hai.
+    - Lifecycle ke liye `componentDidMount()`, `componentDidUpdate()` aur `componentWillUnmount()` jaise methods hote hain.
+
+    ### 3. Functional vs Class Components
+
+    | Feature            | Functional               | Class                            |
+    | ------------------ | ------------------------ | -------------------------------- |
+    | Definition         | JavaScript function      | ES6 class                        |
+    | UI                 | JSX return karta hai     | `render()` method                |
+    | State              | `useState`, `useReducer` | `this.state`                     |
+    | State update       | State setter             | `this.setState()`                |
+    | Lifecycle behavior | Hooks, jaise `useEffect` | Lifecycle methods                |
+    | `this` keyword     | Usually required nahi    | Commonly required                |
+    | Code complexity    | Generally simpler        | Often more boilerplate           |
+    | Modern React       | Preferred approach       | Existing/legacy code mein common |
+
+    ### 4. Interview mein important point
+
+    Functional Components mein Hooks use karne ke liye Rules of Hooks follow karne hote hain. For example, `useState()` ko normal conditions ya loops ke andar directly call nahi karna chahiye.
+
+    Also, `useEffect()` class lifecycle methods ka exact one-to-one replacement nahi hai; dono ka behavior aur mental model different ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Functional and class components are two ways to define components in React. Functional components are JavaScript functions that return JSX and use Hooks like useState and useEffect to manage state and lifecycle-related behavior. Class components extend React.Component, use this.state and this.setState for state management, and provide lifecycle methods such as componentDidMount. In modern React development, functional components with Hooks are generally preferred because they usually require less boilerplate and are easier to organize.”
+
+    ### Interview Follow-up
+
+    Q: Which component type should we use in a new React project?
+
+    Generally, use functional components with Hooks. They are the standard approach in modern React development.
+
+    Q: Can functional components manage state?
+
+    Yes. Hooks like `useState` and `useReducer` allow functional components to manage state.
+
+    Q: Are class components deprecated?
+
+    No. Class components are still supported, but functional components are generally preferred for new development.
+
+    ### ⭐ One-line memory trick
+
+    “Functional = Function + Hooks; Class = `React.Component` + `this.state` + Lifecycle Methods.”
+
+
+
 127. Props kya hain?
 128. State kya hai?
 129. Controlled components?
