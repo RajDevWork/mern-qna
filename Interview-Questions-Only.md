@@ -20415,6 +20415,113 @@ Browser automatically validation kar dega.
 
 
 129. Controlled components?
+
+    ## Hinglish Explanation
+
+    Controlled Component React mein aisa form element hota hai jiska current value React state se control hota hai.
+
+    Simple example: Login form mein user email type karta hai. React state email ki current value store karti hai, aur `onChange` event state update karta hai.
+
+    ### 1. Controlled Component Example
+
+    ```
+    import { useState } from "react";
+
+    function LoginForm() {
+    const [email, setEmail] = useState("");
+
+    return (
+        <div>
+        <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email"
+        />
+
+        <p>Email: {email}</p>
+        </div>
+    );
+    }
+
+    export default LoginForm;
+    ```
+
+    ### 2. Ye kaise kaam karta hai?
+
+    1. `useState("")` email ki initial value set karta hai.
+    2. `value={email}` input ki displayed value ko React state se connect karta hai.
+    3. User type karta hai to `onChange` event fire hota hai.
+    4. `setEmail(e.target.value)` state update karta hai.
+    5. React re-render karta hai aur input updated state ke saath display hota hai.
+
+    Flow:
+
+    User types in input
+
+    `onChange` updates state
+
+    `value` reads state
+
+    Updated input UI
+
+    ### 3. Controlled vs Uncontrolled Components
+
+    | Feature                  | Controlled                     | Uncontrolled                         |
+    | ------------------------ | ------------------------------ | ------------------------------------ |
+    | Value manage karta hai   | React state                    | DOM input                            |
+    | Current value read karna | State se                       | Usually `ref` se                     |
+    | Update handling          | `onChange` + state setter      | Browser input value update karta hai |
+    | Validation               | State ke saath convenient      | DOM value read karke bhi possible    |
+    | Common use               | Dynamic forms, live validation | Simple forms, file inputs            |
+
+    ### 4. Uncontrolled Component Example
+
+    ```
+    import { useRef } from "react";
+
+    function LoginForm() {
+    const emailRef = useRef(null);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        console.log(emailRef.current.value);
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+        <input type="email" ref={emailRef} />
+        <button type="submit">Submit</button>
+        </form>
+    );
+    }
+    ```
+
+    Yahan input ki value React state se control nahi hoti. Submit par `ref` se DOM ki current value read ki jaati hai.
+
+    ## 🎯 English Interview Answer
+
+    > “A controlled component is a form element whose value is controlled by React state. We provide the current value through a prop like `value` and update the state using an event handler such as `onChange`. This gives us direct control over form data and makes validation, conditional rendering, and form submission easier to manage.”
+
+    ### Interview Follow-up
+
+    Q: Why do we use controlled components?
+
+    They make form values predictable and easier to validate, update, and synchronize with other UI elements.
+
+    Q: Is every React input required to be controlled?
+
+    No. Uncontrolled inputs are also valid. The choice depends on the form's requirements.
+
+    Q: What happens if we provide `value` but don't update state in `onChange`?
+
+    The input may appear read-only because React keeps rendering the same value. If the input should be editable, update its state or intentionally use `readOnly`.
+
+    ### ⭐ One-line memory trick
+
+    “Controlled Component = React State controls input value → `value` + `onChange`.”
+
+
 130. Uncontrolled components?
 131. Keys ka use?
 132. Lists render kaise?
