@@ -20628,6 +20628,96 @@ Browser automatically validation kar dega.
 
 
 131. Keys ka use?
+
+    ## Hinglish Explanation
+
+    React mein Keys ka use list ke elements ko uniquely identify karne ke liye hota hai. Isse React samajh sakta hai ki list mein kaunsa item add, remove ya update hua hai.
+
+    Example: Aapke CRM mein 100 users ki list hai. Agar ek user add ya delete hota hai, to React keys ki help se items ki identity track kar sakta hai.
+
+    ### 1. Keys kaise use karte hain?
+
+    ```
+    function Users() {
+    const users = [
+        { id: 101, name: "Raj" },
+        { id: 102, name: "Amit" },
+        { id: 103, name: "Priya" }
+    ];
+
+    return (
+        <ul>
+        {users.map((user) => (
+            <li key={user.id}>
+            {user.name}
+            </li>
+        ))}
+        </ul>
+    );
+    }
+    ```
+
+    Yahan `key={user.id}` har item ko unique identity deta hai.
+
+    ### 2. Keys kyun important hain?
+
+    - Identity: React ko items identify karne mein help karti hain.
+    - Efficient updates: React list changes ko reconcile kar sakta hai.
+    - State preservation: Stable keys component state ko correct item ke saath associate karne mein help karti hain.
+    - Warnings: Dynamic lists mein missing keys React warning cause kar sakti hain.
+
+    ### 3. Index ko key banana chahiye?
+
+    ```
+    {users.map((user, index) => (
+    <li key={index}>{user.name}</li>
+    ))}
+    ```
+
+    Ye technically valid hai, lekin agar list mein insertion, deletion ya reordering hoti hai, to index-based keys wrong item identity associate kar sakti hain.
+
+    Better approach: Database ID ya stable unique identifier use karein.
+
+    ```
+    <li key={user.id}>{user.name}</li>
+    ```
+
+    Index tab acceptable ho sakta hai jab list static ho, items reorder/insert/delete na hote hon aur koi better stable ID available na ho.
+
+    ### 4. Important Interview Points
+
+    - Keys siblings ke beech unique honi chahiye.
+    - Keys globally unique hona zaroori nahi hai.
+    - `key` React ka special prop hai; component ke andar `props.key` se access nahi kar sakte.
+    - Agar child ko ID bhi chahiye, to separately pass karein:
+
+    ```
+    <UserCard key={user.id} userId={user.id} />
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > “Keys in React are special identifiers used to identify elements in a list during reconciliation. They help React determine which items have been added, removed, or updated. We should use stable and unique identifiers, such as database IDs, as keys. Using array indexes can cause incorrect identity tracking when items are inserted, deleted, or reordered.”
+
+    ### Interview Follow-up
+
+    Q: What happens if we don't provide keys?
+
+    React may show a warning for elements in a list. Missing or unstable keys can also make reconciliation and state preservation less predictable.
+
+    Q: Why is an array index not always a good key?
+
+    When list order changes, an index can point to a different item. This may cause incorrect component state to be associated with list items.
+
+    Q: Can we use the same key in different lists?
+
+    Yes. Keys only need to be unique among siblings in the same list.
+
+    ### ⭐ One-line memory trick
+
+    “Keys = List items ki stable identity, taaki React changes correctly track kar sake.”
+
+
 132. Lists render kaise?
 133. Conditional rendering?
 134. Forms handle kaise?
