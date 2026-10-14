@@ -21480,6 +21480,77 @@ Browser automatically validation kar dega.
 
 
 139. Updating kya hai?
+
+    ## Hinglish Explanation
+
+    Updating React ka woh process hai jab kisi existing component ke props ya state change hote hain aur React UI ko update karta hai.
+
+    Example: Ek counter hai jo `0` se start hota hai. Jaise hi aap button click karke count `1` karte ho, component update hota hai.
+
+    Updating ke main steps:
+
+    1. State ya props change hote hain — jaise counter ki value `0` se `1` hona.
+    2. Component re-render hota hai — React updated UI calculate karta hai.
+    3. DOM update hota hai — React zaroorat ke hisaab se DOM mein changes commit karta hai.
+    4. Effects run ho sakte hain — agar `useEffect` ki dependencies change hui hain.
+
+    ### Small Implementation
+
+    ```
+    import { useState, useEffect } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        console.log("Count updated:", count);
+    }, [count]);
+
+    return (
+        <div>
+        <h2>Count: {count}</h2>
+        <button onClick={() => setCount(c => c + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+    ```
+
+    Explanation:
+
+    - Initially `count = 0` hota hai.
+    - Button click karne par state change hoti hai.
+    - React component ko re-render karta hai.
+    - `count` change hone par `useEffect` run hota hai.
+
+    Important: Har re-render ka matlab DOM mein actual change hona nahi hai. React DOM ko tabhi update karta hai jab zaroori ho.
+
+    ## 🎯 English Interview Answer
+
+    > “Updating is the process in React when an existing component re-renders because its state or props have changed. React calculates the updated UI and commits the necessary changes to the DOM. We can use useEffect with dependencies to perform side effects when specific values change.”
+
+    ### Interview Follow-up
+
+    Q: Which lifecycle method handles updating in class components?
+
+    Common methods include `componentDidUpdate()` and `shouldComponentUpdate()`. The first runs after an update is committed; the second can help control whether a class component should update.
+
+    Q: How do you handle updating in functional components?
+
+    We commonly use `useEffect` with dependencies:
+
+    ```
+    useEffect(() => {
+    console.log("Count changed");
+    }, [count]);
+    ```
+
+    ### ⭐ One-line memory trick
+
+    Mounting = First time added; Updating = Existing component mein changes.
+
+
 140. Unmounting kya hai?
 141. Hooks kya hain?
 142. useState?
