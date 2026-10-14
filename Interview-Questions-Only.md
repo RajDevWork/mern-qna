@@ -21218,6 +21218,77 @@ Browser automatically validation kar dega.
 
 
 136. Synthetic events kya hain?
+
+    ## Hinglish Explanation
+
+    Synthetic Events React ka event system hai jo browser ke native events ko consistent interface ke through handle karta hai.
+
+    Simple words mein, React mein jab aap `onClick`, `onChange` ya `onSubmit` use karte ho, to handler ko generally React ka SyntheticEvent object milta hai.
+
+    ### 1. Synthetic Event Example
+
+    ```
+    function App() {
+    function handleClick(event) {
+        console.log(event.type);   // "click"
+        console.log(event.target); // Clicked element
+    }
+
+    return (
+        <button onClick={handleClick}>
+        Click Me
+        </button>
+    );
+    }
+    ```
+
+    Yahan `event` React ka Synthetic Event object hai, jo native browser event ke saath consistent API provide karta hai.
+
+    ### 2. Synthetic Events kyun use hote hain?
+
+    - Consistent API: Different browsers mein events ko handle karna easier hota hai.
+    - Native event information: `target`, `currentTarget` aur `type` jaise properties available hoti hain.
+    - Event methods: `preventDefault()` aur `stopPropagation()` use kar sakte hain.
+    - React integration: Events React ke rendering aur event-handling system ke saath integrate hote hain.
+
+    ### 3. Native Event vs Synthetic Event
+
+    | Feature     | Native Event         | Synthetic Event                                  |
+    | ----------- | -------------------- | ------------------------------------------------ |
+    | Provided by | Browser              | React event system                               |
+    | Example     | DOM `click` event    | React `onClick` handler ka event                 |
+    | Interface   | Browser Event API    | Native event ke saath compatible React interface |
+    | Access      | `addEventListener()` | JSX event handler                                |
+
+    React ka Synthetic Event native event ko completely replace nahi karta; `event.nativeEvent` se underlying native event access kiya ja sakta hai.
+
+    ### 4. Important Interview Point
+
+    Purane React versions mein Synthetic Events ko event pooling ke through reuse kiya jata tha. React 17 aur later mein web par event pooling remove kar diya gaya hai, isliye modern React mein async callback ke liye `event.persist()` ki normally zarurat nahi hoti.
+
+    ## 🎯 English Interview Answer
+
+    > “A Synthetic Event is React's event object that provides a consistent interface for handling browser events. When we use handlers such as onClick or onChange, React provides an event object with properties like target, currentTarget, and methods like preventDefault and stopPropagation. It integrates event handling with React and provides a consistent API across browsers. In modern React, event pooling is no longer used on the web.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `event.target` and `event.currentTarget`?
+
+    - `target` is the element where the event originated.
+    - `currentTarget` is the element whose handler is currently executing.
+
+    Q: Do we need `event.persist()` in modern React?
+
+    Normally, no. Event pooling was removed in React 17 for the web.
+
+    Q: Can we access the native browser event?
+
+    Yes, through `event.nativeEvent`.
+
+    ### ⭐ One-line memory trick
+
+    “Synthetic Event = React ka consistent event interface over native browser events.”
+
 137. Lifecycle methods?
 138. Mounting kya hai?
 139. Updating kya hai?
