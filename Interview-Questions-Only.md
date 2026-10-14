@@ -20842,6 +20842,116 @@ Browser automatically validation kar dega.
 
 
 133. Conditional rendering?
+
+    ## Hinglish Explanation
+
+    Conditional Rendering ka matlab hai condition ke according UI ke different elements render karna. React mein hum JavaScript ki `if-else`, ternary operator (`? :`), aur logical AND (`&&`) ka use kar sakte hain.
+
+    Example: CRM application mein agar user logged in hai to Dashboard dikhana hai, warna Login page.
+
+    ### 1. `if-else` se Conditional Rendering
+
+    ```
+    function UserStatus({ isLoggedIn }) {
+    if (isLoggedIn) {
+        return <h2>Welcome back!</h2>;
+    }
+
+    return <h2>Please log in</h2>;
+    }
+    ```
+
+    Yahan condition ke according component alag UI return karta hai.
+
+    ### 2. Ternary Operator (`? :`)
+
+    Jab do UI options mein se ek choose karna ho, tab ternary useful hai.
+
+    ```
+    function UserStatus({ isLoggedIn }) {
+    return (
+        <div>
+        {isLoggedIn ? (
+            <h2>Dashboard</h2>
+        ) : (
+            <h2>Login Page</h2>
+        )}
+        </div>
+    );
+    }
+    ```
+
+    ### 3. Logical AND (`&&`)
+
+    Jab condition true hone par hi element dikhana ho:
+
+    ```
+    function Notifications({ count }) {
+    return (
+        <div>
+        <h2>Notifications</h2>
+
+        {count > 0 && <p>You have {count} new messages.</p>}
+        </div>
+    );
+    }
+    ```
+
+    Agar `count > 0` true hai, message render hoga.
+
+    Important interview trap:
+
+    ```
+    {count && <p>New messages</p>}
+    ```
+
+    Agar `count = 0` hai, to React number `0` ko UI mein render kar sakta hai. Isliye numeric conditions ke liye safer approach hai:
+
+    ```
+    {count > 0 && <p>New messages</p>}
+    ```
+
+    ### 4. Multiple Conditions
+
+    ```
+    function Status({ loading, error, users }) {
+    if (loading) return <p>Loading...</p>;
+
+    if (error) return <p>Something went wrong.</p>;
+
+    if (users.length === 0) return <p>No users found.</p>;
+
+    return <p>Users loaded: {users.length}</p>;
+    }
+    ```
+
+    Ye approach API-driven React applications mein kaafi common hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Conditional rendering in React means displaying different UI elements based on a condition. We can use normal if-else statements, the ternary operator, or logical AND inside JSX. For example, we can show a loading message while data is being fetched, an error message if the request fails, and the actual content when the data is available. It helps us build dynamic and interactive user interfaces.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `&&` and the ternary operator?
+
+    - `&&` is useful when we want to render something only if a condition is true.
+    - Ternary is useful when we want to choose between two alternatives.
+
+    Q: Can we use `if-else` directly inside JSX?
+
+    No, not as a statement inside JSX expressions. We can use `if-else` before the `return`, or use a ternary expression or `&&` inside JSX.
+
+    Q: How do you handle loading, error, and success states?
+
+    Use conditional checks in order: loading first, then error, then empty data if applicable, and finally the successful UI.
+
+    ### ⭐ One-line memory trick
+
+    “Condition ke according UI choose karna = Conditional Rendering (`if-else`, `? :`, `&&`).”
+
+
+
 134. Forms handle kaise?
 135. Events React mein?
 136. Synthetic events kya hain?
