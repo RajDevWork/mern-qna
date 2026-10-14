@@ -21552,6 +21552,70 @@ Browser automatically validation kar dega.
 
 
 140. Unmounting kya hai?
+
+    ## Hinglish Explanation
+
+    Unmounting React ka woh process hai jab koi component UI se remove ho jata hai.
+
+    Example: Aapne ek modal ya popup open kiya. Jab aap Close button click karte ho aur popup screen se remove ho jata hai, toh us component ka unmount hona kehte hain.
+
+    Unmounting ke time hum cleanup karte hain, taaki unnecessary background tasks chalte na rahein.
+
+    Common cleanup tasks:
+
+    1. `setInterval()` ya `setTimeout()` ko clear karna.
+    2. Event listeners remove karna.
+    3. Subscriptions close karna.
+    4. Unnecessary resources release karna.
+
+    ### Small Implementation
+
+    ```
+    import { useEffect } from "react";
+
+    function Timer() {
+    useEffect(() => {
+        const timer = setInterval(() => {
+        console.log("Timer running...");
+        }, 1000);
+
+        return () => {
+        clearInterval(timer);
+        console.log("Component unmounted!");
+        };
+    }, []);
+
+    return <h2>Timer Component</h2>;
+    }
+    ```
+
+    Explanation:
+
+    - Component mount hone par timer start hota hai.
+    - Component UI se remove hone par cleanup function run hota hai.
+    - `clearInterval(timer)` timer ko stop kar deta hai.
+
+    Important: `useEffect` ka cleanup function dependency change hone par bhi run hota hai, sirf unmount hone par nahi.
+
+    ## 🎯 English Interview Answer
+
+    > “Unmounting is the process in React when a component is removed from the user interface. During unmounting, we clean up resources such as timers, event listeners, and subscriptions to prevent memory leaks and unnecessary background work. In functional components, we perform this cleanup by returning a cleanup function from useEffect.”
+
+    ### Interview Follow-up
+
+    Q: Which lifecycle method is used for unmounting in class components?
+
+    `componentWillUnmount()` is called just before a class component is removed from the UI. It is commonly used to clear timers and remove event listeners.
+
+    Q: Why is cleanup important?
+
+    Cleanup prevents unnecessary background tasks, resource leaks, and unwanted callbacks after a component is removed.
+
+    ### ⭐ One-line memory trick
+
+    Mounting = Add, Updating = Change, Unmounting = Remove + Cleanup.
+
+
 141. Hooks kya hain?
 142. useState?
 143. useEffect?
