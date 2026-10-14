@@ -21415,6 +21415,70 @@ Browser automatically validation kar dega.
 
 
 138. Mounting kya hai?
+
+    ## Hinglish Explanation
+
+    Mounting React ka woh process hai jab koi component pehli baar screen par render hokar UI ka part banta hai.
+
+    Example: Jab aap website open karte ho aur `UserProfile` component screen par dikhta hai, toh us component ka mount hona kehte hain.
+
+    Mounting ke main steps:
+
+    1. Component render hota hai — React decide karta hai ki UI mein kya dikhana hai.
+    2. DOM update hota hai — React browser mein required UI add karta hai.
+    3. Effects run hote hain — `useEffect` ka setup function DOM commit ke baad run hota hai.
+
+    ### Small Implementation
+
+    ```
+    import { useEffect } from "react";
+
+    function UserProfile() {
+    useEffect(() => {
+        console.log("Component mounted!");
+    }, []);
+
+    return <h2>Welcome User</h2>;
+    }
+
+    export default UserProfile;
+    ```
+
+    Explanation:
+
+    - `UserProfile` pehli baar UI mein aata hai.
+    - `useEffect` ka setup function run hota hai.
+    - Console mein `"Component mounted!"` print hota hai.
+
+    Note: Development mode mein React Strict Mode ke kaaran effect ka setup aur cleanup extra baar chal sakta hai. Isliye har baar sirf ek log aane ki guarantee nahi hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Mounting is the process in React when a component is rendered for the first time and added to the user interface. After React commits the changes to the DOM, effects such as useEffect can run. We commonly use mounting-related effects to fetch initial data, set up subscriptions, or initialize resources.”
+
+    ### Interview Follow-up
+
+    Q: How do you handle mounting in functional components?
+
+    We commonly use `useEffect` with an empty dependency array:
+
+    ```
+    useEffect(() => {
+    console.log("Component mounted");
+    }, []);
+    ```
+
+    Q: What is the difference between mounting and updating?
+
+    - Mounting: Component first time UI mein add hota hai.
+    - Updating: Existing component ke props ya state change hone par UI update hota hai.
+
+    ### ⭐ One-line memory trick
+
+    Mounting = Component first time screen par aana.
+
+
+
 139. Updating kya hai?
 140. Unmounting kya hai?
 141. Hooks kya hain?
