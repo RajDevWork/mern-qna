@@ -21096,6 +21096,127 @@ Browser automatically validation kar dega.
 
 
 135. Events React mein?
+
+    ## Hinglish Explanation
+
+    React mein Events user ke actions ko handle karne ke liye use hote hain, jaise button click, input typing, form submit, mouse hover aur keyboard press.
+
+    React mein event handlers JSX ke through attach kiye jaate hain. Event names generally camelCase mein hote hain, jaise `onClick`, `onChange`, `onSubmit`.
+
+    ### 1. Button Click Event
+
+    ```
+    function App() {
+    function handleClick() {
+        alert("Button clicked!");
+    }
+
+    return (
+        <button onClick={handleClick}>
+        Click Me
+        </button>
+    );
+    }
+    ```
+
+    - `onClick` event handler hai.
+    - `handleClick` function click hone par execute hota hai.
+    - `onClick={handleClick}` likhte hain, `onClick={handleClick()}` nahi, kyunki function ko render ke time call nahi karna hai.
+
+    ### 2. Input Change Event
+
+    ```
+    import { useState } from "react";
+
+    function SearchBox() {
+    const [search, setSearch] = useState("");
+
+    return (
+        <input
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Search users"
+        />
+    );
+    }
+    ```
+
+    Jab user input type karta hai, `onChange` fire hota hai aur state update hoti hai.
+
+    ### 3. Form Submit Event
+
+    ```
+    function LoginForm() {
+    function handleSubmit(event) {
+        event.preventDefault();
+        console.log("Form submitted");
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+        <input type="email" required />
+        <button type="submit">Login</button>
+        </form>
+    );
+    }
+    ```
+
+    `preventDefault()` browser ka default form navigation/reload behavior rokta hai.
+
+    ### 4. Common React Events
+
+    | Event           | Use                     |
+    | --------------- | ----------------------- |
+    | `onClick`       | Button click            |
+    | `onChange`      | Input value change      |
+    | `onSubmit`      | Form submit             |
+    | `onFocus`       | Input focus             |
+    | `onBlur`        | Input focus lose        |
+    | `onMouseEnter`  | Mouse element par enter |
+    | `onKeyDown`     | Key press               |
+    | `onDoubleClick` | Double click            |
+
+    ### 5. Event Object aur `stopPropagation()`
+
+    React event handler ko event object mil sakta hai, jisse target, keyboard details aur event methods access kar sakte hain.
+
+    ```
+    function handleClick(event) {
+    console.log(event.target);
+    event.stopPropagation();
+    }
+    ```
+
+    - `event.target`: Event originate karne wala element.
+    - `event.currentTarget`: Jis element par current handler attached hai.
+    - `event.stopPropagation()`: Event ko parent handlers tak bubble hone se rokta hai.
+
+    React modern versions mein generally native browser events ke saath compatible event system use karta hai. React events ko Synthetic Events bhi kaha jata hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Events in React are used to handle user interactions such as clicks, input changes, keyboard actions, and form submissions. We attach event handlers through JSX using camelCase names like onClick and onChange. Event handlers are usually passed as function references, and React provides an event object that allows us to access event details. We can also use methods like preventDefault and stopPropagation when needed.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `onClick={handleClick}` and `onClick={handleClick()}`?
+
+    - `onClick={handleClick}` passes the function reference; it runs when clicked.
+    - `onClick={handleClick()}` calls the function immediately during rendering.
+
+    Q: What is `event.preventDefault()`?
+
+    It prevents the browser's default behavior for an event, such as normal form submission.
+
+    Q: What is `event.stopPropagation()`?
+
+    It stops the event from propagating further through the event propagation path, such as bubbling to parent elements.
+
+    ### ⭐ One-line memory trick
+
+    “React Events = User Action → Event Handler → State/UI Update.”
+
+
 136. Synthetic events kya hain?
 137. Lifecycle methods?
 138. Mounting kya hai?
