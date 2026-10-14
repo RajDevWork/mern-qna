@@ -21290,6 +21290,130 @@ Browser automatically validation kar dega.
     “Synthetic Event = React ka consistent event interface over native browser events.”
 
 137. Lifecycle methods?
+
+    ## Hinglish Explanation
+
+    React mein Lifecycle Methods class components ke special methods hain jo component ke different stages par automatically call hote hain — jaise component create hona, update hona aur remove hona.
+
+    Simple example: Jab aap CRM dashboard open karte ho, component API se data fetch kar sakta hai. Jab component update hota hai, UI refresh hoti hai. Aur jab component remove hota hai, event listeners ya timers ki cleanup karni pad sakti hai.
+
+    ### 1. React Component Lifecycle
+
+    Mounting
+
+    Component first time render hota hai
+
+    `componentDidMount()`
+
+    Updating
+
+    Props ya state change hoti hai
+
+    `componentDidUpdate()`
+
+    Unmounting
+
+    Component UI se remove hota hai
+
+    `componentWillUnmount()`
+
+    ### 2. Important Lifecycle Methods
+
+    | Method                       | Kab call hota hai?                                        |
+    | ---------------------------- | --------------------------------------------------------- |
+    | `constructor()`              | Instance initialize karte waqt                            |
+    | `render()`                   | UI describe karne ke liye                                 |
+    | `componentDidMount()`        | Component mount hone ke baad                              |
+    | `componentDidUpdate()`       | Update commit hone ke baad                                |
+    | `componentWillUnmount()`     | Component remove hone se pehle                            |
+    | `shouldComponentUpdate()`    | Decide karne ke liye ki update skip karna chahiye ya nahi |
+    | `getDerivedStateFromProps()` | Props se state derive karne ke liye, special cases mein   |
+
+    ### 3. Class Component Example
+
+    ```
+    import { Component } from "react";
+
+    class Users extends Component {
+    componentDidMount() {
+        console.log("Component mounted");
+        // Initial data fetching setup
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.userId !== this.props.userId) {
+        console.log("User ID changed");
+        }
+    }
+
+    componentWillUnmount() {
+        console.log("Component is being removed");
+        // Clear timers or subscriptions
+    }
+
+    render() {
+        return <h2>Users Component</h2>;
+    }
+    }
+    ```
+
+    Explanation:
+
+    - `componentDidMount()` — initial mount ke baad.
+    - `componentDidUpdate()` — update commit hone ke baad.
+    - `componentWillUnmount()` — component remove hone se pehle, cleanup ke liye.
+
+    Ye lifecycle methods primarily class components mein use hote hain. Modern React mein functional components aur Hooks commonly preferred hain.
+
+    ### 4. Functional Components mein Lifecycle kaise handle karein?
+
+    Functional components mein `useEffect()` se side effects aur cleanup manage kar sakte hain.
+
+    ```
+    import { useEffect } from "react";
+
+    function Users() {
+    useEffect(() => {
+        console.log("Effect setup");
+
+        return () => {
+        console.log("Cleanup");
+        };
+    }, []);
+
+    return <h2>Users Component</h2>;
+    }
+    ```
+
+    - ke saath effect normally mount ke baad run hota hai.
+    - Cleanup actual unmount par run hoti hai.
+    - Development mein React Strict Mode extra setup/cleanup cycle chala sakta hai.
+    - `useEffect()` class lifecycle methods ka exact one-to-one replacement nahi hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Lifecycle methods are special methods in React class components that run at different stages of a component's life. Mounting happens when the component is added to the UI, updating happens when its props or state change, and unmounting happens when it is removed. Common methods include componentDidMount, componentDidUpdate, and componentWillUnmount. In modern React, functional components use Hooks such as useEffect to manage side effects and cleanup.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `componentDidMount` and `componentWillUnmount`?
+
+    - `componentDidMount()` runs after the component mounts.
+    - `componentWillUnmount()` runs before the component is removed.
+
+    Q: Why do we need cleanup?
+
+    To prevent unnecessary timers, subscriptions, or event listeners from continuing after they are no longer needed.
+
+    Q: Is `useEffect()` exactly the same as lifecycle methods?
+
+    No. It manages side effects based on dependencies and has setup/cleanup semantics, which do not map perfectly to individual class lifecycle methods.
+
+    ### ⭐ One-line memory trick
+
+    “Mount = Added, Update = Changed, Unmount = Removed.”
+
+
 138. Mounting kya hai?
 139. Updating kya hai?
 140. Unmounting kya hai?
