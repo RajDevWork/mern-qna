@@ -20953,6 +20953,148 @@ Browser automatically validation kar dega.
 
 
 134. Forms handle kaise?
+
+    ## Hinglish Explanation
+
+    React mein Forms Handling ka matlab hai user se input lena, input values manage karna, validation karna aur form submit hone par data process ya API ko send karna.
+
+    React mein commonly Controlled Components use karke forms handle kiye jaate hain, jahan input ki value React state se control hoti hai.
+
+    ### 1. Basic Form Handling
+
+    ```
+    import { useState } from "react";
+
+    function LoginForm() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        console.log({ email, password });
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+        <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+        />
+
+        <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+        />
+
+        <button type="submit">Login</button>
+        </form>
+    );
+    }
+
+    export default LoginForm;
+    ```
+
+    ### 2. Ye kaise kaam karta hai?
+
+    1. `useState()` input values store karta hai.
+    2. `value` input ko React state se connect karta hai.
+    3. `onChange` user ke input par state update karta hai.
+    4. `onSubmit` form submission handle karta hai.
+    5. `e.preventDefault()` browser ka default page reload rokta hai.
+    6. `required` basic browser-level validation provide karta hai.
+
+    ### 3. Validation kaise karein?
+
+    Example: Email aur password validate karna.
+
+    ```
+    function validateForm(email, password) {
+    const errors = {};
+
+    if (!email.includes("@")) {
+        errors.email = "Enter a valid email";
+    }
+
+    if (password.length < 8) {
+        errors.password = "Password must be at least 8 characters";
+    }
+
+    return errors;
+    }
+    ```
+
+    Submission se pehle validation run kar sakte hain. Real application mein email validation ke liye suitable validation rules/schema use karein, aur server par bhi validation zaroor karein.
+
+    ### 4. API ko data kaise send karein?
+
+    ```
+    async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+        const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+        });
+
+        if (!response.ok) {
+        throw new Error("Login failed");
+        }
+
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error(error.message);
+    }
+    }
+    ```
+
+    Is function ko form ke `onSubmit` handler ke roop mein use kar sakte hain. Production login flow mein credentials, server responses aur authentication tokens ko securely handle karna zaroori hai.
+
+    ### 5. Best Practices
+
+    - Input values ke liye controlled components use karein, jab state tracking useful ho.
+    - `onSubmit` use karein, sirf button ke `onClick` par depend na karein.
+    - Client-side aur server-side validation dono karein.
+    - API request ke dauran loading state manage karein.
+    - Errors user ko clearly show karein.
+    - Passwords ko logs mein print na karein.
+    - Complex forms ke liye React Hook Form ya Formik jaise libraries consider kar sakte hain.
+
+    ## 🎯 English Interview Answer
+
+    > “In React, we handle forms by managing input values, validating user input, and processing form submissions. A common approach is to use controlled components with useState and onChange. We handle submission using the form's onSubmit event and call preventDefault to avoid a full page reload. Before sending data to an API, we validate the input and handle loading and error states. Server-side validation is also essential for security.”
+
+    ### Interview Follow-up
+
+    Q: Why do we use `e.preventDefault()`?
+
+    It prevents the browser's default form submission behavior, which normally causes a page navigation or reload.
+
+    Q: Controlled vs uncontrolled forms?
+
+    - Controlled: React state manages input values.
+    - Uncontrolled: DOM manages input values, which can be accessed through refs or form APIs.
+
+    Q: Is frontend validation enough?
+
+    No. Users can bypass frontend validation, so the backend must validate the submitted data independently.
+
+    ### ⭐ One-line memory trick
+
+    “Form Handling = State → Input → Validation → Submit → API → Error/Success.”
+
+
 135. Events React mein?
 136. Synthetic events kya hain?
 137. Lifecycle methods?
