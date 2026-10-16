@@ -21825,6 +21825,143 @@ Browser automatically validation kar dega.
 
 
 143. useEffect?
+
+    ## Hinglish Explanation
+
+    `useEffect` React ka Hook hai jo component ko external systems ke saath synchronize karne ke liye use hota hai. Jaise API se data fetch karna, event listeners manage karna, timers chalana aur subscriptions handle karna.
+
+    Jab component render hota hai, React pehle UI ko commit karta hai, uske baad `useEffect` ka setup function generally run hota hai.
+
+    ### 1. Syntax
+
+    ```
+    useEffect(() => {
+    // Side effect logic
+
+    return () => {
+        // Cleanup logic
+    };
+    }, [dependencies]);
+    ```
+
+    - Effect function: Jo kaam perform karna hai.
+    - Cleanup function: Timer, listener ya subscription ko clean karna.
+    - Dependencies: Decide karti hain ki effect dobara kab run hoga.
+
+    ### 2. `useEffect` ke 3 important patterns
+
+    ### 1. Empty dependency array `[]`
+
+    Effect initial mount ke baad run hota hai. Development Strict Mode mein extra setup/cleanup cycle ho sakti hai.
+
+    ```
+    useEffect(() => {
+    console.log("Mounted");
+    }, []);
+    ```
+
+    ### 2. Dependency array `[count]`
+
+    Initial mount ke baad aur jab `count` change hota hai, tab effect run hota hai.
+
+    ```
+    useEffect(() => {
+    document.title = `Count: ${count}`;
+    }, [count]);
+    ```
+
+    ### 3. Dependency array omit karna
+
+    Har committed render ke baad effect run hota hai.
+
+    ```
+    useEffect(() => {
+    console.log("After every render");
+    });
+    ```
+
+    ### 3. Practical Example: API se Data Fetch Karna
+
+    ```
+    import { useEffect, useState } from "react";
+
+    function Users() {
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        async function fetchUsers() {
+        const response = await fetch(
+            "https://jsonplaceholder.typicode.com/users"
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch users");
+        }
+
+        const data = await response.json();
+        setUsers(data);
+        }
+
+        fetchUsers().catch(console.error);
+    }, []);
+
+    return (
+        <ul>
+        {users.map(user => (
+            <li key={user.id}>{user.name}</li>
+        ))}
+        </ul>
+    );
+    }
+    ```
+
+    Kaise kaam karta hai?
+
+    1. Component render hota hai.
+    2. Effect API request start karta hai.
+    3. Response aane par `setUsers(data)` state update karta hai.
+    4. React component ko re-render karta hai aur users screen par dikhte hain.
+
+    Production code mein loading/error UI aur zaroorat ke hisaab se request cancellation ya stale-response handling bhi add karni chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “useEffect is a React Hook used to synchronize a component with external systems, such as APIs, timers, event listeners, and subscriptions. It runs its setup function after React commits the UI. We can specify dependencies to control when the effect runs and return a cleanup function to release resources. In modern React, we should use useEffect only when we need to synchronize with something outside React.”
+
+    ### Interview Follow-up
+
+    Q1: What is the difference between `useState` and `useEffect`?
+
+    - `useState` stores and updates component state.
+    - `useEffect` synchronizes the component with external systems.
+
+    Q2: What is a cleanup function?
+
+    It is the function returned by an effect. React runs it before re-running that effect with changed dependencies and when the component unmounts.
+
+    ```
+    useEffect(() => {
+    const timer = setInterval(() => {
+        console.log("Running");
+    }, 1000);
+
+    return () => clearInterval(timer);
+    }, []);
+    ```
+
+    Q3: Does `useEffect` always run only once with `[]`?
+
+    No. In production, it normally runs its setup once per mount when dependencies are empty. In development Strict Mode, React may run an extra setup-and-cleanup cycle to help detect bugs.
+
+    Q4: Should we use `useEffect` for every state change?
+
+    No. If a value can be calculated directly from props or state, calculate it during rendering rather than storing duplicate state and synchronizing it with an effect.
+
+    ### ⭐ One-line memory trick
+
+    `useEffect` = External synchronization + Dependencies + Cleanup.
+
+
 144. useRef?
 145. useMemo?
 146. useCallback?
