@@ -21963,6 +21963,95 @@ Browser automatically validation kar dega.
 
 
 144. useRef?
+
+    ## Hinglish Explanation
+
+    `useRef` React ka Hook hai jo aisi value store karta hai jo renders ke beech persist karti hai, lekin jise change karne par component re-render nahi hota.
+
+    Iske 2 common use cases hain:
+
+    1. DOM access karna — input ko focus karna, kisi element ko scroll karna.
+    2. Mutable value store karna — timer ID, previous value ya koi aisi value jo update hone par UI re-render na kare.
+
+    ### 1. Syntax
+
+    ```
+    const myRef = useRef(initialValue);
+    ```
+
+    - `myRef.current` mein actual value hoti hai.
+    - `.current` ko update kar sakte hain.
+    - `.current` update karne se React component re-render nahi hota.
+
+    ### 2. Practical Example: Input ko Focus Karna
+
+    ```
+    import { useRef } from "react";
+
+    function Login() {
+    const inputRef = useRef(null);
+
+    function handleFocus() {
+        inputRef.current.focus();
+    }
+
+    return (
+        <div>
+        <input ref={inputRef} placeholder="Enter email" />
+
+        <button onClick={handleFocus}>
+            Focus Input
+        </button>
+        </div>
+    );
+    }
+
+    export default Login;
+    ```
+
+    Interactive example
+
+    Simulate Focus
+
+    Yeh concept demo hai; actual DOM focus code example mein dikhaya gaya hai.
+
+    Kaise kaam karta hai?
+
+    - `useRef(null)` ek ref object banata hai.
+    - `ref={inputRef}` React ko input element ka reference deta hai.
+    - Button click par `inputRef.current.focus()` input ko focus karta hai.
+
+    ### 3. `useState` vs `useRef`
+
+    | `useState`                              | `useRef`                                        |
+    | --------------------------------------- | ----------------------------------------------- |
+    | UI state store karta hai                | Persistent mutable value store karta hai        |
+    | Update par re-render schedule hota hai  | `.current` update par re-render nahi hota       |
+    | UI ko update karne ke liye use hota hai | DOM access aur non-UI values ke liye useful hai |
+
+    ## 🎯 English Interview Answer
+
+    > “useRef is a React Hook that returns a mutable object with a current property. Its value persists between renders, and updating it does not trigger a re-render. We commonly use useRef to access DOM elements, focus inputs, store timer IDs, and maintain mutable values that do not directly affect the UI.”
+
+    ### Interview Follow-up
+
+    Q1: Does updating `ref.current` trigger a re-render?
+
+    No. Updating `ref.current` does not trigger a re-render. If a change must update the UI, use state.
+
+    Q2: Can we use `useRef` to access DOM elements?
+
+    Yes. Attach the ref to an element using the `ref` prop, then access the DOM element through `ref.current`.
+
+    Q3: What is the difference between `useRef` and `useState`?
+
+    `useState` schedules a re-render when updated, whereas changing `useRef.current` does not.
+
+    ### ⭐ One-line memory trick
+
+    `useRef` = Persistent value + DOM reference + No re-render on change.
+
+
 145. useMemo?
 146. useCallback?
 147. useReducer?
