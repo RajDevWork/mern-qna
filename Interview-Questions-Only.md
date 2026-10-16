@@ -21617,6 +21617,121 @@ Browser automatically validation kar dega.
 
 
 141. Hooks kya hain?
+
+    ## Hinglish Explanation
+
+    Hooks React ke special functions hote hain jo functional components mein state, side effects, context aur doosre React features use karne ki facility dete hain.
+
+    React 16.8 mein Hooks introduce hue the.
+
+    Pehle state aur lifecycle methods mainly class components mein use hote the. Hooks ke baad hum functional components mein bhi ye functionality use kar sakte hain.
+
+    ### 1. Common React Hooks
+
+    | Hook              | Use                                                          |
+    | ----------------- | ------------------------------------------------------------ |
+    | `useState`        | Component ki state manage karna                              |
+    | `useEffect`       | Side effects handle karna, jaise API calls aur subscriptions |
+    | `useContext`      | Context se data access karna                                 |
+    | `useRef`          | DOM reference ya mutable value store karna                   |
+    | `useMemo`         | Expensive calculation ka result cache karna                  |
+    | `useCallback`     | Function reference cache karna                               |
+    | `useReducer`      | Complex state logic manage karna                             |
+    | `useLayoutEffect` | Browser paint se pehle synchronous effect run karna          |
+
+    ### 2. Small Implementation
+
+    ```
+    import { useState, useEffect } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        document.title = `Count: ${count}`;
+    }, [count]);
+
+    return (
+        <div>
+        <h2>Count: {count}</h2>
+
+        <button onClick={() => setCount(c => c + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+
+    export default Counter;
+    ```
+
+    Explanation:
+
+    - `useState(0)` initial state create karta hai.
+    - `setCount()` state update karta hai.
+    - State update hone par component re-render hota hai.
+    - `useEffect()` count change hone par browser tab ka title update karta hai.
+
+    ### 3. Rules of Hooks
+
+    React Hooks use karte waqt kuch important rules follow karne hote hain:
+
+    Rule 1: Hooks ko top level par call karo.
+
+    ```
+    // ❌ Wrong
+    if (isLoggedIn) {
+    useEffect(() => {}, []);
+    }
+
+    // ✅ Correct
+    useEffect(() => {
+    if (isLoggedIn) {
+        console.log("User logged in");
+    }
+    }, [isLoggedIn]);
+    ```
+
+    Rule 2: Hooks ko React function components ya custom Hooks mein call karo.
+
+    ```
+    // ✅ Custom Hook
+    function useCounter() {
+    const [count, setCount] = useState(0);
+
+    return { count, setCount };
+    }
+    ```
+
+    Hooks ko normal JavaScript functions ya event handlers ke andar call nahi karna chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “Hooks are special functions in React that allow us to use state, side effects, context, and other React features in functional components. They were introduced in React 16.8. Common Hooks include useState, useEffect, useContext, useRef, useMemo, and useCallback. Hooks help us write reusable logic through custom Hooks without using class components. We must call Hooks at the top level of React components or custom Hooks.”
+
+    ### Interview Follow-up
+
+    Q1: What is the difference between useState and useEffect?
+
+    - `useState` manages component state.
+    - `useEffect` synchronizes a component with external systems, such as subscriptions, timers, or browser APIs.
+
+    Q2: Can we create custom Hooks?
+
+    Yes. Custom Hooks are reusable JavaScript functions whose names start with `use` and that can call other React Hooks.
+
+    Q3: Why can't we call Hooks inside conditions?
+
+    React relies on a consistent order of Hook calls across renders to associate each Hook with the correct state or effect.
+
+    Q4: Are Hooks available in class components?
+
+    No. React Hooks are designed for functional components and custom Hooks.
+
+    ### ⭐ One-line memory trick
+
+    Hooks = Functional Components + State + Effects + Reusable Logic.
+
 142. useState?
 143. useEffect?
 144. useRef?
