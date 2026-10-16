@@ -21733,6 +21733,97 @@ Browser automatically validation kar dega.
     Hooks = Functional Components + State + Effects + Reusable Logic.
 
 142. useState?
+
+    ## Hinglish Explanation
+
+    `useState` React ka ek Hook hai jo functional component ke andar data (state) ko store aur update karne ke liye use hota hai.
+
+    Example: Counter, form input, login status, dropdown open/close — in sab mein `useState` use kar sakte hain.
+
+    ### 1. Syntax
+
+    ```
+    const [state, setState] = useState(initialValue);
+    ```
+
+    - `state` — current value.
+    - `setState` — state update karne ka function.
+    - `initialValue` — initial value, jaise `0`, `""`, `false` ya `[]`.
+
+    ### 2. Practical Example: Counter
+
+    ```
+    import { useState } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+        <h2>Count: {count}</h2>
+
+        <button onClick={() => setCount(c => c + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+
+    export default Counter;
+    ```
+
+    Kaise kaam karta hai?
+
+    Interactive counter demo
+
+    # 0
+
+    − Decrease+ IncrementReset
+
+    React code mein setState call karne par React component ko re-render karta hai. Upar ka demo concept samajhne ke liye hai.
+
+    1. Initial value `0` hai.
+    2. Button click hone par `setCount(c => c + 1)` call hota hai.
+    3. React state update karke component ko re-render karta hai.
+    4. Screen par updated count dikhai deta hai.
+
+    ### 3. Important Interview Points
+
+    - Direct mutation mat karo: `count = count + 1` se React state update nahi hoti.
+    - Setter use karo: `setCount(count + 1)`.
+    - Previous state par depend ho: `setCount(prev => prev + 1)` use karna safer hai, especially multiple updates mein.
+    - State updates scheduled hote hain: Setter call karne ke turant baad current render ka `count` variable change nahi hota.
+    - State objects/arrays: Unhe mutate karne ke bajay naya object ya array create karo.
+
+    ## 🎯 English Interview Answer
+
+    > “useState is a React Hook that allows functional components to manage state. It returns an array containing the current state value and a setter function. When we call the setter function, React schedules a state update and re-renders the component when needed. We use useState for counters, form inputs, toggles, and other dynamic UI data.”
+
+    ### Interview Follow-up
+
+    Q1: What does `useState(0)` return?
+
+    It returns an array containing the initial state value `0` and a setter function to update that state.
+
+    Q2: Why should we not update state directly?
+
+    Direct mutation does not correctly notify React about the update. We should use the setter function and create new objects or arrays when updating object or array state.
+
+    Q3: What is the difference between these two statements?
+
+    ```
+    setCount(count + 1);
+    setCount(prev => prev + 1);
+    ```
+
+    The first uses the `count` value from the current render. The second calculates the next value from the previous state, making it preferable when the update depends on the previous value.
+
+    ### ⭐ One-line memory trick
+
+    `useState` = Current Value + Setter Function + UI Re-render.
+
+
+
 143. useEffect?
 144. useRef?
 145. useMemo?
