@@ -22053,6 +22053,101 @@ Browser automatically validation kar dega.
 
 
 145. useMemo?
+
+    ## Hinglish Explanation
+
+    `useMemo` React ka Hook hai jo kisi calculation ke result ko cache karta hai, taaki dependencies change na hone par React ko woh calculation dobara perform na karni pade.
+
+    Simple example: Aapke paas 10,000 products hain aur aap unmein se expensive filtering kar rahe ho. Agar component kisi unrelated reason se re-render hota hai, toh same filtering dobara karna unnecessary ho sakta hai. `useMemo` is calculation ko optimize karne mein help karta hai.
+
+    ### 1. Syntax
+
+    ```
+    const memoizedValue = useMemo(() => {
+    return expensiveCalculation(data);
+    }, [data]);
+    ```
+
+    - Calculation function: Value calculate karta hai.
+    - Dependencies: Inmein se koi dependency change hone par calculation dobara run ho sakti hai.
+    - Cached result: Dependencies same rehne par React cached result reuse kar sakta hai.
+
+    ### 2. Practical Example
+
+    ```
+    import { useMemo, useState } from "react";
+
+    function ProductList({ products }) {
+    const [search, setSearch] = useState("");
+    const [count, setCount] = useState(0);
+
+    const filteredProducts = useMemo(() => {
+        console.log("Filtering products...");
+
+        return products.filter(product =>
+        product.name.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [products, search]);
+
+    return (
+        <div>
+        <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search products"
+        />
+
+        <button onClick={() => setCount(c => c + 1)}>
+            Count: {count}
+        </button>
+
+        {filteredProducts.map(product => (
+            <p key={product.id}>{product.name}</p>
+        ))}
+        </div>
+    );
+    }
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `products` aur `search` ke basis par filtering hoti hai.
+    2. Sirf `count` update hone par component re-render ho sakta hai, lekin filtering ka cached result reuse kiya ja sakta hai.
+    3. `products` ya `search` change hone par calculation dobara ho sakti hai.
+
+    Important: `useMemo` performance optimization hai, correctness ke liye is par depend nahi karna chahiye. Har calculation mein use karna bhi zaroori nahi hai.
+
+    ### 3. `useMemo` vs `useCallback`
+
+    | `useMemo`                             | `useCallback`                                 |
+    | ------------------------------------- | --------------------------------------------- |
+    | Calculation ka result cache karta hai | Function definition/reference cache karta hai |
+    | Value return karta hai                | Function return karta hai                     |
+    | Expensive calculations mein useful    | Stable function reference dene mein useful    |
+
+    ## 🎯 English Interview Answer
+
+    > “useMemo is a React Hook that caches the result of a calculation between renders. React can reuse the cached value as long as its dependencies have not changed. It is useful for expensive calculations, such as filtering or sorting large datasets. However, useMemo is a performance optimization, and we should use it only when it provides a measurable benefit.”
+
+    ### Interview Follow-up
+
+    Q1: Does `useMemo` prevent component re-rendering?
+
+    No. It memoizes a calculation's result, not the component itself. The component can still re-render.
+
+    Q2: What happens when a dependency changes?
+
+    React recalculates the value during rendering when needed and stores the new result.
+
+    Q3: What is the difference between `useMemo` and `useState`?
+
+    `useState` stores state and its setter schedules updates. `useMemo` caches a calculated value based on dependencies; it is not intended to manage state.
+
+    ### ⭐ One-line memory trick
+
+    `useMemo` = Cache a calculated value to avoid unnecessary recalculation.
+
+
 146. useCallback?
 147. useReducer?
 148. Custom hooks?
