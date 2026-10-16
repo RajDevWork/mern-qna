@@ -22365,6 +22365,94 @@ Browser automatically validation kar dega.
     `useReducer` = State + Action + Reducer + Next State.
 
 148. Custom hooks?
+
+    ## Hinglish Explanation
+
+    Custom Hooks React mein reusable functions hote hain jinse hum component logic ko alag karke multiple components mein reuse kar sakte hain.
+
+    Maan lo aapko 3 components mein API se data fetch karna hai. Agar har component mein same logic likhoge, toh code repeat hoga. Custom Hook banakar aap us logic ko ek jagah likh sakte ho aur multiple components mein use kar sakte ho.
+
+    ### 1. Custom Hook kaise banate hain?
+
+    Custom Hook ka naam hamesha `use` se start hona chahiye, jaise `useFetch`, `useAuth` ya `useWindowSize`.
+
+    ```
+    import { useState, useEffect } from "react";
+
+    function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        function handleResize() {
+        setWidth(window.innerWidth);
+        }
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+        window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    return width;
+    }
+
+    export default useWindowWidth;
+    ```
+
+    Yeh custom Hook browser ki window width track karta hai aur resize hone par value update karta hai.
+
+    ### 2. Component mein use kaise karein?
+
+    ```
+    import useWindowWidth from "./useWindowWidth";
+
+    function Dashboard() {
+    const width = useWindowWidth();
+
+    return <h2>Window width: {width}px</h2>;
+    }
+
+    export default Dashboard;
+    ```
+
+    Ab kisi doosre component mein bhi `useWindowWidth()` use kar sakte ho.
+
+    Benefits:
+
+    - Code duplication kam hota hai.
+    - Logic reusable aur maintainable banta hai.
+    - Components focused aur readable rehte hain.
+    - Testing aur debugging easier ho sakti hai.
+
+    Important: Custom Hook ka logic reuse hota hai, lekin har component ke Hook call ki apni state aur effect lifecycle hoti hai. Dono components automatically same state share nahi karte.
+
+    ## 🎯 English Interview Answer
+
+    > “Custom Hooks are reusable JavaScript functions that allow us to share stateful logic between React components. Their names start with the word ‘use’, and they can use built-in Hooks such as useState and useEffect. Custom Hooks help reduce code duplication and improve maintainability. Each component calling a custom Hook maintains its own Hook state unless the state is shared through another mechanism.”
+
+    ### Interview Follow-up
+
+    Q1: Why do we create custom Hooks?
+
+    To reuse common logic, such as API fetching, authentication state handling, form logic, or browser event handling.
+
+    Q2: Can a custom Hook use `useState` and `useEffect`?
+
+    Yes. Custom Hooks can call other Hooks, provided they follow the Rules of Hooks.
+
+    Q3: Do two components using the same custom Hook share state?
+
+    No, not automatically. Each component gets its own state. Shared state requires a common mechanism, such as Context, a state-management library, or a shared external store.
+
+    Q4: What are the Rules of Hooks for custom Hooks?
+
+    Call Hooks only at the top level, not inside conditions or loops, and only from React function components or other custom Hooks.
+
+    ### ⭐ One-line memory trick
+
+    Custom Hook = Reusable React Logic, with independent state per caller.
+
 149. Rules of hooks?
 150. Dependency array issues?
 151. Infinite loop useEffect mein?
