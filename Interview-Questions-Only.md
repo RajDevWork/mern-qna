@@ -22149,6 +22149,103 @@ Browser automatically validation kar dega.
 
 
 146. useCallback?
+
+    ## Hinglish Explanation
+
+    `useCallback` React ka Hook hai jo function definition ko renders ke beech cache karta hai, jab tak uski dependencies change nahi hoti.
+
+    Simple example: Ek parent component baar-baar re-render ho raha hai aur woh ek function child component ko prop ke through pass karta hai. `useCallback` se function ka reference stable reh sakta hai, jisse memoized child ke unnecessary re-renders avoid karne mein help mil sakti hai.
+
+    ### 1. Syntax
+
+    ```
+    const memoizedFunction = useCallback(() => {
+    // Function logic
+    }, [dependencies]);
+    ```
+
+    - Function: Jo kaam perform karega.
+    - Dependencies: Inmein change hone par React naya function reference de sakta hai.
+    - Cached function: Dependencies same rehne par React cached function reuse kar sakta hai.
+
+    ### 2. Practical Example
+
+    ```
+    import { useState, useCallback, memo } from "react";
+
+    const Child = memo(function Child({ onClick }) {
+    console.log("Child rendered");
+
+    return <button onClick={onClick}>Click Child</button>;
+    });
+
+    function Parent() {
+    const [count, setCount] = useState(0);
+
+    const handleClick = useCallback(() => {
+        console.log("Child button clicked");
+    }, []);
+
+    return (
+        <div>
+        <h2>Count: {count}</h2>
+
+        <button onClick={() => setCount(c => c + 1)}>
+            Increment Parent
+        </button>
+
+        <Child onClick={handleClick} />
+        </div>
+    );
+    }
+
+    export default Parent;
+    ```
+
+    Kaise kaam karta hai?
+
+    1. Parent mein `count` update hota hai aur Parent re-render hota hai.
+    2. `useCallback` same function reference reuse karta hai, kyunki dependencies change nahi hui hain.
+    3. `memo(Child)` props compare karta hai.
+    4. Child ke props unchanged hone par React uska re-render skip kar sakta hai.
+
+    Important: `useCallback` apne aap component re-render nahi rokta. Is example mein `memo` bhi important hai.
+
+    ### 3. `useCallback` vs `useMemo`
+
+    | `useCallback`                                | `useMemo`                             |
+    | -------------------------------------------- | ------------------------------------- |
+    | Function reference cache karta hai           | Calculation ka result cache karta hai |
+    | Event handlers ya function props mein useful | Expensive calculations mein useful    |
+    | `useCallback(fn, deps)`                      | `useMemo(() => value, deps)`          |
+
+    ## 🎯 English Interview Answer
+
+    > “useCallback is a React Hook that caches a function definition between renders until its dependencies change. It is useful when passing callbacks to memoized child components or when a function is used as a dependency of another Hook. It does not prevent re-renders by itself; it helps maintain a stable function reference. We should use it when there is a real performance benefit.”
+
+    ### Interview Follow-up
+
+    Q1: Does `useCallback` prevent a component from re-rendering?
+
+    No. It caches a function reference. To skip unnecessary child renders, `React.memo` may also be needed.
+
+    Q2: When should we use `useCallback`?
+
+    Use it when a stable callback reference helps a memoized child component or prevents unnecessary effect re-runs caused by changing function dependencies.
+
+    Q3: What happens if a dependency changes?
+
+    React can return a new function reference on the next render.
+
+    Q4: Can `useCallback` replace `useMemo`?
+
+    They solve different problems. `useCallback` caches a function definition, while `useMemo` caches the result of a calculation.
+
+    ### ⭐ One-line memory trick
+
+    `useCallback` = Cache the function; `useMemo` = Cache the result.
+
+
 147. useReducer?
 148. Custom hooks?
 149. Rules of hooks?
