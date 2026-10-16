@@ -22247,6 +22247,123 @@ Browser automatically validation kar dega.
 
 
 147. useReducer?
+
+    ## Hinglish Explanation
+
+    `useReducer` React ka Hook hai jo component ki state ko ek reducer function aur actions ke through manage karta hai.
+
+    Simple words mein, jab state logic complex ho jata hai — jaise multiple actions, conditions ya related state updates — tab `useReducer` useful hota hai.
+
+    Example: Shopping cart mein product add karna, remove karna aur quantity update karna.
+
+    ### 1. Syntax
+
+    ```
+    const [state, dispatch] = useReducer(reducer, initialState);
+    ```
+
+    - `state` — current state.
+    - `dispatch` — action bhejne ke liye function.
+    - `reducer` — current state aur action lekar next state return karta hai.
+    - `initialState` — starting state.
+
+    ### 2. Practical Example: Counter
+
+    ```
+    import { useReducer } from "react";
+
+    function reducer(state, action) {
+    switch (action.type) {
+        case "increment":
+        return { count: state.count + 1 };
+
+        case "decrement":
+        return { count: state.count - 1 };
+
+        case "reset":
+        return { count: 0 };
+
+        default:
+        throw new Error("Unknown action");
+    }
+    }
+
+    function Counter() {
+    const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+    return (
+        <div>
+        <h2>Count: {state.count}</h2>
+
+        <button onClick={() => dispatch({ type: "increment" })}>
+            Increment
+        </button>
+
+        <button onClick={() => dispatch({ type: "decrement" })}>
+            Decrement
+        </button>
+
+        <button onClick={() => dispatch({ type: "reset" })}>
+            Reset
+        </button>
+        </div>
+    );
+    }
+
+    export default Counter;
+    ```
+
+    ### 3. Kaise kaam karta hai?
+
+    User Action
+
+    Increment button click
+
+    dispatch()
+
+    Action reducer ko bheja jata hai
+
+    Reducer
+
+    Current state + action → next state
+
+    Updated UI
+
+    React component re-render karta hai
+
+    Important: Reducer pure function hona chahiye. State ko directly mutate nahi karna chahiye; new state return karni chahiye.
+
+    ### 4. `useState` vs `useReducer`
+
+    | `useState`                         | `useReducer`                                     |
+    | ---------------------------------- | ------------------------------------------------ |
+    | Simple state ke liye               | Complex state logic ke liye useful               |
+    | Direct setter se update            | `dispatch` ke through action bhejte hain         |
+    | Logic component mein reh sakta hai | Update logic reducer mein centralize hota hai    |
+    | Example: input value               | Example: shopping cart, multiple related updates |
+
+    ## 🎯 English Interview Answer
+
+    > “useReducer is a React Hook used to manage state through a reducer function and dispatched actions. The reducer receives the current state and an action, then returns the next state. It is useful when state logic becomes complex or when multiple actions update related state. For simple state management, useState is often sufficient.”
+
+    ### Interview Follow-up
+
+    Q1: What is the difference between `dispatch` and a state setter?
+
+    A state setter directly provides a new state or updater function. `dispatch` sends an action to the reducer, which decides the next state.
+
+    Q2: Is `useReducer` always better than `useState`?
+
+    No. `useState` is simpler for independent or straightforward state updates. `useReducer` is useful when there are multiple related actions or complex update rules.
+
+    Q3: Can a reducer modify the existing state?
+
+    No. A reducer should return the next state without mutating the existing state.
+
+    ### ⭐ One-line memory trick
+
+    `useReducer` = State + Action + Reducer + Next State.
+
 148. Custom hooks?
 149. Rules of hooks?
 150. Dependency array issues?
