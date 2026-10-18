@@ -22585,6 +22585,161 @@ Browser automatically validation kar dega.
     Hooks = Top Level + React Functions + Consistent Call Order.
 
 150. Dependency array issues?
+
+    ## Hinglish Explanation
+
+    Dependency array issues React ke `useEffect`, `useMemo` aur `useCallback` mein tab aate hain jab dependencies missing, incorrect ya unnecessary hoti hain. Isse stale data, unnecessary API calls, infinite loops aur unexpected behavior ho sakta hai.
+
+    ### 1. Missing Dependency — Stale Value
+
+    Agar effect ke andar `count` use ho raha hai, lekin dependency array mein `count` nahi hai, toh effect latest value ke saath synchronize nahi hoga.
+
+    ```
+    // ❌ Wrong
+    useEffect(() => {
+    console.log(count);
+    }, []);
+    ```
+
+    ```
+    // ✅ Correct
+    useEffect(() => {
+    console.log(count);
+    }, [count]);
+    ```
+
+    Kyun? Empty array ka matlab hai ki React dependencies ke changes ke basis par effect dobara run nahi karega. Effect purane render ka `count` capture kar sakta hai.
+
+    ### 2. Dependency Array Missing — Har Render par Effect
+
+    ```
+    // Har committed render ke baad effect run hoga
+    useEffect(() => {
+    console.log("Effect executed");
+    });
+    ```
+
+    Agar effect ke andar state update karte ho, toh unnecessary repeated renders ho sakte hain.
+
+    ```
+    // ❌ Infinite update loop ka example
+    useEffect(() => {
+    setCount(count + 1);
+    });
+    ```
+
+    Yahan har effect state update karta hai, jo dobara render trigger karta hai.
+
+    ### 3. Object ya Function Dependency — Unnecessary Effect Runs
+
+    ```
+    // ❌ Har render mein naya object banta hai
+    const options = { limit: 10 };
+
+    useEffect(() => {
+    fetchData(options);
+    }, [options]);
+    ```
+
+    JavaScript mein object references compare hote hain. Har render mein `options` ka naya reference banega, isliye effect dobara run ho sakta hai.
+
+    Better approach: Object ko effect ke andar banao, agar woh sirf effect ke liye zaroori hai.
+
+    ```
+    useEffect(() => {
+    const options = { limit: 10 };
+    fetchData(options);
+    }, []);
+    ```
+
+    Agar object kisi reactive value par depend karta hai, toh us value ko dependency mein include karo.
+
+    ### 4. Function Dependency aur Infinite Loop
+
+    ```
+    // ❌ Function har render mein naya reference banata hai
+    const fetchUsers = () => {
+    setUsers([]);
+    };
+
+    useEffect(() => {
+    fetchUsers();
+    }, [fetchUsers]);
+    ```
+
+    Agar `fetchUsers` har render mein naya function hai, toh effect baar-baar run hoga. Agar effect state update karta hai, toh loop ho sakta hai.
+
+    Fix: Agar function sirf effect ke andar chahiye, toh use effect ke andar define karo. Zaroorat hone par `useCallback` use kar sakte ho.
+
+    ### 5. Practical Example — Correct API Effect
+
+    ```
+    import { useEffect, useState } from "react";
+
+    function User({ userId }) {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function fetchUser() {
+        try {
+            const response = await fetch(
+            `/api/users/${userId}`,
+            { signal: controller.signal }
+            );
+
+            if (!response.ok) {
+            throw new Error("Failed to fetch user");
+            }
+
+            const data = await response.json();
+            setUser(data);
+        } catch (error) {
+            if (error.name !== "AbortError") {
+            console.error(error);
+            }
+        }
+        }
+
+        fetchUser();
+
+        return () => controller.abort();
+    }, [userId]);
+
+    return <p>{user?.name ?? "Loading..."}</p>;
+    }
+    ```
+
+    Is example mein `userId` dependency hai, kyunki uske change hone par humein naya user fetch karna hai. Cleanup purani request ko abort karne ki koshish karta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Dependency array issues occur when dependencies are missing, incorrect, or unstable. Missing dependencies can cause stale values, while unstable object or function references can trigger unnecessary effect executions. Incorrect state updates inside effects can also create infinite loops. I use the React Hooks ESLint rules, include all required reactive dependencies, and restructure effects to avoid unnecessary dependencies.”
+
+    ### Interview Follow-up
+
+    Q1: What is a stale closure?
+
+    A stale closure occurs when a function uses values captured from an older render instead of the latest values.
+
+    Q2: How do you fix missing dependency warnings?
+
+    First, include the required reactive dependencies. If that causes repeated effects, restructure the code instead of blindly suppressing the warning.
+
+    Q3: Does `useEffect(..., [])` mean the effect runs exactly once?
+
+    Not universally. It normally runs after the initial mount in production, but React Strict Mode can perform an additional setup-and-cleanup cycle in development.
+
+    Q4: Can we use `useMemo` or `useCallback` to fix every dependency issue?
+
+    No. They are optimization tools, not universal fixes. Often, moving an object or function inside the effect is simpler and more reliable.
+
+    ### ⭐ One-line memory trick
+
+    Missing dependency = Stale data; Unstable dependency = Extra runs; State update loop = Repeated renders.
+
+
 151. Infinite loop useEffect mein?
 152. Cleanup function?
 153. React.memo?
