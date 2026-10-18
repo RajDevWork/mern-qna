@@ -22963,6 +22963,96 @@ Browser automatically validation kar dega.
 
 
 153. React.memo?
+
+    ## Hinglish Explanation
+
+    `React.memo` React ka ek optimization tool hai jo component ke re-render ko skip karne mein help karta hai jab uske props previous render ke props ke barabar hon.
+
+    Simple example: Ek parent component mein counter hai aur ek child component user profile show karta hai. Counter update hone par parent re-render hota hai, lekin agar profile ke props change nahi hue, toh `React.memo` child ka unnecessary re-render skip kar sakta hai.
+
+    ### 1. Syntax
+
+    ```
+    const MemoizedComponent = React.memo(MyComponent);
+    ```
+
+    React by default props ko shallow comparison se compare karta hai.
+
+    ### 2. Practical Example
+
+    ```
+    import { useState, memo } from "react";
+
+    const UserProfile = memo(function UserProfile({ name }) {
+    console.log("UserProfile rendered");
+
+    return <h3>Hello, {name}</h3>;
+    });
+
+    function App() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+        <button onClick={() => setCount(c => c + 1)}>
+            Count: {count}
+        </button>
+
+        <UserProfile name="Raj" />
+        </div>
+    );
+    }
+
+    export default App;
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `App` render hota hai aur `UserProfile` ko `"Raj"` prop milta hai.
+    2. Button click karne par `count` change hota hai aur `App` re-render hota hai.
+    3. `UserProfile` ka `name` prop same hai.
+    4. React us child ka re-render skip kar sakta hai.
+
+    ### 3. `React.memo` kab useful hai?
+
+    - Heavy child components mein.
+    - Jab parent frequently re-render hota ho.
+    - Jab child ke props stable rehte hon.
+    - Jab profiling se unnecessary renders ka pata chale.
+
+    Important: Agar prop ke roop mein har render par naya object ya function pass hota hai, toh shallow comparison mein woh changed prop maana ja sakta hai.
+
+    ```
+    // Har render mein naya object
+    <Child user={{ name: "Raj" }} />
+    ```
+
+    Aise case mein `useMemo` ya `useCallback` useful ho sakte hain, agar profiling se optimization ki zaroorat dikhe.
+
+    ## 🎯 English Interview Answer
+
+    > “React.memo is a higher-order component used to optimize functional components. It can skip re-rendering a component when its props are unchanged, based on a shallow comparison by default. It is useful when a component renders frequently with the same props and rendering is expensive. However, it does not prevent re-renders caused by the component's own state or consumed context changes.”
+
+    ### Interview Follow-up
+
+    Q1: What is the difference between `React.memo` and `useMemo`?
+
+    - `React.memo` memoizes a component based on its props.
+    - `useMemo` caches the result of a calculation inside a component.
+
+    Q2: Does `React.memo` always prevent re-renders?
+
+    No. The component can still re-render when its own state changes, its consumed context changes, or its props are considered changed.
+
+    Q3: What is a custom comparison function in `React.memo`?
+
+    You can provide a second function to compare previous and next props. It should return `true` when the component can skip rendering and `false` when it should render again.
+
+    ### ⭐ One-line memory trick
+
+    `React.memo` = Same props → React can skip an unnecessary child render.
+
+
 154. Re-render kaise hota hai?
 155. Re-render kaise avoid kare?
 156. Context API?
