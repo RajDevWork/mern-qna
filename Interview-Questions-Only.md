@@ -22741,6 +22741,105 @@ Browser automatically validation kar dega.
 
 
 151. Infinite loop useEffect mein?
+
+
+    ## Hinglish Explanation
+
+    `useEffect` mein infinite loop tab hota hai jab effect state update karta hai, state update se component re-render hota hai, aur re-render ke baad effect phir se run hokar state update kar deta hai. Yeh cycle repeat hoti rehti hai.
+
+    ### 1. Infinite Loop kaise hota hai?
+
+    Component Render
+
+    useEffect runs
+
+    setCount() call hota hai
+
+    State Update
+
+    Component re-render hota hai
+
+    Cycle repeat hoti rehti hai
+
+    ### 2. Example: Infinite Loop
+
+    ```
+    import { useState, useEffect } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        setCount(count + 1);
+    }); // ❌ Dependency array missing
+
+    return <h2>{count}</h2>;
+    }
+    ```
+
+    Problem:
+
+    1. Initial count `0` hai.
+    2. Effect count ko `1` karta hai.
+    3. Component re-render hota hai.
+    4. Effect phir count ko increment karta hai.
+    5. Yeh cycle repeat hoti rehti hai.
+
+    ### 3. Fix #1: Sirf Initial Mount par Update
+
+    Agar aapko sirf initial mount par state update karni hai, toh empty dependency array use kar sakte hain.
+
+    ```
+    useEffect(() => {
+    setCount(1);
+    }, []);
+    ```
+
+    Isse effect normal production execution mein initial mount par run hoga. Development Strict Mode mein extra setup cycle ho sakti hai, isliye effects ko safely repeatable banana achha practice hai.
+
+    ### 4. Fix #2: Condition Lagao
+
+    Agar state ko condition ke basis par update karna hai, toh condition use karo.
+
+    ```
+    useEffect(() => {
+    if (count < 5) {
+        setCount(c => c + 1);
+    }
+    }, [count]);
+    ```
+
+    Yahan count `5` tak pahunchne par further updates band ho jayenge, isliye infinite loop nahi hoga.
+
+    Important: Sirf dependency array add karna solution nahi hai. Agar effect har run mein apni dependency ko change karta hai, toh loop phir bhi ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “An infinite loop in useEffect happens when an effect updates state, causing a re-render, and that re-render triggers the effect again. This often occurs when the dependency array is missing or when an effect continuously changes one of its dependencies. I fix it by reviewing the effect's purpose, specifying the correct dependencies, and ensuring state updates happen only when necessary.”
+
+    ### Interview Follow-up
+
+    Q1: Can an effect with `[count]` cause an infinite loop?
+
+    Yes. If the effect increments `count` every time `count` changes, it will keep triggering itself.
+
+    Q2: How do you debug an infinite loop?
+
+    - Check which state the effect updates.
+    - Check the dependency array.
+    - Identify dependencies whose values or references change on every render.
+    - Use React DevTools and ESLint's Hooks rules to help identify the issue.
+
+    Q3: Is `useEffect(() => setCount(count + 1), [])` an infinite loop?
+
+    Normally, it is not an infinite loop because the effect has no reactive dependencies. However, the state update may cause one additional render, and development Strict Mode may run an extra effect setup cycle.
+
+    ### ⭐ One-line memory trick
+
+    Effect updates state → re-render → effect runs again = Infinite Loop.
+
+
+
 152. Cleanup function?
 153. React.memo?
 154. Re-render kaise hota hai?
