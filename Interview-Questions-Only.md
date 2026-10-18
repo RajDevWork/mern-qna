@@ -22454,6 +22454,136 @@ Browser automatically validation kar dega.
     Custom Hook = Reusable React Logic, with independent state per caller.
 
 149. Rules of hooks?
+
+    ## Hinglish Explanation
+
+    Rules of Hooks woh rules hain jinhe follow karke hum React Hooks ko correctly use karte hain. Inka main purpose hai React ko har render mein Hooks ka order consistent rakhne mein help karna.
+
+    React interviews mein 2 main rules sabse important hain.
+
+    ### 1. Rule: Hooks ko Top Level par Call Karo
+
+    Hooks ko `if-else`, loops ya nested functions ke andar call nahi karna chahiye.
+
+    ```
+    // ❌ Wrong
+    function Profile({ isLoggedIn }) {
+    if (isLoggedIn) {
+        const [name, setName] = useState("");
+    }
+
+    return <p>Profile</p>;
+    }
+    ```
+
+    Correct approach:
+
+    ```
+    import { useState } from "react";
+
+    function Profile({ isLoggedIn }) {
+    const [name, setName] = useState("");
+
+    if (!isLoggedIn) {
+        return <p>Please login</p>;
+    }
+
+    return <p>Welcome, {name}</p>;
+    }
+    ```
+
+    Aisa kyun? React ko Hooks ka call order har render mein consistent chahiye. Conditional Hook calls se state aur effects galat Hook call ke saath associate ho sakte hain.
+
+    ### 2. Rule: Hooks Sirf React Functions Mein Call Karo
+
+    Hooks ko in jagahon par call kar sakte hain:
+
+    - React function components ke andar.
+    - Custom Hooks ke andar.
+
+    ```
+    // ❌ Wrong: Normal JavaScript function
+    function getUser() {
+    const [user, setUser] = useState(null);
+    }
+
+    // ✅ Correct: Custom Hook
+    function useUser() {
+    const [user, setUser] = useState(null);
+
+    return { user, setUser };
+    }
+    ```
+
+    Custom Hook ka naam `use` se start hona chahiye, jaise `useUser()` ya `useFetch()`.
+
+    ### 3. Event Handler ke Andar Hook Call Mat Karo
+
+    ```
+    // ❌ Wrong
+    function App() {
+    function handleClick() {
+        const [count, setCount] = useState(0);
+    }
+
+    return <button onClick={handleClick}>Click</button>;
+    }
+    ```
+
+    State ko component ke top level par declare karo aur event handler mein uska setter use karo.
+
+    ```
+    // ✅ Correct
+    function App() {
+    const [count, setCount] = useState(0);
+
+    function handleClick() {
+        setCount(c => c + 1);
+    }
+
+    return <button onClick={handleClick}>{count}</button>;
+    }
+    ```
+
+    ### 4. React ko State Manage Karne Do
+
+    State ko directly mutate mat karo.
+
+    ```
+    // ❌ Wrong
+    user.name = "Raj";
+
+    // ✅ Correct
+    setUser(prev => ({
+    ...prev,
+    name: "Raj"
+    }));
+    ```
+
+    Yeh state update ka important best practice hai. Modern React mein Hooks ke saath immutable updates follow karna chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “The Rules of Hooks are guidelines for using React Hooks correctly. First, we must call Hooks only at the top level of React function components or custom Hooks, not inside conditions, loops, or nested functions. Second, we must call Hooks only from React function components or custom Hooks, not from regular JavaScript functions. These rules help React maintain the correct order of Hook calls across renders.”
+
+    ### Interview Follow-up
+
+    Q1: Why can't Hooks be called inside conditions?
+
+    Because React relies on a consistent order of Hook calls across renders to associate each Hook with the correct state or effect.
+
+    Q2: Can we call Hooks inside a `for` loop?
+
+    No. Hooks should be called at the top level, outside loops and conditional blocks.
+
+    Q3: How can we check violations automatically?
+
+    Use ESLint with the `eslint-plugin-react-hooks` plugin. It can detect many Rules of Hooks violations and missing effect dependencies.
+
+    ### ⭐ One-line memory trick
+
+    Hooks = Top Level + React Functions + Consistent Call Order.
+
 150. Dependency array issues?
 151. Infinite loop useEffect mein?
 152. Cleanup function?
