@@ -22841,6 +22841,127 @@ Browser automatically validation kar dega.
 
 
 152. Cleanup function?
+
+    ## Hinglish Explanation
+
+    Cleanup function React ke `useEffect` ke andar return kiya gaya function hota hai, jo purane effect ke resources ko clean karne ke liye use hota hai.
+
+    Simple example: Aapne component mein timer start kiya. Jab component screen se remove ho jaye, toh timer ko stop karna zaroori hai. Iske liye cleanup function use karte hain.
+
+    ### 1. Cleanup Function ka Syntax
+
+    ```
+    useEffect(() => {
+    // Setup: resource start karo
+
+    return () => {
+        // Cleanup: resource release karo
+    };
+    }, [dependencies]);
+    ```
+
+    React cleanup ko do important situations mein call karta hai:
+
+    1. Dependencies change hone par: Purane effect ka cleanup chalta hai, phir naye values ke saath effect dobara run hota hai.
+    2. Component unmount hone par: Effect ka cleanup run hota hai.
+
+    Development mein React Strict Mode extra setup-cleanup cycle bhi run kar sakta hai.
+
+    ### 2. Practical Example: Timer Cleanup
+
+    ```
+    import { useEffect } from "react";
+
+    function Timer() {
+    useEffect(() => {
+        const timerId = setInterval(() => {
+        console.log("Timer running...");
+        }, 1000);
+
+        return () => {
+        clearInterval(timerId);
+        console.log("Timer stopped");
+        };
+    }, []);
+
+    return <h2>Timer Component</h2>;
+    }
+    ```
+
+    Kaise kaam karta hai?
+
+    - Component mount hota hai → `setInterval()` timer start karta hai.
+    - Component unmount hota hai → cleanup function run hota hai.
+    - `clearInterval(timerId)` timer ko stop kar deta hai.
+
+    ### 3. Event Listener Cleanup
+
+    Agar component browser event listener add karta hai, toh cleanup mein us listener ko remove karna chahiye.
+
+    ```
+    useEffect(() => {
+    function handleResize() {
+        console.log(window.innerWidth);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+        window.removeEventListener("resize", handleResize);
+    };
+    }, []);
+    ```
+
+    Isse component remove hone ke baad unnecessary event handling nahi hoti.
+
+    ### 4. API Request Cleanup
+
+    Agar component kisi user ID ke liye API call karta hai aur ID change ho jaati hai, toh purani request ko abort karna useful ho sakta hai.
+
+    ```
+    useEffect(() => {
+    const controller = new AbortController();
+
+    fetch(`/api/users/${userId}`, {
+        signal: controller.signal
+    }).catch(error => {
+        if (error.name !== "AbortError") {
+        console.error(error);
+        }
+    });
+
+    return () => controller.abort();
+    }, [userId]);
+    ```
+
+    Yahan `userId` change hone ya component unmount hone par purani request abort karne ki koshish hoti hai.
+
+    Important: Cleanup ka purpose har state update ko undo karna nahi hai. Yeh timer, listener, subscription aur ongoing requests jaise resources ko manage karta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “A cleanup function in React is returned from useEffect to release resources created by an effect. React runs the cleanup before re-running the effect when its dependencies change and when the component unmounts. We commonly use cleanup functions to clear timers, remove event listeners, unsubscribe from services, and abort ongoing requests. Proper cleanup helps prevent memory leaks and unwanted side effects.”
+
+    ### Interview Follow-up
+
+    Q1: When does the cleanup function execute?
+
+    Before the effect runs again with changed dependencies, and when the component unmounts.
+
+    Q2: Is cleanup only used for unmounting?
+
+    No. It also runs before an effect re-runs because its dependencies changed.
+
+    Q3: What happens if we forget to clear an interval?
+
+    The interval may continue running after the component is removed, causing unnecessary work and potentially retaining resources.
+
+    ### ⭐ One-line memory trick
+
+    Setup = Start resource; Cleanup = Release resource.
+
+
+
 153. React.memo?
 154. Re-render kaise hota hai?
 155. Re-render kaise avoid kare?
