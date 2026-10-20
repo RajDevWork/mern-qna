@@ -23261,6 +23261,123 @@ Browser automatically validation kar dega.
 
 
 156. Context API?
+
+    ## Hinglish Explanation
+
+    Context API React ka feature hai jo data ko multiple components ke beech share karne deta hai, bina har intermediate component se props pass karwaye. Is problem ko prop drilling kehte hain.
+
+    Example: Aapki application mein `user`, `theme`, ya `language` ko bahut saare components mein access karna hai. Har component se props pass karne ke bajay Context use kar sakte hain.
+
+    ### 1. Context API kyun use karte hain?
+
+    Maan lo component hierarchy aisi hai:
+
+    App
+
+    User data provide karta hai
+
+    Dashboard
+
+    Data directly use nahi karta
+
+    Profile
+
+    User data use karta hai
+
+    Context ke bina `App` ko `Dashboard` ke through `Profile` tak props pass karne pad sakte hain. Context se `Profile` directly data access kar sakta hai.
+
+    ### 2. Context API ka practical example
+
+    Step 1: Context create karo
+
+    ```
+    // UserContext.jsx
+    import { createContext } from "react";
+
+    export const UserContext = createContext(null);
+    ```
+
+    Step 2: Provider se value provide karo
+
+    ```
+    // App.jsx
+    import { UserContext } from "./UserContext";
+    import Profile from "./Profile";
+
+    function App() {
+    const user = { name: "Raj" };
+
+    return (
+        <UserContext value={user}>
+        <Profile />
+        </UserContext>
+    );
+    }
+
+    export default App;
+    ```
+
+    Modern React mein React 19 ka `<UserContext value={user}>` syntax use kar sakte hain. React 18 aur usse pehle ke versions mein `<UserContext.Provider value={user}>` use hota hai.
+
+    Step 3: Child component mein data access karo
+
+    ```
+    // Profile.jsx
+    import { useContext } from "react";
+    import { UserContext } from "./UserContext";
+
+    function Profile() {
+    const user = useContext(UserContext);
+
+    return <h2>Welcome, {user.name}</h2>;
+    }
+
+    export default Profile;
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `createContext()` Context create karta hai.
+    2. Provider `value` ke through data provide karta hai.
+    3. `useContext()` nearest matching provider se current value read karta hai.
+    4. Context value change hone par us context ko consume karne wale components re-render ho sakte hain.
+
+    ### 3. Context API kab use karein?
+
+    - Logged-in user ki information.
+    - Theme: light/dark mode.
+    - Language preferences.
+    - Application-wide settings.
+
+    Kab avoid karein? Har chhoti local state ke liye Context banana zaroori nahi hai. Bahut frequently changing ya complex shared state ke liye state structure aur performance carefully design karni chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “Context API is a React feature that allows us to share data across components without passing props through every intermediate component. We create a context, provide a value using a provider, and access that value with useContext. It is commonly used for themes, authentication information, and language preferences. However, context updates can cause consuming components to re-render, so we should structure contexts carefully.”
+
+    ### Interview Follow-up
+
+    Q1: What is prop drilling?
+
+    Prop drilling is passing props through multiple intermediate components that do not directly need the data.
+
+    Q2: Does Context API replace Redux?
+
+    Not always. Context is useful for sharing values across a component tree. Redux provides additional patterns and tooling for managing complex shared state, debugging updates, and handling larger application requirements.
+
+    Q3: What happens if a Context value changes?
+
+    Components consuming that context may re-render with the new value, even when wrapped in `React.memo`.
+
+    Q4: What is the difference between Context and `useState`?
+
+    `useState` manages state locally in a component. Context makes a value available to descendants; it can carry state managed by `useState` or another mechanism.
+
+    ### ⭐ One-line memory trick
+
+    Context API = Create Context → Provide Value → Consume with `useContext` → Avoid Prop Drilling.
+
+
 157. Redux kya hai?
 158. Redux vs Context?
 159. Middleware Redux mein?
