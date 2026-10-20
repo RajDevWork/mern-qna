@@ -23054,6 +23054,107 @@ Browser automatically validation kar dega.
 
 
 154. Re-render kaise hota hai?
+
+    ## Hinglish Explanation
+
+    Re-rendering React mein woh process hai jab component ka function dobara execute hota hai taaki React updated UI calculate kar sake.
+
+    Maan lo ek counter ki value `0` hai. Aap button click karte ho aur value `1` ho jaati hai. React component ko dobara render karta hai, updated UI calculate karta hai aur zaroorat ke hisaab se DOM update karta hai.
+
+    ### 1. Re-render kab hota hai?
+
+    React component generally in situations mein re-render ho sakta hai:
+
+    1. State change: `useState` ya `useReducer` se update schedule hota hai.
+    2. Props change: Parent se naye props milte hain.
+    3. Context change: Component jis context ko consume karta hai, uski value change hoti hai.
+    4. Parent re-render: Parent render hone par child bhi render ho sakta hai, agar koi optimization usse skip na kare.
+
+    ### 2. Practical Example
+
+    ```
+    import { useState } from "react";
+
+    function Counter() {
+    const [count, setCount] = useState(0);
+
+    console.log("Counter rendered");
+
+    return (
+        <div>
+        <h2>Count: {count}</h2>
+
+        <button onClick={() => setCount(c => c + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+    ```
+
+    Step-by-step execution:
+
+    Initial Render
+
+    count = 0
+
+    Button Click
+
+    setCount(c => c + 1)
+
+    React schedules update
+
+    count = 1
+
+    Re-render
+
+    Updated UI calculate hota hai
+
+    DOM Commit
+
+    Zaroorat hone par screen update hoti hai
+
+    ### 3. Kya har re-render par DOM update hota hai?
+
+    Nahi. Yeh interview mein important distinction hai.
+
+    - Re-render: React component function dobara execute karta hai aur updated UI calculate karta hai.
+    - DOM update: React actual DOM mein sirf required changes commit karta hai.
+
+    Example: Parent re-render hua, lekin child ka output same raha, toh React ko child ke liye actual DOM change karne ki zaroorat nahi ho sakti.
+
+    ### 4. Re-render ko optimize kaise karein?
+
+    - State ko us component ke paas rakho jahan uski zaroorat hai.
+    - `React.memo` use karo jab child ke unnecessary renders costly hon.
+    - `useMemo` expensive calculations ko cache kar sakta hai.
+    - `useCallback` stable function references maintain karne mein help kar sakta hai.
+    - Har component mein in optimizations ka use mat karo; pehle React DevTools Profiler se bottleneck identify karo.
+
+    ## 🎯 English Interview Answer
+
+    > “A re-render occurs when React executes a component again to calculate its updated UI. It can be triggered by state updates, changed props, context updates, or a parent re-render. React then reconciles the new output with the previous one and commits the necessary DOM changes. A re-render does not necessarily mean the actual DOM has changed.”
+
+    ### Interview Follow-up
+
+    Q1: Does changing state always cause a re-render?
+
+    A state update can trigger a render. If the next state is identical to the previous state according to `Object.is`, React can skip rendering the component's children in that update.
+
+    Q2: Does a child re-render when its parent re-renders?
+
+    It can. By default, parent rendering may cause child components to render again. `React.memo` can allow React to skip a child render when its props are unchanged, subject to state and context updates.
+
+    Q3: What is the difference between render and commit?
+
+    - Render phase: React calculates what the UI should look like.
+    - Commit phase: React applies necessary changes to the DOM.
+
+    ### ⭐ One-line memory trick
+
+    State/Props/Context → Render → Reconciliation → DOM Commit (only necessary changes).
+
+
 155. Re-render kaise avoid kare?
 156. Context API?
 157. Redux kya hai?
