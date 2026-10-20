@@ -23156,6 +23156,110 @@ Browser automatically validation kar dega.
 
 
 155. Re-render kaise avoid kare?
+
+    ## Hinglish Explanation
+
+    React mein unnecessary re-renders avoid karne ka best tareeka hai state ko sahi jagah rakhna, props stable rakhna aur sirf zaroorat par memoization use karna.
+
+    Ek important baat: har re-render problem nahi hota. React re-rendering ko efficiently handle karta hai. Humein mainly expensive ya unnecessary renders optimize karne chahiye.
+
+    ### 1. `React.memo` — Child Component ko Memoize Karo
+
+    Agar parent re-render ho raha hai, lekin child ke props change nahi hue, toh `React.memo` child ka re-render skip karne mein help kar sakta hai.
+
+    ```
+    const User = React.memo(function User({ name }) {
+    console.log("User rendered");
+    return <h2>{name}</h2>;
+    });
+    ```
+
+    ### 2. `useCallback` — Function Reference Stable Rakho
+
+    Agar memoized child ko function prop pass kar rahe ho, toh `useCallback` unnecessary re-renders avoid karne mein help kar sakta hai.
+
+    ```
+    const handleClick = useCallback(() => {
+    console.log("Clicked");
+    }, []);
+
+    return <User onClick={handleClick} />;
+    ```
+
+    ### 3. `useMemo` — Expensive Calculation Cache Karo
+
+    Har render par expensive filtering ya sorting repeat karne ki zaroorat nahi hai, agar dependencies change nahi hui hain.
+
+    ```
+    const filteredUsers = useMemo(() => {
+    return users.filter(user => user.active);
+    }, [users]);
+    ```
+
+    ### 4. State ko Correct Component mein Rakho
+
+    Agar sirf ek chhote component ko state chahiye, toh state ko unnecessarily high-level parent mein mat rakho.
+
+    ```
+    function SearchBox() {
+    const [search, setSearch] = useState("");
+
+    return (
+        <input
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        />
+    );
+    }
+    ```
+
+    Isse search input ki state update hone par poore unrelated parent UI ko re-render karne ki zaroorat kam ho sakti hai.
+
+    ### 5. Unnecessary State aur Effects Avoid Karo
+
+    Agar koi value existing props ya state se calculate ho sakti hai, toh uske liye extra state aur `useEffect` use mat karo.
+
+    ```
+    // ❌ Unnecessary state synchronization
+    const [fullName, setFullName] = useState("");
+
+    useEffect(() => {
+    setFullName(firstName + " " + lastName);
+    }, [firstName, lastName]);
+
+    // ✅ Direct calculation
+    const fullName = firstName + " " + lastName;
+    ```
+
+    Isse extra render cycle avoid ho sakti hai.
+
+    ### 6. Context Updates Optimize Karo
+
+    Agar ek large context ki value change hoti hai, toh us context ko consume karne wale components re-render ho sakte hain. Context ko logical parts mein split karna aur values ko carefully structure karna help kar sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “To avoid unnecessary re-renders in React, I first identify the performance bottleneck using React DevTools Profiler. Then I keep state close to where it is needed, use React.memo for suitable child components, useCallback for stable function references, and useMemo for expensive calculations. I also avoid unnecessary state and effects and optimize context usage. I don't apply memoization everywhere because it adds complexity and has its own cost.”
+
+    ### Interview Follow-up
+
+    Q1: Does `React.memo` completely prevent re-renders?
+
+    No. State changes inside the component and updates to consumed context can still cause re-renders.
+
+    Q2: Should we always use `useMemo` and `useCallback`?
+
+    No. Use them when they provide a meaningful performance benefit, such as avoiding expensive recalculations or preserving props for memoized children.
+
+    Q3: How do you identify unnecessary re-renders?
+
+    Use React DevTools Profiler to inspect which components render, how often they render, and where rendering time is being spent.
+
+    ### ⭐ One-line memory trick
+
+    Profile first → State local rakho → Memoize selectively → Unnecessary effects avoid karo.
+
+
 156. Context API?
 157. Redux kya hai?
 158. Redux vs Context?
