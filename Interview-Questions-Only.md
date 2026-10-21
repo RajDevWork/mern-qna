@@ -24329,6 +24329,118 @@ Browser automatically validation kar dega.
     Suspense = Wait for supported content + Show fallback UI.
 
 166. Error boundaries?
+
+    ## Hinglish Explanation
+
+    Error Boundaries React ke components hote hain jo apne child component tree mein render ke dauran aane wale JavaScript errors ko catch karte hain aur fallback UI dikhate hain, taaki poori application ki UI crash na ho.
+
+    Example: Aapke CRM dashboard mein Reports component crash ho gaya. Error Boundary ki help se Reports section mein error message dikha sakte ho, jabki baaki dashboard usable reh sakta hai.
+
+    ### 1. Error Boundary kaise kaam karta hai?
+
+    Parent Application
+
+    Error Boundary
+
+    Child tree ke render errors ko catch karta hai
+
+    Child Component
+
+    Normal UI ya error
+
+    Fallback UI
+
+    Error hone par alternative UI
+
+    ### 2. Practical Example
+
+    React mein traditional Error Boundary class component ke through banaya jaata hai.
+
+    ```
+    import React from "react";
+
+    class ErrorBoundary extends React.Component {
+    state = { hasError: false };
+
+    static getDerivedStateFromError() {
+        return { hasError: true };
+    }
+
+    componentDidCatch(error, info) {
+        console.error("Component error:", error, info);
+    }
+
+    render() {
+        if (this.state.hasError) {
+        return <h2>Something went wrong.</h2>;
+        }
+
+        return this.props.children;
+    }
+    }
+
+    export default ErrorBoundary;
+    ```
+
+    Use kaise karein?
+
+    ```
+    <ErrorBoundary>
+    <Reports />
+    </ErrorBoundary>
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `Reports` component render hota hai.
+    2. Agar uske child tree mein supported render error aata hai, boundary use catch kar sakta hai.
+    3. `getDerivedStateFromError()` fallback state set karta hai.
+    4. `componentDidCatch()` error logging ke liye use hota hai.
+    5. Error Boundary ki jagah fallback UI render hota hai.
+
+    ### 3. Error Boundary kya catch nahi karta?
+
+    Error Boundaries generally in errors ko automatically catch nahi karte:
+
+    - Event handlers ke andar aane wale errors.
+    - `setTimeout`, `setInterval` ya doosre asynchronous callbacks ke errors.
+    - Server-side rendering ke errors.
+    - Error Boundary ke apne render errors.
+
+    Event handler ya async code ke liye normal `try/catch`, Promise `.catch()` aur appropriate error handling use karo.
+
+    ### 4. Suspense vs Error Boundary
+
+    | Suspense                                      | Error Boundary                                         |
+    | --------------------------------------------- | ------------------------------------------------------ |
+    | Supported content load hone ka wait karta hai | Child tree ke supported render errors handle karta hai |
+    | Loading fallback dikhata hai                  | Error fallback dikhata hai                             |
+    | `fallback` prop use karta hai                 | Error state aur fallback logic use karta hai           |
+
+    ## 🎯 English Interview Answer
+
+    > “Error Boundaries are React components that catch JavaScript errors during rendering in their child component tree and display fallback UI instead of letting the error break the entire UI tree. They are traditionally implemented using class lifecycle methods such as getDerivedStateFromError and componentDidCatch. They are useful for isolating failures in sections such as dashboards, reports, or widgets. However, they do not automatically catch errors from event handlers or asynchronous callbacks.”
+
+    ### Interview Follow-up
+
+    Q1: Can we create an Error Boundary using a regular functional component and `useEffect`?
+
+    React does not provide a built-in Hook that turns a function component into an Error Boundary. Traditionally, we use a class component or a library that provides Error Boundary functionality.
+
+    Q2: What is the difference between `getDerivedStateFromError` and `componentDidCatch`?
+
+    - `getDerivedStateFromError` updates state so fallback UI can render.
+    - `componentDidCatch` is used for logging error details.
+
+    Q3: Should we use one Error Boundary for the whole application?
+
+    A top-level boundary is useful as a last-resort fallback. Additional boundaries around important sections can isolate errors so one broken widget does not hide the entire page.
+
+    ### ⭐ One-line memory trick
+
+    Error Boundary = Catch child render errors → Show fallback UI → Log the error.
+
+
 167. Portals kya hain?
 168. Fragments kya hain?
 169. StrictMode kya hai?
