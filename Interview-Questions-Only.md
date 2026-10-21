@@ -23379,6 +23379,165 @@ Browser automatically validation kar dega.
 
 
 157. Redux kya hai?
+
+    ## Hinglish Explanation
+
+    Redux ek predictable state management library hai jo application ki shared state ko ek centralized store mein manage karne mein help karti hai.
+
+    Maan lo aap ek MERN application bana rahe ho jisme Login, Dashboard, Profile aur Navbar ko logged-in user ka data chahiye. Har component mein props pass karne ke bajay Redux Store mein shared state rakh sakte ho.
+
+    Modern React applications mein generally Redux Toolkit (RTK) use karna recommended hai, kyunki yeh Redux ka setup aur state updates simplify karta hai.
+
+    ### 1. Redux kaise kaam karta hai?
+
+    React Component
+
+    User action — e.g. Login button
+
+    Dispatch Action
+
+    dispatch(loginSuccess(user))
+
+    Reducer
+
+    Action ke basis par next state calculate karta hai
+
+    Redux Store
+
+    Updated application state
+
+    useSelector
+
+    Components latest required state read karte hain
+
+    Redux ke main concepts:
+
+    - Store: Application ki shared state rakhta hai.
+    - Action: Batata hai ki kya event ya change request hua.
+    - Reducer: Current state aur action se next state calculate karta hai.
+    - Dispatch: Action ko store tak bhejta hai.
+    - Selector: Store se required state read karta hai.
+
+    ### 2. Redux Toolkit ka practical example
+
+    Install karo:
+
+    ```
+    pnpm add @reduxjs/toolkit react-redux
+    ```
+
+    Step 1: Slice create karo
+
+    ```
+    // features/counter/counterSlice.js
+    import { createSlice } from "@reduxjs/toolkit";
+
+    const counterSlice = createSlice({
+    name: "counter",
+    initialState: { value: 0 },
+    reducers: {
+        increment: state => {
+        state.value += 1;
+        },
+        decrement: state => {
+        state.value -= 1;
+        }
+    }
+    });
+
+    export const { increment, decrement } = counterSlice.actions;
+    export default counterSlice.reducer;
+    ```
+
+    Yahan `createSlice()` actions aur reducer logic generate karta hai. Reducer ke andar `state.value += 1` allowed hai kyunki Redux Toolkit internally Immer use karke immutable update produce karta hai.
+
+    Step 2: Store create karo
+
+    ```
+    // app/store.js
+    import { configureStore } from "@reduxjs/toolkit";
+    import counterReducer from "../features/counter/counterSlice";
+
+    export const store = configureStore({
+    reducer: {
+        counter: counterReducer
+    }
+    });
+    ```
+
+    Step 3: React app ko Provider se wrap karo
+
+    ```
+    // main.jsx
+    import { Provider } from "react-redux";
+    import { store } from "./app/store";
+
+    <Provider store={store}>
+    <App />
+    </Provider>
+    ```
+
+    Step 4: Component mein state read aur update karo
+
+    ```
+    import { useSelector, useDispatch } from "react-redux";
+    import { increment, decrement } from "./counterSlice";
+
+    function Counter() {
+    const count = useSelector(state => state.counter.value);
+    const dispatch = useDispatch();
+
+    return (
+        <>
+        <h2>{count}</h2>
+        <button onClick={() => dispatch(increment())}>+</button>
+        <button onClick={() => dispatch(decrement())}>-</button>
+        </>
+    );
+    }
+    ```
+
+    Interview point: `useSelector()` store se state read karta hai aur selected value change hone par component ko re-render karwa sakta hai. `useDispatch()` actions dispatch karne ke liye use hota hai.
+
+    ### 3. Redux vs Context API vs useState
+
+    | Feature         | `useState`            | Context API                             | Redux Toolkit                          |
+    | --------------- | --------------------- | --------------------------------------- | -------------------------------------- |
+    | Main purpose    | Local component state | Descendants ke beech values share karna | Shared state manage karna              |
+    | Setup           | Simple                | Context + Provider                      | Store + slices + Provider              |
+    | Best suited for | Input, toggle, modal  | Theme, locale, auth context             | Complex shared state, multiple actions |
+    | Extra tooling   | Minimal               | Built into React                        | Selectors, middleware, DevTools        |
+
+    Har application ko Redux ki zaroorat nahi hoti. Agar state simple hai toh `useState` ya Context sufficient ho sakte hain. Redux tab useful hota hai jab shared state aur update logic complex ho jaye.
+
+    ## 🎯 English Interview Answer
+
+    > “Redux is a state management library that helps us manage shared application state in a predictable way. It uses a centralized store, actions, and reducers to update state. In React, we commonly use Redux Toolkit with Provider, useSelector, and useDispatch. It is useful when multiple components need shared state and the application requires structured updates, debugging, and middleware support.”
+
+    ### Interview Follow-up
+
+    Q1: What is the difference between Redux and Redux Toolkit?
+
+    Redux is the state management library. Redux Toolkit is the recommended way to write Redux logic with less boilerplate and utilities such as `createSlice()` and `configureStore()`.
+
+    Q2: What is the difference between `useDispatch` and `useSelector`?
+
+    - `useDispatch()` returns the function used to dispatch actions.
+    - `useSelector()` reads selected state from the Redux store.
+
+    Q3: Can Redux handle API calls?
+
+    Yes. Redux Toolkit provides `createAsyncThunk` for asynchronous workflows and RTK Query for data fetching and caching.
+
+    Q4: Does every React project need Redux?
+
+    No. For local or simple shared state, built-in React features may be sufficient. Redux is more useful when shared state and update workflows become complex.
+
+    ### ⭐ One-line memory trick
+
+    Redux = Store holds state → Dispatch sends action → Reducer calculates next state → Selector reads state.
+
+
 158. Redux vs Context?
 159. Middleware Redux mein?
 160. Thunk vs Saga?
