@@ -23960,6 +23960,97 @@ Browser automatically validation kar dega.
 
 
 162. Recoil kya hai?
+
+    ## Hinglish Explanation
+
+    Recoil ek state management library thi jo React applications mein shared state ko atoms aur selectors ke through manage karne ke liye banayi gayi thi.
+
+    Iska main idea tha ki poori application ki state ko ek single centralized store mein rakhne ke bajay, chhote-chhote independent state units mein divide kiya ja sake.
+
+    Important industry update: Recoil ko ab new projects ke liye choose karna generally recommend nahi karunga, kyunki Meta ne Recoil repository ko archive kar diya hai. Interview ke liye iska concept samajhna useful hai, lekin practical projects mein Zustand ya Redux Toolkit jaise alternatives consider karo.
+
+    ### 1. Recoil ke main concepts
+
+    - Atom: State ka ek individual unit, jaise `username`, `theme` ya `counter`.
+    - Selector: Existing atoms ya doosre selectors se derived value calculate karta hai.
+    - RecoilRoot: Application ko wrap karta hai taaki components Recoil state access kar saken.
+    - useRecoilState: Atom ki value read aur update karne ke liye.
+    - useRecoilValue: Sirf value read karne ke liye.
+    - useSetRecoilState: Value update karne ke liye, bina current value subscribe kiye.
+
+    ### 2. Practical Example
+
+    Recoil ke traditional API ka example:
+
+    ```
+    import {
+    atom,
+    RecoilRoot,
+    useRecoilState
+    } from "recoil";
+
+    const countState = atom({
+    key: "countState",
+    default: 0
+    });
+
+    function Counter() {
+    const [count, setCount] = useRecoilState(countState);
+
+    return (
+        <button onClick={() => setCount(c => c + 1)}>
+        Count: {count}
+        </button>
+    );
+    }
+
+    function App() {
+    return (
+        <RecoilRoot>
+        <Counter />
+        </RecoilRoot>
+    );
+    }
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `atom()` ek state unit define karta hai.
+    2. `default: 0` initial value set karta hai.
+    3. `useRecoilState()` value aur setter deta hai.
+    4. Setter call hone par subscribed components updated value ke saath re-render ho sakte hain.
+
+    ### 3. Atom vs Selector
+
+    | Atom                         | Selector                                                |
+    | ---------------------------- | ------------------------------------------------------- |
+    | State store karta hai        | Derived value calculate karta hai                       |
+    | Directly update ho sakta hai | Generally atom ya selector ki values se derive hota hai |
+    | Example: `price = 100`       | Example: `price * quantity`                             |
+
+    ## 🎯 English Interview Answer
+
+    > “Recoil was a state management library for React that used atoms and selectors. Atoms represented individual pieces of state, while selectors derived values from other state. Components could subscribe to specific state units instead of relying on a single centralized store. However, Recoil's repository has been archived, so I would generally choose a currently maintained alternative for a new production application.”
+
+    ### Interview Follow-up
+
+    Q1: What is an atom in Recoil?
+
+    An atom is an individual unit of state that components can read and update.
+
+    Q2: What is a selector?
+
+    A selector derives a value from atoms or other selectors, such as calculating a cart total from product prices and quantities.
+
+    Q3: Recoil vs Zustand?
+
+    Both support shared state, but their APIs differ. Zustand uses a store and selectors; Recoil uses atoms and selectors. For a new project today, I would generally prefer a maintained option such as Zustand or Redux Toolkit.
+
+    ### ⭐ One-line memory trick
+
+    Recoil = Atoms store state + Selectors derive values.
+
+
 163. Code splitting?
 164. Lazy loading?
 165. Suspense?
