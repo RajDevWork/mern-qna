@@ -24243,6 +24243,91 @@ Browser automatically validation kar dega.
 
 
 165. Suspense?
+
+    ## Hinglish Explanation
+
+    `Suspense` React ka component hai jo kisi child component ke wait karte waqt fallback UI show karta hai.
+
+    Simple example: Aapke application mein Reports page ka JavaScript code abhi load ho raha hai. Jab tak code load nahi hota, user ko blank screen dikhane ke bajay `"Loading..."` dikha sakte ho. Iske liye `Suspense` use hota hai.
+
+    ### 1. Syntax
+
+    ```
+    <Suspense fallback={<p>Loading...</p>}>
+    <SomeComponent />
+    </Suspense>
+    ```
+
+    - `Suspense`: Loading boundary create karta hai.
+    - `fallback`: Wait karte waqt dikhne wala UI, jaise spinner ya skeleton.
+    - `SomeComponent`: Aisa child jo kisi supported resource ke liye suspend kar sakta hai.
+
+    ### 2. Practical Example: Lazy Loading
+
+    ```
+    import { lazy, Suspense } from "react";
+
+    const Reports = lazy(() => import("./Reports"));
+
+    function App() {
+    return (
+        <div>
+        <h1>Dashboard</h1>
+
+        <Suspense fallback={<p>Loading Reports...</p>}>
+            <Reports />
+        </Suspense>
+        </div>
+    );
+    }
+
+    export default App;
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `lazy()` Reports component ko dynamic import se load karta hai.
+    2. Jab tak Reports ka code load ho raha hota hai, `Suspense` fallback show karta hai.
+    3. Code load hone ke baad Reports component render ho jata hai.
+
+    ### 3. Kya Suspense API calls ke liye bhi use hota hai?
+
+    Haan, lekin har API call ke liye automatically nahi.
+
+    - `React.lazy()` ke saath component code loading handle karne ke liye use hota hai.
+    - Suspense-compatible data-fetching libraries ya React ke supported data-loading patterns ke saath data loading handle kar sakta hai.
+    - Normal `useEffect()` mein `fetch()` likhne se Suspense automatically loading UI show nahi karta.
+
+    ### 4. Suspense vs Lazy Loading
+
+    | Suspense                                            | Lazy Loading                                                 |
+    | --------------------------------------------------- | ------------------------------------------------------------ |
+    | Fallback UI dikhata hai jab child suspend karta hai | Resource ko demand par load karne ki strategy                |
+    | Loading boundary define karta hai                   | Resource loading delay karta hai                             |
+    | `fallback` prop use karta hai                       | `lazy()` ya image `loading="lazy"` se implement ho sakta hai |
+
+    ## 🎯 English Interview Answer
+
+    > “Suspense is a React component that lets us display fallback UI while its children are waiting for a supported resource. A common use case is lazy loading components with React.lazy, where we show a loading indicator until the component's JavaScript code is ready. Suspense can also work with supported data-fetching solutions, but it does not automatically handle every API request.”
+
+    ### Interview Follow-up
+
+    Q1: What is the purpose of the `fallback` prop?
+
+    It specifies what React should display while a child inside the Suspense boundary is suspended, such as a spinner or loading message.
+
+    Q2: Does Suspense handle API errors?
+
+    No. Suspense handles waiting, not errors. Error handling generally requires an Error Boundary or another appropriate error-handling mechanism.
+
+    Q3: Can we use multiple Suspense boundaries?
+
+    Yes. Multiple boundaries allow different parts of a page to display their own fallback UI independently.
+
+    ### ⭐ One-line memory trick
+
+    Suspense = Wait for supported content + Show fallback UI.
+
 166. Error boundaries?
 167. Portals kya hain?
 168. Fragments kya hain?
