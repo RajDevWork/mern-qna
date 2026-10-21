@@ -23737,6 +23737,126 @@ Browser automatically validation kar dega.
 
 
 160. Thunk vs Saga?
+
+    ## Hinglish Explanation
+
+    Redux Thunk aur Redux Saga dono Redux applications mein asynchronous operations, jaise API calls, handle karne ke liye use hote hain. Main difference inki approach aur complexity ka hai.
+
+    - Redux Thunk: Simple functions ke through async logic handle karta hai. API calls aur straightforward workflows ke liye easy hai.
+    - Redux Saga: Generator functions (`function*`) aur effects ke through async workflows handle karta hai. Complex workflows, cancellation, retries aur multiple concurrent tasks mein useful ho sakta hai.
+
+    ### 1. Redux Thunk ka example
+
+    Redux Toolkit mein Thunk middleware by default included hota hai.
+
+    ```
+    import { createAsyncThunk } from "@reduxjs/toolkit";
+
+    export const fetchUsers = createAsyncThunk(
+    "users/fetchUsers",
+    async () => {
+        const response = await fetch("/api/users");
+
+        if (!response.ok) {
+        throw new Error("Failed to fetch users");
+        }
+
+        return response.json();
+    }
+    );
+    ```
+
+    `createAsyncThunk` lifecycle actions generate karta hai:
+
+    - `fetchUsers.pending`
+    - `fetchUsers.fulfilled`
+    - `fetchUsers.rejected`
+
+    In actions ko reducer mein handle karke loading, success aur error state manage kar sakte hain.
+
+    ### 2. Redux Saga ka example
+
+    Saga mein generator function (`function*`) use hota hai. Is example mein `call` API request perform karne ke liye aur `put` Redux action dispatch karne ke liye use hota hai.
+
+    ```
+    import { call, put, takeLatest } from "redux-saga/effects";
+
+    function* fetchUsersSaga() {
+    try {
+        const response = yield call(fetch, "/api/users");
+
+        if (!response.ok) {
+        throw new Error("Failed to fetch users");
+        }
+
+        const users = yield call([response, response.json]);
+
+        yield put({
+        type: "users/fetchSuccess",
+        payload: users
+        });
+    } catch (error) {
+        yield put({
+        type: "users/fetchFailure",
+        payload: error.message
+        });
+    }
+    }
+
+    function* watchUsers() {
+    yield takeLatest("users/fetchRequested", fetchUsersSaga);
+    }
+    ```
+
+    `takeLatest` latest matching action ke task ko active rakhta hai aur pehle wale running task ko cancel karta hai. Agar task ne already start ki hui external request ko cancellation support ke bina launch kiya hai, toh us request ka network work automatically cancel hona guaranteed nahi hai.
+
+    ### 3. Thunk vs Saga — Interview Comparison
+
+    | Feature                    | Redux Thunk                              | Redux Saga                                            |
+    | -------------------------- | ---------------------------------------- | ----------------------------------------------------- |
+    | Approach                   | Functions + Promises/`async-await`       | Generator functions + effects                         |
+    | Learning curve             | Easy                                     | Comparatively difficult                               |
+    | Setup                      | Redux Toolkit mein default               | Usually separately configure karna padta hai          |
+    | Simple API calls           | Excellent fit                            | Possible, but often more setup                        |
+    | Complex workflows          | Possible, but code complex ho sakta hai  | Strong workflow orchestration                         |
+    | Cancellation / concurrency | Explicitly implement karna pad sakta hai | Built-in saga effects help karte hain                 |
+    | Testing                    | Functions ko test kar sakte hain         | Generator effects ko step-by-step test kar sakte hain |
+
+    ### 4. Real project mein kya choose karein?
+
+    Redux Thunk / Redux Toolkit
+
+    CRUD APIs, login requests, dashboard data, simple loading/error handling. Most applications ke liye yahin se start karna practical hai.
+
+    Redux Saga
+
+    Complex multi-step workflows, debouncing, cancellation, concurrent operations aur long-running background tasks—jab simpler approach insufficient ho.
+
+    Senior developer tip: Sirf API call karne ke liye Saga add karna zaroori nahi hai. Modern Redux Toolkit applications mein `createAsyncThunk` ya RTK Query aksar sufficient hote hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Redux Thunk and Redux Saga are both used to handle asynchronous logic in Redux applications. Thunk uses functions and works naturally with async/await, making it suitable for straightforward API calls. Saga uses generator functions and effects to manage more complex workflows, including cancellation and concurrency. I generally prefer Redux Toolkit with Thunk or RTK Query for standard data fetching, and consider Saga when the application requires complex asynchronous orchestration.”
+
+    ### Interview Follow-up
+
+    Q1: Which one is easier to learn?
+
+    Redux Thunk, because it uses regular functions and `async/await`.
+
+    Q2: Which is better for complex API workflows?
+
+    Saga can be a better fit when there are many coordinated asynchronous tasks, cancellation rules, or complex concurrency requirements. The right choice depends on the workflow.
+
+    Q3: Does Redux Toolkit use Thunk by default?
+
+    Yes. `configureStore()` includes thunk middleware by default unless you customize the middleware configuration.
+
+    ### ⭐ One-line memory trick
+
+    Thunk = Simple async functions; Saga = Complex async workflow orchestration.
+
+
 161. Zustand kya hai?
 162. Recoil kya hai?
 163. Code splitting?
