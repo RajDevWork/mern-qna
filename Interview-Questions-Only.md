@@ -23539,6 +23539,102 @@ Browser automatically validation kar dega.
 
 
 158. Redux vs Context?
+
+    ## Hinglish Explanation
+
+    Context API aur Redux dono React application mein data share karne ke kaam aate hain, lekin dono ka purpose aur state management approach alag hai.
+
+    - Context API: React ka built-in feature hai jo components ke beech data share karta hai, bina har level par props pass kiye.
+    - Redux Toolkit: Ek dedicated state management solution hai jo shared state ko centralized store mein manage karta hai, structured updates aur debugging tools ke saath.
+
+    ### 1. Redux vs Context API
+
+    | Feature       | Context API                                                     | Redux Toolkit                                                                |
+    | ------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+    | Type          | React ka built-in feature                                       | External state management library                                            |
+    | Setup         | `createContext`, Provider, `useContext`                         | Store, slices, Provider                                                      |
+    | State updates | Aap `useState` ya `useReducer` se manage kar sakte ho           | Reducers aur dispatched actions se                                           |
+    | Re-rendering  | Context value change hone par consumers re-render ho sakte hain | Selected state change hone par subscribed components re-render ho sakte hain |
+    | Debugging     | Basic React tools                                               | Redux DevTools, action history                                               |
+    | Middleware    | Built-in Redux-style middleware nahi                            | Middleware support                                                           |
+    | Best use case | Theme, locale, simple auth context                              | Complex shared state, multiple update workflows                              |
+
+    ### 2. Context API ka example
+
+    Jab aapko app mein theme share karni ho:
+
+    ```
+    const ThemeContext = createContext("light");
+
+    function App() {
+    return (
+        <ThemeContext value="dark">
+        <Navbar />
+        </ThemeContext>
+    );
+    }
+
+    function Navbar() {
+    const theme = useContext(ThemeContext);
+
+    return <nav className={theme}>Navbar</nav>;
+    }
+    ```
+
+    React 19 mein `<ThemeContext value="dark">` syntax available hai. React 18 aur earlier mein `<ThemeContext.Provider value="dark">` use karein.
+
+    ### 3. Redux Toolkit ka example
+
+    Jab multiple components ko counter state read aur update karni ho:
+
+    ```
+    const count = useSelector(state => state.counter.value);
+    const dispatch = useDispatch();
+
+    return (
+    <button onClick={() => dispatch(increment())}>
+        Count: {count}
+    </button>
+    );
+    ```
+
+    Redux mein state update action aur reducer ke through hota hai, jisse update logic centralized aur traceable rehta hai.
+
+    ### 4. Real project mein kya choose karein?
+
+    Context API choose karein
+
+    Theme, language preference, ya relatively simple shared values ke liye.
+
+    Redux Toolkit choose karein
+
+    Complex workflows, multiple shared state updates, middleware, aur action-based debugging ke liye.
+
+    Senior developer tip: Redux har large application ke liye automatically necessary nahi hota. Aur Context automatically slow nahi hota; re-render behavior depend karta hai ki value kaise update hoti hai aur components kaise consume karte hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Context API and Redux are both used to share state across React components, but they solve slightly different problems. Context is built into React and is suitable for sharing values such as themes and language preferences. Redux Toolkit provides a centralized store, structured action-based updates, middleware, and debugging tools. I choose based on the complexity of shared state and the application's requirements, rather than using Redux in every project.”
+
+    ### Interview Follow-up
+
+    Q1: Does Context API replace Redux?
+
+    Not completely. Context can share values across components, while Redux Toolkit provides a more structured solution for complex shared state and debugging workflows.
+
+    Q2: Which one is better for authentication?
+
+    Either can work. Context may be enough for simple auth state; Redux can be useful if authentication state is part of a larger, complex application workflow. Sensitive tokens must be handled securely regardless of the state management choice.
+
+    Q3: Can Context cause unnecessary re-renders?
+
+    Yes. When the provided value changes, components consuming that context can re-render. Splitting contexts or stabilizing values where appropriate can help.
+
+    ### ⭐ One-line memory trick
+
+    Context = Share values; Redux = Manage complex shared state with structured updates and tooling.
+
+
 159. Middleware Redux mein?
 160. Thunk vs Saga?
 161. Zustand kya hai?
