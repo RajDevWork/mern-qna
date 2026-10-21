@@ -23636,6 +23636,106 @@ Browser automatically validation kar dega.
 
 
 159. Middleware Redux mein?
+
+    ## Hinglish Explanation
+
+    Redux mein Middleware ek layer hoti hai jo dispatched action aur reducer ke beech kaam karti hai. Iska use asynchronous operations, logging, API calls aur error handling jaise tasks ke liye hota hai.
+
+    Simple example: User Login button click karta hai. API call karni hai, loading dikhani hai aur success ya failure handle karna hai. Middleware is workflow ko manage karne mein help kar sakta hai.
+
+    ### 1. Redux Middleware kaise kaam karta hai?
+
+    Component
+
+    dispatch(action)
+
+    Middleware
+
+    Logging, async logic, side effects
+
+    Reducer
+
+    Next state calculate karta hai
+
+    Store Updated
+
+    UI selected state ke according update ho sakti hai
+
+    Middleware action ko aage pass kar sakta hai, uske pehle ya baad kaam kar sakta hai, ya action ko aage pass na karne ka decision le sakta hai.
+
+    ### 2. Redux Toolkit mein Middleware ka example
+
+    Redux Toolkit mein common middleware ke liye `configureStore()` use karte hain. Yeh default middleware bhi configure karta hai, jaise development checks.
+
+    Custom logging middleware:
+
+    ```
+    const loggerMiddleware = storeAPI => next => action => {
+    console.log("Action:", action.type);
+
+    const result = next(action);
+
+    console.log("New state:", storeAPI.getState());
+
+    return result;
+    };
+    ```
+
+    Store mein register karna:
+
+    ```
+    import { configureStore } from "@reduxjs/toolkit";
+    import counterReducer from "./counterSlice";
+
+    const store = configureStore({
+    reducer: {
+        counter: counterReducer
+    },
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware().concat(loggerMiddleware)
+    });
+    ```
+
+    Explanation:
+
+    - `storeAPI` se `dispatch` aur `getState` milte hain.
+    - `next(action)` action ko agle middleware ya reducer pipeline tak bhejta hai.
+    - `storeAPI.getState()` updated state read karta hai, agar action successfully process ho gaya ho.
+
+    ### 3. Common Redux Middleware
+
+    | Middleware        | Use                                 |
+    | ----------------- | ----------------------------------- |
+    | Redux Thunk       | Async logic, API calls              |
+    | Redux Saga        | Complex asynchronous workflows      |
+    | Logger middleware | Actions aur state changes log karna |
+    | Custom middleware | Application-specific side effects   |
+
+    Interview tip: Redux Toolkit mein `createAsyncThunk` asynchronous workflows ke liye built-in utility hai, aur RTK Query API fetching aur caching ko simplify karta hai. Dono ka use karne ke liye har baar custom middleware likhna zaroori nahi hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Redux middleware is a function that intercepts dispatched actions before they reach the reducer. It can perform tasks such as logging, asynchronous operations, analytics, and error handling. In Redux Toolkit, configureStore sets up default middleware, and we can add custom middleware when needed. Middleware helps separate side effects from reducer logic, keeping reducers predictable and focused on calculating the next state.”
+
+    ### Interview Follow-up
+
+    Q1: Why can't reducers handle API calls directly?
+
+    Reducers should be pure functions. API calls are side effects, so they should be handled outside reducers, using middleware or other appropriate async mechanisms.
+
+    Q2: What does `next(action)` do?
+
+    It passes the action to the next middleware in the chain or onward to the reducer pipeline.
+
+    Q3: Is Redux Thunk middleware?
+
+    Yes. Redux Thunk is middleware that allows dispatched functions to perform asynchronous work and dispatch actions later.
+
+    ### ⭐ One-line memory trick
+
+    Dispatch → Middleware (side effects) → Reducer (next state) → Store update.
+
+
 160. Thunk vs Saga?
 161. Zustand kya hai?
 162. Recoil kya hai?
