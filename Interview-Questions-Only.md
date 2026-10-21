@@ -24052,6 +24052,105 @@ Browser automatically validation kar dega.
 
 
 163. Code splitting?
+
+    ## Hinglish Explanation
+
+    Code Splitting React application ke JavaScript code ko chhote-chhote bundles ya chunks mein divide karne ki technique hai, taaki poori application ka code ek saath download na karna pade.
+
+    Maan lo aapki application mein Dashboard, Reports aur Settings pages hain. User sirf Dashboard open karta hai, toh Reports aur Settings ka code baad mein load kiya ja sakta hai. Isse initial JavaScript payload kam ho sakta hai aur page startup improve ho sakta hai.
+
+    ### 1. Code Splitting kyun use karte hain?
+
+    - Initial JavaScript download size reduce karne ke liye.
+    - Application ka initial load improve karne ke liye.
+    - Heavy pages aur components ko demand par load karne ke liye.
+    - Large applications ko maintainable loading chunks mein divide karne ke liye.
+
+    ### 2. React mein `React.lazy()` aur `Suspense`
+
+    ```
+    import { lazy, Suspense } from "react";
+
+    const Reports = lazy(() => import("./Reports"));
+
+    function App() {
+    return (
+        <Suspense fallback={<p>Loading reports...</p>}>
+        <Reports />
+        </Suspense>
+    );
+    }
+
+    export default App;
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `lazy()` component ko dynamic import se load karne deta hai.
+    2. Build tool, jaise Vite ya Webpack, is import ko separate chunk mein split kar sakta hai.
+    3. Jab `Reports` render hota hai, uska code load hota hai.
+    4. Load hone tak `Suspense` ka fallback dikhaya ja sakta hai.
+
+    Note: `lazy()` tab useful hai jab component pehli baar render hota hai. Agar user Reports component tak kabhi nahi pahunchta, toh uska lazy-loaded chunk aam taur par initial load mein download nahi hota.
+
+    ### 3. Route-based Code Splitting
+
+    Real projects mein har page ko lazy load karna common approach hai.
+
+    ```
+    import { lazy, Suspense } from "react";
+    import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+    const Dashboard = lazy(() => import("./pages/Dashboard"));
+    const Reports = lazy(() => import("./pages/Reports"));
+
+    function App() {
+    return (
+        <BrowserRouter>
+        <Suspense fallback={<p>Loading page...</p>}>
+            <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/reports" element={<Reports />} />
+            </Routes>
+        </Suspense>
+        </BrowserRouter>
+    );
+    }
+    ```
+
+    Is example mein Dashboard aur Reports alag chunks mein build ho sakte hain, depending on build configuration. `Suspense` route component load hone tak fallback UI show karta hai.
+
+    ### 4. Code Splitting vs Lazy Loading
+
+    | Code Splitting                         | Lazy Loading                                  |
+    | -------------------------------------- | --------------------------------------------- |
+    | Code ko chunks mein divide karta hai   | Resource ko zaroorat padne par load karta hai |
+    | Build-time bundling technique          | Loading strategy                              |
+    | Dynamic imports se enable ho sakta hai | Code splitting ke saath use ho sakta hai      |
+
+    ## 🎯 English Interview Answer
+
+    > “Code splitting is a technique for dividing an application's JavaScript into smaller chunks that can be loaded when needed. In React, we commonly use React.lazy with dynamic imports and Suspense to load components on demand. Route-based code splitting can reduce the initial JavaScript payload and improve startup performance, especially in large applications. The actual benefit depends on bundle size, network conditions, and how the application is structured.”
+
+    ### Interview Follow-up
+
+    Q1: What is the difference between `React.lazy()` and `Suspense`?
+
+    `React.lazy()` defines a component that loads through a dynamic import. `Suspense` displays fallback UI while that component's code is loading.
+
+    Q2: Does code splitting always improve performance?
+
+    No. It can reduce initial download size, but too many small chunks or delayed loading can add network requests and loading delays. Measure the actual result.
+
+    Q3: How does Vite support code splitting?
+
+    Vite uses dynamic imports and its production bundler to create separate chunks when appropriate.
+
+    ### ⭐ One-line memory trick
+
+    Code Splitting = One large bundle → Smaller chunks → Load when needed.
+
+
 164. Lazy loading?
 165. Suspense?
 166. Error boundaries?
