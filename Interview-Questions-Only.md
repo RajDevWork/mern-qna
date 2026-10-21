@@ -24152,6 +24152,96 @@ Browser automatically validation kar dega.
 
 
 164. Lazy loading?
+
+    ## Hinglish Explanation
+
+    Lazy Loading ek technique hai jisme kisi component, image ya resource ko tab load kiya jata hai jab uski zaroorat hoti hai, na ki sab kuch initial load mein.
+
+    React mein lazy loading ka use mostly heavy components aur pages ko demand par load karne ke liye hota hai.
+
+    Example: Aapke CRM application mein Dashboard, Reports aur Analytics pages hain. User sirf Dashboard open karta hai, toh Analytics ka JavaScript code baad mein load kar sakte hain jab user us page par jaye.
+
+    ### 1. React mein Lazy Loading kaise karte hain?
+
+    React mein `lazy()` aur `Suspense` use karte hain.
+
+    ```
+    import { lazy, Suspense } from "react";
+
+    const Analytics = lazy(() => import("./Analytics"));
+
+    function App() {
+    return (
+        <Suspense fallback={<p>Loading Analytics...</p>}>
+        <Analytics />
+        </Suspense>
+    );
+    }
+
+    export default App;
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `import("./Analytics")` dynamic import hai.
+    2. `lazy()` component ka code load hone tak wait karta hai.
+    3. `Suspense` loading ke dauran fallback UI show karta hai.
+    4. Code load hone ke baad component render hota hai.
+
+    ### 2. Image Lazy Loading
+
+    Images ko bhi browser ki native lazy loading se load kar sakte hain.
+
+    ```
+    function ProductImage() {
+    return (
+        <img
+        src="/images/product.jpg"
+        alt="Product"
+        loading="lazy"
+        width="300"
+        height="200"
+        />
+    );
+    }
+    ```
+
+    `loading="lazy"` browser ko image tab load karne ka signal deta hai jab image viewport ke paas aati hai.
+
+    Important: Above-the-fold ya main hero image ko generally lazy load nahi karna chahiye, kyunki isse important content late appear ho sakta hai.
+
+    ### 3. Lazy Loading vs Code Splitting
+
+    | Lazy Loading                                 | Code Splitting                                   |
+    | -------------------------------------------- | ------------------------------------------------ |
+    | Zaroorat padne par resource load karna       | Code ko multiple chunks mein divide karna        |
+    | Loading strategy                             | Bundling technique                               |
+    | Components aur images par apply ho sakta hai | JavaScript bundles/chunks par apply hota hai     |
+    | Code splitting ke saath use ho sakta hai     | Lazy loading ko enable karne mein help karta hai |
+
+    ## 🎯 English Interview Answer
+
+    > “Lazy loading is a technique in which a resource is loaded only when it is needed. In React, we commonly use React.lazy with Suspense to load components on demand, such as when a user navigates to a particular page. For images, we can use the browser's native loading='lazy' attribute. Lazy loading can improve initial loading performance, but it should be applied carefully to avoid delaying critical content.”
+
+    ### Interview Follow-up
+
+    Q1: What is the benefit of lazy loading?
+
+    It reduces the amount of code or resources that need to be loaded initially, which can improve startup performance.
+
+    Q2: Is lazy loading the same as code splitting?
+
+    No. Code splitting divides code into chunks, while lazy loading delays loading a resource until it is needed. They are often used together.
+
+    Q3: What is `Suspense` used for?
+
+    It displays fallback UI while a supported lazy-loaded component is waiting for its code to load.
+
+    ### ⭐ One-line memory trick
+
+    Lazy Loading = Load only when needed; Code Splitting = Divide code into chunks.
+
+
 165. Suspense?
 166. Error boundaries?
 167. Portals kya hain?
