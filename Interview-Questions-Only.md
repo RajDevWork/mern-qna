@@ -24554,6 +24554,93 @@ Browser automatically validation kar dega.
 
 
 168. Fragments kya hain?
+
+    ## Hinglish Explanation
+
+    React Fragments ek feature hain jo multiple JSX elements ko group karte hain bina extra DOM element create kiye.
+
+    Normally React component ko ek parent element return karna hota hai. Agar hum multiple elements return karna chahte hain, toh har baar unnecessary `<div>` banana zaroori nahi hai. Fragments is problem ko solve karte hain.
+
+    ### 1. Fragment ke bina
+
+    ```
+    function User() {
+    return (
+        <div>
+        <h2>Raj</h2>
+        <p>Full Stack Developer</p>
+        </div>
+    );
+    }
+    ```
+
+    Yahan extra `<div>` DOM mein create hota hai.
+
+    ### 2. Fragment ke saath
+
+    ```
+    function User() {
+    return (
+        <>
+        <h2>Raj</h2>
+        <p>Full Stack Developer</p>
+        </>
+    );
+    }
+    ```
+
+    Ab React dono elements ko render karta hai, lekin extra parent DOM element create nahi hota.
+
+    ### 3. Explicit Fragment syntax
+
+    Agar Fragment ko `key` deni ho, toh short syntax `<>...</>` use nahi kar sakte. Is case mein `React.Fragment` use karte hain.
+
+    ```
+    import { Fragment } from "react";
+
+    function UserList({ users }) {
+    return users.map(user => (
+        <Fragment key={user.id}>
+        <h3>{user.name}</h3>
+        <p>{user.email}</p>
+        </Fragment>
+    ));
+    }
+    ```
+
+    Yahan har user ke liye heading aur paragraph group hote hain, bina extra wrapper element ke.
+
+    ### 4. Fragment vs Div
+
+    | Fragment                              | Div                                             |
+    | ------------------------------------- | ----------------------------------------------- |
+    | Extra DOM node create nahi karta      | DOM mein `<div>` create karta hai               |
+    | Multiple JSX elements group karta hai | Elements ko wrapper deta hai                    |
+    | Apni CSS styling apply nahi kar sakte | CSS, layout aur attributes apply kar sakte hain |
+    | `key` ke liye explicit syntax chahiye | Normal `key` prop use kar sakte hain            |
+
+    ## 🎯 English Interview Answer
+
+    > “React Fragments let us group multiple JSX elements without adding an extra DOM node. We can use the short syntax `<>...</>` or `React.Fragment`. The explicit Fragment syntax supports a key, which is useful when rendering lists. Fragments help keep the DOM structure clean and avoid unnecessary wrapper elements.”
+
+    ### Interview Follow-up
+
+    Q1: Why do we use Fragments?
+
+    To return or group multiple JSX elements without adding unnecessary DOM nodes.
+
+    Q2: Can we add a key to a Fragment?
+
+    Yes. Use `<React.Fragment key={item.id}>` or the imported `Fragment` component. The short syntax `<>...</>` does not support a key.
+
+    Q3: Can we apply CSS to a Fragment?
+
+    No. A Fragment does not create a DOM element, so it cannot have DOM styling or layout attributes such as `className`.
+
+    ### ⭐ One-line memory trick
+
+    Fragment = Group JSX elements without an extra DOM wrapper.
+
 169. StrictMode kya hai?
 170. DevTools ka use?
 171. SSR kya hai?
