@@ -24642,6 +24642,97 @@ Browser automatically validation kar dega.
     Fragment = Group JSX elements without an extra DOM wrapper.
 
 169. StrictMode kya hai?
+
+    ## Hinglish Explanation
+
+    `StrictMode` React ka ek development-only tool hai jo application mein potential bugs aur unsafe patterns detect karne mein help karta hai. Yeh development ke time additional checks karta hai, lekin production build mein iska koi extra UI ya runtime checking behavior nahi hota.
+
+    Simple example: Agar aapka `useEffect` cleanup properly handle nahi karta, toh Strict Mode development mein extra setup aur cleanup cycle chala kar problem identify karne mein help kar sakta hai.
+
+    ### 1. StrictMode kaise use karte hain?
+
+    Usually application ke root component ko `StrictMode` se wrap karte hain.
+
+    ```
+    import { StrictMode } from "react";
+    import { createRoot } from "react-dom/client";
+    import App from "./App";
+
+    createRoot(document.getElementById("root")).render(
+    <StrictMode>
+        <App />
+    </StrictMode>
+    );
+    ```
+
+    ### 2. StrictMode kya check karta hai?
+
+    - Components ke render logic mein accidental side effects.
+    - Effects ke setup aur cleanup behavior.
+    - Ref callbacks ka cleanup behavior.
+    - Deprecated React APIs ka use.
+
+    ### 3. `useEffect` mein StrictMode ka example
+
+    ```
+    import { useEffect } from "react";
+
+    function Demo() {
+    useEffect(() => {
+        console.log("Effect setup");
+
+        return () => {
+        console.log("Effect cleanup");
+        };
+    }, []);
+
+    return <h2>Hello React</h2>;
+    }
+    ```
+
+    Development mein Strict Mode enabled hone par initial mount ke aas-paas output kuch is tarah ho sakta hai:
+
+    ```
+    Effect setup
+    Effect cleanup
+    Effect setup
+    ```
+
+    React extra setup-cleanup cycle run karta hai taaki verify ho sake ki effect ka cleanup correctly kaam karta hai.
+
+    Important: Iska matlab yeh nahi ki production mein component hamesha do baar mount hota hai. Strict Mode ke development checks production behavior se alag hain.
+
+    ### 4. StrictMode vs Production
+
+    | StrictMode in development                              | Production                           |
+    | ------------------------------------------------------ | ------------------------------------ |
+    | Additional checks run karta hai                        | Extra Strict Mode checks nahi chalte |
+    | Effects ke liye extra setup-cleanup cycle ho sakti hai | Normal effect lifecycle              |
+    | Bugs identify karne mein help karta hai                | Optimized production behavior        |
+
+    ## 🎯 English Interview Answer
+
+    > “StrictMode is a development-only tool in React that helps identify potential problems in an application. It performs additional checks, including detecting impure rendering and testing effect cleanup by running an extra setup-and-cleanup cycle in development. It does not add visible UI or enable these extra checks in production. StrictMode helps developers find bugs earlier.”
+
+    ### Interview Follow-up
+
+    Q1: Does StrictMode cause `useEffect` to run twice?
+
+    In development, Strict Mode can run an additional setup-and-cleanup cycle when a component mounts. This helps detect effects that are not properly cleaned up.
+
+    Q2: Should we remove StrictMode if an API is called twice in development?
+
+    Usually, no. Check whether the effect is correctly structured and cleaned up. For data fetching, consider request cancellation or a data-fetching library that handles caching and duplicate requests appropriately.
+
+    Q3: Does StrictMode affect production performance?
+
+    Its extra development checks are not enabled in production builds, so it does not add those checks to production runtime.
+
+    ### ⭐ One-line memory trick
+
+    StrictMode = Development checks + Detect bugs + Test cleanup.
+
+
 170. DevTools ka use?
 171. SSR kya hai?
 172. CSR kya hai?
