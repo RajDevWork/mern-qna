@@ -24442,6 +24442,117 @@ Browser automatically validation kar dega.
 
 
 167. Portals kya hain?
+
+    ## Hinglish Explanation
+
+    React Portals ek feature hain jo component ke JSX ko DOM ke kisi doosre node mein render karne dete hain, bina React component tree mein uski position change kiye.
+
+    Simple example: Aapke application mein ek modal `Dashboard` ke andar bana hai, lekin aap chahte ho ki uska HTML `document.body` ke andar ek separate DOM container mein render ho. Iske liye Portal use kar sakte ho.
+
+    ### 1. Portals kyun use karte hain?
+
+    - Modals aur popups
+    - Tooltips aur dropdowns
+    - Toast notifications
+    - Aise elements jinhe parent ke `overflow: hidden` ya stacking context se bachana ho
+
+    ### 2. Practical Example
+
+    Pehle HTML mein ek portal container rakho:
+
+    ```
+    <div id="root"></div>
+    <div id="modal-root"></div>
+    ```
+
+    Ab React component mein `createPortal()` use karo:
+
+    ```
+    import { createPortal } from "react-dom";
+
+    function Modal({ children }) {
+    const modalRoot = document.getElementById("modal-root");
+
+    if (!modalRoot) return null;
+
+    return createPortal(
+        <div className="modal">
+        {children}
+        </div>,
+        modalRoot
+    );
+    }
+
+    export default Modal;
+    ```
+
+    Is modal ko kisi bhi component se use kar sakte ho:
+
+    ```
+    function App() {
+    return (
+        <div>
+        <h1>Dashboard</h1>
+
+        <Modal>
+            <h2>Welcome!</h2>
+            <p>This modal renders in a separate DOM container.</p>
+        </Modal>
+        </div>
+    );
+    }
+    ```
+
+    Kaise kaam karta hai?
+
+    1. `createPortal()` ko JSX aur target DOM node diya jata hai.
+    2. Modal ka DOM `modal-root` ke andar render hota hai.
+    3. React component ka logical parent-child relationship same rehta hai.
+    4. React ke event propagation rules ke according, portal ke andar se event React tree mein parent tak bubble kar sakta hai.
+
+    ### 3. Portal vs Normal Rendering
+
+    ### Normal rendering
+
+    App DOM
+
+    Dashboard DOM
+
+    Modal DOM
+
+    ### Portal rendering
+
+    App DOM → Dashboard DOM
+
+    React tree mein child rehta hai
+
+    Separate modal-root → Modal DOM
+
+    Important: Portal CSS `z-index` ko automatically fix nahi karta, aur React event bubbling ab bhi component tree ke through hoti hai. Modal ke liye focus management, keyboard handling aur accessibility bhi implement karni chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “React Portals allow us to render a component's JSX into a different DOM node while keeping it in the same React component tree. We create portals using createPortal from react-dom. They are commonly used for modals, tooltips, and notifications that need to render outside their parent DOM container. React events from a portal can still propagate through the React component tree.”
+
+    ### Interview Follow-up
+
+    Q1: Which function creates a Portal?
+
+    `createPortal()` from `react-dom`.
+
+    Q2: Does a Portal change the React component tree?
+
+    No. It changes where the DOM is rendered, but the component remains in its original React tree.
+
+    Q3: Do events bubble through Portals?
+
+    Yes. Events propagate according to the React tree, even when the DOM nodes are in separate containers.
+
+    ### ⭐ One-line memory trick
+
+    Portal = Same React tree, different DOM location.
+
+
 168. Fragments kya hain?
 169. StrictMode kya hai?
 170. DevTools ka use?
