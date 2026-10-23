@@ -24994,6 +24994,77 @@ Browser automatically validation kar dega.
 
 
 173. Hydration kya hai?
+    ## Hinglish Explanation
+
+    Hydration React mein woh process hai jisme browser existing server-rendered HTML ko React ke saath connect karta hai, taaki page interactive ban sake.
+
+    SSR mein server HTML generate karke browser ko bhejta hai. HTML display ho jaata hai, lekin React ke event handlers attach hone aur JavaScript execute hone se pehle buttons jaise elements fully interactive nahi hote.
+
+    Hydration kaise work karta hai?
+
+    1. Server React components ka HTML generate karta hai.
+    2. Browser HTML receive karke page display karta hai.
+    3. Browser JavaScript download aur execute karta hai.
+    4. React existing HTML ko hydrate karta hai aur event handlers attach karta hai.
+    5. Ab buttons, forms aur doosre interactive elements kaam karte hain.
+
+    ### Small Implementation
+
+    ```
+    import { hydrateRoot } from "react-dom/client";
+    import App from "./App";
+
+    // Server-rendered HTML ko hydrate karna
+    hydrateRoot(
+    document.getElementById("root"),
+    <App />
+    );
+    ```
+
+    Important: `hydrateRoot()` tab use karte hain jab `#root` ke andar pehle se React-generated HTML present ho. Agar container empty hai, toh normal client rendering ke liye `createRoot()` use hota hai.
+
+    ### Hydration vs Rendering
+
+    | Feature      | Rendering                           | Hydration                                       |
+    | ------------ | ----------------------------------- | ----------------------------------------------- |
+    | Meaning      | UI generate/update karna            | Existing server HTML ko React se activate karna |
+    | HTML         | Naya DOM create/update ho sakta hai | Existing DOM ko reuse karne ki koshish          |
+    | Common use   | CSR applications                    | SSR applications                                |
+    | Main purpose | UI display/update                   | UI ko interactive banana                        |
+
+    Hydration mismatch kya hai?
+
+    Jab server-generated HTML aur browser mein React ke initial render ka output match nahi karta, tab hydration mismatch ho sakta hai.
+
+    Example:
+
+    ```
+    function App() {
+    return <p>{Math.random()}</p>;
+    }
+    ```
+
+    Server aur browser alag random numbers generate kar sakte hain, jisse mismatch hoga. Isliye server aur initial client render ka output consistent hona chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “Hydration is the process of attaching React functionality and event handlers to HTML that was already rendered on the server. The browser can display the HTML before hydration finishes, but interactive features may not work until JavaScript executes and React hydrates the page. Hydration improves the transition from server-rendered HTML to an interactive React application. A hydration mismatch occurs when the server-rendered HTML differs from the initial client render.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between SSR and hydration?
+
+    SSR generates HTML on the server. Hydration connects React to that existing HTML in the browser and makes it interactive.
+
+    Q: What causes hydration mismatch?
+
+    Common causes include different server/client data, random values, timestamps, browser-only APIs used during rendering, and invalid HTML nesting.
+
+    ### ⭐ One-line memory trick
+
+    SSR HTML banata hai; hydration us HTML ko interactive banata hai.
+
+
 174. Next.js kya hai?
 175. Routing kaise hoti hai?
 176. Dynamic routing?
