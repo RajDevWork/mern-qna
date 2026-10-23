@@ -24827,6 +24827,89 @@ Browser automatically validation kar dega.
 
 
 171. SSR kya hai?
+
+    ## Hinglish Explanation
+
+    SSR (Server-Side Rendering) ka matlab hai HTML ko server par generate karke browser ko bhejna.
+
+    React application mein SSR use karne par server initial HTML generate karta hai, jise browser JavaScript fully load hone se pehle bhi display kar sakta hai.
+
+    SSR kaise work karta hai?
+
+    1. User browser mein URL open karta hai.
+    2. Request server par jaati hai.
+    3. Server React component ka HTML generate karta hai.
+    4. Browser ko rendered HTML milta hai aur page display hota hai.
+    5. JavaScript load hone ke baad React hydration karta hai, jisse buttons, forms aur interactions kaam karte hain.
+
+    ### Small Implementation
+
+    Next.js mein SSR ka example (`App Router`):
+
+    ```
+    // app/products/page.tsx
+
+    export default async function ProductsPage() {
+    const response = await fetch(
+        "https://api.example.com/products",
+        { cache: "no-store" }
+    );
+
+    const products = await response.json();
+
+    return (
+        <div>
+        <h1>Products</h1>
+
+        {products.map((product: any) => (
+            <p key={product.id}>{product.name}</p>
+        ))}
+        </div>
+    );
+    }
+    ```
+
+    `cache: "no-store"` ke saath Next.js server par request ko har relevant page request ke liye dobara execute karta hai. Ye example Next.js App Router ke liye hai.
+
+    ### SSR vs CSR
+
+    | Feature         | SSR                              | CSR                                                             |
+    | --------------- | -------------------------------- | --------------------------------------------------------------- |
+    | HTML rendering  | Server par                       | Mainly browser mein                                             |
+    | Initial content | HTML mein available ho sakta hai | JavaScript execute hone par render hota hai                     |
+    | SEO             | Crawlers ke liye helpful         | SEO bhi possible hai, lekin rendering strategy matter karti hai |
+    | Server load     | Generally zyada                  | Generally kam rendering load                                    |
+    | Example         | Next.js SSR                      | Traditional React SPA with Vite                                 |
+
+    SSR ke benefits: initial content jaldi visible ho sakta hai, SEO mein help mil sakti hai, aur server par fresh data render kar sakte hain.
+
+    Challenges: server load, caching complexity, aur hydration mismatch jaise issues.
+
+    ## 🎯 English Interview Answer
+
+    > “SSR stands for Server-Side Rendering. It means generating HTML on the server before sending it to the browser. The browser can display the initial content without waiting for the entire client-side rendering process. After JavaScript loads, React hydrates the HTML to make the page interactive. SSR can improve initial content visibility and help with SEO. Next.js supports server-side rendering, while traditional React applications commonly use client-side rendering.”
+
+    ### Interview Follow-up
+
+    Q: What is hydration in React?
+
+    Hydration is the process where React attaches event handlers and makes server-rendered HTML interactive in the browser.
+
+    Q: Is SSR always better than CSR?
+
+    No. SSR can help with initial content visibility and SEO, but it adds server workload and complexity. CSR may be suitable for highly interactive dashboards and internal applications.
+
+    Q: What is the difference between SSR and SSG?
+
+    - SSR: HTML is generated on the server for each request, depending on the rendering strategy.
+    - SSG: HTML is generated at build time and served as a static page.
+
+    ### ⭐ One-line memory trick
+
+    SSR = Server HTML banata hai → Browser display karta hai → React hydration se interactive banata hai.
+
+
+
 172. CSR kya hai?
 173. Hydration kya hai?
 174. Next.js kya hai?
