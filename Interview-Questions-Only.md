@@ -25705,6 +25705,92 @@ Browser automatically validation kar dega.
 
 
 180. Jest kya hai?
+
+    ## Hinglish Explanation
+
+    Jest ek JavaScript testing framework hai jo code ko automatically test karne ke liye use hota hai. React applications mein hum Jest se components, functions, business logic aur expected behavior verify kar sakte hain.
+
+    Jest ke main features:
+
+    - Test runner: Tests execute karta hai.
+    - Assertions: Verify karta hai ki output expected hai ya nahi.
+    - Mocking: API calls aur external dependencies ko mock kar sakte hain.
+    - Code coverage: Check karta hai ki kitna code tests se execute hua.
+    - Snapshot testing: Rendered output mein unexpected changes detect kar sakta hai.
+
+    ### Small Implementation — Jest with React
+
+    Maan lo humein ek simple function test karna hai.
+
+    math.js
+
+    ```
+    export function add(a, b) {
+    return a + b;
+    }
+    ```
+
+    math.test.js
+
+    ```
+    import { add } from "./math";
+
+    test("adds two numbers", () => {
+    expect(add(2, 3)).toBe(5);
+    });
+    ```
+
+    Run karne par Jest check karega ki `add(2, 3)` ka result `5` hai ya nahi.
+
+    - `test()` test case define karta hai.
+    - `expect()` actual result ko check karta hai.
+    - `toBe(5)` expected result batata hai.
+
+    ### React component test kaise karte hain?
+
+    React mein Jest ko React Testing Library ke saath use kar sakte hain.
+
+    ```
+    import { render, screen } from "@testing-library/react";
+    import { expect, test } from "@jest/globals";
+    import Counter from "./Counter";
+
+    test("displays initial count", () => {
+    render(<Counter />);
+
+    expect(screen.getByText("Count: 0")).toBeInTheDocument();
+    });
+    ```
+
+    Is example mein React Testing Library component render karti hai aur Jest assertion verify karta hai ki initial count display ho raha hai.
+
+    Note: `toBeInTheDocument()` ke liye `@testing-library/jest-dom` configure karna hota hai. Jest configuration mein JSX transform bhi set up hona chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “Jest is a JavaScript testing framework used to test application logic and verify expected behavior. It provides a test runner, assertions, mocking, and code coverage reports. In React applications, I can use Jest with React Testing Library to test component rendering, user interactions, and form behavior. For example, I can verify that a counter displays the correct initial value or updates after a button click.”
+
+    ### Interview Follow-up
+
+    Q: Jest aur React Testing Library mein kya difference hai?
+
+    - Jest: Tests execute karta hai aur assertions, mocking aur coverage provide karta hai.
+    - React Testing Library: React components ko render karke user-visible behavior test karne mein help karti hai.
+
+    Q: `toBe()` aur `toEqual()` mein kya difference hai?
+
+    - `toBe()` primitive values ke liye exact equality check karta hai; objects ke liye reference equality.
+    - `toEqual()` objects aur arrays ke values ko recursively compare karta hai.
+
+    Q: Jest mein mocking kya hai?
+
+    Mocking ka matlab real dependency ki jagah fake function ya response use karna, jaise API response simulate karna.
+
+    ### ⭐ One-line memory trick
+
+    Jest = Run tests + Check results + Mock dependencies + Measure coverage.
+
+
 181. React Testing Library?
 182. Snapshot testing?
 183. Mocking?
