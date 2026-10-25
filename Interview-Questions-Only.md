@@ -25887,6 +25887,93 @@ Browser automatically validation kar dega.
 
 
 182. Snapshot testing?
+
+    ## Hinglish Explanation
+
+    Snapshot Testing ek testing technique hai jisme component ke rendered output ka snapshot save kiya jata hai. Future mein test run hone par current output ko saved snapshot se compare kiya jata hai.
+
+    Agar output change ho jaye, toh test difference show karta hai. Isse unintended UI changes detect karne mein help milti hai.
+
+    ### Snapshot Testing kaise work karti hai?
+
+    1. Component ka output render hota hai.
+    2. Jest us output ka snapshot save karta hai.
+    3. Next test run mein current output saved snapshot se compare hota hai.
+    4. Difference milne par test fail hota hai.
+    5. Agar change intentional hai, toh review karke snapshot update kar sakte hain.
+
+    ### Small Implementation — Jest + React
+
+    Greeting.jsx
+
+    ```
+    export default function Greeting() {
+    return (
+        <div>
+        <h1>Hello, Developer!</h1>
+        <p>Welcome to React.</p>
+        </div>
+    );
+    }
+    ```
+
+    Greeting.test.jsx
+
+    ```
+    import { render } from "@testing-library/react";
+    import { expect, test } from "@jest/globals";
+    import Greeting from "./Greeting";
+
+    test("matches the snapshot", () => {
+    const { asFragment } = render(<Greeting />);
+
+    expect(asFragment()).toMatchSnapshot();
+    });
+    ```
+
+    Pehli baar Jest snapshot generate karega. Ye usually `__snapshots__` folder mein `.snap` file ke roop mein save hota hai.
+
+    Agar component ka text ya structure change hota hai, toh snapshot comparison difference report kar sakta hai.
+
+    Snapshot update karne ke liye Jest mein `jest -u` command use ki ja sakti hai. Blindly update mat karo — pehle changes review karo.
+
+    ### Snapshot Testing ke Advantages aur Limitations
+
+    Advantages
+
+    - Unexpected structural UI changes detect kar sakti hai.
+    - Repeated output comparisons automate hote hain.
+    - Small, stable components ke liye useful hai.
+
+    Limitations
+
+    - Snapshot pass hone ka matlab ye nahi ki button click ya form submission sahi kaam karte hain.
+    - Bade snapshots review karna difficult ho sakta hai.
+    - Har change par snapshot update karna tests ko less useful bana sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Snapshot testing is a technique used to detect unexpected changes in a component's rendered output. In Jest, we can render a React component and use `toMatchSnapshot()` to compare its current output with a previously saved snapshot. If the output changes, Jest reports a difference. I review the changes before updating the snapshot. Snapshot testing is useful for stable UI structures, but I combine it with behavioral tests because snapshots alone do not verify user interactions.”
+
+    ### Interview Follow-up
+
+    Q: Snapshot testing aur unit testing mein kya difference hai?
+
+    Snapshot testing compares output against a saved reference. Unit testing verifies specific behavior or logic using assertions. Snapshot testing is one possible testing technique, not a replacement for unit tests.
+
+    Q: When should you update a snapshot?
+
+    When the UI change is intentional and the updated output has been reviewed and confirmed as correct.
+
+    Q: Does snapshot testing test button functionality?
+
+    Not by itself. Button clicks and resulting behavior should be tested separately using React Testing Library and user interactions.
+
+    ### ⭐ One-line memory trick
+
+    Snapshot Testing = Current output vs Saved output → Difference detect karo → Review before updating.
+
+
 183. Mocking?
 184. Performance optimization?
 185. Bundle size reduce kaise?
