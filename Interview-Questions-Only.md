@@ -25066,6 +25066,98 @@ Browser automatically validation kar dega.
 
 
 174. Next.js kya hai?
+
+    ## Hinglish Explanation
+
+    Next.js ek React framework hai jo React applications ko production-ready banane ke liye additional features provide karta hai.
+
+    React mainly UI build karne ke liye use hota hai, jabki Next.js routing, server-side rendering (SSR), static site generation (SSG), server-side data fetching aur backend endpoints jaise features bhi provide karta hai.
+
+    ### Next.js ke important features
+
+    1. File-based Routing: `app/about/page.tsx` banane par `/about` route create hota hai.
+    2. SSR: Server par request ke according HTML generate kar sakte hain.
+    3. SSG: Build time par static pages generate kar sakte hain.
+    4. Server Components: App Router mein components by default Server Components hote hain.
+    5. API / Backend: Route Handlers se `GET`, `POST` jaise HTTP endpoints bana sakte hain.
+    6. Image Optimization: `next/image` ke through images optimize kar sakte hain.
+    7. Code Splitting: Pages aur components ka JavaScript efficiently load karne mein help karta hai.
+
+    ### Small Implementation
+
+    Next.js App Router mein simple page:
+
+    ```
+    // app/page.tsx
+
+    export default function HomePage() {
+    return (
+        <main>
+        <h1>Welcome to Next.js</h1>
+        <p>My first Next.js application.</p>
+        </main>
+    );
+    }
+    ```
+
+    Is file se `/` yani homepage create hota hai.
+
+    Interactive component banane ke liye Client Component use kar sakte hain:
+
+    ```
+    "use client";
+
+    import { useState } from "react";
+
+    export default function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <button onClick={() => setCount(count + 1)}>
+        Count: {count}
+        </button>
+    );
+    }
+    ```
+
+    `"use client"` batata hai ki component ko client-side interactivity, state aur event handlers ki zaroorat hai.
+
+    ### React vs Next.js
+
+    | Feature           | React                                  | Next.js                     |
+    | ----------------- | -------------------------------------- | --------------------------- |
+    | Type              | UI library                             | React framework             |
+    | Routing           | Router library add kar sakte hain      | Built-in file-based routing |
+    | SSR/SSG           | Additional setup/framework se          | Built-in support            |
+    | Backend endpoints | Separate backend commonly use hota hai | Route Handlers available    |
+    | Best use          | Reusable UI, SPAs                      | Full-stack web applications |
+
+    Important: Next.js sirf SSR ke liye nahi hai. Ismein CSR, SSR, SSG aur revalidation jaise approaches application ke different parts mein use ho sakte hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Next.js is a React framework used to build production-ready web applications. It provides features such as file-based routing, server-side rendering, static site generation, Server Components, and API route handlers. React primarily focuses on building user interfaces, while Next.js provides additional tools for routing, rendering, and full-stack development. I would choose Next.js when an application needs features like SEO-friendly pages, server-side data fetching, and optimized performance.”
+
+    ### Interview Follow-up
+
+    Q: Is Next.js a replacement for React?
+
+    No. Next.js is built on top of React. We still use React components, props, state, and hooks within Next.js applications.
+
+    Q: What is the difference between Next.js and Express.js?
+
+    - Next.js: React-based framework for building web applications with frontend and server capabilities.
+    - Express.js: Node.js web framework mainly used to build APIs and backend services.
+
+    Q: What is the App Router?
+
+    The App Router is Next.js's routing system based on the `app` directory. It supports nested layouts, Server Components, loading states, error handling, and Route Handlers.
+
+    ### ⭐ One-line memory trick
+
+    React = UI library; Next.js = React + Routing + Rendering strategies + Full-stack features.
+
+
 175. Routing kaise hoti hai?
 176. Dynamic routing?
 177. SEO React mein?
