@@ -25292,6 +25292,117 @@ Browser automatically validation kar dega.
     React = Routes manually define karo; Next.js = Folder aur `page.tsx` se routes automatically banao.
 
 176. Dynamic routing?
+
+    ## Hinglish Explanation
+
+    Dynamic Routing ka matlab hai ek hi page/component ko different URL parameters ke saath multiple records display karne ke liye use karna.
+
+    Example: E-commerce application mein har product ke liye alag page manually banane ki zaroorat nahi hoti. Ek dynamic page product ID ke according data display kar sakta hai.
+
+    - `/products/101` → Product ID 101
+    - `/products/102` → Product ID 102
+    - `/products/103` → Product ID 103
+
+    ### 1. Next.js mein Dynamic Routing
+
+    Folder structure:
+
+    ```
+    app/
+    └── products/
+        └── [id]/
+            └── page.tsx
+    ```
+
+    `[id]` ek dynamic route segment hai. URL ka actual value `params.id` mein milta hai.
+
+    ### Small Implementation
+
+    ```
+    // app/products/[id]/page.tsx
+
+    export default async function ProductPage({
+    params,
+    }: {
+    params: Promise<{ id: string }>;
+    }) {
+    const { id } = await params;
+
+    return (
+        <div>
+        <h1>Product Details</h1>
+        <p>Product ID: {id}</p>
+        </div>
+    );
+    }
+    ```
+
+    Agar URL `/products/101` hai, toh page par `Product ID: 101` show hoga.
+
+    Real project mein: `id` ke basis par API ya database se product fetch karoge aur uska name, price, image aur details display karoge.
+
+    ### 2. React Router mein Dynamic Routing
+
+    React Router mein `:id` use hota hai.
+
+    ```
+    import {
+    BrowserRouter,
+    Routes,
+    Route,
+    useParams,
+    } from "react-router-dom";
+
+    function ProductPage() {
+    const { id } = useParams();
+
+    return <h1>Product ID: {id}</h1>;
+    }
+
+    export default function App() {
+    return (
+        <BrowserRouter>
+        <Routes>
+            <Route
+            path="/products/:id"
+            element={<ProductPage />}
+            />
+        </Routes>
+        </BrowserRouter>
+    );
+    }
+    ```
+
+    Yahan `/products/101` open karne par `useParams()` se `id = "101"` milega.
+
+    ### Dynamic Routing vs Normal Routing
+
+    | Normal routing                     | Dynamic routing                                          |
+    | ---------------------------------- | -------------------------------------------------------- |
+    | `/about`                           | `/products/:id`                                          |
+    | Fixed path                         | Variable path parameter                                  |
+    | About page                         | Multiple products ke liye same page                      |
+    | Data usually fixed page se related | URL parameter se specific record identify kar sakte hain |
+
+    ## 🎯 English Interview Answer
+
+    > “Dynamic routing allows us to use a single page or component for multiple URLs containing variable parameters. For example, in an e-commerce application, `/products/101` and `/products/102` can use the same product details page. In Next.js App Router, we use dynamic folder segments like `[id]` and access the value through `params`. In React Router, we define a route like `/products/:id` and retrieve the parameter using `useParams()`.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `[id]` and `[...slug]` in Next.js?
+
+    - `[id]` matches one dynamic path segment, such as `/products/101`.
+    - `[...slug]` matches one or more segments, such as `/docs/react/hooks`.
+
+    Q: Is the route parameter always a number?
+
+    No. URL parameters are strings by default. Validate and convert them when necessary before using them in database queries.
+
+    ### ⭐ One-line memory trick
+
+    Dynamic routing = One page + variable URL parameter + different data.
+
 177. SEO React mein?
 178. Accessibility?
 179. Testing React?
