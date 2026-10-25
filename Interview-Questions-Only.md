@@ -25608,6 +25608,102 @@ Browser automatically validation kar dega.
 
 
 179. Testing React?
+
+    ## Hinglish Explanation
+
+    React Testing ka matlab hai check karna ki React application expected behavior ke according kaam kar rahi hai ya nahi.
+
+    Example: Button click karne par counter increase ho, invalid form submit na ho, aur API fail hone par error message show ho.
+
+    ### React testing ke 3 main types
+
+    1. Unit Testing: Ek function ya component ko independently test karna.
+    2. Integration Testing: Check karna ki components aur API interactions milkar sahi kaam karte hain.
+    3. E2E Testing: Browser mein complete user journey test karna, jaise Login → Dashboard.
+
+    ### Popular testing tools
+
+    | Tool                  | Purpose                                     |
+    | --------------------- | ------------------------------------------- |
+    | Vitest                | Tests run karna                             |
+    | Jest                  | Testing framework                           |
+    | React Testing Library | Components aur user interactions test karna |
+    | Playwright            | Complete browser workflows test karna       |
+
+    ### Small Implementation
+
+    `Counter.jsx`
+
+    ```
+    import { useState } from "react";
+
+    export default function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <>
+        <p>Count: {count}</p>
+        <button onClick={() => setCount(count + 1)}>
+            Increment
+        </button>
+        </>
+    );
+    }
+    ```
+
+    `Counter.test.jsx`
+
+    ```
+    import { render, screen } from "@testing-library/react";
+    import userEvent from "@testing-library/user-event";
+    import { expect, test } from "vitest";
+    import Counter from "./Counter";
+
+    test("increments counter on click", async () => {
+    const user = userEvent.setup();
+
+    render(<Counter />);
+
+    await user.click(
+        screen.getByRole("button", { name: /increment/i })
+    );
+
+    expect(screen.getByText("Count: 1")).toBeInTheDocument();
+    });
+    ```
+
+    Code samjho:
+
+    - `render()` component ko test environment mein render karta hai.
+    - `screen.getByRole()` button ko find karta hai.
+    - `user.click()` user ke click ko simulate karta hai.
+    - `expect()` verify karta hai ki click ke baad count `1` ho gaya.
+
+    Note: Is example ke liye Vitest, React Testing Library, `user-event` aur `jest-dom` configured hone chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “React testing verifies that components behave as expected. I use unit testing for individual components or functions, integration testing for interactions between components, and end-to-end testing for complete user workflows. I commonly use Vitest or Jest with React Testing Library for component tests, and Playwright for end-to-end testing. I focus on user-visible behavior, such as button clicks, form validation, API responses, and error handling.”
+
+    ### Interview Follow-up
+
+    Q: Unit testing aur integration testing mein kya difference hai?
+
+    Unit testing checks one unit independently, while integration testing checks whether multiple components or dependencies work correctly together.
+
+    Q: React Testing Library ka main benefit kya hai?
+
+    It encourages testing components from the user's perspective using accessible elements and realistic interactions.
+
+    Q: Mocking kya hoti hai?
+
+    Mocking mein API ya external dependency ka fake implementation use karte hain, taaki tests predictable rahen aur actual external service par depend na karein.
+
+    ### ⭐ One-line memory trick
+
+    Unit = One component; Integration = Components together; E2E = Complete user journey.
+
+
 180. Jest kya hai?
 181. React Testing Library?
 182. Snapshot testing?
