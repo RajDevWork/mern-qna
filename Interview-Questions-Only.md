@@ -25975,6 +25975,91 @@ Browser automatically validation kar dega.
 
 
 183. Mocking?
+
+    ## Hinglish Explanation
+
+    Mocking testing mein kisi real function, API ya external dependency ki jagah ek fake implementation use karna hai, taaki hum application ka behavior controlled conditions mein test kar saken.
+
+    Maan lo React application backend API se user details fetch karti hai. Har test ke liye real API call karne ke bajaye hum fake response de sakte hain.
+
+    Mocking kyun use karte hain?
+
+    1. Real API ya database par dependency kam hoti hai.
+    2. Success aur error responses test kar sakte hain.
+    3. Tests fast aur predictable bante hain.
+    4. Verify kar sakte hain ki koi function kitni baar call hua.
+
+    ### Small Implementation — Jest Mocking
+
+    ```
+    // userApi.js
+    export async function fetchUser() {
+    const response = await fetch("/api/user");
+    return response.json();
+    }
+    ```
+
+    Ab API function ko mock karke component ya function ka behavior test kar sakte hain.
+
+    ```
+    // userApi.test.js
+    import { jest, test, expect } from "@jest/globals";
+    import { fetchUser } from "./userApi";
+
+    jest.mock("./userApi", () => ({
+    fetchUser: jest.fn(),
+    }));
+
+    test("returns mocked user data", async () => {
+    fetchUser.mockResolvedValue({
+        id: 1,
+        name: "Rahul",
+    });
+
+    const user = await fetchUser();
+
+    expect(user.name).toBe("Rahul");
+    expect(fetchUser).toHaveBeenCalledTimes(1);
+    });
+    ```
+
+    Yahan `fetchUser()` ki real implementation execute nahi hoti. Mock function predefined user data return karta hai.
+
+    Note: Ye example Jest ke native ESM mocking support wale setup mein chal sakta hai; CommonJS/Babel setups mein mock configuration aur import order alag ho sakta hai.
+
+    ### Mocking ke common types
+
+    - Mock function: Function ka fake version, jaise `jest.fn()`.
+    - Mock API response: Fake success ya error response.
+    - Mock module: Poore module ko fake implementation se replace karna.
+    - Spy: Existing function ki calls ya arguments observe karna; `jest.spyOn()` iska example hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Mocking is a testing technique where we replace a real dependency with a controlled fake implementation. In React applications, I use mocking to simulate API responses, isolate components from external services, and test success and error scenarios. With Jest, I can use `jest.fn()` to create mock functions, `mockResolvedValue()` for asynchronous results, and `jest.spyOn()` to observe existing function calls. Mocking makes tests more predictable and independent of external systems.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between a mock and a spy?
+
+    A mock can replace a dependency with a controlled implementation. A spy typically observes calls to an existing function and can also be configured to change its behavior.
+
+    Q: How do you mock an API error?
+
+    ```
+    fetchUser.mockRejectedValue(new Error("API failed"));
+    ```
+
+    Phir verify karo ki application error message ya fallback UI correctly display karti hai.
+
+    Q: Should every API be mocked in testing?
+
+    No. Unit aur component tests mein mocking useful hai. Integration tests mein selected real dependencies use kar sakte hain, aur E2E tests mein actual application workflow verify karte hain.
+
+    ### ⭐ One-line memory trick
+
+    Mocking = Real dependency ki jagah controlled fake behavior, taaki application ko reliably test kar saken.
+
 184. Performance optimization?
 185. Bundle size reduce kaise?
 186. Memoization React mein?
