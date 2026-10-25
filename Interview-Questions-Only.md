@@ -25159,6 +25159,138 @@ Browser automatically validation kar dega.
 
 
 175. Routing kaise hoti hai?
+
+    ## Hinglish Explanation
+
+    React aur Next.js mein routing ka matlab hai URL ke according correct page ya component display karna, bina har navigation par poori application reload kiye (SPA navigation mein).
+
+    ### 1. React mein routing kaise hoti hai?
+
+    React mein commonly `react-router-dom` library use hoti hai. Ismein routes manually define karte hain.
+
+    ```
+    import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+    function Home() {
+    return <h1>Home Page</h1>;
+    }
+
+    function About() {
+    return <h1>About Page</h1>;
+    }
+
+    export default function App() {
+    return (
+        <BrowserRouter>
+        <nav>
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+        </nav>
+
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+        </Routes>
+        </BrowserRouter>
+    );
+    }
+    ```
+
+    - `/` open karne par Home page dikhega.
+    - `/about` open karne par About page dikhega.
+    - `Link` use karne se normal full-page reload ke bina navigation hota hai.
+
+    ### 2. Next.js mein routing kaise hoti hai?
+
+    Next.js App Router mein folder aur file structure se routes automatically create hote hain.
+
+    app/
+
+    page.tsx
+
+    /
+
+    about/
+
+    page.tsx
+
+    /about
+
+    products/
+
+    page.tsx
+
+    /products
+
+    Example: `app/about/page.tsx`
+
+    ```
+    export default function AboutPage() {
+    return <h1>About Us</h1>;
+    }
+    ```
+
+    Next.js mein navigation ke liye `Link` component use karte hain:
+
+    ```
+    import Link from "next/link";
+
+    export default function HomePage() {
+    return (
+        <nav>
+        <Link href="/">Home</Link>
+        <Link href="/about">About</Link>
+        <Link href="/products">Products</Link>
+        </nav>
+    );
+    }
+    ```
+
+    ### 3. Dynamic routing kya hai?
+
+    Jab URL ka koi part dynamic ho, jaise product ID, tab dynamic route use hota hai.
+
+    Folder structure:
+
+    `app/products/[id]/page.tsx`
+
+    ```
+    export default async function ProductPage({
+    params,
+    }: {
+    params: Promise<{ id: string }>;
+    }) {
+    const { id } = await params;
+
+    return <h1>Product ID: {id}</h1>;
+    }
+    ```
+
+    URL `/products/101` par page `101` ko ID ke roop mein read karega. Modern Next.js App Router mein `params` ek Promise hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Routing is the process of mapping URLs to the appropriate pages or components. In React applications, I commonly use React Router, where I define routes using components like BrowserRouter, Routes, and Route. In Next.js App Router, routing is file-based, so folders and page.tsx files define the routes automatically. I use Link for navigation and dynamic routes such as [id] when a URL contains a variable parameter.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `Link` and `useNavigate` in React Router?
+
+    - `Link` is used to navigate through a clickable link.
+    - `useNavigate` is used for programmatic navigation, such as redirecting after a successful login.
+
+    Q: What is a dynamic route?
+
+    A route that accepts variable URL segments, such as `/products/101` or `/products/202`.
+
+    Q: Does Next.js require React Router?
+
+    No. Next.js provides its own routing system. Usually, you use Next.js routing instead of adding React Router to the same routing layer.
+
+    ### ⭐ One-line memory trick
+
+    React = Routes manually define karo; Next.js = Folder aur `page.tsx` se routes automatically banao.
+
 176. Dynamic routing?
 177. SEO React mein?
 178. Accessibility?
