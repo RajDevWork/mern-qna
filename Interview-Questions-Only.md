@@ -25499,6 +25499,114 @@ Browser automatically validation kar dega.
 
 
 178. Accessibility?
+
+    ## Hinglish Explanation
+
+    Accessibility (a11y) ka matlab hai website ya application ko aisa banana ki har user use kar sake, including visually impaired users, keyboard-only users aur assistive technologies jaise screen readers use karne wale log.
+
+    React mein accessibility ke liye semantic HTML, correct labels, keyboard navigation aur ARIA attributes ka use karte hain.
+
+    ### React mein Accessibility kaise implement karte hain?
+
+    1\. Semantic HTML use karo
+
+    ```
+    function App() {
+    return (
+        <main>
+        <h1>Login</h1>
+        <button type="button">Sign In</button>
+        </main>
+    );
+    }
+    ```
+
+    `button` use karna `div` ko clickable banane se better hai, kyunki button mein keyboard aur accessibility support built-in hota hai.
+
+    2\. Form fields ke saath labels use karo
+
+    ```
+    function LoginForm() {
+    return (
+        <form>
+        <label htmlFor="email">Email Address</label>
+        <input
+            id="email"
+            type="email"
+            name="email"
+            required
+        />
+
+        <button type="submit">Login</button>
+        </form>
+    );
+    }
+    ```
+
+    `htmlFor="email"` label ko input ke saath associate karta hai, jisse screen readers ko field ka purpose samajhne mein help milti hai.
+
+    3\. Images mein alt text do
+
+    ```
+    <img src="/profile.jpg" alt="User profile photo" />
+    ```
+
+    Meaningful image ke liye descriptive `alt` text do. Decorative image ke liye `alt=""` use kar sakte hain.
+
+    4\. Keyboard accessibility maintain karo
+
+    - `Tab` se interactive elements tak pahunch sakna chahiye.
+    - `Enter` aur `Space` se controls activate hone chahiye, jahan applicable ho.
+    - Focus indicator visible hona chahiye.
+    - Custom interactive elements banane par keyboard behavior khud implement karna pad sakta hai.
+
+    5\. ARIA attributes kab use karein?
+
+    ARIA attributes assistive technologies ko additional information dete hain. Native HTML semantic element available ho, toh pehle usi ko prefer karo.
+
+    Example:
+
+    ```
+    <button
+    aria-label="Close dialog"
+    onClick={closeDialog}
+    >
+    ×
+    </button>
+    ```
+
+    Yahan `aria-label` screen reader ko button ka purpose batata hai.
+
+    ### Accessibility test kaise karein?
+
+    - Keyboard-only navigation test karo.
+    - Screen reader ke saath important flows test karo.
+    - Browser accessibility tools aur automated testing tools jaise axe use karo.
+    - Color contrast aur form error messages check karo.
+
+    ## 🎯 English Interview Answer
+
+    > “Accessibility means making a web application usable by people with different abilities, including users who rely on keyboards or screen readers. In React, I improve accessibility by using semantic HTML, associating labels with form fields, providing meaningful image alt text, ensuring keyboard navigation, and using ARIA attributes when necessary. I also check color contrast, visible focus indicators, and accessible error messages. I use automated accessibility tools along with manual keyboard and screen-reader testing.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between HTML and ARIA?
+
+    HTML provides native structure and behavior. ARIA adds accessibility information to elements but does not automatically provide missing keyboard interactions or native behavior.
+
+    Q: Why is a `<button>` better than a clickable `<div>`?
+
+    A button already supports keyboard interaction, focus, and accessibility semantics. A clickable `div` requires extra work to provide equivalent behavior.
+
+    Q: What does WCAG stand for?
+
+    WCAG stands for Web Content Accessibility Guidelines. These guidelines help developers make web content more accessible.
+
+    ### ⭐ One-line memory trick
+
+    Accessibility = Semantic HTML + Keyboard support + Labels + Screen-reader support + Testing.
+
+
 179. Testing React?
 180. Jest kya hai?
 181. React Testing Library?
