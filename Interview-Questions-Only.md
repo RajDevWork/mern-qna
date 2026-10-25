@@ -25792,6 +25792,100 @@ Browser automatically validation kar dega.
 
 
 181. React Testing Library?
+
+    ## Hinglish Explanation
+
+    React Testing Library (RTL) ek testing library hai jo React components ko user ke perspective se test karne mein help karti hai.
+
+    Iska main principle hai: component internally kaise implement hua hai, uske bajaye user kya dekhta aur karta hai, use test karo.
+
+    Example: User button click karta hai, form submit karta hai ya error message dekhta hai — RTL in behaviors ko test karne mein help karti hai.
+
+    ### React Testing Library ke important methods
+
+    - `render()` — component ko test environment mein render karta hai.
+    - `screen` — rendered UI mein elements search karta hai.
+    - `getByRole()` — accessible role ke through element find karta hai.
+    - `getByText()` — visible text ke through element find karta hai.
+    - `userEvent` — user interactions jaise click aur typing simulate karta hai.
+    - `waitFor()` — asynchronous UI changes ke liye condition ka wait karta hai.
+
+    ### Small Implementation
+
+    Counter.jsx
+
+    ```
+    import { useState } from "react";
+
+    export default function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+        <p>Count: {count}</p>
+        <button onClick={() => setCount(count + 1)}>
+            Increment
+        </button>
+        </div>
+    );
+    }
+    ```
+
+    Counter.test.jsx — Jest + RTL
+
+    ```
+    import { render, screen } from "@testing-library/react";
+    import userEvent from "@testing-library/user-event";
+    import { expect, test } from "@jest/globals";
+    import Counter from "./Counter";
+
+    test("increments count when button is clicked", async () => {
+    const user = userEvent.setup();
+
+    render(<Counter />);
+
+    await user.click(
+        screen.getByRole("button", { name: /increment/i })
+    );
+
+    expect(screen.getByText("Count: 1")).toBeInTheDocument();
+    });
+    ```
+
+    Ye test kaise work karta hai?
+
+    1. `render()` Counter component render karta hai.
+    2. `getByRole()` accessible button find karta hai.
+    3. `user.click()` button click karta hai.
+    4. `expect()` verify karta hai ki updated count `1` hai.
+
+    Note: Is example ke liye Jest, React Testing Library, `user-event` aur `@testing-library/jest-dom` configured hone chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “React Testing Library is a library for testing React components from the user's perspective. It encourages testing observable behavior rather than implementation details. I use render to display a component, screen queries to find accessible elements, and userEvent to simulate interactions such as clicks and typing. I then use assertions to verify the expected UI. It works with testing frameworks such as Jest and Vitest.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `getBy`, `queryBy`, and `findBy`?
+
+    - `getBy` — element immediately milna chahiye; nahi mila toh error.
+    - `queryBy` — element nahi milne par `null` return karta hai; absence test karne mein useful.
+    - `findBy` — asynchronous element ke liye wait karta hai aur Promise return karta hai.
+
+    Q: Why prefer `getByRole()`?
+
+    It encourages queries based on accessibility roles and names, similar to how users and assistive technologies identify elements.
+
+    Q: RTL aur Jest mein kya difference hai?
+
+    RTL components ko render aur interact karne ke tools deti hai. Jest tests execute karta hai aur assertions, mocks aur coverage provide karta hai.
+
+    ### ⭐ One-line memory trick
+
+    RTL = Render UI → Find elements → Simulate user actions → Verify behavior.
+
+
 182. Snapshot testing?
 183. Mocking?
 184. Performance optimization?
