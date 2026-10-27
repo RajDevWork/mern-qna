@@ -26061,6 +26061,85 @@ Browser automatically validation kar dega.
     Mocking = Real dependency ki jagah controlled fake behavior, taaki application ko reliably test kar saken.
 
 184. Performance optimization?
+
+    ## Hinglish Explanation
+
+    React Performance Optimization ka matlab hai application ko fast, responsive aur resource-efficient banana, bina unnecessary rendering aur computation ke.
+
+    Interview mein sirf hooks ke naam nahi, balki problem identify karna → measure karna → optimize karna explain karna important hai.
+
+    ### React performance optimize karne ke main techniques
+
+    1. React DevTools Profiler: Identify karo kaunse components unnecessary ya expensive renders kar rahe hain.
+    2. React.memo: Same props hone par component ke unnecessary re-renders ko skip karne mein help karta hai.
+    3. useMemo: Expensive calculation ka result cache karta hai.
+    4. useCallback: Function reference ko cache karta hai, especially memoized children ke saath useful.
+    5. Code splitting: `React.lazy()` aur `Suspense` se code ko demand par load karna.
+    6. State colocation: State ko us component ke paas rakho jahan uski zaroorat hai.
+    7. List optimization: Stable keys use karo; bahut badi lists ke liye virtualization use karo.
+    8. Network optimization: API caching, pagination, image optimization aur unnecessary requests avoid karo.
+
+    ### Small Implementation
+
+    Maan lo parent component baar-baar render hota hai aur child ko same props mil rahe hain.
+
+    ```
+    import { memo, useState } from "react";
+
+    const UserCard = memo(function UserCard({ name }) {
+    console.log("UserCard rendered");
+
+    return <h2>{name}</h2>;
+    });
+
+    export default function App() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+        <button onClick={() => setCount(c => c + 1)}>
+            Count: {count}
+        </button>
+
+        <UserCard name="Rahul" />
+        </div>
+    );
+    }
+    ```
+
+    Yahan kya ho raha hai?
+
+    - Button click hone par `App` re-render hota hai.
+    - `UserCard` ko same `name` prop milta hai.
+    - `React.memo` shallow props comparison ke basis par uska unnecessary re-render skip kar sakta hai.
+    - Agar `UserCard` ka apna state ya consumed context change hota hai, toh woh phir bhi re-render ho sakta hai.
+
+    Important: Har component par `memo`, `useMemo` aur `useCallback` lagana zaroori nahi hai. Pehle Profiler se bottleneck identify karo, phir optimization ka impact measure karo.
+
+    ## 🎯 English Interview Answer
+
+    > “React performance optimization means improving rendering efficiency, load time, and responsiveness. First, I use React DevTools Profiler to identify performance bottlenecks. Then I apply techniques such as React.memo, useMemo, and useCallback where they provide measurable benefits. I also keep state close to where it is needed, use code splitting and lazy loading, optimize large lists, and reduce unnecessary API requests. Finally, I measure performance again to confirm that the optimization actually helps.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `React.memo`, `useMemo`, and `useCallback`?
+
+    - `React.memo` — component ke re-render ko skip karne mein help karta hai when props are unchanged.
+    - `useMemo` — calculated value cache karta hai.
+    - `useCallback` — function reference cache karta hai.
+
+    Q: How do you find unnecessary re-renders?
+
+    React DevTools Profiler se component render activity aur render duration inspect karta hoon. Phir props, state, context aur parent renders check karta hoon.
+
+    Q: What is virtualization?
+
+    Virtualization mein large list ke saare items ek saath render nahi karte. Sirf visible items aur unke aas-paas ke limited items render karte hain, jisse DOM workload reduce hota hai.
+
+    ### ⭐ One-line memory trick
+
+    Profile → Identify bottleneck → Optimize selectively → Measure again.
+
 185. Bundle size reduce kaise?
 186. Memoization React mein?
 187. Virtualization kya hai?
