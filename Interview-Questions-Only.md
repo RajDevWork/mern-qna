@@ -26330,6 +26330,114 @@ Browser automatically validation kar dega.
 
 
 187. Virtualization kya hai?
+
+    ## Hinglish Explanation
+
+    Virtualization React mein ek performance optimization technique hai jisme large list ke saare items render karne ke bajaye sirf currently visible items aur kuch nearby items render kiye jaate hain.
+
+    Maan lo tumhare CRM mein 50,000 customer records hain. Agar React ek saath saare records DOM mein render kare, toh scrolling slow ho sakti hai aur browser ki memory zyada use ho sakti hai.
+
+    Virtualization mein sirf visible rows render hoti hain. Scroll karne par visible rows update hoti rehti hain.
+
+    ### Virtualization kaise work karti hai?
+
+    1. Total items ki list available hoti hai.
+    2. Browser viewport mein visible items calculate hote hain.
+    3. Sirf visible items aur optional overscan items render hote hain.
+    4. Scroll karne par doosre items render hote hain aur purane items reuse/remove ho sakte hain.
+
+    Example: 10,000 customer records
+
+    Customer 104
+
+    Visible
+
+    Customer 105
+
+    Visible
+
+    Customer 106
+
+    Visible
+
+    Customer 107
+
+    Visible
+
+    Customer 108
+
+    Visible
+
+    Only a small window of the full list is rendered
+
+    Without virtualization, all 10,000 rows could be mounted. With virtualization, only a small visible window plus overscan needs to be rendered.
+
+    ### Small Implementation — React
+
+    Large lists ke liye `react-window` jaise library ka use kar sakte hain. Uska API version ke according change ho sakta hai; yeh example `react-window` v1.x ka hai.
+
+    ```
+    import { FixedSizeList } from "react-window";
+
+    const users = Array.from(
+    { length: 10000 },
+    (_, i) => ({ id: i + 1, name: `User ${i + 1}` })
+    );
+
+    function Row({ index, style }) {
+    return (
+        <div style={style}>
+        {users[index].name}
+        </div>
+    );
+    }
+
+    export default function UserList() {
+    return (
+        <FixedSizeList
+        height={400}
+        width={300}
+        itemCount={users.length}
+        itemSize={35}
+        >
+        {Row}
+        </FixedSizeList>
+    );
+    }
+    ```
+
+    Yahan `height` viewport ki height hai aur `itemSize` har row ki fixed height. Library sirf visible rows aur configured overscan render karti hai.
+
+    Virtualization vs Pagination:
+
+    - Virtualization: Ek list ko efficiently display karti hai; DOM mein limited rows hoti hain.
+    - Pagination: Data ko pages mein divide karti hai, jaise 100 records per page.
+    - Dono ko ek saath bhi use kar sakte hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Virtualization is a performance optimization technique used to render only the visible portion of a large list instead of rendering every item at once. For example, in a CRM application with 50,000 records, rendering all rows can increase DOM size and slow down scrolling. Libraries such as react-window help render visible rows and a small overscan area. This reduces DOM work and can improve scrolling performance and memory usage.”
+
+    ### Interview Follow-up
+
+    Q: When should you use virtualization?
+
+    When a list or table contains hundreds or thousands of items and rendering all of them causes measurable performance problems.
+
+    Q: Is virtualization the same as lazy loading?
+
+    No. Virtualization limits how many UI elements are mounted. Lazy loading delays loading a component, image, or other resource until it is needed.
+
+    Q: Does virtualization reduce API response size?
+
+    Not by itself. It mainly reduces rendering and DOM work. To reduce data transferred from the server, use pagination, server-side filtering, or incremental data fetching.
+
+    ### ⭐ One-line memory trick
+
+    Virtualization = Large list + Render only visible rows + Less DOM work.
+
+
+
 188. Large list rendering?
 189. Lazy components?
 190. Image optimization?
