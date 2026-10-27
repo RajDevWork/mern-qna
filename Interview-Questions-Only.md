@@ -26225,6 +26225,110 @@ Browser automatically validation kar dega.
 
 
 186. Memoization React mein?
+
+    ## Hinglish Explanation
+
+    Memoization ek optimization technique hai jisme previous result ko cache kiya jata hai, taaki same inputs hone par expensive calculation ya unnecessary component rendering ko repeat karne se bach sakein.
+
+    React mein memoization ke 3 main tools hain:
+
+    1. `React.memo` — Component ko same props milne par unnecessary re-render skip karne mein help karta hai.
+    2. `useMemo` — Expensive calculation ka result cache karta hai.
+    3. `useCallback` — Function reference ko cache karta hai.
+
+    ### 1. `useMemo` — Value memoize karna
+
+    ```
+    import { useMemo, useState } from "react";
+
+    function App() {
+    const [count, setCount] = useState(0);
+    const [number, setNumber] = useState(10);
+
+    const result = useMemo(() => {
+        console.log("Calculating...");
+        return number * 2;
+    }, [number]);
+
+    return (
+        <>
+        <p>Result: {result}</p>
+
+        <button onClick={() => setCount(c => c + 1)}>
+            Count: {count}
+        </button>
+
+        <button onClick={() => setNumber(n => n + 1)}>
+            Change Number
+        </button>
+        </>
+    );
+    }
+    ```
+
+    Yahan `count` change hone par `App` re-render hota hai, lekin `number` same rehne par `useMemo` cached result reuse kar sakta hai.
+
+    ### 2. `React.memo` — Component memoize karna
+
+    ```
+    import { memo } from "react";
+
+    const UserCard = memo(function UserCard({ name }) {
+    console.log("UserCard rendered");
+    return <h2>{name}</h2>;
+    });
+    ```
+
+    Agar parent re-render ho aur `name` prop unchanged ho, toh React `UserCard` ka re-render skip kar sakta hai.
+
+    ### 3. `useCallback` — Function memoize karna
+
+    ```
+    import { useCallback, useState } from "react";
+
+    function App() {
+    const [count, setCount] = useState(0);
+
+    const handleClick = useCallback(() => {
+        console.log("Button clicked");
+    }, []);
+
+    return (
+        <button onClick={() => setCount(c => c + 1)}>
+        Count: {count}
+        </button>
+    );
+    }
+    ```
+
+    `handleClick` ka function reference renders ke beech cache hota hai, jab tak dependencies change nahi hoti. Ye tab especially useful hai jab function memoized child ko prop ke roop mein pass hota hai.
+
+    Important: Memoization har jagah use nahi karni chahiye. Iska bhi overhead hota hai, aur React rendering ko unnecessary optimize karna code ko complex bana sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Memoization is an optimization technique that caches previous results to avoid unnecessary calculations or renders. In React, React.memo can skip a component re-render when its props are unchanged, useMemo caches the result of a calculation, and useCallback caches a function reference. I use these techniques when profiling identifies a performance issue, rather than applying them everywhere. They improve performance only when the saved work outweighs their overhead.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `useMemo` and `useCallback`?
+
+    - `useMemo` caches a calculated value.
+    - `useCallback` caches a function reference.
+
+    Q: Does `React.memo` prevent every re-render?
+
+    No. Changes to the component's own state or consumed context can still trigger a re-render. Also, changed props can cause a re-render.
+
+    Q: When should you use memoization?
+
+    Use it for expensive calculations or when avoiding repeated rendering provides a measurable benefit, especially with memoized child components.
+
+    ### ⭐ One-line memory trick
+
+    `React.memo` = Component, `useMemo` = Value, `useCallback` = Function.
+
+
 187. Virtualization kya hai?
 188. Large list rendering?
 189. Lazy components?
