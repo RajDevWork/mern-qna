@@ -26714,6 +26714,145 @@ Browser automatically validation kar dega.
 
 
 191. Folder structure kaise?
+
+
+    ## Hinglish Explanation
+
+    React mein folder structure ka matlab hai components, pages, API calls, hooks, utilities aur styles ko logically organize karna, taaki project maintainable, scalable aur team-friendly rahe.
+
+    Small project mein simple structure kaafi hai, lekin large production application mein feature-based structure useful hota hai.
+
+    ### 1. Recommended React Folder Structure
+
+    src/
+
+    components/
+
+    Reusable UI components
+
+    features/
+
+    Feature-specific code
+
+    pages/
+
+    Page-level components
+
+    hooks/
+
+    Custom React hooks
+
+    services/
+
+    API calls and integrations
+
+    utils/
+
+    Helper functions
+
+    assets/
+
+    Images, icons and fonts
+
+    App.jsx
+
+    Root component
+
+    main.jsx
+
+    Application entry point
+
+    ### 2. Production-style Example
+
+    Maan lo tum ek CRM application bana rahe ho, jisme authentication aur customers ke modules hain.
+
+    ```
+    src/
+    ├── app/
+    │   └── router.jsx
+    ├── components/
+    │   ├── common/
+    │   │   ├── Button.jsx
+    │   │   └── Modal.jsx
+    │   └── layout/
+    │       ├── Navbar.jsx
+    │       └── Sidebar.jsx
+    ├── features/
+    │   ├── auth/
+    │   │   ├── LoginPage.jsx
+    │   │   ├── authService.js
+    │   │   └── authHooks.js
+    │   └── customers/
+    │       ├── CustomerList.jsx
+    │       ├── CustomerForm.jsx
+    │       └── customerService.js
+    ├── hooks/
+    ├── utils/
+    ├── assets/
+    ├── App.jsx
+    └── main.jsx
+    ```
+
+    Feature-based structure ka benefit: Customer-related code `features/customers/` mein rahega aur authentication-related code `features/auth/` mein. Isse feature develop, test aur maintain karna easier hota hai.
+
+    ### 3. Next.js ka folder structure alag hota hai
+
+    Next.js App Router mein `app/` directory routing aur layouts handle karti hai.
+
+    ```
+    app/
+    ├── layout.tsx
+    ├── page.tsx
+    ├── products/
+    │   ├── page.tsx
+    │   └── [id]/
+    │       └── page.tsx
+    └── api/
+        └── users/
+            └── route.ts
+
+    components/
+    ├── Navbar.tsx
+    └── ProductCard.tsx
+
+    lib/
+    └── db.ts
+    ```
+
+    - `app/page.tsx` → Homepage
+    - `app/products/page.tsx` → Products page
+    - `app/products/[id]/page.tsx` → Dynamic product page
+    - `app/api/users/route.ts` → API Route Handler
+    - `components/` → Shared UI components
+    - `lib/` → Shared utilities, database clients, etc.
+
+    ## 🎯 English Interview Answer
+
+    > “I organize React projects to keep components reusable and responsibilities separated. I typically maintain shared UI components, feature-specific modules, custom hooks, API services, utilities, assets, and application entry points in separate folders. For larger applications, I prefer a feature-based structure so that related components, services, and logic stay together. In Next.js, I use the App Router directory for pages, layouts, and route handlers, while keeping shared components and utilities separate.”
+
+    ### Interview Follow-up
+
+    Q: Feature-based vs type-based folder structure?
+
+    - Type-based: All components, hooks and services are grouped separately.
+    - Feature-based: Related code for each feature stays together. This can improve maintainability as the application grows.
+
+    Q: Should API calls be written directly inside components?
+
+    Simple cases mein possible hai, but larger applications mein API logic ko service modules ya suitable data-fetching layer mein separate rakhna testing aur maintenance ko easier bana sakta hai.
+
+    Q: Is there one mandatory React folder structure?
+
+    No. Structure project size, framework, team conventions aur application requirements ke according choose kiya jata hai.
+
+    ### ⭐ One-line memory trick
+
+    Components = UI, Features = Business modules, Services = API, Hooks = Reusable React logic, Utils = Helpers.
+
+    Interview duration: \~90–120 seconds.
+
+
+
 192. Scalable architecture?
 193. Design patterns React mein?
 194. HOC kya hai?
