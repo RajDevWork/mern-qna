@@ -26621,6 +26621,98 @@ Browser automatically validation kar dega.
 
 
 190. Image optimization?
+
+    ## Hinglish Explanation
+
+    Image Optimization ka matlab hai images ka file size, dimensions aur loading behavior optimize karna, taaki website fast load ho aur user experience improve ho.
+
+    React applications mein large images initial page load ko slow kar sakti hain, bandwidth consume karti hain aur mobile users ke liye performance issues create kar sakti hain.
+
+    ### Image optimization kaise karte hain?
+
+    1. Modern formats: WebP ya AVIF use karo, jab supported workflow mein suitable ho.
+    2. Compression: Image quality maintain karte hue file size reduce karo.
+    3. Responsive images: Device aur screen size ke according suitable image size serve karo.
+    4. Lazy loading: Below-the-fold images ko zaroorat ke waqt load karo.
+    5. Explicit dimensions: `width` aur `height` set karo, taaki layout shift kam ho.
+    6. CDN: Images ko user ke geographically close server se serve karo.
+    7. Priority loading: Hero ya LCP image ko unnecessarily lazy-load mat karo.
+
+    ### Small Implementation — React
+
+    ```
+    function ProductCard() {
+    return (
+        <img
+        src="/images/shoes.webp"
+        alt="Blue running shoes"
+        width="400"
+        height="300"
+        loading="lazy"
+        decoding="async"
+        />
+    );
+    }
+
+    export default ProductCard;
+    ```
+
+    Is code mein:
+
+    - `loading="lazy"` image ko viewport ke paas aane par load karne mein help karta hai.
+    - `width` aur `height` image ke liye space reserve karte hain.
+    - `decoding="async"` browser ko image decoding asynchronously karne ka hint deta hai.
+    - `alt` accessibility ke liye meaningful description deta hai.
+
+    Ye lazy-loading example page ke lower section mein maujood images ke liye suitable hai. Initial screen ki important hero image ko aam taur par eager load karna chahiye.
+
+    ### Next.js mein Image Optimization
+
+    Next.js ka `next/image` component optimized image delivery aur responsive sizing mein help karta hai.
+
+    ```
+    import Image from "next/image";
+
+    export default function ProductCard() {
+    return (
+        <Image
+        src="/images/shoes.jpg"
+        alt="Blue running shoes"
+        width={400}
+        height={300}
+        sizes="(max-width: 600px) 100vw, 400px"
+        />
+    );
+    }
+    ```
+
+    Next.js configuration aur image source ke according image resizing, format negotiation aur optimization support provide kar sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Image optimization means reducing image payload and improving loading behavior without compromising the user experience. In React, I use appropriately sized compressed images, modern formats such as WebP or AVIF, responsive images, and lazy loading for below-the-fold content. I specify image dimensions to reduce layout shifts and prioritize important above-the-fold images. In Next.js, I use the built-in Image component for optimized image delivery. I also measure the impact using browser performance tools and Core Web Vitals.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between lazy loading and eager loading?
+
+    - `loading="lazy"` delays loading until the image is near the viewport.
+    - `loading="eager"` loads the image without lazy-loading delay.
+
+    Q: What is CLS?
+
+    CLS stands for Cumulative Layout Shift. It measures unexpected layout movement. Setting image dimensions or reserving the correct aspect ratio helps reduce image-related layout shifts.
+
+    Q: Should all images use lazy loading?
+
+    No. Below-the-fold images are good candidates. Important above-the-fold or Largest Contentful Paint images should generally load eagerly and may need higher priority.
+
+    ### ⭐ One-line memory trick
+
+    Image Optimization = Compress + Resize + Responsive delivery + Lazy load below the fold + Prioritize hero image.
+
+
+
 191. Folder structure kaise?
 192. Scalable architecture?
 193. Design patterns React mein?
