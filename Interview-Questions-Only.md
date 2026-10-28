@@ -26543,6 +26543,83 @@ Browser automatically validation kar dega.
 
 
 189. Lazy components?
+
+    ## Hinglish Explanation
+
+    Lazy Components React mein aise components hain jinka JavaScript code tab load hota hai jab component ki zaroorat hoti hai, instead of loading all components in the initial bundle.
+
+    React mein iske liye `React.lazy()` aur `Suspense` use karte hain.
+
+    Example: Maan lo tumhare CRM mein Dashboard, Reports aur Settings pages hain. User sirf Dashboard open karta hai, toh Reports aur Settings ka code baad mein load kar sakte ho.
+
+    ### Small Implementation
+
+    ```
+    import { lazy, Suspense, useState } from "react";
+
+    const Reports = lazy(() => import("./Reports"));
+
+    export default function App() {
+    const [showReports, setShowReports] = useState(false);
+
+    return (
+        <div>
+        <button onClick={() => setShowReports(true)}>
+            Open Reports
+        </button>
+
+        {showReports && (
+            <Suspense fallback={<p>Loading reports...</p>}>
+            <Reports />
+            </Suspense>
+        )}
+        </div>
+    );
+    }
+    ```
+
+    `Reports.jsx` ek separate component file hai jo default export provide karti hai.
+
+    ### Ye kaise work karta hai?
+
+    1. `lazy()` component ke liye dynamic import define karta hai.
+    2. Bundler supported setup mein component ka code separate chunk mein split kar sakta hai.
+    3. Jab `showReports` true hota hai, component render hone ki koshish karta hai aur code load hota hai.
+    4. Loading ke dauran `Suspense` ka fallback dikh sakta hai.
+    5. Code load hone par Reports component display hota hai.
+
+    ### Lazy Components ke benefits
+
+    - Initial JavaScript bundle ka size reduce ho sakta hai.
+    - Initial page load improve ho sakta hai.
+    - Heavy pages aur rarely used features ko on-demand load kar sakte hain.
+
+    Important: `lazy()` ko component ke andar define mat karo. Isse component identity reset ho sakti hai aur state issues aa sakte hain. Lazy loading tab useful hai jab component ka deferred loading initial performance ko improve kare.
+
+    ## 🎯 English Interview Answer
+
+    > “Lazy components in React allow us to load a component's code only when it is needed, instead of including all component code in the initial loading path. I use React.lazy with dynamic imports and Suspense to display a fallback while the component loads. This helps split the JavaScript bundle and can improve initial load performance, especially for heavy pages or rarely used features.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between `React.lazy()` and `Suspense`?
+
+    - `React.lazy()` defines a component that loads its code dynamically.
+    - `Suspense` displays fallback UI while that component's code is loading.
+
+    Q: Can we lazy-load every component?
+
+    No. Lazy loading very small or immediately required components may add unnecessary complexity or delay. It is more useful for heavy pages and features.
+
+    Q: What happens if the lazy import fails?
+
+    The import rejection should be handled with an Error Boundary around the lazy component, so the application can show a fallback error UI.
+
+    ### ⭐ One-line memory trick
+
+    `React.lazy()` = Load component on demand; `Suspense` = Show fallback while loading.
+
+
 190. Image optimization?
 191. Folder structure kaise?
 192. Scalable architecture?
