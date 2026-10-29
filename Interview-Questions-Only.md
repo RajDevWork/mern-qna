@@ -27115,6 +27115,91 @@ Browser automatically validation kar dega.
 
 
 194. HOC kya hai?
+
+    ## Hinglish Explanation
+
+    HOC (Higher-Order Component) React mein ek function hai jo ek component ko input leta hai aur ek enhanced component return karta hai.
+
+    Iska main purpose multiple components ke beech reusable behavior share karna hai, bina same logic baar-baar likhe.
+
+    Example: Maan lo tumhare CRM mein multiple pages hain aur sabhi ko loading state handle karni hai. HOC common loading logic provide kar sakta hai.
+
+    ### Small Implementation
+
+    ```
+    function withLoading(Component) {
+    return function EnhancedComponent({
+        isLoading,
+        ...props
+    }) {
+        if (isLoading) {
+        return <p>Loading...</p>;
+        }
+
+        return <Component {...props} />;
+    };
+    }
+
+    function UserList({ users }) {
+    return users.map(user => (
+        <p key={user.id}>{user.name}</p>
+    ));
+    }
+
+    const UserListWithLoading = withLoading(UserList);
+
+    export default function App() {
+    const users = [{ id: 1, name: "Rahul" }];
+
+    return (
+        <UserListWithLoading
+        isLoading={false}
+        users={users}
+        />
+    );
+    }
+    ```
+
+    ### Ye kaise work karta hai?
+
+    1. `withLoading()` ek component receive karta hai.
+    2. HOC ek naya `EnhancedComponent` return karta hai.
+    3. Agar `isLoading` true hai, toh loading message display hota hai.
+    4. Otherwise, original component render hota hai aur remaining props pass hote hain.
+
+    Yahan `UserList` ka original code loading logic se separate rehta hai.
+
+    ### HOC ke important points
+
+    - HOC ek function pattern hai, koi special React API nahi.
+    - Original component ko directly modify karne ke bajaye naya component return karna chahiye.
+    - Props ko correctly forward karna chahiye.
+    - Common use cases: legacy authorization wrappers, logging aur shared behavior.
+    - Modern React mein custom Hooks aur composition kai situations mein simpler alternatives hain.
+
+    ## 🎯 English Interview Answer
+
+    > “A Higher-Order Component, or HOC, is a function that takes a React component and returns a new component with additional behavior. It is used to reuse cross-cutting logic across multiple components without duplicating code. For example, a loading HOC can display a loading message before rendering the wrapped component. HOCs are useful in some legacy and cross-cutting scenarios, although custom Hooks and component composition are often preferred in modern React.”
+
+    ### Interview Follow-up
+
+    Q: HOC aur custom Hook mein kya difference hai?
+
+    HOC ek enhanced component return karta hai, jabki custom Hook reusable logic share karta hai within a component.
+
+    Q: Kya HOC original component ko modify karta hai?
+
+    Ideally, nahi. HOC original component ko wrap karke naya component return karta hai.
+
+    Q: HOC ka ek real-world use case kya hai?
+
+    Multiple legacy pages mein common permission checks ya logging behavior apply karna, while keeping the underlying component implementation separate.
+
+    ### ⭐ One-line memory trick
+
+    HOC = Component input → Reusable behavior add → Enhanced component output.
+
+
 195. Render props?
 196. Hooks vs HOC?
 197. Micro Frontends?
