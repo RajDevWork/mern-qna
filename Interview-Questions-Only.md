@@ -27471,6 +27471,99 @@ Browser automatically validation kar dega.
 
 
 198. Monorepo kya hai?
+
+    ## Hinglish Explanation
+
+    Monorepo (Monolithic Repository) ek repository structure hai jisme multiple applications aur shared libraries ka code ek hi Git repository mein maintain kiya jata hai.
+
+    Example: Tumhare project mein React frontend, NestJS backend, shared TypeScript types aur validation schemas hain. In sabko ek hi repository mein rakh sakte ho.
+
+    ### 1. Monorepo kaise work karta hai?
+
+    my-platform/ — Single Git repository
+
+    apps/web/
+
+    React frontend
+
+    apps/api/
+
+    NestJS backend
+
+    packages/types/
+
+    Shared TypeScript types
+
+    packages/validation/
+
+    Shared validation schemas
+
+    ### 2. Example folder structure
+
+    ```
+    my-platform/
+    ├── apps/
+    │   ├── web/
+    │   └── api/
+    ├── packages/
+    │   ├── types/
+    │   ├── validation/
+    │   └── ui/
+    ├── package.json
+    ├── pnpm-workspace.yaml
+    └── turbo.json
+    ```
+
+    Is example mein:
+
+    - `apps/web` — React application.
+    - `apps/api` — backend application.
+    - `packages/types` — shared interfaces aur types.
+    - `packages/ui` — reusable UI components.
+    - `pnpm-workspace.yaml` — pnpm workspace packages define karta hai.
+    - `turbo.json` — Turborepo task execution aur caching configure kar sakta hai.
+
+    Note: `turbo.json` aur Turborepo optional hain. Monorepo banane ke liye Nx, Turborepo, pnpm workspaces ya doosre tools use kar sakte ho.
+
+    ### 3. Monorepo ke advantages aur challenges
+
+    | Advantages                                     | Challenges                                    |
+    | ---------------------------------------------- | --------------------------------------------- |
+    | Shared code easily reuse hota hai              | Repository aur tooling complex ho sakte hain  |
+    | Types aur schemas consistent rakh sakte hain   | CI/CD ko efficiently configure karna hota hai |
+    | Related changes ek commit mein ho sakte hain   | Unnecessary builds ko avoid karna padta hai   |
+    | Dependency management centralized ho sakta hai | Access control aur ownership planning chahiye |
+
+    ### 4. Monorepo vs Polyrepo
+
+    - Monorepo: Multiple applications, one repository.
+    - Polyrepo: Har application ya service ke liye separate repository.
+
+    Monorepo ka matlab ye nahi ki saare apps ek saath deploy honge. Har application independently build aur deploy ho sakti hai.
+
+    ## 🎯 English Interview Answer
+
+    > “A monorepo is a repository structure where multiple applications and shared libraries are maintained in a single Git repository. For example, a project can contain a React frontend, a NestJS backend, shared TypeScript types, and validation packages. This makes code sharing and coordinated changes easier. Tools such as Nx, Turborepo, and pnpm workspaces help manage dependencies and build tasks. However, we need proper CI/CD, dependency management, and project boundaries to keep the repository maintainable.”
+
+    ### Interview Follow-up
+
+    Q: Monorepo aur monolith mein kya difference hai?
+
+    Monorepo repository organization ka approach hai. Monolith application architecture hai jisme functionality ek combined application ya deployment unit mein hoti hai. Monorepo mein multiple independently deployable services bhi ho sakti hain.
+
+    Q: Kya Micro Frontends monorepo mein ho sakte hain?
+
+    Haan. Multiple Micro Frontend applications ek monorepo mein bhi ho sakti hain ya separate repositories mein bhi.
+
+    Q: Monorepo mein shared code kaise manage karte hain?
+
+    Shared code ko packages mein organize karke workspace dependencies ke through import karte hain. TypeScript, tests aur linting se packages ke contracts maintain karte hain.
+
+    ### ⭐ One-line memory trick
+
+    Monorepo = One repository + Multiple applications + Shared packages.
+
+
 199. Deployment React app?
 200. Env variables React mein?
 201. Build process?
