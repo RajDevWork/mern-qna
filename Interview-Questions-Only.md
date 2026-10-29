@@ -27373,6 +27373,103 @@ Browser automatically validation kar dega.
 
 
 197. Micro Frontends?
+
+    ## Hinglish Explanation
+
+    Micro Frontends ek architectural pattern hai jisme ek large frontend application ko multiple smaller, independently developed aur managed frontend applications mein divide kiya jata hai.
+
+    Jaise tumhare CRM mein Authentication, Customers, Reports aur Campaigns modules hain. Large team mein har module ko alag team develop aur deploy kar sakti hai, aur user ko ye ek hi application jaisa dikhta hai.
+
+    ### 1. Micro Frontends kaise work karte hain?
+
+    Main Application / Shell
+
+    Navigation · Layout · Routing
+
+    Auth App
+
+    Team A
+
+    Customers App
+
+    Team B
+
+    Reports App
+
+    Team C
+
+    Campaigns App
+
+    Team D
+
+    Har module ke apne components, build aur deployment ho sakte hain.
+
+    ### 2. Micro Frontends implement kaise karte hain?
+
+    Common approaches:
+
+    - Module Federation: Alag builds ke components/modules ko runtime par integrate kar sakte hain.
+    - Web Components: Custom elements ke through UI modules integrate kar sakte hain.
+    - Single-SPA: Multiple frontend applications ki lifecycle aur routing coordinate kar sakta hai.
+    - Build-time integration: Alag packages ko build ke time ek application mein combine karna.
+    - Iframe: Strong isolation deta hai, lekin communication aur styling integration complicated ho sakti hai.
+
+    ### 3. Example — Micro Frontend structure
+
+    ```
+    crm-platform/
+    ├── shell-app/
+    │   ├── src/
+    │   └── package.json
+    ├── auth-app/
+    │   ├── src/
+    │   └── package.json
+    ├── customers-app/
+    │   ├── src/
+    │   └── package.json
+    └── reports-app/
+        ├── src/
+        └── package.json
+    ```
+
+    Shell app navigation aur application layout handle kar sakta hai. Baaki apps apne modules develop aur deploy kar sakte hain.
+
+    Ye ek conceptual structure hai; actual integration ke liye routing, authentication, dependency sharing aur deployment configuration chahiye.
+
+    ### 4. Advantages aur Challenges
+
+    | Advantages                              | Challenges                                           |
+    | --------------------------------------- | ---------------------------------------------------- |
+    | Independent deployments                 | Setup aur infrastructure complex                     |
+    | Teams independently kaam kar sakti hain | Shared state aur communication                       |
+    | Module-level ownership                  | Duplicate dependencies se bundle size badh sakta hai |
+    | Different modules ka separate evolution | Consistent UI aur testing maintain karna             |
+
+    Important: Micro Frontends har project ke liye zaroori nahi hain. Agar ek chhoti team ek React application manage kar rahi hai, toh modular monolith ya feature-based architecture simpler aur effective ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Micro Frontends is an architectural approach that divides a large frontend application into smaller, independently developed and potentially independently deployed applications. For example, a CRM can have separate frontend modules for authentication, customers, reports, and campaigns. A shell application integrates these modules and provides common navigation. Technologies such as Module Federation or single-spa can help with integration. Micro Frontends improve team autonomy and independent delivery, but they also introduce complexity in shared dependencies, routing, communication, and testing. I would adopt them when the organizational and deployment benefits justify that complexity.”
+
+    ### Interview Follow-up
+
+    Q: Micro Frontends aur normal component-based architecture mein kya difference hai?
+
+    Component-based architecture ek application ke UI ko reusable components mein divide karti hai. Micro Frontends larger modules ko separate applications, builds ya deployment units ke roop mein organize kar sakte hain.
+
+    Q: How do Micro Frontends communicate?
+
+    They can communicate through URL/navigation, shared contracts, custom events, or an explicitly designed shared state mechanism. Communication ko limited aur well-defined rakhna chahiye.
+
+    Q: What is Module Federation?
+
+    Webpack Module Federation ek mechanism hai jisse independently built applications runtime par code aur modules share kar sakti hain. Compatible tooling aur configuration ke saath is approach ko use kiya jata hai.
+
+    ### ⭐ One-line memory trick
+
+    Micro Frontends = One large frontend → Multiple independent modules → Integrated user experience.
+
+
 198. Monorepo kya hai?
 199. Deployment React app?
 200. Env variables React mein?
