@@ -27282,6 +27282,96 @@ Browser automatically validation kar dega.
 
 
 196. Hooks vs HOC?
+
+    ## Hinglish Explanation
+
+    Hooks vs HOC (Higher-Order Component) — dono React mein reusable logic share karne ke patterns hain, lekin inka approach alag hai.
+
+    - Custom Hooks: Reusable logic ko ek function mein extract karte hain, jaise `useAuth()` ya `useFetch()`.
+    - HOC: Ek component ko input leta hai aur additional behavior wala naya component return karta hai.
+
+    ### 1. Custom Hook Example
+
+    ```
+    import { useState } from "react";
+
+    function useToggle() {
+    const [value, setValue] = useState(false);
+
+    const toggle = () => setValue(v => !v);
+
+    return { value, toggle };
+    }
+
+    function App() {
+    const { value, toggle } = useToggle();
+
+    return (
+        <button onClick={toggle}>
+        {value ? "Open" : "Closed"}
+        </button>
+    );
+    }
+    ```
+
+    Yahan `useToggle()` reusable stateful logic share karta hai. Component apni UI khud render karta hai.
+
+    ### 2. HOC Example
+
+    ```
+    function withLoading(Component) {
+    return function WrappedComponent({ loading, ...props }) {
+        if (loading) return <p>Loading...</p>;
+
+        return <Component {...props} />;
+    };
+    }
+
+    function UserProfile({ name }) {
+    return <h2>{name}</h2>;
+    }
+
+    const UserProfileWithLoading = withLoading(UserProfile);
+    ```
+
+    Yahan `withLoading()` original component ko wrap karke loading behavior wala naya component return karta hai.
+
+    ### Hooks vs HOC — Comparison
+
+    | Feature               | Custom Hooks                      | HOC                                  |
+    | --------------------- | --------------------------------- | ------------------------------------ |
+    | Kya return karta hai? | Data, functions ya state          | Naya component                       |
+    | Reusable logic        | Haan                              | Haan                                 |
+    | UI control            | Consumer component karta hai      | Wrapper UI control kar sakta hai     |
+    | Code composition      | Function calls ke through         | Component wrapping ke through        |
+    | Common issue          | Hook rules follow karne hote hain | Wrapper nesting aur prop conflicts   |
+    | Modern React          | Commonly preferred                | Existing/legacy patterns mein useful |
+
+    Real-world example: Authentication logic share karne ke liye `useAuth()` hook useful hai. Legacy application mein multiple pages par common authorization wrapper lagane ke liye HOC useful ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Custom Hooks and Higher-Order Components are both patterns for reusing logic in React. A custom Hook extracts reusable stateful logic into a function that returns values or functions, while a Higher-Order Component takes a component and returns an enhanced component. Custom Hooks are generally simpler for sharing logic in modern React, whereas HOCs remain useful in some existing codebases and component-wrapping scenarios. I choose the approach based on the use case and avoid unnecessary abstraction.”
+
+    ### Interview Follow-up
+
+    Q: Can a custom Hook replace every HOC?
+
+    No. Hooks can share logic, but they don't directly wrap a component or control its rendered output. A HOC may still be useful when the requirement is specifically to wrap components.
+
+    Q: Can Hooks be called inside HOCs?
+
+    Yes, a HOC can return a React function component that calls Hooks at its top level. Hooks must not be called directly inside the ordinary HOC function itself.
+
+    Q: Which approach would you choose for new React code?
+
+    For reusable stateful logic, I generally start with custom Hooks. For UI reuse, I prefer component composition. I use HOCs when component wrapping is a good fit.
+
+    ### ⭐ One-line memory trick
+
+    Custom Hook = Reuse logic; HOC = Wrap and enhance component.
+
+
 197. Micro Frontends?
 198. Monorepo kya hai?
 199. Deployment React app?
