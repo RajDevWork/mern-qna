@@ -27201,6 +27201,86 @@ Browser automatically validation kar dega.
 
 
 195. Render props?
+
+    ## Hinglish Explanation
+
+    Render Props React ka ek pattern hai jisme component ek function ko prop ke roop mein receive karta hai. Ye function decide karta hai ki UI mein kya render hoga.
+
+    Iska main purpose reusable logic ko share karna aur UI rendering ka control parent ko dena hai.
+
+    Maan lo tumhare paas mouse ki position track karne ka logic hai. Alag-alag components us position ko different UI mein display kar sakte hain, bina tracking logic duplicate kiye.
+
+    ### Small Implementation
+
+    ```
+    import { useState } from "react";
+
+    function MouseTracker({ render }) {
+    const [position, setPosition] = useState({
+        x: 0,
+        y: 0,
+    });
+
+    return (
+        <div
+        onMouseMove={(event) =>
+            setPosition({
+            x: event.clientX,
+            y: event.clientY,
+            })
+        }
+        >
+        {render(position)}
+        </div>
+    );
+    }
+
+    export default function App() {
+    return (
+        <MouseTracker
+        render={({ x, y }) => (
+            <h2>
+            Mouse: {x}, {y}
+            </h2>
+        )}
+        />
+    );
+    }
+    ```
+
+    ### Ye kaise work karta hai?
+
+    1. `MouseTracker` mouse position track karta hai.
+    2. `render` prop ek function receive karta hai.
+    3. Function ko current `x` aur `y` values milti hain.
+    4. Parent decide karta hai ki un values ko UI mein kaise display karna hai.
+
+    Important: Render Props ke liye prop ka naam `render` hona zaroori nahi hai. Ye `children` ya kisi doosre function prop ke through bhi implement ho sakta hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Render Props is a React pattern where a component receives a function as a prop to determine what UI should be rendered. It allows us to share behavior while keeping the rendering logic flexible. For example, a component can track mouse position and pass the coordinates to a render function, allowing different consumers to display that data differently. In modern React, custom Hooks often provide a simpler alternative for sharing reusable logic.”
+
+    ### Interview Follow-up
+
+    Q: Render Props aur HOC mein kya difference hai?
+
+    - Render Props: Function prop ke through rendering control share karta hai.
+    - HOC: Ek component leta hai aur enhanced component return karta hai.
+
+    Q: Render Props aur Custom Hooks mein kya difference hai?
+
+    Render Props reusable behavior ke saath rendering control bhi provide karta hai. Custom Hooks reusable stateful logic share karte hain, aur component khud apni UI render karta hai.
+
+    Q: Kya `children` bhi Render Props ho sakta hai?
+
+    Haan. Agar `children` ek function hai aur component usse data pass karke call karta hai, toh use function-as-children pattern kaha ja sakta hai, jo Render Props ka ek form hai.
+
+    ### ⭐ One-line memory trick
+
+    Render Props = Function as prop → Data pass karo → Consumer decide karega UI.
+
+
 196. Hooks vs HOC?
 197. Micro Frontends?
 198. Monorepo kya hai?
