@@ -26966,6 +26966,154 @@ Browser automatically validation kar dega.
     Scalable Architecture = Clear boundaries + Modular features + Testability + Measured performance + Growth without unnecessary complexity.
 
 193. Design patterns React mein?
+
+    ## Hinglish Explanation
+
+    Design Patterns in React reusable solutions hain jo common UI aur software design problems ko solve karne mein help karte hain. Inse code reusable, maintainable, testable aur scalable ban sakta hai.
+
+    React mein commonly use hone wale patterns ye hain:
+
+    ### 1. Component Composition
+
+    Ek component ke andar doosre components ko combine karke flexible UI banana.
+
+    ```
+    function Card({ title, children }) {
+    return (
+        <section>
+        <h2>{title}</h2>
+        {children}
+        </section>
+    );
+    }
+
+    function App() {
+    return (
+        <Card title="User Profile">
+        <p>Welcome back!</p>
+        <button>Edit Profile</button>
+        </Card>
+    );
+    }
+    ```
+
+    Use case: Reusable cards, modals, layouts aur dashboard widgets.
+
+    ### 2. Custom Hooks Pattern
+
+    Reusable stateful logic ko custom Hook mein extract karna.
+
+    ```
+    import { useState } from "react";
+
+    function useToggle(initialValue = false) {
+    const [value, setValue] = useState(initialValue);
+
+    const toggle = () => setValue(v => !v);
+
+    return [value, toggle];
+    }
+
+    function App() {
+    const [isOpen, toggle] = useToggle();
+
+    return (
+        <button onClick={toggle}>
+        {isOpen ? "Close" : "Open"}
+        </button>
+    );
+    }
+    ```
+
+    Use case: Form logic, data fetching, toggles aur reusable UI behavior.
+
+    ### 3. Container-Presentational Pattern
+
+    Responsibilities ko separate karna:
+
+    - Container: Data fetching aur business logic.
+    - Presentational component: UI display karna.
+
+    ```
+    function UserList({ users }) {
+    return users.map(user => (
+        <p key={user.id}>{user.name}</p>
+    ));
+    }
+    ```
+
+    Parent component `users` fetch karke `UserList` ko pass kar sakta hai.
+
+    Note: Ye traditional pattern hai. Modern React mein custom Hooks aur feature-based components se bhi separation achieve ki ja sakti hai.
+
+    ### 4. Higher-Order Component (HOC)
+
+    HOC ek function hai jo component leta hai aur enhanced component return karta hai.
+
+    ```
+    function withLoading(Component) {
+    return function EnhancedComponent({ loading, ...props }) {
+        if (loading) return <p>Loading...</p>;
+
+        return <Component {...props} />;
+    };
+    }
+    ```
+
+    Use case: Legacy applications mein shared behavior add karna. Modern code mein Hooks aur composition aksar simpler alternatives hote hain.
+
+    ### 5. Provider Pattern
+
+    Context ke through multiple components ko common data provide karna.
+
+    ```
+    import { createContext, useContext } from "react";
+
+    const ThemeContext = createContext("light");
+
+    function Button() {
+    const theme = useContext(ThemeContext);
+
+    return <button className={theme}>Submit</button>;
+    }
+
+    function App() {
+    return (
+        <ThemeContext value="dark">
+        <Button />
+        </ThemeContext>
+    );
+    }
+    ```
+
+    Ye provider syntax React 19 mein supported hai. Older React versions mein `<ThemeContext.Provider value="dark">` use hota hai.
+
+    Use case: Theme, locale aur shared application settings.
+
+    ## 🎯 English Interview Answer
+
+    > “Design patterns in React are reusable approaches for solving common component and application design problems. Common examples include component composition, custom Hooks, the container-presentational pattern, higher-order components, and the provider pattern. I use composition to build flexible reusable UI, custom Hooks to share logic, and Context providers to share common values. I choose patterns based on the problem rather than applying them everywhere, because unnecessary abstraction can make an application harder to maintain.”
+
+    ### Interview Follow-up
+
+    Q: HOC aur custom Hook mein kya difference hai?
+
+    - HOC: Ek component leta hai aur enhanced component return karta hai.
+    - Custom Hook: Reusable stateful logic share karta hai without wrapping a component.
+
+    Q: Composition inheritance se better kyun ho sakti hai?
+
+    Composition components ko smaller building blocks se combine karne deti hai, jisse behavior flexible rehta hai aur rigid inheritance hierarchies ki zaroorat kam hoti hai.
+
+    Q: Kaunsa pattern modern React mein commonly useful hai?
+
+    Component composition aur custom Hooks. Ye reusable UI aur shared logic ko clean tarike se organize karte hain.
+
+    ### ⭐ One-line memory trick
+
+    Composition = UI reuse; Custom Hooks = Logic reuse; HOC = Component enhancement; Provider = Shared context.
+
+
 194. HOC kya hai?
 195. Render props?
 196. Hooks vs HOC?
