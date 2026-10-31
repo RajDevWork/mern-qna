@@ -27677,6 +27677,146 @@ Browser automatically validation kar dega.
 
 
 200. Env variables React mein?
+
+    ## Hinglish Explanation
+
+    Environment Variables application ki configuration values hoti hain jo code se alag store ki jaati hain.
+
+    React application mein inka use different environments ke according configuration manage karne ke liye hota hai.
+
+    Example:
+
+    - Development API: `http://localhost:5000`
+    - Production API: `https://api.example.com`
+    - Application name, feature flags aur public configuration.
+
+    ### 1. Vite React mein Environment Variables
+
+    Vite mein environment variables ke naam `VITE_` prefix se start hone chahiye.
+
+    .env.development
+
+    ```
+    VITE_API_URL=http://localhost:5000
+    VITE_APP_NAME=My CRM
+    ```
+
+    .env.production
+
+    ```
+    VITE_API_URL=https://api.example.com
+    VITE_APP_NAME=Production CRM
+    ```
+
+    React component mein access:
+
+    ```
+    function App() {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    return <h1>API URL: {apiUrl}</h1>;
+    }
+
+    export default App;
+    ```
+
+    ### 2. Create React App (CRA) mein
+
+    CRA mein environment variables ke liye `REACT_APP_` prefix use hota tha.
+
+    ```
+    REACT_APP_API_URL=http://localhost:5000
+    ```
+
+    Access:
+
+    ```
+    const apiUrl = process.env.REACT_APP_API_URL;
+    ```
+
+    Note: CRA deprecated hai; naye projects ke liye Vite ya suitable modern framework prefer karo.
+
+    ### 3. Next.js mein Environment Variables
+
+    Next.js mein server-side environment variables aur browser-exposed variables alag hote hain.
+
+    ```
+    DATABASE_URL=postgresql://localhost:5432/mydb
+    NEXT_PUBLIC_API_URL=https://api.example.com
+    ```
+
+    Access:
+
+    ```
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    ```
+
+    - `NEXT_PUBLIC_` variables browser bundle mein expose ho sakte hain.
+    - Bina prefix wale variables server-side code ke liye rakhe jaate hain.
+
+    ### 4. Important Security Rules
+
+    Safe to expose (when intended)
+
+    - Public API base URL
+    - Public application name
+    - Public feature configuration
+
+    Never expose in frontend
+    - Database passwords
+    - Private API keys
+    - JWT signing secrets
+    - Payment gateway secret keys
+
+    Important: Frontend environment variables secret nahi hote. Prefix se access enable hota hai, security guarantee nahi milti.
+
+    ### 5. Git mein .env ignore karna
+
+    `.gitignore` file mein:
+
+    ```
+    .env
+    .env.local
+    .env.*.local
+    ```
+
+    Team ke liye `.env.example` maintain kar sakte ho:
+
+    ```
+    VITE_API_URL=
+    VITE_APP_NAME=
+    ```
+
+    Ismein actual secrets nahi hone chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > “Environment variables are configuration values stored separately from application source code. In React applications, I use them to manage environment-specific settings such as API URLs and public configuration. In Vite, variables use the VITE\_ prefix and are accessed through import.meta.env. In Next.js, browser-exposed variables use the NEXT_PUBLIC\_ prefix, while server-side variables can remain private. I never expose database credentials, private API keys, or signing secrets in frontend code.”
+
+    ### Interview Follow-up
+
+    Q: Why do we use different .env files?
+
+    To maintain separate configurations for development, testing, staging, and production environments.
+
+    Q: Are React environment variables secure?
+
+    No. Any variable included in the frontend bundle can be inspected by users. Sensitive credentials must remain on the backend.
+
+    Q: What happens if you change a Vite environment variable?
+
+    You generally need to restart the development server to load changed environment variables. For production, generate a new build with the correct configuration.
+
+    Q: What is the difference between `.env` and `.env.example`?
+
+    - `.env` contains actual local configuration values.
+    - `.env.example` documents the required variable names without exposing actual secrets.
+
+    ### ⭐ One-line memory trick
+
+    Environment Variables = Separate Configuration + Environment-specific Values + Never expose secrets.
+
+
 201. Build process?
 202. CI/CD React?
 203. Security React?
