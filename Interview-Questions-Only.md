@@ -27942,6 +27942,146 @@ Browser automatically validation kar dega.
 
 
 202. CI/CD React?
+
+    ## Hinglish Explanation
+
+    CI/CD (Continuous Integration / Continuous Delivery or Deployment) ek automation process hai jisme code changes ko automatically test, build aur deploy kiya jata hai.
+
+    React application mein CI/CD ka use manual deployment avoid karne, bugs early detect karne aur faster releases ke liye hota hai.
+
+    ### 1. CI — Continuous Integration
+
+    Jab developer GitHub par code push karta hai ya Pull Request create karta hai:
+
+    1. Code repository mein push hota hai.
+    2. CI pipeline automatically trigger hoti hai.
+    3. Dependencies install hoti hain.
+    4. ESLint aur automated tests run hote hain.
+    5. Production build generate hota hai.
+    6. Failure hone par developer ko notification milta hai.
+
+    ### 2. CD — Continuous Delivery / Deployment
+
+    CI successful hone ke baad:
+
+    - Continuous Delivery: Application deploy-ready hoti hai, lekin production deployment ke liye manual approval ho sakta hai.
+    - Continuous Deployment: Tests pass hone par production deployment automatically ho jata hai.
+
+    ### CI/CD workflow
+
+    Developer pushes code
+
+    CI Pipeline
+
+    Install → Lint → Test → Build
+
+    All checks passed
+
+    CD Pipeline
+
+    Deploy to staging / production
+
+    Live React Application
+
+    ### 3. Practical Implementation — GitHub Actions
+
+    React Vite project mein `.github/workflows/deploy.yml` file create kar sakte ho.
+
+    ```
+    name: React CI Pipeline
+
+    on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+    jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout code
+            uses: actions/checkout@v4
+
+        - name: Setup Node.js
+            uses: actions/setup-node@v4
+            with:
+            node-version: 22
+            cache: npm
+
+        - name: Install dependencies
+            run: npm ci
+
+        - name: Run lint
+            run: npm run lint
+
+        - name: Run tests
+            run: npm test -- --run
+
+        - name: Production build
+            run: npm run build
+    ```
+
+    Is pipeline mein kya ho raha hai?
+
+    - `checkout` repository ka code download karta hai.
+    - `setup-node` Node.js environment configure karta hai.
+    - `npm ci` lockfile ke according dependencies install karta hai.
+    - `npm run lint` code quality check karta hai.
+    - `npm test -- --run` configured test suite run karta hai.
+    - `npm run build` production build generate karta hai.
+
+    Note: Ye CI pipeline hai. Actual deployment ke liye successful build ke baad separate deployment job ya hosting integration configure karna hoga. Commands project ke `package.json` ke according honi chahiye.
+
+    ### 4. Popular CI/CD Tools
+
+    | Tool           | Purpose                          |
+    | -------------- | -------------------------------- |
+    | GitHub Actions | GitHub-based automation          |
+    | GitLab CI/CD   | GitLab pipeline automation       |
+    | Jenkins        | Self-hosted automation           |
+    | CircleCI       | Build and deployment pipelines   |
+    | Vercel         | Frontend deployment and previews |
+
+    ### 5. CI/CD ke benefits
+
+    - Manual work reduce hota hai.
+    - Bugs early detect hote hain.
+    - Consistent builds generate hote hain.
+    - Faster releases possible hote hain.
+    - Pull Request par automatic checks lag sakte hain.
+    - Deployment process repeatable hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > “CI/CD stands for Continuous Integration and Continuous Delivery or Deployment. In a React project, I use CI/CD to automate code validation, testing, production builds, and deployment. For example, with GitHub Actions, whenever code is pushed or a pull request is created, the pipeline installs dependencies, runs linting and automated tests, and generates a production build. After successful checks, the application can be deployed to staging or production. This reduces manual effort, catches issues early, and makes releases more reliable.”
+
+    ### Interview Follow-up
+
+    Q: CI aur CD mein kya difference hai?
+
+    CI automatically integrates and validates code changes. CD automates the process of preparing or releasing validated code to an environment.
+
+    Q: What happens if a test fails in CI/CD?
+
+    The pipeline normally stops before deployment, reports the failure, and allows developers to fix the issue.
+
+    Q: How do you manage environment variables in CI/CD?
+
+    I store sensitive values in GitHub Actions Secrets or the hosting platform's environment configuration. I never commit private credentials to Git.
+
+    Q: How do you deploy React without downtime?
+
+    For static React hosting, deploy a new build and switch traffic to it only after successful upload and verification. For server-based applications, rolling or blue-green deployments can help avoid downtime.
+
+    ### ⭐ One-line memory trick
+
+    CI = Code + Lint + Test + Build.
+
+    CD = Successful Build + Approval (if needed) + Deployment.
+
+
 203. Security React?
 204. XSS prevent kaise?
 205. Form validation?
