@@ -27818,6 +27818,129 @@ Browser automatically validation kar dega.
 
 
 201. Build process?
+
+
+    ## Hinglish Explanation
+
+    Build Process ka matlab hai development code ko transform karke optimized, production-ready files generate karna, jinhe browser ya hosting server par deploy kiya ja sake.
+
+    React mein hum JSX, TypeScript, CSS aur JavaScript modules likhte hain. Browser directly JSX ya TypeScript execute nahi karta, isliye build tools inhe process karte hain.
+
+    ### 1. React Build Process kaise work karta hai?
+
+    Source Code
+
+    JSX · TS · CSS · Assets
+
+    Build Tool
+
+    Vite / Webpack
+
+    Transform
+
+    JSX → JS
+
+    Bundle
+
+    Modules → Chunks
+
+    Minify
+
+    Reduce code size
+
+    Optimize
+
+    Tree shaking, assets
+
+    Production Build
+
+    dist/ folder · HTML · JS · CSS · Assets
+
+    ### 2. Build Process ke important steps
+
+    1. Transpilation: JSX aur TypeScript ko browser-compatible JavaScript mein transform karna.
+    2. Bundling: Multiple modules ko bundles aur chunks mein organize karna.
+    3. Tree Shaking: Unused code remove karna.
+    4. Minification: Unnecessary spaces aur code syntax reduce karna.
+    5. Code Splitting: Application ko multiple chunks mein divide karna.
+    6. Asset Optimization: CSS, images aur other assets optimize karna.
+
+    ### 3. Practical Example — Vite
+
+    React project mein:
+
+    ```
+    # Install dependencies
+    npm install
+
+    # Development server
+    npm run dev
+
+    # Production build
+    npm run build
+
+    # Test production build locally
+    npm run preview
+    ```
+
+    `npm run build` execute karne par Vite production files `dist/` folder mein generate karta hai.
+
+    Example:
+
+    ```
+    dist/
+    ├── index.html
+    └── assets/
+        ├── index-abc123.js
+        ├── index-def456.css
+        └── logo-xyz.webp
+    ```
+
+    Ye files hosting platform par deploy ki ja sakti hain.
+
+    ### 4. Development Build vs Production Build
+
+    | Development               | Production                    |
+    | ------------------------- | ----------------------------- |
+    | Debugging-friendly        | Optimized                     |
+    | Fast development feedback | Efficient delivery            |
+    | Source maps/dev tools     | Minification and optimization |
+    | HMR support               | Deployment-ready assets       |
+    | `npm run dev`             | `npm run build`               |
+
+    Important: Build process aur deployment different hain.
+
+    - Build = Production files generate karna.
+    - Deployment = Generated files ko hosting server par publish karna.
+
+    ## 🎯 English Interview Answer
+
+    > “The React build process converts development source code into optimized production-ready files. I commonly use Vite or Webpack for this process. The build tool transforms JSX and TypeScript, processes modules, performs bundling, tree shaking, minification, code splitting, and asset optimization. For example, in a Vite React project, I run npm run build, which generates optimized files in the dist directory. These files are then deployed to a hosting platform. Build and deployment are separate steps.”
+
+    ### Interview Follow-up
+
+    Q: What is the difference between transpilation and bundling?
+
+    - Transpilation converts source syntax, such as JSX or TypeScript, into JavaScript.
+    - Bundling organizes application modules and dependencies into output bundles or chunks.
+
+    Q: What is tree shaking?
+
+    Tree shaking removes unused code from the production output when supported by the module format and build tool.
+
+    Q: What is HMR?
+
+    HMR stands for Hot Module Replacement. It updates changed modules during development without requiring a complete page reload in supported setups.
+
+    Q: What is the difference between Vite and Webpack?
+
+    Vite uses native ES modules for its development server and Rollup-based production builds in its traditional setup. Webpack uses a configurable module bundling pipeline for both development and production.
+
+    ### ⭐ One-line memory trick
+
+    Build Process = Transform → Bundle → Tree Shake → Minify → Optimize → Generate dist/.
+
+
 202. CI/CD React?
 203. Security React?
 204. XSS prevent kaise?
