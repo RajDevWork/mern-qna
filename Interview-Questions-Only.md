@@ -28083,6 +28083,90 @@ Browser automatically validation kar dega.
 
 
 203. Security React?
+
+    ## Hinglish Explanation
+
+    React application mein security ka main goal hota hai user data, APIs aur application ko attacks se protect karna.
+
+    React frontend par ye important security practices follow karni chahiye:
+
+    ### 1. XSS (Cross-Site Scripting) Protection
+
+    Attacker malicious JavaScript inject karke user ka data ya session steal kar sakta hai.
+
+    React JSX mein normal text automatically escape hota hai:
+
+    ```
+    function Profile({ username }) {
+    return <h2>{username}</h2>;
+    }
+    ```
+
+    Avoid: `dangerouslySetInnerHTML` ko untrusted HTML ke saath use mat karo. Agar zaroori ho, HTML sanitize karo.
+
+    ### 2. API Security
+
+    - API calls ke liye HTTPS use karo.
+    - Backend par authentication aur authorization validate karo.
+    - Frontend par hide kiya gaya button security nahi hai; backend par permission check mandatory hai.
+
+    ### 3. Token Security
+
+    - Sensitive tokens ko `localStorage` mein rakhne se XSS ke through theft ka risk hota hai.
+    - Suitable architecture mein `HttpOnly`, `Secure`, `SameSite` cookies prefer kar sakte hain.
+    - Cookie-based authentication mein CSRF protection bhi implement karo.
+
+    ### 4. Environment Variables
+
+    ```
+    VITE_API_URL=https://api.example.com
+    ```
+
+    Vite mein `VITE_` variables browser bundle mein expose hote hain. Isliye API secret keys, database passwords aur private credentials kabhi frontend mein mat rakho.
+
+    ### 5. Other Security Practices
+
+    - User input validate and sanitize karo.
+    - Dependencies regularly update karo.
+    - Content Security Policy (CSP) configure karo.
+    - Sensitive data console logs mein mat rakho.
+    - Authentication aur authorization backend par enforce karo.
+
+    ## 🎯 English Interview Answer
+
+    > “React security is about protecting the application and user data from common attacks like XSS, CSRF, and unauthorized access.
+    >
+    > I follow several practices:
+    >
+    > - I avoid using dangerouslySetInnerHTML with untrusted content.
+    > - I use HTTPS for API communication.
+    > - I never store secret keys in frontend environment variables.
+    > - I prefer secure HttpOnly cookies for sensitive authentication tokens where appropriate.
+    > - I validate permissions on the backend instead of relying only on frontend checks.
+    > - I also use input validation, CSP, and regularly update dependencies.
+    >
+    > My approach is to treat the frontend as an untrusted environment and enforce critical security checks on the backend.”
+
+    ### Interview Follow-up
+
+    Q1. Is React automatically protected against XSS?
+
+    React escapes values rendered through JSX by default, but unsafe HTML insertion and other unsafe DOM operations can still introduce XSS vulnerabilities.
+
+    Q2. Is localStorage safe for storing JWT tokens?
+
+    Not completely. JavaScript can access localStorage, so an XSS attack may steal tokens. HttpOnly cookies can reduce this risk, but cookie-based authentication also needs CSRF protection.
+
+    Q3. Does hiding an admin button provide security?
+
+    No. A user can directly call the API. Backend authorization must verify whether the user has permission to perform that action.
+
+    ### ⭐ One-line memory trick
+
+    React Security = XSS Protection + Secure Authentication + Backend Authorization + Safe APIs + Dependency Security.
+
+
+
 204. XSS prevent kaise?
 205. Form validation?
 206. State normalization?
