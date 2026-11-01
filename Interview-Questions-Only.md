@@ -28982,6 +28982,135 @@ Browser automatically validation kar dega.
 
 
 210. Skeleton UI?
+
+    ## Hinglish Explanation
+
+    Skeleton UI ek loading technique hai jisme actual data load hone se pehle UI ka placeholder structure show kiya jata hai.
+
+    Example: Jab dashboard open hota hai, toh blank screen ya spinner dikhane ke bajay profile image, heading aur cards ke grey placeholders dikhte hain.
+
+    Isse user ko actual content ka layout pehle se samajh aa jata hai aur perceived loading experience improve hota hai.
+
+    ### 1. Basic Skeleton UI in React
+
+    ```
+    function UserSkeleton() {
+    return (
+        <div className="user-card">
+        <div className="skeleton avatar"></div>
+
+        <div className="user-info">
+            <div className="skeleton title"></div>
+            <div className="skeleton description"></div>
+        </div>
+        </div>
+    );
+    }
+    ```
+
+    ### 2. CSS Animation
+
+    ```
+    .skeleton {
+    background: #e5e7eb;
+    border-radius: 6px;
+    animation: pulse 1.5s infinite;
+    }
+
+    .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    }
+
+    .title {
+    width: 150px;
+    height: 16px;
+    }
+
+    .description {
+    width: 100px;
+    height: 12px;
+    margin-top: 10px;
+    }
+
+    @keyframes pulse {
+    50% {
+        opacity: 0.4;
+    }
+    }
+    ```
+
+    ### 3. Actual Data ke Saath Use
+
+    ```
+    function UserProfile() {
+    const { data, isPending, isError } = useQuery({
+        queryKey: ["user"],
+        queryFn: fetchUser
+    });
+
+    if (isPending) return <UserSkeleton />;
+
+    if (isError) return <p>Failed to load profile</p>;
+
+    return <h2>{data.name}</h2>;
+    }
+    ```
+
+    ### 4. Skeleton UI vs Spinner
+
+    Spinner
+
+    Generic loading indicator.
+
+    [Skeleton Loader - Tailwind CSS Example](https://images.openai.com/static-rsc-4/sOBM9vnRe9PE_GmsxELanF-_nDc-g-fSZVf1L4cBJstBg7Kynh5k6tDgPids8qBXN6g6T9gSQ3GQJgfiwXxhGGdwmj5n1Tt4u003kp4lOp1a2KfNX_fu-pMUCGRqcrB_stCpaKAVo-64TyKtazFfuWLsmjmC1phxbSPlhcn-LLE?purpose=inline)
+
+    Skeleton UI
+
+    Shows expected content structure.
+
+    ### 5. Production Best Practices
+
+    - Actual UI ke similar skeleton design rakho.
+    - Layout shift (CLS) avoid karne ke liye dimensions consistent rakho.
+    - Screen readers ke liye `aria-busy="true"` aur suitable status announcements use karo.
+    - Reusable skeleton components banao.
+    - Har jagah unnecessary animation mat use karo.
+    - Reduced-motion preference respect karo.
+
+    ## 🎯 English Interview Answer
+
+    > “Skeleton UI is a loading technique where we display placeholder elements that represent the structure of the actual content before the data is loaded.
+    >
+    > For example, while loading a dashboard, instead of showing a blank screen or spinner, I display placeholder cards, text lines and profile image shapes.
+    >
+    > In React, I create reusable skeleton components and conditionally render them based on the API loading state.
+    >
+    > Skeleton UI improves perceived performance, provides visual feedback and reduces the feeling of waiting.
+    >
+    > I also maintain proper dimensions to avoid layout shifts when the actual content appears.”
+
+    ### Interview Follow-up
+
+    Q1. What is the main advantage of Skeleton UI?
+
+    It improves perceived performance by showing the expected content structure while data is loading.
+
+    Q2. Does Skeleton UI make API calls faster?
+
+    No. It does not improve actual API response time. It improves the user's perception of loading.
+
+    Q3. What is Shimmer Effect?
+
+    Shimmer is an animation where a light gradient moves across skeleton placeholders to indicate loading.
+
+    ### ⭐ One-line memory trick
+
+    Skeleton UI = Placeholder Layout + Loading State + Better User Experience.
+
+
+
 211. Offline support?
 212. PWA kya hai?
 213. Service worker React?
