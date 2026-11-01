@@ -28833,6 +28833,154 @@ Browser automatically validation kar dega.
 
 
 209. Loading states?
+
+    ## Hinglish Explanation
+
+    React mein Loading State ka use tab hota hai jab application API response, data processing ya kisi asynchronous operation ka wait kar rahi hoti hai.
+
+    Isse user ko pata chalta hai ki application abhi kaam kar rahi hai, hang nahi hui hai.
+
+    ### 1. Basic Loading State using useState
+
+    ```
+    import { useEffect, useState } from "react";
+
+    function Users() {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        async function fetchUsers() {
+        try {
+            const response = await fetch("/api/users");
+
+            if (!response.ok) {
+            throw new Error("Failed to fetch users");
+            }
+
+            const data = await response.json();
+            setUsers(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+        }
+
+        fetchUsers();
+    }, []);
+
+    if (loading) return <p>Loading users...</p>;
+    if (error) return <p>{error}</p>;
+
+    return users.map(user => (
+        <p key={user.id}>{user.name}</p>
+    ));
+    }
+    ```
+
+    Flow samjho:
+
+    API Request Start
+
+    Loading = true
+
+    API Response
+
+    Success
+
+    Data display
+
+    Failure
+
+    Error display
+
+    Loading = false
+
+    ### 2. Different Types of Loading States
+
+    | Type             | Use case                    |
+    | ---------------- | --------------------------- |
+    | Spinner          | Small API requests          |
+    | Skeleton         | Dashboard / profile loading |
+    | Full-page loader | Initial application loading |
+    | Button loader    | Form submission             |
+    | Infinite loading | Social media feeds          |
+    | Progress bar     | File upload/download        |
+
+    [Loader Circle React Icon SVG](https://images.openai.com/static-rsc-4/9XJQMBgQ7VdW2qDE-Bmdu-xgmDwt_AdkoWsIzqzF1EmrlRjYy5ba4Th7cxGTbVUyZjdkgQC9ra1em-icuJ5M34pn-J748uTywNmaaNdi1EU0FaLrMfOizZJPmM1r9RDnu4NTa6jxqvq5y-jVpv9sdxyUYHq3E0gJOChWgG6YtZk?purpose=inline)
+
+    Spinner
+
+    [Blog: Creating Engaging User Experiences: Skeleton Loading with Go and HTMX | Wawandco](https://images.openai.com/static-rsc-4/gMHhVB_bqWIoqqpQKoA3_Aeyd9nWaAVMcXh5YlBGyXd572P7uIOIBzxQ5N1UQ4Otc6aEUPP-yWCihoI8ARMFXzZNov2lJLsqIumDh73BskH4sbCmkcCXO6AzpDUuqmgvgjrasU4xaXV5VJzAtAvijxOVZJ0roP4hGZ2zSTKwwfs?purpose=inline)
+
+    Skeleton
+
+    ### 3. Loading State with TanStack Query
+
+    Production applications mein TanStack Query loading states ko simplify karta hai.
+
+    ```
+    const { data, isPending, isError, error } = useQuery({
+    queryKey: ["users"],
+    queryFn: fetchUsers
+    });
+
+    if (isPending) return <p>Loading...</p>;
+
+    if (isError) return <p>{error.message}</p>;
+
+    return data.map(user => (
+    <p key={user.id}>{user.name}</p>
+    ));
+    ```
+
+    Important: Initial loading aur background refetching alag states hain. TanStack Query mein `isPending` initial pending state aur `isFetching` ongoing fetch ko indicate karta hai.
+
+    ### 4. Best Practices
+
+    - Loading indicator immediately show karo.
+    - API success ya failure ke baad loading state reset karo.
+    - Duplicate form submissions prevent karo.
+    - Long operations ke liye progress indicator use karo.
+    - Unnecessary full-page loaders avoid karo.
+    - Search requests mein debounce aur cancellation use karo.
+
+    ## 🎯 English Interview Answer
+
+    > “Loading states in React are used to inform users that an asynchronous operation is in progress.
+    >
+    > I generally manage loading states using useState when working with simple API calls.
+    >
+    > I display a spinner for small operations, skeleton screens for dashboards, and button loaders during form submissions.
+    >
+    > I also make sure loading states are handled properly in both success and error scenarios.
+    >
+    > For larger applications, I prefer TanStack Query because it provides built-in states like isPending and isFetching.
+    >
+    > This improves user experience and prevents users from thinking that the application is frozen.”
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between Spinner and Skeleton?
+
+    - Spinner indicates that something is loading.
+    - Skeleton displays the expected layout as a placeholder, improving perceived loading experience.
+
+    Q2. Why do we use finally in API calls?
+
+    `finally` executes whether the request succeeds or fails, making it useful for resetting loading states.
+
+    Q3. What is the difference between isPending and isFetching in TanStack Query?
+
+    `isPending` means there is no successful data yet and the query is pending. `isFetching` means a fetch request is currently running, including background refetches.
+
+    ### ⭐ One-line memory trick
+
+    Loading State = Start Loading → Show Indicator → API Response → Success/Error → Stop Loading.
+
+
 210. Skeleton UI?
 211. Offline support?
 212. PWA kya hai?
