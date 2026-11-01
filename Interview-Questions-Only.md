@@ -28700,6 +28700,138 @@ Browser automatically validation kar dega.
 
 
 208. Error handling?
+
+    ## Hinglish Explanation
+
+    React mein Error Handling ka matlab hai application mein aane wale errors ko properly handle karna, taaki application crash na ho aur user ko meaningful feedback mile.
+
+    React application mein mainly 4 types ke errors handle karte hain:
+
+    ### 1. API Errors
+
+    API fail hone par `try-catch` use karte hain.
+
+    ```
+    async function fetchUsers() {
+    try {
+        const response = await fetch("/api/users");
+
+        if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUsers(data);
+
+    } catch (error) {
+        setError(error.message);
+    }
+    }
+    ```
+
+    Important: Fetch API HTTP 400/500 responses par automatically reject nahi karti. Isliye `response.ok` check karna zaroori hai.
+
+    ### 2. Error Boundaries
+
+    Agar kisi component ke rendering ke time error aata hai, toh Error Boundary us component ke child tree ko fallback UI se replace kar sakti hai.
+
+    ```
+    import React from "react";
+
+    class ErrorBoundary extends React.Component {
+    state = { hasError: false };
+
+    static getDerivedStateFromError(error) {
+        return { hasError: true };
+    }
+
+    componentDidCatch(error, info) {
+        console.error("Component Error:", error, info);
+    }
+
+    render() {
+        if (this.state.hasError) {
+        return <h2>Something went wrong!</h2>;
+        }
+
+        return this.props.children;
+    }
+    }
+    ```
+
+    Usage:
+
+    ```
+    <ErrorBoundary>
+    <Dashboard />
+    </ErrorBoundary>
+    ```
+
+    ### 3. Form Errors
+
+    Validation fail hone par field-specific error show karte hain.
+
+    ```
+    if (!email) {
+    setError("Email is required");
+    return;
+    }
+    ```
+
+    ### 4. Global Error Handling
+
+    Production applications mein:
+
+    - Common API error interceptor use kar sakte hain.
+    - Error Boundary se rendering errors handle kar sakte hain.
+    - Sentry jaise tools se errors monitor kar sakte hain.
+    - User ko understandable error messages show karte hain.
+    - Sensitive technical details user ko expose nahi karte.
+
+    Important distinction:
+
+    | Error type           | Handling                       |
+    | -------------------- | ------------------------------ |
+    | API errors           | try-catch                      |
+    | Rendering errors     | Error Boundaries               |
+    | Form validation      | Validation logic               |
+    | Event handler errors | try-catch                      |
+    | Async errors         | try-catch / rejection handling |
+
+    ## 🎯 English Interview Answer
+
+    > “Error handling in React is important for building reliable applications and providing a better user experience.
+    >
+    > I handle API errors using try-catch blocks and check HTTP response status codes.
+    >
+    > For rendering errors, I use Error Boundaries to display fallback UI instead of allowing the entire component tree to crash.
+    >
+    > I also handle form validation errors and event handler errors separately.
+    >
+    > In production, I use centralized error handling and monitoring tools like Sentry to track unexpected errors.
+    >
+    > I make sure users receive meaningful error messages without exposing sensitive technical information.”\*\*
+
+    ### Interview Follow-up
+
+    Q1. Can Error Boundaries catch API errors?
+
+    No. Error Boundaries don't automatically catch errors from asynchronous API calls, event handlers or promises. Those need separate error handling.
+
+    Q2. Can we create Error Boundaries using functional components?
+
+    React's traditional Error Boundary API uses class components. You can use libraries such as `react-error-boundary` to get a convenient component-based approach.
+
+    Q3. What is the difference between try-catch and Error Boundary?
+
+    - `try-catch` handles errors in the code execution where it's used.
+    - Error Boundary catches errors during rendering and related lifecycle processing in its child component tree.
+
+    ### ⭐ One-line memory trick
+
+    React Error Handling = API try-catch + Error Boundaries + Form Errors + Global Monitoring.
+
+
 209. Loading states?
 210. Skeleton UI?
 211. Offline support?
