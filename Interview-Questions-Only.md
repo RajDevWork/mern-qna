@@ -28520,6 +28520,185 @@ Browser automatically validation kar dega.
 
 
 207. API calls best practices?
+
+    ## Hinglish Explanation
+
+    React application mein API calls karte waqt performance, security, error handling aur maintainability ka dhyan rakhna chahiye.
+
+    Production-level applications mein ye best practices follow karni chahiye:
+
+    ### 1. API Logic Separate Rakho
+
+    API calls directly har component mein likhne ke bajay separate service layer banao.
+
+    ```
+    // services/userService.js
+
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    export const getUsers = async () => {
+    const response = await fetch(`${API_URL}/users`);
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch users");
+    }
+
+    return response.json();
+    };
+    ```
+
+    ### 2. Loading, Error & Success Handle Karo
+
+    ```
+    import { useEffect, useState } from "react";
+    import { getUsers } from "./services/userService";
+
+    function Users() {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function fetchUsers() {
+        try {
+            setLoading(true);
+            setError("");
+
+            const data = await getUsers({
+            signal: controller.signal
+            });
+
+            setUsers(data);
+        } catch (err) {
+            if (err.name !== "AbortError") {
+            setError(err.message);
+            }
+        } finally {
+            if (!controller.signal.aborted) {
+            setLoading(false);
+            }
+        }
+        }
+
+        fetchUsers();
+
+        return () => controller.abort();
+    }, []);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
+
+    return users.map(user => (
+        <p key={user.id}>{user.name}</p>
+    ));
+    }
+    ```
+
+    Note: Upar service function ko signal accept karna hoga. Correct implementation:
+
+    ```
+    export const getUsers = async (signal) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/users`,
+        { signal }
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch users");
+    }
+
+    return response.json();
+    };
+    ```
+
+    Aur component mein `getUsers(controller.signal)` call karna hai.
+
+    ### 3. Important API Best Practices
+
+    | Practice                | Benefit                      |
+    | ----------------------- | ---------------------------- |
+    | Centralized API service | Reusable code                |
+    | Loading states          | Better UX                    |
+    | Error handling          | Application stability        |
+    | AbortController         | Cancel outdated requests     |
+    | Debouncing              | Reduce unnecessary API calls |
+    | Pagination              | Handle large datasets        |
+    | Caching                 | Avoid repeated requests      |
+    | Retry with backoff      | Handle temporary failures    |
+    | Authentication          | Secure API access            |
+    | Environment variables   | Manage API URLs              |
+
+    ### 4. Use React Query / TanStack Query
+
+    Production applications mein server-state management ke liye TanStack Query useful hai.
+
+    ```
+    import { useQuery } from "@tanstack/react-query";
+
+    function Users() {
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["users"],
+        queryFn: async () => {
+        const res = await fetch("/api/users");
+
+        if (!res.ok) throw new Error("API failed");
+
+        return res.json();
+        }
+    });
+
+    if (isLoading) return <p>Loading...</p>;
+    if (isError) return <p>Something went wrong</p>;
+
+    return data.map(user => (
+        <p key={user.id}>{user.name}</p>
+    ));
+    }
+    ```
+
+    Isse caching, background refetching, request deduplication aur server-state management easy hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > “When working with APIs in React, I follow best practices to improve performance, security and maintainability.
+    >
+    > First, I keep API logic separate from UI components using a centralized service layer.
+    >
+    > I always handle loading, success and error states.
+    >
+    > I use AbortController to cancel unnecessary requests, especially when components unmount or search queries change.
+    >
+    > For large datasets, I use pagination. For search inputs, I use debouncing to reduce unnecessary API calls.
+    >
+    > For server-state management, I prefer TanStack Query because it provides caching, background refetching and request deduplication.
+    >
+    > I also use HTTPS and never expose secret API keys in frontend code.
+    >
+    > These practices make React applications more scalable and reliable.”\*\*
+
+    ### Interview Follow-up
+
+    Q1. Why do we use AbortController?
+
+    To cancel an ongoing fetch request when its result is no longer needed, such as when a component unmounts or a search query changes.
+
+    Q2. What is the difference between Axios and Fetch?
+
+    - Fetch is a built-in browser API.
+    - Axios is an external HTTP client with features like interceptors and automatic JSON response transformation.
+    - Both can handle API requests.
+
+    Q3. What is the difference between Redux and TanStack Query?
+
+    Redux is commonly used for client-side application state, while TanStack Query specializes in managing server state, including caching and refetching.
+
+    ### ⭐ One-line memory trick
+
+    API Best Practices = Service Layer + Loading/Error + Cancellation + Caching + Pagination + Security.
+
+
 208. Error handling?
 209. Loading states?
 210. Skeleton UI?
