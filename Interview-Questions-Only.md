@@ -28394,6 +28394,131 @@ Browser automatically validation kar dega.
 
 
 206. State normalization?
+
+    ## Hinglish Explanation
+
+    State Normalization ka matlab hai application ke state/data ko structured format mein store karna, taaki duplicate data avoid ho aur updates easy ho sakein.
+
+    React/Redux applications mein jab hum large datasets, nested objects ya relational data manage karte hain, tab normalization useful hoti hai.
+
+    ### 1. Without Normalization
+
+    Maan lo ek application mein users aur unke tasks hain:
+
+    ```
+    const state = {
+    projects: [
+        {
+        id: 1,
+        name: "CRM",
+        tasks: [
+            { id: 101, title: "Login API", user: { id: 1, name: "Rahul" } },
+            { id: 102, title: "Dashboard", user: { id: 1, name: "Rahul" } }
+        ]
+        }
+    ]
+    };
+    ```
+
+    Problems:
+
+    - User data multiple places par duplicate hai.
+    - User ka naam update karne ke liye multiple locations update karni pad sakti hain.
+    - Deeply nested data update karna difficult hota hai.
+
+    ### 2. With Normalization
+
+    Data ko ID-based objects mein separate kar dete hain.
+
+    ```
+    const state = {
+    users: {
+        1: { id: 1, name: "Rahul" }
+    },
+
+    tasks: {
+        101: { id: 101, title: "Login API", userId: 1 },
+        102: { id: 102, title: "Dashboard", userId: 1 }
+    },
+
+    taskIds: [101, 102]
+    };
+    ```
+
+    Ab user ka naam sirf `users[1]` mein update karna hoga.
+
+    ### 3. Redux Toolkit Example
+
+    Redux Toolkit mein `createEntityAdapter` normalized state manage karne mein help karta hai.
+
+    ```
+    import { createEntityAdapter } from "@reduxjs/toolkit";
+
+    const tasksAdapter = createEntityAdapter();
+
+    const initialState = tasksAdapter.getInitialState();
+
+    const updatedState = tasksAdapter.addMany(
+    initialState,
+    [
+        { id: 1, title: "Login API" },
+        { id: 2, title: "Dashboard" }
+    ]
+    );
+    ```
+
+    Iska state structure hota hai:
+
+    ```
+    {
+    ids: [1, 2],
+    entities: {
+        1: { id: 1, title: "Login API" },
+        2: { id: 2, title: "Dashboard" }
+    }
+    }
+    ```
+
+    ### Benefits
+
+    - Duplicate data reduce hota hai.
+    - Updates predictable aur easy hote hain.
+    - Nested state complexity kam hoti hai.
+    - Selectors ke through data access easy hota hai.
+    - Large applications mein maintainability improve hoti hai.
+
+    ## 🎯 English Interview Answer
+
+    > “State normalization is a technique of storing application data in a structured, ID-based format instead of deeply nested objects or duplicated data.
+    >
+    > For example, in a task management application, instead of storing complete user details inside every task, I store users and tasks separately and maintain relationships using IDs.
+    >
+    > This avoids data duplication and makes updates easier.
+    >
+    > In Redux Toolkit, I can use createEntityAdapter to manage normalized collections.
+    >
+    > It is especially useful when working with large datasets and relational data.”
+
+    ### Interview Follow-up
+
+    Q1. Why is normalization important in Redux?
+
+    It reduces duplicated data, simplifies updates and makes state management predictable.
+
+    Q2. What is `createEntityAdapter`?
+
+    It is a Redux Toolkit utility that provides standardized CRUD operations and selectors for normalized entity collections.
+
+    Q3. Is normalization always required in React?
+
+    No. For simple components and small state objects, normal state structures are sufficient. Normalization is useful when data is relational, deeply nested or frequently updated.
+
+    ### ⭐ One-line memory trick
+
+    State Normalization = Store by ID + Avoid Duplication + Easy Updates.
+
+
+
 207. API calls best practices?
 208. Error handling?
 209. Loading states?
