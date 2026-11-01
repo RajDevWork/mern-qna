@@ -28168,6 +28168,108 @@ Browser automatically validation kar dega.
 
 
 204. XSS prevent kaise?
+
+    ## Hinglish Explanation
+
+    XSS (Cross-Site Scripting) attack mein attacker malicious JavaScript inject karta hai, jo kisi doosre user ke browser mein execute ho sakta hai.
+
+    React mein XSS prevent karne ke liye ye practices follow karni chahiye:
+
+    ### 1. JSX ka automatic escaping use karo
+
+    React JSX mein dynamic values ko automatically escape karta hai.
+
+    ```
+    function Profile({ username }) {
+    return <h2>{username}</h2>;
+    }
+    ```
+
+    Agar username mein malicious HTML/JavaScript ho, React usse normal text ki tarah render karega, execute nahi karega.
+
+    ### 2. dangerouslySetInnerHTML avoid karo
+
+    Unsafe example:
+
+    ```
+    function Message({ html }) {
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+    }
+    ```
+
+    Agar `html` untrusted user input hai, toh XSS vulnerability ho sakti hai.
+
+    Safer approach: HTML render karna necessary ho toh DOMPurify jaise trusted sanitizer ka use karo.
+
+    ```
+    import DOMPurify from "dompurify";
+
+    function Message({ html }) {
+    const cleanHTML = DOMPurify.sanitize(html);
+
+    return (
+        <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+    );
+    }
+    ```
+
+    ### 3. Validate user input
+
+    - Client-side validation UX ke liye.
+    - Server-side validation security ke liye.
+    - User input ko blindly trust mat karo.
+
+    ### 4. Content Security Policy (CSP)
+
+    CSP browser ko restrict karta hai ki scripts aur other resources kin trusted sources se load ho sakte hain.
+
+    Example HTTP response header:
+
+    ```
+    Content-Security-Policy: default-src 'self'; script-src 'self'
+    ```
+
+    CSP ko application ke actual requirements ke according configure karna chahiye.
+
+    ### 5. Additional Protection
+
+    - HTTPS use karo.
+    - Untrusted URLs ko directly `href` mein mat lagao; validate allowed protocols.
+    - Third-party dependencies regularly update karo.
+    - Sensitive tokens ko JavaScript-accessible storage mein rakhne se bacho.
+
+    ## 🎯 English Interview Answer
+
+    > “I prevent XSS attacks in React by following multiple security practices.
+    >
+    > First, React automatically escapes dynamic values rendered through JSX, so I prefer normal JSX rendering instead of inserting raw HTML.
+    >
+    > Second, I avoid dangerouslySetInnerHTML with untrusted content. If HTML rendering is required, I sanitize it using a library like DOMPurify.
+    >
+    > Third, I validate user input on both frontend and backend, configure Content Security Policy, and use HTTPS.
+    >
+    > I also validate URLs and keep dependencies updated.
+    >
+    > Most importantly, I never trust user-generated content.”
+
+    ### Interview Follow-up
+
+    Q1. Does React JSX completely prevent XSS?
+
+    No. JSX provides automatic escaping for normal text and attribute values, but unsafe HTML insertion and unsafe DOM APIs can still cause XSS.
+
+    Q2. What is DOMPurify?
+
+    DOMPurify is a library that sanitizes HTML by removing dangerous elements and attributes before rendering.
+
+    Q3. What is CSP?
+
+    Content Security Policy is a browser security mechanism that controls which sources are allowed to load scripts, styles, images and other resources.
+
+    ### ⭐ One-line memory trick
+
+    XSS Prevention = JSX Escaping + DOMPurify + Input Validation + CSP + HTTPS.
+
 205. Form validation?
 206. State normalization?
 207. API calls best practices?
