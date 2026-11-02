@@ -29112,6 +29112,165 @@ Browser automatically validation kar dega.
 
 
 211. Offline support?
+
+    ## Hinglish Explanation
+
+    Offline Support ka matlab hai React application ko internet connection na hone par bhi partially ya fully usable banana.
+
+    Example: Agar user internet disconnect hone par dashboard open karta hai, toh application previously loaded data show kar sake aur user ke changes ko baad mein server par sync kar sake.
+
+    React mein offline support implement karne ke liye mainly ye techniques use hoti hain:
+
+    ### 1. Service Worker
+
+    Service Worker browser ke background mein run hone wali script hai, jo network requests intercept karke cached resources serve kar sakti hai.
+
+    Iska use:
+
+    - HTML, CSS, JavaScript cache karna.
+    - Offline pages serve karna.
+    - Network requests handle karna.
+
+    ### 2. PWA (Progressive Web App)
+
+    PWA React application ko app-like experience provide karta hai.
+
+    Main features:
+
+    - Installable application.
+    - Offline access.
+    - Cached resources.
+    - App-like experience.
+
+    ### 3. Cache API
+
+    Previously fetched resources ko browser cache mein store kar sakte hain.
+
+    Example:
+
+    ```
+    // service-worker.js
+
+    const CACHE_NAME = "react-app-v1";
+
+    self.addEventListener("install", (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+        return cache.addAll([
+            "/",
+            "/index.html"
+        ]);
+        })
+    );
+    });
+
+    self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+        return cachedResponse || fetch(event.request);
+        })
+    );
+    });
+    ```
+
+    Ye basic cache-first example hai. Production mein cache strategy, cache updates, request types aur navigation fallback carefully handle karne hote hain.
+
+    ### 4. Detect Internet Connection in React
+
+    ```
+    import { useEffect, useState } from "react";
+
+    function NetworkStatus() {
+    const [isOnline, setIsOnline] = useState(
+        navigator.onLine
+    );
+
+    useEffect(() => {
+        const handleOnline = () => setIsOnline(true);
+        const handleOffline = () => setIsOnline(false);
+
+        window.addEventListener("online", handleOnline);
+        window.addEventListener("offline", handleOffline);
+
+        return () => {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
+        };
+    }, []);
+
+    return (
+        <p>
+        {isOnline ? "You are online" : "You are offline"}
+        </p>
+    );
+    }
+    ```
+
+    Important: `navigator.onLine` sirf browser ka network connectivity indication hai. Ye guarantee nahi karta ki backend/API reachable hai.
+
+    ### 5. Offline Data Synchronization
+
+    Suppose user offline mode mein task create karta hai.
+
+    1. Task ko IndexedDB mein save karo.
+    2. User ko locally updated UI dikhao.
+    3. Internet reconnect hone par pending changes sync karo.
+    4. Successful sync ke baad pending record remove karo.
+    5. Conflict handling implement karo.
+
+    IndexedDB large structured offline data store karne ke liye useful hai.
+
+    ### 6. Important Technologies
+
+    | Technology      | Purpose                     |
+    | --------------- | --------------------------- |
+    | Service Worker  | Background network handling |
+    | Cache API       | Static resources cache      |
+    | IndexedDB       | Offline structured data     |
+    | PWA             | Installable app experience  |
+    | Background Sync | Pending work sync           |
+    | TanStack Query  | API caching and refetching  |
+
+    Note: Background Sync aur kuch PWA capabilities browser support par depend karti hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Offline support in React means allowing users to access certain application features even when there is no internet connection.
+    >
+    > I implement offline support using Progressive Web App technologies.
+    >
+    > First, I use Service Workers to cache static assets like HTML, CSS and JavaScript.
+    >
+    > For storing structured application data, I use IndexedDB.
+    >
+    > I also detect online and offline events and display appropriate messages to users.
+    >
+    > If users make changes while offline, I store those changes locally and synchronize them with the backend when the connection is restored.
+    >
+    > I also handle synchronization failures and data conflicts.
+    >
+    > This approach is useful for applications where users need uninterrupted access, such as task management and field-service applications.”
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between Cache API and IndexedDB?
+
+    - Cache API stores request-response resources, such as images and static files.
+    - IndexedDB stores structured application data, such as tasks, records and pending updates.
+
+    Q2. What is a Service Worker?
+
+    A Service Worker is a browser-managed background script that can intercept network requests and support caching, offline experiences and certain background capabilities.
+
+    Q3. What happens when internet connectivity returns?
+
+    The application can detect the online event and retry pending requests or synchronize locally stored changes with the backend. We must also handle duplicate requests and data conflicts.
+
+    ### ⭐ One-line memory trick
+
+    Offline Support = PWA + Service Worker + Cache API + IndexedDB + Background Sync.
+
+
 212. PWA kya hai?
 213. Service worker React?
 214. Caching strategies?
