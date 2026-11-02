@@ -29417,6 +29417,148 @@ Browser automatically validation kar dega.
 
 
 213. Service worker React?
+
+    ## Hinglish Explanation
+
+    Service Worker ek JavaScript file hoti hai jo browser ke background mein main application thread se separate run karti hai.
+
+    React application mein iska use offline support, caching, push notifications aur background operations ke liye hota hai.
+
+    Simple example: User ne React application ek baar open ki. Service Worker ne required files cache kar li. Ab internet disconnect hone par cached resources ki help se application open ho sakti hai.
+
+    ### 1. Service Worker kaise work karta hai?
+
+    [Progressive Web App Nedir?. Tamamen çevrimdışı çalışan bir web… | by Büşra Uyar | ParamTech | Medium](https://images.openai.com/static-rsc-4/9HzlUY1dnCwg6H5yqTbqLMiK3aspJhVf8Rt8nZ3AmPXdL8jWc1hvQfpwGIAEgyy0611DLjhbvslVipnP9l_I6nimEDTpbJymTleUsh9LuZMo1OPDqctZepRgiVPrgyDIn6OTXmfPXPzah8hjAuwrn253qMxEdy3nqaeDzQYPZaU?purpose=inline)
+
+    [medium.com](https://medium.com/paramtech/progressive-web-app-nedir-2135b5a40974?utm_source=chatgpt.com)
+
+    Service Worker ka lifecycle mainly 3 stages mein hota hai:
+
+    1. Register: Browser Service Worker ko register karta hai.
+    2. Install: Required resources cache kiye ja sakte hain.
+    3. Activate: New Service Worker active hota hai aur old caches clean kar sakta hai.
+
+    Uske baad fetch events ke through network requests handle kar sakta hai.
+
+    ### 2. React mein Service Worker Register karna
+
+    `public/sw.js` file create karo.
+
+    ```
+    const CACHE_NAME = "react-cache-v1";
+
+    self.addEventListener("install", (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) =>
+        cache.addAll(["/", "/index.html"])
+        )
+    );
+
+    self.skipWaiting();
+    });
+
+    self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches.keys().then((keys) =>
+        Promise.all(
+            keys
+            .filter((key) => key !== CACHE_NAME)
+            .map((key) => caches.delete(key))
+        )
+        )
+    );
+
+    self.clients.claim();
+    });
+    ```
+
+    ### 3. Fetch Event Handle Karna
+
+    Service Worker network requests intercept kar sakta hai.
+
+    ```
+    self.addEventListener("fetch", (event) => {
+    if (event.request.method !== "GET") return;
+
+    event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+        return cachedResponse || fetch(event.request);
+        })
+    );
+    });
+    ```
+
+    Ye basic cache-first strategy hai. Production mein navigation fallback, cache versioning, cross-origin requests aur failed network requests carefully handle karne chahiye.
+
+    ### 4. React mein Register Karna
+
+    ```
+    // main.jsx
+
+    if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("Service Worker registered"))
+        .catch((error) => console.error(error));
+    });
+    }
+    ```
+
+    ### 5. Service Worker ke Important Use Cases
+
+    | Feature            | Use                             |
+    | ------------------ | ------------------------------- |
+    | Offline support    | Internet ke bina cached content |
+    | Caching            | Static files store karna        |
+    | Push notifications | Background notifications        |
+    | Background Sync    | Pending operations sync karna   |
+    | Fetch interception | Network requests control karna  |
+
+    Important points:
+
+    - Service Worker HTTPS par required hota hai; localhost development exception hai.
+    - Iske paas direct DOM access nahi hota.
+    - Ye `window` ki jagah `self` global use karta hai.
+    - Service Worker React ka feature nahi, browser API hai.
+
+    ## 🎯 English Interview Answer
+
+    > “A Service Worker is a JavaScript file that runs in the background, separately from the main browser thread.
+    >
+    > In React applications, I use Service Workers mainly for offline support, caching and push notifications.
+    >
+    > The lifecycle has three main stages: registration, installation and activation.
+    >
+    > During installation, we can cache important application resources. During activation, we can clean up old caches.
+    >
+    > Service Workers can also intercept network requests through the fetch event and return cached responses when the network is unavailable.
+    >
+    > They are an important part of building Progressive Web Applications.
+    >
+    > One important point is that Service Workers cannot directly access the DOM.”
+
+    ### Interview Follow-up
+
+    Q1. Can Service Worker access the DOM?
+
+    No. It runs separately from the main browser thread and cannot directly access `window` or DOM elements.
+
+    Q2. What is the difference between localStorage and Service Worker?
+
+    - localStorage stores key-value data accessible to JavaScript on the page.
+    - Service Worker handles background events, request interception and caching.
+    - They serve different purposes.
+
+    Q3. What happens when we update a Service Worker?
+
+    The browser downloads the updated file and installs it as a new worker. It normally waits until the old worker controls no clients before activation, unless update-handling logic changes that behavior.
+
+    ### ⭐ One-line memory trick
+
+    Service Worker = Background JavaScript + Cache + Fetch Interception + Offline Support.
+
+
 214. Caching strategies?
 215. Feature flags?
 216. A/B testing?
