@@ -29272,6 +29272,150 @@ Browser automatically validation kar dega.
 
 
 212. PWA kya hai?
+
+    ## Hinglish Explanation
+
+    PWA (Progressive Web App) ek web application hoti hai jo normal website ki tarah browser mein run karti hai, lekin native mobile application jaisa experience provide karti hai.
+
+    Example: User React website open karta hai aur usse mobile home screen par install kar sakta hai. Install hone ke baad application app ki tarah launch ho sakti hai.
+
+    ### 1. PWA ki Main Features
+
+    1. Installable: Home screen ya desktop par install kar sakte hain.
+    2. Offline Support: Cached content internet ke bina access kar sakte hain.
+    3. Fast Loading: Service Worker aur caching se performance improve hoti hai.
+    4. Responsive: Mobile, tablet aur desktop par work karti hai.
+    5. Push Notifications: Supported browsers mein notifications bhej sakte hain.
+    6. App-like Experience: Standalone window mein launch ho sakti hai.
+
+    ### 2. PWA Architecture
+
+    [Что такое веб-приложение: для чего нужны, виды (SPA, PWA, MPA), архитектура и стоимость разработки, полный гайд 2026](https://images.openai.com/static-rsc-4/IF2OKzHrmdXgVmIIWxTKV17ow0xbdPbVvjkGnpsg7Z0v6exGsh4m3wm47iygnsn227oh-24IUGcwHMiVsyYM7nqT1u8u0kQK9Renzy2DZNBJHOrzoPtRo68VwTMX9KFu7kNghCVjO3JLyN0wVgILnvwjzNowqoGA_AkB7lWA0E8?purpose=inline)
+
+    [kokoc.com](https://kokoc.com/blog/chto-takoe-veb-prilozhenie/?utm_source=chatgpt.com)
+
+    PWA ke 3 important components hain:
+
+    A. Web App Manifest
+
+    Application ka name, icon, theme color aur display mode define karta hai.
+
+    ```
+    {
+    "name": "My React App",
+    "short_name": "ReactApp",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "icons": [
+        {
+        "src": "/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+        }
+    ]
+    }
+    ```
+
+    B. Service Worker
+
+    - Background mein run karta hai.
+    - Network requests intercept karta hai.
+    - Resources cache karta hai.
+    - Offline support provide karta hai.
+
+    C. HTTPS
+
+    Service Workers ke liye generally secure context required hota hai. Localhost development exception hai.
+
+    ### 3. React mein PWA Setup
+
+    Vite React project mein `vite-plugin-pwa` use kar sakte hain.
+
+    Install:
+
+    ```
+    npm install vite-plugin-pwa -D
+    ```
+
+    Configure `vite.config.js`:
+
+    ```
+    import { defineConfig } from "vite";
+    import react from "@vitejs/plugin-react";
+    import { VitePWA } from "vite-plugin-pwa";
+
+    export default defineConfig({
+    plugins: [
+        react(),
+        VitePWA({
+        registerType: "autoUpdate",
+        manifest: {
+            name: "My React App",
+            short_name: "ReactApp",
+            theme_color: "#ffffff",
+            icons: [
+            {
+                src: "/icon-192.png",
+                sizes: "192x192",
+                type: "image/png"
+            }
+            ]
+        }
+        })
+    ]
+    });
+    ```
+
+    Ye plugin manifest aur Service Worker generation/registration ko simplify karta hai. Production mein caching strategy bhi configure karni hoti hai.
+
+    ### 4. PWA vs Normal Website vs Native App
+
+    | Feature            | Website | PWA               | Native App |
+    | ------------------ | ------- | ----------------- | ---------- |
+    | Browser access     | Yes     | Yes               | No         |
+    | Installable        | Limited | Yes               | Yes        |
+    | Offline support    | Limited | Yes               | Yes        |
+    | Push notifications | Limited | Supported         | Yes        |
+    | Platform access    | Limited | Browser dependent | Extensive  |
+    | App store required | No      | No                | Usually    |
+
+    ## 🎯 English Interview Answer
+
+    > “PWA stands for Progressive Web Application. It is a web application that provides a native app-like experience using modern browser technologies.
+    >
+    > A PWA can be installed on a device, work offline using Service Workers and caching, and support push notifications on compatible platforms.
+    >
+    > The main components of a PWA are a Web App Manifest and a Service Worker.
+    >
+    > The manifest defines application details like name, icons and display mode, while the Service Worker handles caching and offline functionality.
+    >
+    > In React, I can implement PWA functionality using tools like vite-plugin-pwa.
+    >
+    > PWAs are useful because they provide an installable and responsive experience without requiring users to download a traditional native application.”
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between PWA and SPA?
+
+    - SPA (Single Page Application) is an application architecture where navigation and rendering happen without full-page reloads.
+    - PWA is a set of capabilities that makes a web application installable and app-like.
+    - A React SPA can also be a PWA.
+
+    Q2. Can PWA work without internet?
+
+    Yes, provided the required resources and data have been cached or stored locally. Uncached resources still require network access.
+
+    Q3. Is Service Worker mandatory for PWA?
+
+    For the full offline-capable PWA experience, Service Workers are generally used. However, installability requirements vary across browsers and platforms.
+
+    ### ⭐ One-line memory trick
+
+    PWA = Website + Installability + Service Worker + Offline Support + App-like Experience.
+
+
 213. Service worker React?
 214. Caching strategies?
 215. Feature flags?
