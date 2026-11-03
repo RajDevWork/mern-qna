@@ -29709,6 +29709,139 @@ Browser automatically validation kar dega.
 
 
 215. Feature flags?
+
+    ## Hinglish Explanation
+
+    Feature Flags (Feature Toggles) ek technique hai jisme hum application ke kisi feature ko bina new code deploy kiye ON/OFF ya specific users ke liye enable/disable kar sakte hain.
+
+    Example: Maan lo CRM application mein humne new AI Email Generator feature develop kiya hai, lekin abhi sabhi users ko release nahi karna chahte.
+
+    Feature flag se:
+
+    - Admin ke liye feature ON.
+    - Normal users ke liye feature OFF.
+    - 10% users ke liye feature enable.
+    - Koi issue aane par feature immediately disable.
+
+    ### 1. Basic Feature Flag in React
+
+    ```
+    const FEATURES = {
+    AI_EMAIL_GENERATOR: true,
+    DARK_MODE: false
+    };
+
+    function Dashboard() {
+    return (
+        <div>
+        {FEATURES.AI_EMAIL_GENERATOR && (
+            <button>Generate AI Email</button>
+        )}
+
+        {FEATURES.DARK_MODE && (
+            <p>Dark Mode Enabled</p>
+        )}
+        </div>
+    );
+    }
+    ```
+
+    Ye basic static example hai. Production mein flags ko remotely manage karna better hota hai.
+
+    ### 2. Feature Flags with API
+
+    Backend se feature configuration fetch kar sakte hain.
+
+    ```
+    function Dashboard() {
+    const [features, setFeatures] = useState({});
+
+    useEffect(() => {
+        fetch("/api/features")
+        .then(res => res.json())
+        .then(data => setFeatures(data));
+    }, []);
+
+    return (
+        <>
+        {features.newDashboard && <NewDashboard />}
+        {features.aiGenerator && <AIGenerator />}
+        </>
+    );
+    }
+    ```
+
+    Backend response:
+
+    ```
+    {
+    "newDashboard": true,
+    "aiGenerator": false
+    }
+    ```
+
+    ### 3. Feature Flag Types
+
+    | Type              | Purpose                                      |
+    | ----------------- | -------------------------------------------- |
+    | Release Flags     | New feature gradually release                |
+    | Experiment Flags  | A/B testing                                  |
+    | Permission Flags  | User/role-based feature access               |
+    | Operational Flags | Feature temporarily disable                  |
+    | Kill Switch       | Problem hone par feature immediately disable |
+
+    ### 4. Production Tools
+
+    - LaunchDarkly
+    - Unleash
+    - Flagsmith
+    - Firebase Remote Config
+
+    ### 5. Best Practices
+
+    1. Feature flags ko centralized manage karo.
+    2. Unnecessary flags ko release ke baad remove karo.
+    3. Default fallback value define karo.
+    4. Sensitive features ke liye backend authorization mandatory rakho.
+    5. Feature flag changes monitor aur audit karo.
+    6. Percentage-based rollout carefully implement karo.
+
+    Important: React mein button hide karna security nahi hai. User directly API call kar sakta hai, isliye backend permission checks mandatory hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Feature flags are a technique used to enable or disable application features without deploying new code.
+    >
+    > For example, if I develop a new AI email generation feature in a CRM application, I can initially enable it only for selected users.
+    >
+    > I can also gradually release it to 10%, 50% or 100% of users.
+    >
+    > In React, I can manage simple feature flags using configuration or fetch them from a backend or feature management service.
+    >
+    > Feature flags are useful for controlled releases, A/B testing, experimentation and quick rollback.
+    >
+    > In production, I prefer centralized feature flag management and always enforce sensitive permissions on the backend.”
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between Feature Flags and Environment Variables?
+
+    - Environment variables configure an application environment, such as API URLs.
+    - Feature flags control whether a particular feature is enabled or disabled, often dynamically.
+
+    Q2. What is a Kill Switch?
+
+    A kill switch is a feature flag that allows us to quickly disable a problematic feature without deploying a new version.
+
+    Q3. What is A/B Testing?
+
+    A/B testing means showing different versions of a feature to different user groups and comparing their performance or user behavior.
+
+    ### ⭐ One-line memory trick
+
+    Feature Flags = Enable/Disable + Gradual Rollout + A/B Testing + Kill Switch.
+
+
 216. A/B testing?
 217. Internationalization?
 218. Dark mode implementation?
