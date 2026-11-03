@@ -29560,6 +29560,154 @@ Browser automatically validation kar dega.
 
 
 214. Caching strategies?
+
+    ## Hinglish Explanation
+
+    Caching Strategies ka matlab hai frequently used data ya resources ko temporarily store karna, taaki next time unhe quickly access kar sakein aur unnecessary network requests reduce ho.
+
+    React PWA mein Service Worker aur Cache API ki help se different caching strategies implement kar sakte hain.
+
+    ### 1. Cache First
+
+    Pehle cache check hota hai. Agar data mil gaya toh wahi return hota hai, otherwise network request hoti hai.
+
+    ```
+    self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.match(event.request).then((cached) => {
+        return cached || fetch(event.request);
+        })
+    );
+    });
+    ```
+
+    Use case: Images, fonts, static assets.
+
+    ### 2. Network First
+
+    Pehle network se fresh data fetch hota hai. Network fail hone par cached response return hota hai.
+
+    ```
+    self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        fetch(event.request)
+        .then((response) => {
+            const copy = response.clone();
+
+            caches.open("api-cache").then((cache) => {
+            cache.put(event.request, copy);
+            });
+
+            return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    });
+    ```
+
+    Use case: News, dashboard data, API responses jahan freshness important hai.
+
+    ### 3. Stale While Revalidate
+
+    Pehle cached response user ko immediately show karte hain, aur background mein network se latest data fetch karke cache update karte hain.
+
+    ```
+    self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.open("data-cache").then(async (cache) => {
+        const cached = await cache.match(event.request);
+
+        const network = fetch(event.request).then((response) => {
+            if (response.ok) {
+            cache.put(event.request, response.clone());
+            }
+            return response;
+        });
+
+        return cached || network;
+        })
+    );
+    });
+    ```
+
+    Use case: Product listings, profile data, dashboards.
+
+    ### 4. Network Only
+
+    Har request directly network se jaati hai. Cache use nahi hota.
+
+    Use case: Sensitive data ya real-time operations jahan cached response use nahi karna chahiye.
+
+    ### 5. Cache Only
+
+    Sirf cached resources return hote hain. Network request nahi hoti.
+
+    Use case: Previously cached static resources.
+
+    ### Comparison
+
+    | Strategy               | First Preference | Best Use           |
+    | ---------------------- | ---------------- | ------------------ |
+    | Cache First            | Cache            | Images, CSS, JS    |
+    | Network First          | Network          | Fresh API data     |
+    | Stale While Revalidate | Cache + Network  | Product listings   |
+    | Network Only           | Network          | Sensitive requests |
+    | Cache Only             | Cache            | Pre-cached assets  |
+
+    [Service Worker Caching Strategies: Cache-First, Network-First, and SWR | renderlog](https://images.openai.com/static-rsc-4/HWqpXp-gIU9P0hsYehBKwB1J4FJxEsr5SVLIGWJAuXREdBAKNjVisc4ov8qo5ESmmeQWXTfLjAg6qmc1plrmpGfl9rP21jTanbhwv-O52F9sfm6LRgOh8xUKmASt3-O1gq8aYNeEJpyattIWNteCk5Bcw0qY2EOHyW_hW0iOfdM?purpose=inline)
+
+    [renderlog.in](https://renderlog.in/blog/service-worker-caching-strategies-workbox/?utm_source=chatgpt.com)
+
+    ### 6. Production Best Practices
+
+    - Static assets ke liye Cache First use karo.
+    - Frequently changing API data ke liye Network First ya Stale While Revalidate choose karo.
+    - Cache expiration aur versioning implement karo.
+    - Logout par user-specific cached data clear karo.
+    - Sensitive API responses ko blindly cache mat karo.
+    - POST, PUT, PATCH aur DELETE requests ko normal GET caching strategy mein include mat karo.
+    - Cache invalidation ka proper mechanism rakho.
+
+    React projects mein `Workbox` ya `vite-plugin-pwa` caching strategies implement karne mein help karte hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Caching strategies define how an application stores and retrieves resources to improve performance and reduce unnecessary network requests.
+    >
+    > There are five commonly used strategies.
+    >
+    > Cache First checks the cache before making a network request. It is useful for static assets.
+    >
+    > Network First prioritizes fresh network data and falls back to cache when the network fails.
+    >
+    > Stale While Revalidate immediately returns cached data while updating the cache in the background.
+    >
+    > Network Only always fetches from the server, while Cache Only uses previously cached resources.
+    >
+    > In production React applications, I choose the strategy based on the type of data, freshness requirements and security considerations.
+    >
+    > I also implement cache expiration, versioning and invalidation to avoid serving outdated data.”
+
+    ### Interview Follow-up
+
+    Q1. Which caching strategy is best for API calls?
+
+    It depends on the requirement. Network First is useful when fresh data is important, while Stale While Revalidate is useful when fast responses and reasonably fresh data are both important.
+
+    Q2. What is Cache Invalidation?
+
+    Cache invalidation means removing or updating outdated cached data when the original resource changes.
+
+    Q3. What is Workbox?
+
+    Workbox is a set of libraries from Google that simplifies Service Worker development, caching strategies, precaching and runtime caching.
+
+    ### ⭐ One-line memory trick
+
+    Cache First = Speed | Network First = Freshness | Stale While Revalidate = Both.
+
+
+
 215. Feature flags?
 216. A/B testing?
 217. Internationalization?
