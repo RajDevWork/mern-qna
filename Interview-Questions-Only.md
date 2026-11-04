@@ -30542,6 +30542,158 @@ Browser automatically validation kar dega.
 
 220. Best practices React?
 
+    ## Hinglish Explanation
+
+    React Best Practices ka matlab hai application ko clean, reusable, maintainable, secure aur performant banana.
+
+    8 years experienced Full Stack Developer ke interview mein sirf React syntax nahi, balki production-level coding practices explain karna important hai.
+
+    ### 1. Component-Based Architecture
+
+    Application ko small, reusable components mein divide karo.
+
+    ```
+    function Dashboard() {
+    return (
+        <>
+        <Header />
+        <Sidebar />
+        <UserList />
+        <Footer />
+        </>
+    );
+    }
+    ```
+
+    Benefit: Code reusability aur maintainability improve hoti hai.
+
+    ### 2. Proper State Management
+
+    - Local state ke liye `useState`.
+    - Complex local state ke liye `useReducer`.
+    - Shared state ke liye Context API / Redux Toolkit / Zustand.
+    - Server state ke liye TanStack Query.
+
+    Har state ko globally store mat karo.
+
+    ### 3. Avoid Unnecessary Re-renders
+
+    - `React.memo`
+    - `useMemo`
+    - `useCallback`
+    - State ko appropriate component mein rakho.
+    - React DevTools Profiler se performance check karo.
+
+    Memoization sirf tab use karo jab actual performance benefit ho.
+
+    ### 4. Proper Folder Structure
+
+    ```
+    src/
+    ├── components/
+    ├── features/
+    │   ├── auth/
+    │   ├── users/
+    │   └── dashboard/
+    ├── hooks/
+    ├── services/
+    ├── utils/
+    ├── context/
+    ├── assets/
+    └── App.jsx
+    ```
+
+    Feature-based architecture large applications mein scalable hoti hai.
+
+    ### 5. API Handling Best Practices
+
+    - API logic separate service files mein rakho.
+    - Loading, error aur success states handle karo.
+    - AbortController se unnecessary requests cancel karo.
+    - Pagination aur debouncing implement karo.
+    - TanStack Query se caching manage karo.
+
+    ### 6. Security Best Practices
+
+    - XSS prevent karne ke liye untrusted HTML avoid/sanitize karo.
+    - Sensitive API keys frontend mein expose mat karo.
+    - Backend par authentication aur authorization enforce karo.
+    - User inputs validate karo.
+    - Dependencies regularly update karo.
+
+    ### 7. Performance Optimization
+
+    - Lazy loading and code splitting.
+    - Images optimize karo.
+    - Large lists ke liye virtualization.
+    - Bundle size analyze karo.
+    - Unnecessary dependencies avoid karo.
+
+    ### 8. Error Handling
+
+    - API errors ke liye `try-catch`.
+    - Rendering errors ke liye Error Boundaries.
+    - User-friendly fallback UI.
+    - Production monitoring ke liye Sentry jaise tools.
+
+    ### 9. Testing
+
+    - Unit testing: Vitest/Jest.
+    - Component testing: React Testing Library.
+    - E2E testing: Playwright/Cypress.
+    - Critical user flows ko test karo.
+
+    ### 10. Clean Code Practices
+
+    - Meaningful variable and component names.
+    - Small components with single responsibilities.
+    - Avoid duplicate code.
+    - Props validation/type safety with TypeScript.
+    - ESLint and Prettier use karo.
+    - Business logic ko UI se separate rakho.
+
+    ## 🎯 English Interview Answer
+
+    > “In React development, I follow best practices to make applications scalable, maintainable, secure and performant.
+    >
+    > First, I follow component-based and feature-based architecture to keep the code modular and reusable.
+    >
+    > I manage state based on its requirements instead of putting everything into global state.
+    >
+    > I optimize performance using lazy loading, code splitting and memoization only when needed.
+    >
+    > I keep API logic separate, handle loading and error states, and use appropriate caching strategies.
+    >
+    > For security, I prevent unsafe HTML rendering and enforce authentication and authorization on the backend.
+    >
+    > I also write unit, integration and end-to-end tests and use TypeScript, ESLint and proper error monitoring.
+    >
+    > Finally, I profile the application before applying performance optimizations.
+    >
+    > My goal is to build React applications that are easy to maintain and reliable in production.”
+
+    ### Interview Follow-up
+
+    Q1. What is the most important React best practice?
+
+    There is no single best practice. I prioritize component separation, proper state management, predictable data flow and maintainable architecture.
+
+    Q2. Should we always use useMemo and useCallback?
+
+    No. They introduce complexity and have their own overhead. I use them when profiling identifies unnecessary calculations or reference-related re-renders.
+
+    Q3. How do you make a React application scalable?
+
+    I use feature-based architecture, reusable components, centralized API services, appropriate state management, TypeScript, testing and performance monitoring.
+
+    Q4. How do you improve React production performance?
+
+    I analyze the bundle, lazy-load heavy components, optimize images, paginate or virtualize large lists and avoid unnecessary rendering.
+
+    ### ⭐ One-line memory trick
+
+    React Best Practices = Architecture + State Management + Performance + Security + Testing + Clean Code.
+
 **Additional Important Questions**
 
 1. Explain the React reconciliation algorithm.
