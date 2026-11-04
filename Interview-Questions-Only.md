@@ -30355,6 +30355,191 @@ Browser automatically validation kar dega.
 
 
 219. Theming?
+
+    ## Hinglish Explanation
+
+    Theming ka matlab hai application ke overall visual appearance ko centrally manage karna, jaise colors, fonts, spacing, border radius, shadows aur component styles.
+
+    Dark Mode bhi theming ka ek part hai.
+
+    Example: Maan lo hum ek CRM application bana rahe hain. Admin different themes select kar sakta hai:
+
+    - Light Theme
+    - Dark Theme
+    - Blue Theme
+    - Green Theme
+
+    Theme change karne par poori application ka appearance update ho jayega, bina har component ka CSS manually change kiye.
+
+    ### 1. CSS Variables se Theming
+
+    Sabse simple aur maintainable approach CSS variables hai.
+
+    ```
+    /* Light Theme */
+    [data-theme="light"] {
+    --primary: #2563eb;
+    --background: #ffffff;
+    --text: #222222;
+    --card: #f3f4f6;
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+    --primary: #60a5fa;
+    --background: #111827;
+    --text: #ffffff;
+    --card: #1f2937;
+    }
+
+    /* Common Styles */
+    body {
+    background: var(--background);
+    color: var(--text);
+    }
+
+    button {
+    background: var(--primary);
+    color: white;
+    }
+
+    .card {
+    background: var(--card);
+    }
+    ```
+
+    ### 2. React Theme Context
+
+    Application ke multiple components mein theme share karne ke liye Context API use kar sakte hain.
+
+    ```
+    import { createContext, useState } from "react";
+
+    export const ThemeContext = createContext();
+
+    export function ThemeProvider({ children }) {
+    const [theme, setTheme] = useState("light");
+
+    const changeTheme = (newTheme) => {
+        setTheme(newTheme);
+        document.documentElement.dataset.theme = newTheme;
+    };
+
+    return (
+        <ThemeContext.Provider value={{ theme, changeTheme }}>
+        {children}
+        </ThemeContext.Provider>
+    );
+    }
+    ```
+
+    ### 3. Theme Switcher Component
+
+    ```
+    import { useContext } from "react";
+    import { ThemeContext } from "./ThemeContext";
+
+    function ThemeSwitcher() {
+    const { theme, changeTheme } = useContext(ThemeContext);
+
+    return (
+        <select
+        value={theme}
+        onChange={(e) => changeTheme(e.target.value)}
+        >
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        </select>
+    );
+    }
+    ```
+
+    ### 4. Advanced Theming Architecture
+
+    Production application mein themes ko centralized configuration mein rakh sakte hain.
+
+    ```
+    const themes = {
+    light: {
+        primary: "#2563eb",
+        background: "#ffffff",
+        text: "#222222"
+    },
+
+    dark: {
+        primary: "#60a5fa",
+        background: "#111827",
+        text: "#ffffff"
+    },
+
+    green: {
+        primary: "#16a34a",
+        background: "#f0fdf4",
+        text: "#14532d"
+    }
+    };
+    ```
+
+    Is approach se future mein new themes add karna easy ho jata hai.
+
+    ### 5. Theming ke Popular Tools
+
+    - CSS Variables: Native CSS-based theme management.
+    - Tailwind CSS: Utility-based styling with dark mode support.
+    - Material UI: ThemeProvider aur createTheme.
+    - Chakra UI: Theme tokens aur provider-based styling.
+    - Shadcn/ui: CSS variables aur design tokens.
+
+    ### Dark Mode vs Theming
+
+    | Dark Mode             | Theming                          |
+    | --------------------- | -------------------------------- |
+    | Light/Dark appearance | Complete visual system           |
+    | Usually two modes     | Multiple themes possible         |
+    | Color scheme change   | Colors, typography, spacing etc. |
+    | Theming ka subset     | Broader concept                  |
+
+    ## 🎯 English Interview Answer
+
+    > “Theming in React means managing the visual appearance of an application through a centralized design system.
+    >
+    > It includes colors, typography, spacing, shadows, borders and other design properties.
+    >
+    > For implementation, I commonly use CSS variables combined with React Context API.
+    >
+    > I define theme configurations centrally and allow components to consume the same design tokens.
+    >
+    > For larger applications, I can also use libraries like Material UI or Tailwind CSS.
+    >
+    > This approach makes the application consistent, reusable and easier to maintain. It also allows us to introduce multiple themes without changing individual components.”
+
+    ### Interview Follow-up
+
+    Q1. What are Design Tokens?
+
+    Design tokens are reusable design values such as primary colors, font sizes, spacing and border radius.
+
+    ```
+    :root {
+    --primary-color: #2563eb;
+    --spacing-md: 16px;
+    --border-radius: 8px;
+    }
+    ```
+
+    Q2. Why use Context API for theming?
+
+    Context allows all components to access the current theme without prop drilling.
+
+    Q3. What is ThemeProvider?
+
+    ThemeProvider is a wrapper component that makes theme configuration available to child components. It is commonly provided by UI libraries like Material UI.
+
+    ### ⭐ One-line memory trick
+
+    Theming = Design Tokens + CSS Variables + Context API + Consistent UI.
+
+
 220. Best practices React?
 
 **Additional Important Questions**
