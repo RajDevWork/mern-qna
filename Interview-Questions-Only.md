@@ -30169,6 +30169,191 @@ Browser automatically validation kar dega.
 
 
 218. Dark mode implementation?
+
+    ## Hinglish Explanation
+
+    React mein Dark Mode implementation ka matlab hai application ke UI ko Light aur Dark themes ke beech switch karna.
+
+    Example:
+
+    - Light Mode: White background, dark text.
+    - Dark Mode: Dark background, light text.
+    - User apni preference ke according theme change kar sakta hai.
+
+    Production applications mein CSS variables + React Context API use karna ek scalable approach hai.
+
+    ### 1. Basic Dark Mode using useState
+
+    ```
+    import { useState } from "react";
+
+    function App() {
+    const [dark, setDark] = useState(false);
+
+    return (
+        <div className={dark ? "dark" : "light"}>
+        <h1>Hello React</h1>
+
+        <button onClick={() => setDark(!dark)}>
+            Toggle Theme
+        </button>
+        </div>
+    );
+    }
+
+    export default App;
+    ```
+
+    ### 2. CSS Variables
+
+    ```
+    .light {
+    --bg: #ffffff;
+    --text: #222222;
+    }
+
+    .dark {
+    --bg: #121212;
+    --text: #ffffff;
+    }
+
+    body {
+    background: var(--bg);
+    color: var(--text);
+    }
+
+    .light,
+    .dark {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+    }
+    ```
+
+    ### 3. Save Theme in localStorage
+
+    Agar user dark mode select karta hai, toh page refresh hone ke baad bhi preference maintain rehni chahiye.
+
+    ```
+    import { useEffect, useState } from "react";
+
+    function App() {
+    const [dark, setDark] = useState(() => {
+        return localStorage.getItem("theme") === "dark";
+    });
+
+    useEffect(() => {
+        const theme = dark ? "dark" : "light";
+
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem("theme", theme);
+    }, [dark]);
+
+    return (
+        <button onClick={() => setDark(prev => !prev)}>
+        Switch Theme
+        </button>
+    );
+    }
+    ```
+
+    CSS:
+
+    ```
+    :root[data-theme="light"] {
+    --bg: #ffffff;
+    --text: #222222;
+    }
+
+    :root[data-theme="dark"] {
+    --bg: #121212;
+    --text: #ffffff;
+    }
+
+    body {
+    background: var(--bg);
+    color: var(--text);
+    }
+    ```
+
+    ### 4. Production-Level Implementation
+
+    Large React applications mein Context API use kar sakte hain.
+
+    ```
+    const ThemeContext = createContext();
+
+    function ThemeProvider({ children }) {
+    const [theme, setTheme] = useState("light");
+
+    const toggleTheme = () => {
+        setTheme(prev =>
+        prev === "light" ? "dark" : "light"
+        );
+    };
+
+    return (
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        {children}
+        </ThemeContext.Provider>
+    );
+    }
+    ```
+
+    Isse multiple components same theme access aur update kar sakte hain.
+
+    ### 5. Best Practices
+
+    - CSS variables use karo.
+    - Theme preference localStorage mein persist karo.
+    - System preference detect karne ke liye `prefers-color-scheme` use karo.
+    - Text contrast accessible rakho.
+    - Images, icons, cards aur modals ko bhi theme ke according update karo.
+    - Initial page load par theme apply karo, taaki flash of incorrect theme (FOUC) avoid ho.
+
+    ## 🎯 English Interview Answer
+
+    > “Dark mode implementation in React means providing users with an option to switch between light and dark themes.
+    >
+    > For a simple application, I can manage the theme using useState.
+    >
+    > For a larger application, I prefer CSS variables combined with Context API so that the theme can be shared across multiple components.
+    >
+    > I also persist the user's theme preference in localStorage so that it remains consistent after refreshing the page.
+    >
+    > Additionally, I consider system preferences using the prefers-color-scheme media query and ensure proper color contrast and accessibility.
+    >
+    > My goal is to provide a consistent theme experience across the entire application.”
+
+    ### Interview Follow-up
+
+    Q1. Why use Context API for dark mode?
+
+    Because multiple components need access to the same theme. Context avoids passing theme props through multiple component levels.
+
+    Q2. Why use localStorage?
+
+    To persist the user's theme preference across page refreshes and browser sessions.
+
+    Q3. What is `prefers-color-scheme`?
+
+    It is a CSS media feature that detects whether the user's operating system or browser prefers light or dark mode.
+
+    ```
+    @media (prefers-color-scheme: dark) {
+    body {
+        background: #121212;
+        color: white;
+    }
+    }
+    ```
+
+    ### ⭐ One-line memory trick
+
+    Dark Mode = useState + CSS Variables + Context API + localStorage + System Preference.
+
+
 219. Theming?
 220. Best practices React?
 
