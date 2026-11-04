@@ -31349,6 +31349,169 @@ Browser automatically validation kar dega.
 
 
 5. How does memoization work in React (React.memo, useMemo)?
+
+    ## Hinglish Explanation
+
+    Memoization ek optimization technique hai jisme React previous result ko cache karta hai, taaki same inputs hone par unnecessary calculations ya component rendering avoid ki ja sake.
+
+    React mein memoization ke 3 important tools hain:
+
+    1. `React.memo()` – Component rendering optimize karta hai.
+    2. `useMemo()` – Calculated value cache karta hai.
+    3. `useCallback()` – Function reference cache karta hai.
+
+    ### 1. React.memo()
+
+    `React.memo()` ek higher-order component hai jo component ke previous props aur new props compare karta hai.
+
+    Agar props same hain, toh React component ka unnecessary re-render skip kar sakta hai.
+
+    Without React.memo:
+
+    ```
+    function UserCard({ name }) {
+    console.log("UserCard rendered");
+
+    return <h2>{name}</h2>;
+    }
+    ```
+
+    Parent re-render hone par `UserCard` bhi normally re-render hoga.
+
+    With React.memo:
+
+    ```
+    import React from "react";
+
+    const UserCard = React.memo(({ name }) => {
+    console.log("UserCard rendered");
+
+    return <h2>{name}</h2>;
+    });
+
+    export default UserCard;
+    ```
+
+    Ab agar `name` prop same hai, toh parent ke re-render hone par React `UserCard` ka re-render skip kar sakta hai.
+
+    Important: React.memo default mein props ka shallow comparison karta hai.
+
+    ### 2. useMemo()
+
+    `useMemo()` kisi expensive calculation ka result cache karta hai.
+
+    Example: Maan lo 10,000 products mein se expensive products filter karne hain.
+
+    Without useMemo:
+
+    ```
+    function Products({ products }) {
+    const filtered = products.filter(
+        p => p.price > 1000
+    );
+
+    return filtered.map(p => <p key={p.id}>{p.name}</p>);
+    }
+    ```
+
+    Har component render par filtering dobara execute hogi.
+
+    With useMemo:
+
+    ```
+    import { useMemo } from "react";
+
+    function Products({ products }) {
+    const filtered = useMemo(() => {
+        return products.filter(p => p.price > 1000);
+    }, [products]);
+
+    return filtered.map(p => <p key={p.id}>{p.name}</p>);
+    }
+    ```
+
+    Ab calculation tabhi dobara hogi jab `products` dependency change hogi.
+
+    ### 3. React.memo vs useMemo
+
+    | Feature    | React.memo                | useMemo                    |
+    | ---------- | ------------------------- | -------------------------- |
+    | Purpose    | Component render optimize | Value calculation optimize |
+    | Type       | Higher-order component    | Hook                       |
+    | Caches     | Component output          | Calculated value           |
+    | Comparison | Props comparison          | Dependency comparison      |
+    | Use case   | Child components          | Expensive calculations     |
+
+    ### 4. useCallback() bhi samjho
+
+    `useCallback()` function reference ko cache karta hai.
+
+    ```
+    const handleClick = useCallback(() => {
+    console.log("Clicked");
+    }, []);
+    ```
+
+    Ye especially useful hai jab callback ko `React.memo` wrapped child component mein pass kar rahe ho.
+
+    Easy Example:
+
+    - React.memo = Component ko memoize karo.
+    - useMemo = Value ko memoize karo.
+    - useCallback = Function ko memoize karo.
+
+    ### 5. Important Interview Point
+
+    Memoization ka matlab ye nahi hai ki component kabhi re-render nahi hoga.
+
+    Re-render phir bhi ho sakta hai agar:
+
+    - Component ka own state change ho.
+    - Consumed Context value change ho.
+    - Props change ho.
+    - Memoized component ke dependencies change ho.
+
+    Also, unnecessary memoization avoid karo because comparison aur cache maintain karne ka bhi overhead hota hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Memoization is a performance optimization technique that allows React to reuse previously calculated values or skip unnecessary component renders.
+    >
+    > React provides three main memoization tools.
+    >
+    > React.memo is used to memoize a component. It compares the previous and new props and can skip rendering if the props haven't changed.
+    >
+    > useMemo caches the result of an expensive calculation and recalculates it only when its dependencies change.
+    >
+    > useCallback caches a function reference, which is useful when passing callbacks to memoized child components.
+    >
+    > I use memoization selectively, especially when profiling identifies unnecessary renders or expensive calculations.
+    >
+    > I avoid applying it everywhere because memoization itself has some overhead.”
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between React.memo and useMemo?
+
+    React.memo optimizes component rendering based on props, whereas useMemo caches the result of a calculation.
+
+    Q2. Does React.memo perform deep comparison?
+
+    No. By default, it performs shallow comparison of props using `Object.is` for individual prop values. You can provide a custom comparison function when needed.
+
+    Q3. Why does React.memo sometimes fail to prevent re-rendering?
+
+    Because parent components may pass new object, array or function references on every render. React considers those references changed.
+
+    Q4. Can useMemo replace useCallback?
+
+    They are closely related, but useCallback is specifically designed for memoizing function references.
+
+    ### ⭐ One-line memory trick
+
+    React.memo = Component | useMemo = Value | useCallback = Function.
+
+
 6. How does React handle batching of state updates?
 7. What are custom hooks and when would you use them?
 8. Explain lazy loading and code splitting in React.
