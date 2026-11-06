@@ -31665,7 +31665,323 @@ Browser automatically validation kar dega.
 
 
 7. What are custom hooks and when would you use them?
+
+    ## Hinglish Explanation
+
+    Custom Hooks React mein reusable functions hote hain jo multiple components ke beech stateful logic aur side effects share karne ke liye use hote hain.
+
+    Jab same logic multiple components mein repeat ho raha ho, toh us logic ko ek custom hook mein extract kar sakte hain.
+
+    Important: Custom Hook ka naam always `use` se start hona chahiye, jaise `useFetch`, `useAuth`, `useDebounce`.
+
+    ### 1. Without Custom Hook
+
+    Maan lo multiple components mein API call karni hai.
+
+    ```
+    function Users() {
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        fetch("/api/users")
+        .then(res => res.json())
+        .then(data => setUsers(data));
+    }, []);
+
+    return <div>{users.length}</div>;
+    }
+    ```
+
+    Agar same API logic multiple components mein likhenge, toh code duplication hoga.
+
+    ### 2. Create Custom Hook
+
+    Ab API logic ko `useFetch` mein extract kar dete hain.
+
+    ```
+    import { useEffect, useState } from "react";
+
+    function useFetch(url) {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function fetchData() {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const response = await fetch(url, {
+            signal: controller.signal
+            });
+
+            if (!response.ok) {
+            throw new Error("API request failed");
+            }
+
+            const result = await response.json();
+            setData(result);
+
+        } catch (err) {
+            if (err.name !== "AbortError") {
+            setError(err.message);
+            }
+        } finally {
+            if (!controller.signal.aborted) {
+            setLoading(false);
+            }
+        }
+        }
+
+        fetchData();
+
+        return () => controller.abort();
+    }, [url]);
+
+    return { data, loading, error };
+    }
+
+    export default useFetch;
+    ```
+
+    ### 3. Use Custom Hook in Components
+
+    ```
+    function Users() {
+    const { data, loading, error } = useFetch("/api/users");
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
+
+    return data.map(user => (
+        <p key={user.id}>{user.name}</p>
+    ));
+    }
+    ```
+
+    Ab same hook doosre components mein bhi reuse kar sakte hain.
+
+    Note: Production implementation mein URL changes ke waqt stale responses aur error-state cleanup bhi consider karna chahiye.
+
+    ### 4. Real-World Custom Hook Examples
+
+    | Custom Hook         | Purpose               |
+    | ------------------- | --------------------- |
+    | `useFetch()`        | API calls             |
+    | `useAuth()`         | Authentication logic  |
+    | `useDebounce()`     | Search optimization   |
+    | `useLocalStorage()` | Browser storage       |
+    | `useWindowSize()`   | Window dimensions     |
+    | `useOnlineStatus()` | Internet connectivity |
+    | `useForm()`         | Form handling         |
+
+    ### 5. When Should You Use Custom Hooks?
+
+    Custom Hooks use karo jab:
+
+    - Same stateful logic multiple components mein repeat ho.
+    - API fetching logic reuse karni ho.
+    - Event listeners manage karne hon.
+    - Authentication logic share karna ho.
+    - Complex component logic ko separate karna ho.
+
+    Important interview point:
+
+    Custom Hooks logic share karte hain, state automatically share nahi karte.
+
+    Agar do components `useCounter()` call karte hain, toh normally dono ko apni independent state milegi. Shared state ke liye Context API, Redux ya Zustand use kar sakte hain.
+
+    ## 🎯 English Interview Answer
+
+    > “Custom Hooks are reusable JavaScript functions in React that allow us to extract and share stateful logic between components.
+    >
+    > A custom hook must start with the word 'use' and can use other React Hooks internally.
+    >
+    > For example, if multiple components need API fetching, authentication or debounce functionality, I can extract that logic into custom hooks like useFetch, useAuth or useDebounce.
+    >
+    > This reduces code duplication, improves separation of concerns and makes components cleaner and easier to maintain.
+    >
+    > One important point is that custom hooks share logic, not state automatically. Each component calling the same custom hook gets its own independent state unless shared state is managed separately.”
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between Custom Hooks and normal functions?
+
+    Normal functions execute ordinary JavaScript logic. Custom Hooks can use React Hooks like `useState`, `useEffect` and `useContext`, following the Rules of Hooks.
+
+    Q2. Do Custom Hooks share state between components?
+
+    No. Each invocation gets independent Hook state. For shared state, use Context API or a state management library.
+
+    Q3. Can we call a Custom Hook inside a loop or condition?
+
+    No. Custom Hooks must follow the Rules of Hooks. Call them at the top level of React components or other custom Hooks.
+
+    Q4. What are the advantages of Custom Hooks?
+
+    - Code reusability.
+    - Less duplication.
+    - Better separation of concerns.
+    - Easier testing and maintenance.
+    - Cleaner components.
+
+    ### ⭐ One-line memory trick
+
+    Custom Hook = Reusable Stateful Logic + use Prefix + Cleaner Components.
+
 8. Explain lazy loading and code splitting in React.
+
+    ## Hinglish Explanation
+
+    Lazy Loading aur Code Splitting React application ki performance improve karne ki techniques hain. Inka main goal initial JavaScript bundle ka size reduce karna aur application ko faster load karna hai.
+
+    ### 1. Code Splitting kya hai?
+
+    Code Splitting ka matlab hai application ke JavaScript code ko multiple smaller bundles (chunks) mein divide karna, instead of loading the entire application in one bundle.
+
+    Example:
+
+    Maan lo CRM application mein 5 modules hain:
+
+    - Dashboard
+    - Users
+    - Reports
+    - Settings
+    - Analytics
+
+    Agar sabhi modules ek hi bundle mein hain, toh initial loading heavy ho sakti hai.
+
+    Code splitting se in modules ko separate chunks mein divide kar sakte hain.
+
+    [Scaling React Apps with Code Splitting and Lazy Loading | by Bhagya Rana | Medium](https://images.openai.com/static-rsc-4/V6TwzvaHRM0eTMZ3KJ-b1PoQNuJyEKeaCKEhtmAfBw5moLU-YRycMGnCkX3-D488VqV3xvzl41c8zROS-76bqA1VrAa30dOibbuAvBHXCcdwlKpDec0VEGc25VJ2CTDxAWE2VoJ0EG3ccYvk-WzOh6o_lFeH6NdRE73CzmZNKlw?purpose=inline)
+
+    [medium.com](https://medium.com/%40bhagyarana80/scaling-react-apps-with-code-splitting-and-lazy-loading-7f49c2d08f7f?utm_source=chatgpt.com)
+
+    ### 2. Lazy Loading kya hai?
+
+    Lazy Loading ka matlab hai kisi component ya resource ko tab load karna jab uski actually zaroorat ho.
+
+    React mein `React.lazy()` aur `Suspense` use karte hain.
+
+    Example:
+
+    ```
+    import { lazy, Suspense } from "react";
+
+    const Dashboard = lazy(() => import("./Dashboard"));
+    const Reports = lazy(() => import("./Reports"));
+
+    function App() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+        <Dashboard />
+        </Suspense>
+    );
+    }
+    ```
+
+    Yahan `Dashboard` component ka code tab load hoga jab React us component ko render karne ki koshish karega.
+
+    ### 3. Route-Based Lazy Loading
+
+    Production applications mein route-based code splitting bahut useful hai.
+
+    ```
+    import { lazy, Suspense } from "react";
+    import { Routes, Route } from "react-router-dom";
+
+    const Dashboard = lazy(() => import("./pages/Dashboard"));
+    const Users = lazy(() => import("./pages/Users"));
+    const Reports = lazy(() => import("./pages/Reports"));
+
+    function App() {
+    return (
+        <Suspense fallback={<p>Loading page...</p>}>
+        <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/reports" element={<Reports />} />
+        </Routes>
+        </Suspense>
+    );
+    }
+    ```
+
+    Ab user jab `/reports` route visit karega, tab Reports ka separate chunk load hoga.
+
+    ### 4. Dynamic Import kya hai?
+
+    Dynamic import JavaScript ka feature hai jo modules ko runtime par load karta hai.
+
+    ```
+    const Reports = lazy(() => import("./Reports"));
+    ```
+
+    Bundlers like Vite aur Webpack is dynamic import ko code-splitting point ke roop mein use kar sakte hain.
+
+    ### 5. Code Splitting vs Lazy Loading
+
+    | Code Splitting                               | Lazy Loading                                |
+    | -------------------------------------------- | ------------------------------------------- |
+    | Code ko smaller chunks mein divide karta hai | Resource ko demand par load karta hai       |
+    | Build/bundling technique                     | Loading strategy                            |
+    | Initial bundle reduce kar sakta hai          | Unnecessary initial loading avoid karta hai |
+    | Dynamic imports commonly use hote hain       | React.lazy commonly use hota hai            |
+
+    ### 6. Production Best Practices
+
+    - Route-based code splitting implement karo.
+    - Heavy components ko lazy load karo.
+    - Suspense fallback UI provide karo.
+    - Error Boundary se chunk loading failures handle karo.
+    - Critical above-the-fold components ko unnecessarily lazy load mat karo.
+    - Bundle analyzer se chunk sizes monitor karo.
+
+    Important: Lazy loading aur code splitting related hain, lekin same nahi. Code splitting chunks create karta hai; lazy loading decide karta hai ki un chunks ko kab load karna hai.
+
+    ## 🎯 English Interview Answer
+
+    > “Code splitting and lazy loading are performance optimization techniques used to reduce the initial JavaScript bundle size in React applications.
+    >
+    > Code splitting divides the application into smaller JavaScript chunks instead of loading everything in a single bundle.
+    >
+    > Lazy loading means loading a component or resource only when it is actually needed.
+    >
+    > In React, I use React.lazy with Suspense to implement component-level lazy loading.
+    >
+    > For example, in a CRM application, I can load the Reports module only when the user visits the Reports page.
+    >
+    > This reduces unnecessary initial downloads and improves the initial loading experience.
+    >
+    > In production applications, I generally prefer route-based code splitting and provide proper fallback UI and error handling.”
+
+    ### Interview Follow-up
+
+    Q1. What is the purpose of Suspense?
+
+    Suspense displays fallback UI, such as a loading spinner, while its supported child components are waiting to load.
+
+    Q2. Can React.lazy work without Suspense?
+
+    No. A component loaded using `React.lazy()` must be rendered inside a Suspense boundary.
+
+    Q3. Does code splitting always improve performance?
+
+    Not necessarily. Too many small chunks can introduce additional network requests and overhead. Proper chunking and bundle analysis are important.
+
+    Q4. What happens if a lazy-loaded component fails to download?
+
+    The import promise rejects. A suitable Error Boundary can catch the rendering error and display fallback UI.
+
+    ### ⭐ One-line memory trick
+
+    Code Splitting = Divide Bundle | Lazy Loading = Load on Demand | Suspense = Show Fallback.
+
+
+
 9. What’s the difference between useEffect and useLayoutEffect?
 10. How does React’s concurrent mode work?
 11. What is the virtual DOM and how does React use it?
