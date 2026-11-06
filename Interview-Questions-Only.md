@@ -31513,6 +31513,157 @@ Browser automatically validation kar dega.
 
 
 6. How does React handle batching of state updates?
+
+    ## Hinglish Explanation
+
+    State Batching React ki optimization technique hai jisme multiple state updates ko group karke ek render cycle mein process kiya jata hai, instead of rendering after every individual update.
+
+    Isse unnecessary re-renders reduce hote hain aur application performance improve hoti hai.
+
+    ### 1. Without Batching vs With Batching
+
+    Maan lo ek button click par 3 state updates karne hain.
+
+    ```
+    function Counter() {
+    const [count, setCount] = useState(0);
+    const [name, setName] = useState("");
+    const [active, setActive] = useState(false);
+
+    const handleClick = () => {
+        setCount(10);
+        setName("Rahul");
+        setActive(true);
+    };
+
+    return (
+        <button onClick={handleClick}>
+        Update
+        </button>
+    );
+    }
+    ```
+
+    React normally in updates ko batch karta hai, so event handler ke baad component generally ek baar render hota hai.
+
+    ### 2. React 18 Automatic Batching
+
+    React 18 se automatic batching ko expand kiya gaya.
+
+    Earlier React versions mein primarily React event handlers ke andar updates batch hote the.
+
+    React 18 with `createRoot()` mein updates promises, timers aur native event handlers mein bhi automatically batch ho sakte hain.
+
+    ```
+    function handleClick() {
+    setTimeout(() => {
+        setCount(c => c + 1);
+        setName("Rahul");
+        setActive(true);
+    }, 1000);
+    }
+    ```
+
+    React 18+ mein ye updates bhi normally batch honge.
+
+    ### 3. Functional State Updates
+
+    Jab next state previous state par depend karti hai, toh functional updater use karna best practice hai.
+
+    Incorrect approach:
+
+    ```
+    const handleClick = () => {
+    setCount(count + 1);
+    setCount(count + 1);
+    setCount(count + 1);
+    };
+    ```
+
+    Expected result 3 increments ho sakta hai, lekin actual result sirf 1 increment hoga because teeno updates same render ke `count` value ko read kar rahe hain.
+
+    Correct approach:
+
+    ```
+    const handleClick = () => {
+    setCount(prev => prev + 1);
+    setCount(prev => prev + 1);
+    setCount(prev => prev + 1);
+    };
+    ```
+
+    Ab React updater functions ko queue mein process karega aur count 3 se increase hoga.
+
+    ### 4. What is flushSync?
+
+    Kabhi-kabhi humein React ko immediately DOM update karne ki requirement hoti hai.
+
+    Iske liye `flushSync()` use kar sakte hain.
+
+    ```
+    import { flushSync } from "react-dom";
+
+    function handleClick() {
+    flushSync(() => {
+        setCount(10);
+    });
+
+    // DOM update is committed here
+    console.log(document.getElementById("count").textContent);
+    }
+    ```
+
+    Important: `flushSync()` batching ko forcefully break kar sakta hai. Iska use rare situations mein hi karna chahiye because it can hurt performance.
+
+    ### 5. Important Concepts
+
+    | Concept            | Meaning                                      |
+    | ------------------ | -------------------------------------------- |
+    | Batching           | Multiple updates group karna                 |
+    | Automatic Batching | React automatically updates group karta hai  |
+    | Update Queue       | State updates process karne ki queue         |
+    | Functional Update  | Previous state se next state calculate karna |
+    | flushSync          | Synchronously DOM update commit karna        |
+
+    ## 🎯 English Interview Answer
+
+    > “State batching is a React optimization technique where multiple state updates are grouped together to reduce unnecessary re-renders.
+    >
+    > For example, if I update three state variables inside a single event handler, React generally batches those updates and performs one render instead of rendering after every update.
+    >
+    > React 18 introduced automatic batching for a wider range of scenarios, including promises, timers and native event handlers when using createRoot.
+    >
+    > When the next state depends on the previous state, I prefer functional updates to avoid stale state issues.
+    >
+    > React also provides flushSync from react-dom when a synchronous DOM update is specifically required, but I use it rarely because it can affect performance.
+    >
+    > Overall, batching improves rendering efficiency and application performance.”
+
+    ### Interview Follow-up
+
+    Q1. What is automatic batching in React 18?
+
+    Automatic batching groups multiple state updates automatically, including updates inside promises, setTimeout and native event handlers when using React 18's createRoot API.
+
+    Q2. Why does setCount(count + 1) three times increase count only once?
+
+    Because all three calls use the same state snapshot from the current render. Using `setCount(prev => prev + 1)` queues sequential updates based on the previous result.
+
+    Q3. Can we prevent batching in React?
+
+    Yes. In specific cases, `flushSync()` from `react-dom` forces React to synchronously commit updates. However, it should be used sparingly.
+
+    Q4. Does batching mean React updates the DOM three times?
+
+    No. React groups the updates, processes the state changes and generally commits the required DOM changes together.
+
+    ### ⭐ One-line memory trick
+
+    Batching = Multiple State Updates + One Render Cycle + Better Performance.
+
+
+
+
 7. What are custom hooks and when would you use them?
 8. Explain lazy loading and code splitting in React.
 9. What’s the difference between useEffect and useLayoutEffect?
