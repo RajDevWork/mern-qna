@@ -32423,6 +32423,158 @@ Browser automatically validation kar dega.
 
 
 12. How do you implement SSR (Server-Side Rendering) with React?
+
+    ## Hinglish Explanation
+
+    SSR (Server-Side Rendering) ka matlab hai React application ka HTML browser ko bhejne se pehle server par generate karna.
+
+    Normally CSR (Client-Side Rendering) mein browser JavaScript download karta hai aur React UI render karta hai. Lekin SSR mein server pehle HTML generate karke browser ko send karta hai. Uske baad React hydration ke through HTML ko interactive banata hai.
+
+    SSR implementation ke main steps:
+
+    1. Server par React components ka HTML generate karna.
+    2. Generated HTML browser ko send karna.
+    3. Browser HTML display karta hai.
+    4. Client-side JavaScript load hoti hai.
+    5. React hydration karke event handlers attach karta hai.
+
+    ### 1. Basic SSR implementation using React
+
+    React ke `renderToString()` API se server par HTML generate kar sakte hain.
+
+    Server-side code:
+
+    ```
+    import express from "express";
+    import React from "react";
+    import { renderToString } from "react-dom/server";
+    import App from "./App.js";
+
+    const app = express();
+
+    app.get("/", (req, res) => {
+    const html = renderToString(<App />);
+
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>React SSR</title>
+        </head>
+        <body>
+            <div id="root">${html}</div>
+            <script src="/client.js"></script>
+        </body>
+        </html>
+    `);
+    });
+
+    app.listen(3000);
+    ```
+
+    Client-side hydration:
+
+    ```
+    import React from "react";
+    import { hydrateRoot } from "react-dom/client";
+    import App from "./App";
+
+    hydrateRoot(
+    document.getElementById("root"),
+    <App />
+    );
+    ```
+
+    `renderToString()` server par HTML generate karta hai, aur `hydrateRoot()` existing HTML ko interactive banata hai.
+
+    Note: This is a simplified demonstration. A production SSR setup also needs client/server bundling, asset handling, routing, data loading, error handling and security. Modern React also provides streaming APIs such as renderToPipeableStream.
+
+    ### 2. SSR using Next.js
+
+    Production projects mein manually SSR infrastructure build karne ke bajay Next.js use kar sakte hain.
+
+    Example – App Router:
+
+    ```
+    // app/products/page.jsx
+
+    async function getProducts() {
+    const res = await fetch(
+        "https://api.example.com/products",
+        { cache: "no-store" }
+    );
+
+    return res.json();
+    }
+
+    export default async function ProductsPage() {
+    const products = await getProducts();
+
+    return (
+        <div>
+        <h1>Products</h1>
+
+        {products.map((product) => (
+            <p key={product.id}>
+            {product.name}
+            </p>
+        ))}
+        </div>
+    );
+    }
+    ```
+
+    Next.js App Router mein Server Components by default server par render hote hain. `cache: "no-store"` har request par fresh data fetch karne ke liye hai.
+
+    ### 3. SSR vs Hydration
+
+    | SSR                                | Hydration                               |
+    | ---------------------------------- | --------------------------------------- |
+    | Server par HTML generate karta hai | Existing HTML ko interactive banata hai |
+    | Initial HTML provide karta hai     | Event handlers attach karta hai         |
+    | Server-side process                | Client-side process                     |
+
+    ## 🎯 English Interview Answer
+
+    > "We can implement Server-Side Rendering in React using React's server rendering APIs or a framework like Next.js.
+    >
+    > First, the server renders React components into HTML and sends that HTML to the browser.
+    >
+    > The browser can display the initial content immediately. After the JavaScript bundle loads, React uses hydration to attach event handlers and make the page interactive.
+    >
+    > For a production application, I generally prefer Next.js because it provides built-in SSR support, routing, data fetching, and optimization features.
+    >
+    > SSR is particularly useful for improving initial page rendering and making content easier for search engines to discover."
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between SSR and CSR?
+
+    - SSR generates HTML on the server.
+    - CSR generates UI in the browser using JavaScript.
+    - SSR can improve initial content visibility, while CSR is often simpler to deploy.
+
+    Q2. What is hydration in React?
+
+    Hydration is the process where React attaches event handlers and makes server-rendered HTML interactive on the client.
+
+    Q3. What is hydration mismatch?
+
+    It happens when the HTML generated on the server differs from the initial React output on the client. For example, rendering `Date.now()` independently on both sides can produce different values.
+
+    Q4. Which React API is used for SSR?
+
+    - `renderToString()` – generates HTML as a string.
+    - `renderToPipeableStream()` – supports streaming SSR in Node.js.
+    - `hydrateRoot()` – hydrates server-rendered HTML on the client.
+
+    ### ⭐ One-line memory trick
+
+    SSR = Server generates HTML → Browser displays HTML → Hydration makes it interactive.
+
+
+
+
 13. Difference between lifting state and prop drilling.
 14. What is Suspense in React?
 15. How do you manage state in large applications (Redux, Context, Zustand)?
