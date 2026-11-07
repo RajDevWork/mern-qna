@@ -32129,6 +32129,177 @@ Browser automatically validation kar dega.
 
 
 10. How does React’s concurrent mode work?
+
+    ## Hinglish Explanation
+
+    React Concurrent Rendering ek capability hai jisme React rendering work ko prioritize, pause, resume ya abandon kar sakta hai, taaki application responsive rahe even when complex rendering tasks chal rahe hon.
+
+    Simple example: Maan lo CRM application mein 10,000 records search karne hain. User typing kar raha hai. Agar rendering expensive hai, toh search results update hone ke chakkar mein input lag kar sakta hai.
+
+    Concurrent rendering React ko urgent updates, jaise typing, ko priority dene mein help karta hai.
+
+    ### 1. How Concurrent Rendering Works?
+
+    [Questions about specifics of Concurrent scheduling · reactwg/react-18 · Discussion #27 · GitHub](https://images.openai.com/static-rsc-4/DX7O3A2_qgzVJSt1452md-JZQE56urBk-xpw2Nn_XhYbw8uXZ3pPpmkAXPSPKpeuiCGd72MccaxNSX_smDDmj5BBKraZ-JntMeCvu4_0e001TLtWvNzq6oaF3P-dpUMWMTTmU2DCKUKEXxcgmB7fJ0llJRVMX07EITa9t4pY1zc?purpose=inline)
+
+    React Fiber architecture ke through rendering work ko manageable units mein organize karta hai.
+
+    Basic flow:
+
+    1. Scheduling: React update ki priority decide karta hai.
+    2. Prioritization: Urgent updates ko higher priority mil sakti hai.
+    3. Interruptible Rendering: Lower-priority rendering work pause ya interrupt ho sakta hai.
+    4. Resume: React baad mein pending work continue kar sakta hai.
+    5. Commit: Completed work ke DOM changes commit hote hain.
+
+    Important: React render phase interruptible ho sakta hai, lekin DOM commit phase atomic hota hai.
+
+    ### 2. Concurrent Features in React
+
+    React mein concurrent rendering capabilities ko use karne ke liye kuch important APIs hain.
+
+    A. useTransition()
+
+    Non-urgent state updates ko background transition ke roop mein mark karta hai.
+
+    ```
+    import { useState, useTransition } from "react";
+
+    function Search() {
+    const [input, setInput] = useState("");
+    const [query, setQuery] = useState("");
+    const [isPending, startTransition] = useTransition();
+
+    const handleChange = (e) => {
+        const value = e.target.value;
+
+        setInput(value); // Urgent update
+
+        startTransition(() => {
+        setQuery(value); // Non-urgent update
+        });
+    };
+
+    return (
+        <>
+        <input value={input} onChange={handleChange} />
+
+        {isPending && <p>Updating results...</p>}
+
+        <SearchResults query={query} />
+        </>
+    );
+    }
+    ```
+
+    Yahan:
+
+    - Input update urgent hai.
+    - Search results update non-urgent hai.
+    - React input responsiveness ko priority de sakta hai.
+
+    B. useDeferredValue()
+
+    Kisi value ke non-urgent updates defer karne ke liye use hota hai.
+
+    ```
+    import { useState, useDeferredValue } from "react";
+
+    function Search() {
+    const [query, setQuery] = useState("");
+
+    const deferredQuery = useDeferredValue(query);
+
+    return (
+        <>
+        <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+        />
+
+        <SearchResults query={deferredQuery} />
+        </>
+    );
+    }
+    ```
+
+    Isse expensive results rendering input typing ko unnecessarily block nahi karti.
+
+    C. Suspense
+
+    Suspense supported components ya resources ke ready hone tak fallback UI display karta hai.
+
+    ```
+    <Suspense fallback={<p>Loading...</p>}>
+    <Dashboard />
+    </Suspense>
+    ```
+
+    ### 3. Concurrent Rendering vs Traditional Rendering
+
+    | Traditional Concept              | Concurrent Rendering              |
+    | -------------------------------- | --------------------------------- |
+    | Rendering work                   | Interruptible rendering work      |
+    | Priority handling                | Update prioritization             |
+    | Complex UI may feel unresponsive | Better responsiveness             |
+    | Synchronous work in render path  | React can schedule rendering work |
+    | No explicit transitions          | Transitions supported             |
+
+    Note: Concurrent rendering ka matlab multiple JavaScript threads par React components simultaneously render karna nahi hai. Ye scheduling aur interruptible rendering model hai.
+
+    ### 4. Important Interview Points
+
+    - Concurrent rendering React 18 ke saath introduce hua.
+    - Fiber architecture iske foundation mein hai.
+    - `useTransition()` non-urgent updates mark karta hai.
+    - `useDeferredValue()` expensive UI updates defer karne mein help karta hai.
+    - `Suspense` supported loading states handle karta hai.
+    - Concurrent rendering DOM ko partially commit nahi karta.
+
+    ## 🎯 English Interview Answer
+
+    > “Concurrent rendering is a React capability that allows React to prepare UI updates in an interruptible and prioritized manner.
+    >
+    > Earlier, rendering work could block the main thread for longer periods. With concurrent rendering, React can prioritize urgent updates, pause less important rendering work and resume it later.
+    >
+    > For example, in a search application, typing should remain responsive while expensive search results are being rendered.
+    >
+    > React provides APIs like useTransition and useDeferredValue to manage non-urgent updates.
+    >
+    > Suspense also helps coordinate loading states for supported components and data sources.
+    >
+    > Concurrent rendering does not mean JavaScript runs React rendering on multiple threads. It is primarily about scheduling and prioritizing rendering work.
+    >
+    > The main goal is to improve application responsiveness and user experience.”
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between useTransition and useDeferredValue?
+
+    - `useTransition` lets us mark specific state updates as non-urgent.
+    - `useDeferredValue` lets us defer updating a value used by expensive UI.
+
+    Q2. Does Concurrent Rendering use multiple threads?
+
+    No. React generally runs JavaScript rendering on the main thread. Concurrent rendering means React can interrupt, prioritize and resume rendering work.
+
+    Q3. What is Fiber in React?
+
+    Fiber is React's internal architecture that organizes rendering work into units and supports scheduling, prioritization and interruptible rendering.
+
+    Q4. What is an urgent update example?
+
+    Typing into an input, clicking a button or opening a menu are examples of interactions that should remain responsive.
+
+    Q5. Does Concurrent Rendering automatically make every React application faster?
+
+    No. It provides better scheduling capabilities, but developers still need to optimize expensive calculations, rendering and network operations.
+
+    ### ⭐ One-line memory trick
+
+    Concurrent Rendering = Prioritization + Interruptible Rendering + Scheduling + Responsive UI.
+
+
 11. What is the virtual DOM and how does React use it?
 12. How do you implement SSR (Server-Side Rendering) with React?
 13. Difference between lifting state and prop drilling.
