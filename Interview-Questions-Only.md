@@ -32576,6 +32576,149 @@ Browser automatically validation kar dega.
 
 
 13. Difference between lifting state and prop drilling.
+
+    ## Hinglish Explanation
+
+    Lifting State Up aur Prop Drilling dono React mein data sharing se related concepts hain, lekin dono ka purpose different hai.
+
+    ### 1. Lifting State Up kya hai?
+
+    Jab two or more sibling components ko same state share karni hoti hai, toh hum unki state ko unke nearest common parent component mein move kar dete hain.
+
+    Is process ko Lifting State Up kehte hain.
+
+    Example:
+
+    ```
+    import { useState } from "react";
+
+    function Parent() {
+    const [name, setName] = useState("");
+
+    return (
+        <>
+        <Input setName={setName} />
+        <Display name={name} />
+        </>
+    );
+    }
+
+    function Input({ setName }) {
+    return (
+        <input
+        onChange={(e) => setName(e.target.value)}
+        />
+    );
+    }
+
+    function Display({ name }) {
+    return <h2>Hello {name}</h2>;
+    }
+    ```
+
+    Yahan:
+
+    - `Parent` state manage kar raha hai.
+    - `Input` state update kar raha hai.
+    - `Display` updated state show kar raha hai.
+
+    ### 2. Prop Drilling kya hai?
+
+    Jab parent component se deeply nested child component tak data pass karne ke liye multiple intermediate components ke through props pass karne padte hain, toh use Prop Drilling kehte hain.
+
+    Example:
+
+    ```
+    function App() {
+    const user = "Raj";
+
+    return <Parent user={user} />;
+    }
+
+    function Parent({ user }) {
+    return <Child user={user} />;
+    }
+
+    function Child({ user }) {
+    return <Profile user={user} />;
+    }
+
+    function Profile({ user }) {
+    return <h2>Hello {user}</h2>;
+    }
+    ```
+
+    Yahan `Parent` aur `Child` ko khud `user` ki zarurat nahi hai, phir bhi unhe props forward karne pad rahe hain. This is prop drilling.
+
+    ### 3. Main Difference
+
+    | Lifting State Up                        | Prop Drilling                          |
+    | --------------------------------------- | -------------------------------------- |
+    | State ko common parent mein move karna  | Props ko multiple levels se pass karna |
+    | Shared state management solve karta hai | Deep component data passing hoti hai   |
+    | React state architecture technique hai  | Data passing pattern hai               |
+    | Sibling components ke liye useful       | Deep component trees mein common       |
+    | Data flow ko centralized karta hai      | Code ko complex bana sakta hai         |
+
+    ### 4. How to avoid Prop Drilling?
+
+    - Context API
+    - Redux Toolkit
+    - Zustand
+    - Component composition
+
+    ```
+    const UserContext = createContext();
+
+    function App() {
+    return (
+        <UserContext.Provider value="Raj">
+        <Profile />
+        </UserContext.Provider>
+    );
+    }
+
+    function Profile() {
+    const user = useContext(UserContext);
+
+    return <h2>Hello {user}</h2>;
+    }
+    ```
+
+    ## 🎯 English Interview Answer
+
+    > "Lifting State Up and Prop Drilling are two different React concepts.
+    >
+    > Lifting State Up means moving shared state from child components to their nearest common parent, so multiple components can access and update the same data.
+    >
+    > Prop Drilling means passing data through multiple intermediate components using props, even when those components don't need that data themselves.
+    >
+    > We use lifting state up to manage shared state, while Context API, Redux, or Zustand can help avoid excessive prop drilling.
+    >
+    > Both concepts are related to data sharing, but they solve different problems."
+
+    ### Interview Follow-up
+
+    Q1. Is lifting state up a solution to prop drilling?
+
+    Not always. Lifting state up decides where state should live. If the state is needed by deeply nested components, passing it down can still cause prop drilling.
+
+    Q2. When should we use Context API instead of lifting state up?
+
+    Use Context API when many components across different levels need the same data, such as theme, authentication user, or language.
+
+    Q3. Is prop drilling always bad?
+
+    No. Passing props through one or two levels is perfectly fine. It becomes problematic when many intermediate components only forward props.
+
+    ### ⭐ One-line memory trick
+
+    Lifting State Up = Move state to common parent.
+
+    Prop Drilling = Pass props through multiple component levels.
+
+
+
 14. What is Suspense in React?
 15. How do you manage state in large applications (Redux, Context, Zustand)?
 16. How does hydration work in React with SSR?
