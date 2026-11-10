@@ -1005,6 +1005,98 @@ Browser automatically validation kar dega.
 
 
 5. Charset kya hai?
+
+    ## Hinglish Explanation
+
+    Charset ka full form Character Set hai. HTML mein `charset` browser ko batata hai ki webpage ke text ko kis character encoding ke according read aur display karna hai.
+
+    Simple words mein, charset ensure karta hai ki English, Hindi, special symbols aur different languages ke characters correctly display hon.
+
+    ### 1. Charset ka syntax
+
+    ```
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>My Website</title>
+    </head>
+    <body>
+        <h1>Hello World</h1>
+        <p>नमस्ते दुनिया 🌍</p>
+    </body>
+    </html>
+    ```
+
+    Yahan `UTF-8` character encoding specify karta hai.
+
+    ### 2. What is UTF-8?
+
+    UTF-8 is a Unicode character encoding format.
+
+    - English characters support karta hai.
+    - Hindi, Gujarati, Chinese jaise languages support karta hai.
+    - Numbers, symbols aur emojis support karta hai.
+    - Modern web applications mein widely used hai.
+
+    ### 3. What happens without charset?
+
+    Agar browser ko correct encoding information nahi milti, toh kuch characters incorrectly display ho sakte hain.
+
+    Example:
+
+    Expected: `नमस्ते`
+
+    Incorrect display: `à¤¨à¤®à¤¸à¥�à¤¤à¥‡`
+
+    Is problem ko Mojibake (garbled text) kehte hain.
+
+    ### 4. Common Character Encodings
+
+    | Encoding   | Description                                           |
+    | ---------- | ----------------------------------------------------- |
+    | UTF-8      | Unicode encoding, modern websites ke liye recommended |
+    | UTF-16     | Unicode encoding using 16-bit code units              |
+    | ASCII      | Basic English characters and symbols                  |
+    | ISO-8859-1 | Legacy Western European encoding                      |
+
+    Important: HTML5 mein generally UTF-8 use karte hain. Charset declaration ideally HTML document ke first 1024 bytes ke andar honi chahiye.
+
+    ## 🎯 English Interview Answer
+
+    > "Charset stands for Character Set. In HTML, the charset attribute specifies the character encoding used by the webpage.
+    >
+    > It helps the browser correctly interpret and display text, symbols, and characters from different languages.
+    >
+    > We commonly use UTF-8 because it supports almost all languages, special characters, and emojis.
+    >
+    > We declare it using `<meta charset='UTF-8'>` inside the head section of an HTML document.
+    >
+    > Without proper character encoding, text may appear as corrupted or unreadable characters."
+
+    ### Interview Follow-up
+
+    Q1. What is UTF-8?
+
+    UTF-8 is a Unicode character encoding format that supports characters from almost all writing systems.
+
+    Q2. What happens if charset is missing?
+
+    The browser may guess the encoding, which can sometimes cause incorrect text rendering.
+
+    Q3. Is charset an HTML tag?
+
+    No. Charset is an attribute of the `<meta>` element.
+
+    Q4. What is the difference between ASCII and UTF-8?
+
+    ASCII supports a limited set of basic characters, while UTF-8 supports the full Unicode character range. UTF-8 is also backward-compatible with ASCII.
+
+    ### ⭐ One-line memory trick
+
+    Charset = Text Encoding → UTF-8 → Correct Display of Languages and Symbols.
+
+
 6. `<html>`, `<head>`, `<body>` ka role?
 7. `<title>` vs `<h1>` difference?
 8. `<div>` vs `<span>`?
