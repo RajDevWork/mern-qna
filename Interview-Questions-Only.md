@@ -804,6 +804,88 @@ Browser automatically validation kar dega.
 
 
 3. Doctype kya hota hai?
+
+    ## Hinglish Explanation
+
+    DOCTYPE ka full form Document Type Declaration hai.
+
+    HTML mein `<!DOCTYPE html>` browser ko batata hai ki document HTML5 standard ke according likha gaya hai.
+
+    Iska main purpose browser ko Standards Mode mein render karne ke liye inform karna hai, taaki browser modern HTML aur CSS standards follow kare.
+
+    ### 1. DOCTYPE ka syntax
+
+    ```
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>My Website</title>
+    </head>
+    <body>
+        <h1>Hello World</h1>
+    </body>
+    </html>
+    ```
+
+    Important points:
+
+    - DOCTYPE HTML document ki first line mein likhte hain.
+    - Ye HTML tag nahi, ek declaration hai.
+    - Iska closing tag nahi hota.
+    - HTML5 mein iska syntax simply `<!DOCTYPE html>` hai.
+
+    ### 2. What happens if we don't use DOCTYPE?
+
+    Agar DOCTYPE declare nahi karte, toh browser generally Quirks Mode mein chala jata hai.
+
+    Browser old rendering behavior use kar sakta hai, jisse CSS layout, box model aur element sizing mein unexpected differences aa sakte hain.
+
+    ### 3. Browser Rendering Modes
+
+    | Mode                  | Meaning                                                     |
+    | --------------------- | ----------------------------------------------------------- |
+    | Standards Mode        | Modern web standards follow karta hai                       |
+    | Almost Standards Mode | Standards ke close rendering, kuch legacy behavior ke saath |
+    | Quirks Mode           | Old browsers ke compatibility behavior ko follow karta hai  |
+
+    ## 🎯 English Interview Answer
+
+    > "DOCTYPE stands for Document Type Declaration.
+    >
+    > It tells the browser which version or type of HTML document is being used.
+    >
+    > In HTML5, we use `<!DOCTYPE html>` at the beginning of the document.
+    >
+    > Its main purpose is to make the browser render the page in Standards Mode.
+    >
+    > If we omit DOCTYPE, the browser may enter Quirks Mode, which can cause unexpected CSS layout and rendering issues.
+    >
+    > Also, DOCTYPE is a declaration, not an HTML tag."
+
+    ### Interview Follow-up
+
+    Q1. Is DOCTYPE an HTML tag?
+
+    No. It is a document type declaration, not an HTML element.
+
+    Q2. What is Quirks Mode?
+
+    Quirks Mode is a browser rendering mode that uses legacy behavior to maintain compatibility with older websites.
+
+    Q3. Is DOCTYPE case-sensitive?
+
+    No. HTML5 DOCTYPE is case-insensitive, but we conventionally write `<!DOCTYPE html>`.
+
+    Q4. Where should we write DOCTYPE?
+
+    It should be the first declaration in an HTML document, before the `<html>` tag.
+
+    ### ⭐ One-line memory trick
+
+    DOCTYPE = Tell browser HTML standard → Enable Standards Mode → Avoid Quirks Mode.
+
+
+
 4. Meta tags kya hote hain?
 5. Charset kya hai?
 6. `<html>`, `<head>`, `<body>` ka role?
