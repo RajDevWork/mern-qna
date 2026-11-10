@@ -887,6 +887,123 @@ Browser automatically validation kar dega.
 
 
 4. Meta tags kya hote hain?
+
+    ## Hinglish Explanation
+
+    Meta Tags HTML ke `<head>` section mein use hone wale tags hain, jo webpage ke baare mein additional information (metadata) provide karte hain.
+
+    Ye information generally browser, search engines aur social media platforms ke kaam aati hai. Meta tags directly webpage par visible nahi hote.
+
+    ### 1. Common Meta Tags
+
+    ```
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <!-- Character encoding -->
+        <meta charset="UTF-8">
+
+        <!-- Responsive design -->
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+        <!-- Page description -->
+        <meta name="description"
+            content="Learn React and JavaScript tutorials">
+
+        <!-- Keywords (mostly ignored by Google) -->
+        <meta name="keywords"
+            content="React, JavaScript, HTML">
+
+        <!-- Author information -->
+        <meta name="author"
+            content="Raj">
+
+        <!-- Search engine instructions -->
+        <meta name="robots"
+            content="index, follow">
+
+        <title>React Tutorials</title>
+    </head>
+    <body>
+        <h1>Welcome</h1>
+    </body>
+    </html>
+    ```
+
+    ### 2. Important Meta Tags Explained
+
+    | Meta Tag      | Purpose                                                                           |
+    | ------------- | --------------------------------------------------------------------------------- |
+    | `charset`     | Character encoding define karta hai                                               |
+    | `viewport`    | Responsive layout control karta hai                                               |
+    | `description` | Page ka short description provide karta hai                                       |
+    | `keywords`    | Page-related keywords define karta hai; Google ise ranking ke liye use nahi karta |
+    | `author`      | Content author specify karta hai                                                  |
+    | `robots`      | Search engines ko indexing instructions deta hai                                  |
+
+    ### 3. Open Graph Meta Tags
+
+    Social media par website link share karne par title, image aur description show karne ke liye Open Graph tags use hote hain.
+
+    ```
+    <meta property="og:title"
+        content="React Tutorials">
+
+    <meta property="og:description"
+        content="Learn React from basics to advanced">
+
+    <meta property="og:image"
+        content="https://example.com/thumbnail.jpg">
+
+    <meta property="og:url"
+        content="https://example.com/react">
+    ```
+
+    ### 4. Meta Tags vs Title Tag
+
+    | Meta Tags                                      | Title Tag                         |
+    | ---------------------------------------------- | --------------------------------- |
+    | Additional page information provide karte hain | Page ka title define karta hai    |
+    | Usually directly visible nahi hote             | Browser tab mein visible hota hai |
+    | `<meta>` element use hota hai                  | `<title>` element use hota hai    |
+
+    ## 🎯 English Interview Answer
+
+    > "Meta tags are HTML elements placed inside the head section of a webpage. They provide metadata or additional information about the webpage to browsers, search engines, and social media platforms.
+    >
+    > Common examples include charset, viewport, description, and robots meta tags.
+    >
+    > We use the viewport tag for responsive design, the description tag to provide a summary of the page, and robots tags to control search engine indexing.
+    >
+    > We can also use Open Graph tags to control how our website links appear when shared on social media.
+    >
+    > Meta tags are important for SEO, browser behavior, and improving how content is presented across platforms."
+
+    ### Interview Follow-up
+
+    Q1. Why do we use the viewport meta tag?
+
+    It helps browsers adjust the page layout according to the device's screen width.
+
+    Q2. Does the meta description directly improve Google ranking?
+
+    No. Google does not use the meta description as a direct ranking factor, but it may use it as the search result snippet, which can influence clicks.
+
+    Q3. What is the difference between `name` and `property` in meta tags?
+
+    - `name` is commonly used for standard metadata, such as description and viewport.
+    - `property` is commonly used by Open Graph metadata, such as `og:title` and `og:image`.
+
+    Q4. What is the robots meta tag?
+
+    It gives search engines instructions such as `index`, `noindex`, `follow`, and `nofollow`.
+
+    ### ⭐ One-line memory trick
+
+    Meta Tags = Webpage Information → Browser + Search Engines + Social Media.
+
+
 5. Charset kya hai?
 6. `<html>`, `<head>`, `<body>` ka role?
 7. `<title>` vs `<h1>` difference?
