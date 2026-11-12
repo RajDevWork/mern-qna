@@ -1375,6 +1375,134 @@ Browser automatically validation kar dega.
 
 
 11. Semantic tags kya hain?
+
+    ## Hinglish Explanation
+
+    Semantic HTML Tags woh HTML elements hain jo apne content ka meaning aur purpose clearly describe karte hain.
+
+    Simple words mein, semantic tags browser, developers aur search engines ko batate hain ki webpage ka particular section kis purpose ke liye hai.
+
+    For example:
+
+    - `<header>` – Page ya section ka header.
+    - `<nav>` – Navigation links.
+    - `<main>` – Main page content.
+    - `<article>` – Independent content.
+    - `<footer>` – Footer information.
+
+    ### 1. Common Semantic Tags
+
+    \<header>
+
+    Website logo / Header
+
+    \<nav>
+
+    Home | About | Contact
+
+    \<main>
+
+    &#x20;\<article>&#x20;
+
+    Main content
+
+    &#x20;\<section>&#x20;
+
+    Related content
+
+    \<aside>
+
+    Sidebar
+
+    \<footer>
+
+    Copyright / Contact
+
+    Example of a semantic HTML page structure.
+
+    ### 2. Important Semantic Tags
+
+    | Tag            | Purpose                      |
+    | -------------- | ---------------------------- |
+    | `<header>`     | Header section               |
+    | `<nav>`        | Navigation links             |
+    | `<main>`       | Main content of page         |
+    | `<section>`    | Related content grouping     |
+    | `<article>`    | Independent content          |
+    | `<aside>`      | Sidebar or related content   |
+    | `<footer>`     | Footer information           |
+    | `<figure>`     | Self-contained media/content |
+    | `<figcaption>` | Figure caption               |
+    | `<time>`       | Date or time information     |
+    | `<address>`    | Contact information          |
+
+    ### 3. Semantic vs Non-Semantic Tags
+
+    Non-semantic tags: Ye apne content ka specific meaning describe nahi karte.
+
+    Examples: `<div>`, `<span>`.
+
+    Semantic tags: Ye clearly batate hain ki content ka purpose kya hai.
+
+    Examples: `<header>`, `<article>`, `<footer>`.
+
+    ```
+    <!-- Non-semantic structure -->
+    <div class="header">Website Header</div>
+    <div class="content">Main Content</div>
+    <div class="footer">Footer</div>
+
+    <!-- Semantic structure -->
+    <header>Website Header</header>
+    <main>Main Content</main>
+    <footer>Footer</footer>
+    ```
+
+    ### 4. Benefits of Semantic HTML
+
+    1. SEO: Search engines ko page structure aur content ka meaning samajhne mein help milti hai.
+    2. Accessibility: Screen readers users ko page ke sections navigate karne mein help karte hain.
+    3. Readability: Developers ke liye code maintain karna easy hota hai.
+    4. Maintainability: Clear structure ki wajah se debugging aur updates easy hote hain.
+
+    Important: Semantic tags SEO ranking guarantee nahi karte, lekin better structure aur accessibility provide karte hain.
+
+    ## 🎯 English Interview Answer
+
+    > "Semantic HTML tags are HTML elements that clearly describe the meaning and purpose of their content.
+    >
+    > For example, header represents the header section, nav represents navigation links, main represents the primary content, and footer represents the footer section.
+    >
+    > Unlike non-semantic elements like div and span, semantic elements provide meaningful information about the page structure.
+    >
+    > We use semantic HTML to improve code readability, accessibility, and help search engines better understand webpage content.
+    >
+    > In production applications, I prefer semantic HTML instead of using div everywhere."
+
+    ### Interview Follow-up
+
+    Q1. What is the difference between `<section>` and `<article>`?
+
+    - `<section>` groups related content, usually with a heading.
+    - `<article>` represents independent, self-contained content that can make sense on its own.
+
+    Q2. Can we use multiple `<header>` and `<footer>` tags?
+
+    Yes. They can be used for the overall page and individual sections or articles.
+
+    Q3. Can we use multiple `<main>` tags?
+
+    A page should generally have only one visible `<main>` element representing its primary content.
+
+    Q4. Is `<div>` a semantic tag?
+
+    No. Div is a non-semantic container used for grouping elements without describing their meaning.
+
+    ### ⭐ One-line memory trick
+
+    Semantic HTML = Meaningful Structure → Better Accessibility + Readability + SEO Understanding.
+
+
 12. `<header>` kya karta hai?
 13. `<footer>`?
 14. `<section>` vs `<article>`?
