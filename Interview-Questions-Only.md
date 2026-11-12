@@ -1103,6 +1103,156 @@ Browser automatically validation kar dega.
 9. # new css animaions aya hai na vo bata dena
 9. # physical aur logical pixel?:
 9. Block vs inline elements?
+
+    ## Hinglish Explanation
+
+    HTML elements ko unke default display behavior ke basis par mainly Block-level aur Inline elements mein divide kiya jata hai.
+
+    ### 1. Block Elements kya hote hain?
+
+    Block elements normally new line se start hote hain aur available parent width occupy karte hain.
+
+    Examples:
+
+    - `<div>`
+    - `<p>`
+    - `<h1>` to `<h6>`
+    - `<section>`
+    - `<article>`
+    - `<ul>` / `<ol>`
+    - `<form>`
+
+    ```
+    <div style="background: lightblue;">
+        First Block
+    </div>
+
+    <div style="background: lightgreen;">
+        Second Block
+    </div>
+    ```
+
+    Output: Dono div alag-alag lines par display honge.
+
+    First Block
+
+    Second Block
+
+    ### 2. Inline Elements kya hote hain?
+
+    Inline elements same line mein display hote hain aur sirf required content ki width occupy karte hain.
+
+    Examples:
+
+    - `<span>`
+    - `<a>`
+    - `<strong>`
+    - `<b>`
+    - `<em>`
+    - `<i>`
+    - `<label>`
+
+    ```
+    <p>
+        Hello <span style="color: red;">World</span>
+        <a href="#">Click Here</a>
+    </p>
+    ```
+
+    Output: Elements same line mein display honge, agar sufficient space available hai.
+
+    Hello
+
+    World
+
+    Click Here
+
+    ### 3. Main Differences
+
+    | Block Elements                              | Inline Elements                                      |
+    | ------------------------------------------- | ---------------------------------------------------- |
+    | New line se start hote hain                 | Same line mein rehte hain                            |
+    | Default width parent ke according hoti hai  | Content jitni width lete hain                        |
+    | Width and height set kar sakte hain         | Width and height normally apply nahi hote            |
+    | Vertical margin and padding work karte hain | Vertical margin layout ko normally affect nahi karta |
+    | Examples: `div`, `p`, `section`             | Examples: `span`, `a`, `strong`                      |
+
+    ### 4. What is Inline-Block?
+
+    `inline-block` CSS display property hai jo inline aur block dono ke features combine karti hai.
+
+    - Same line mein display hota hai.
+    - Width aur height set kar sakte hain.
+    - Padding and margin properly apply hote hain.
+
+    ```
+    <span style="
+        display: inline-block;
+        width: 120px;
+        height: 50px;
+        background: lightblue;
+    ">
+        Box One
+    </span>
+
+    <span style="
+        display: inline-block;
+        width: 120px;
+        height: 50px;
+        background: lightgreen;
+    ">
+        Box Two
+    </span>
+    ```
+
+    Box One
+
+    Box Two
+
+    Both boxes appear on the same line with custom width and height.
+
+    ## 🎯 English Interview Answer
+
+    > "HTML elements are commonly classified as block-level and inline elements based on their default display behavior.
+    >
+    > Block elements start on a new line and normally occupy the available width of their parent container. Examples include div, paragraph, and section.
+    >
+    > Inline elements do not start on a new line and occupy only the space required by their content. Examples include span, anchor, and strong.
+    >
+    > We also have inline-block, which allows elements to appear on the same line while supporting custom width and height.
+    >
+    > We can control these behaviors using the CSS display property."
+
+    ### Interview Follow-up
+
+    Q1. Can we change a block element into an inline element?
+
+    Yes, using CSS:
+
+    ```
+    div {
+    display: inline;
+    }
+    ```
+
+    Q2. Can we apply width and height to inline elements?
+
+    Normally, width and height do not affect non-replaced inline elements like `span`. We can use `display: inline-block` to apply them.
+
+    Q3. What is the difference between `display: none` and `visibility: hidden`?
+
+    - `display: none` removes the element from the layout.
+    - `visibility: hidden` hides the element but preserves its layout space.
+
+    Q4. Is `<img>` an inline element?
+
+    `img` is an inline-level replaced element by default. Unlike normal inline elements, width and height can be applied to it.
+
+    ### ⭐ One-line memory trick
+
+    Block = New Line + Full Available Width | Inline = Same Line + Content Width | Inline-Block = Same Line + Custom Dimensions.
+
+
 10. Inline-block kya hai?
 11. Semantic tags kya hain?
 12. `<header>` kya karta hai?
