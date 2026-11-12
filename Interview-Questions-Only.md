@@ -1254,6 +1254,126 @@ Browser automatically validation kar dega.
 
 
 10. Inline-block kya hai?
+
+    ## Hinglish Explanation
+
+    Inline-block CSS ki `display` property hai jo Inline aur Block dono ke features combine karti hai.
+
+    Simple words mein, `inline-block` element:
+
+    1. Same line mein display hota hai, jaise Inline element.
+    2. Custom `width` aur `height` accept karta hai, jaise Block element.
+    3. Padding, margin aur border support karta hai.
+    4. Available space kam hone par next line mein wrap ho sakta hai.
+
+    ### 1. Basic Example
+
+    ```
+    <div class="box">Box One</div>
+    <div class="box">Box Two</div>
+    <div class="box">Box Three</div>
+    ```
+
+    ```
+    .box {
+    display: inline-block;
+    width: 120px;
+    height: 80px;
+    background: lightblue;
+    margin: 10px;
+    padding: 10px;
+    }
+    ```
+
+    Box One
+
+    Box Two
+
+    Box Three
+
+    Boxes appear side by side while maintaining their own dimensions.
+
+    ### 2. Block vs Inline vs Inline-block
+
+    | Property      | Block | Inline  | Inline-block |
+    | ------------- | ----- | ------- | ------------ |
+    | New line      | Yes   | No      | No           |
+    | Custom width  | Yes   | No\*    | Yes          |
+    | Custom height | Yes   | No\*    | Yes          |
+    | Same line     | No    | Yes     | Yes          |
+    | Padding       | Yes   | Yes\*\* | Yes          |
+
+    \*For normal non-replaced inline elements. \*\*Vertical padding can visually extend but does not affect line-box layout in the same way as inline-block.
+
+    ### 3. Real-world Use Cases
+
+    `inline-block` commonly use kar sakte hain:
+
+    - Navigation menu items
+    - Small buttons
+    - Badges and labels
+    - Cards displayed side by side
+    - Inline elements with custom dimensions
+
+    Example – Navigation Menu:
+
+    ```
+    <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+    </nav>
+    ```
+
+    ```
+    nav a {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #eee;
+    text-decoration: none;
+    }
+    ```
+
+    ### 4. Inline-block vs Flexbox
+
+    Modern layouts mein multiple elements ko align karne ke liye Flexbox ya Grid often better choice hote hain.
+
+    - `inline-block`: Simple inline-level boxes.
+    - `flex`: Flexible alignment and spacing of child elements.
+    - `grid`: Two-dimensional row and column layouts.
+
+    ## 🎯 English Interview Answer
+
+    > "Inline-block is a CSS display property that combines the behavior of inline and block elements.
+    >
+    > It allows elements to appear on the same line like inline elements, while also allowing us to set custom width and height like block elements.
+    >
+    > We commonly use inline-block for navigation items, buttons, badges, and small boxes.
+    >
+    > For example, if I want multiple boxes side by side with custom dimensions, I can use display inline-block.
+    >
+    > For more complex layouts, I generally prefer Flexbox or CSS Grid."
+
+    ### Interview Follow-up
+
+    Q1. Can inline-block elements appear on the next line?
+
+    Yes. If there isn't enough horizontal space, they automatically wrap to the next line.
+
+    Q2. What is one disadvantage of inline-block?
+
+    Whitespace between HTML elements can create small gaps, and vertical alignment may need adjustment using `vertical-align`.
+
+    Q3. Can we use margin and padding with inline-block?
+
+    Yes. Both horizontal and vertical margins and padding work as expected.
+
+    ### ⭐ One-line memory trick
+
+    Inline-block = Same Line + Custom Width + Custom Height.
+
+
+
 11. Semantic tags kya hain?
 12. `<header>` kya karta hai?
 13. `<footer>`?
