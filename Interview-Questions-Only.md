@@ -1239,6 +1239,114 @@ Browser automatically validation kar dega.
 
 
 7. `<title>` vs `<h1>` difference?
+
+    ## **Hinglish Explanation**
+
+    `<title>` aur `<h1>` dono webpage ka title define karne ke liye use hote hain, lekin dono ka purpose different hota hai.
+
+    ### **1.&#x20;**`<title>`**&#x20;kya hota hai?**
+
+    `<title>` tag webpage ka document title define karta hai.
+
+    - Ye `<head>` section ke andar likha jata hai.
+    - Browser tab mein display hota hai.
+    - Search engine results mein title link ke roop mein use ho sakta hai.
+    - Webpage ke content area mein directly visible nahi hota.
+
+    ```
+    <head>
+        <title>React Tutorial for Beginners</title>
+    </head>
+    ```
+
+    BROWSER TAB PREVIEW
+
+    React Tutorial for Beginners
+
+    ### **2.&#x20;**`<h1>`**&#x20;kya hota hai?**
+
+    `<h1>` webpage ka main visible heading define karta hai.
+
+    - Ye `<body>` section ke andar likha jata hai.
+    - Browser page par visible hota hai.
+    - Content ka main heading represent karta hai.
+    - Accessibility aur document structure ke liye important hai.
+
+    ```
+    <body>
+        <h1>React Tutorial for Beginners</h1>
+
+        <p>Learn React from basic to advanced.</p>
+    </body>
+    ```
+
+    WEBPAGE CONTENT PREVIEW
+
+    # **React Tutorial for Beginners**
+
+    Learn React from basic to advanced.
+
+    ### **3. Main Differences**
+
+    | `<title>`                             | `<h1>`                                                                            |
+    | ------------------------------------- | --------------------------------------------------------------------------------- |
+    | `<head>` ke andar hota hai            | `<body>` ke andar hota hai                                                        |
+    | Browser tab mein show hota hai        | Webpage par show hota hai                                                         |
+    | Document title define karta hai       | Main content heading define karta hai                                             |
+    | SEO title link ko influence karta hai | Content structure aur relevance batata hai                                        |
+    | Normally one per HTML document        | Multiple h1 technically allowed hain, but clear heading hierarchy recommended hai |
+
+    ### **4. Can both have different text?**
+
+    Yes! Example:
+
+    ```
+    <head>
+        <title>Best React Course | Learn Coding</title>
+    </head>
+
+    <body>
+        <h1>Learn React Step by Step</h1>
+    </body>
+    ```
+
+    Yahan:
+
+    - `<title>` search engines aur browser tab ke liye descriptive title hai.
+    - `<h1>` user ko page ka actual main topic batata hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"The main difference between title and h1 is their purpose and location in an HTML document.**
+    >
+    > The title tag is placed inside the head section and defines the document title. It appears in the browser tab and can influence the title shown in search engine results.
+    >
+    > The h1 tag is placed inside the body and represents the main visible heading of the webpage.
+    >
+    > Both can contain different text. For example, the title can be optimized for search results, while h1 describes the main content of the page.
+    >
+    > Both are important for good HTML structure and SEO."
+
+    ### **Interview Follow-up**
+
+    **Q1. Can we use multiple H1 tags on one page?**
+
+    Yes, HTML allows multiple H1 elements. However, a clear heading hierarchy with one primary page heading is generally a good practice.
+
+    **Q2. Does the title tag directly appear on the webpage?**
+
+    No. It normally appears in the browser tab, bookmarks and search engine results.
+
+    **Q3. Which is more important for SEO: title or H1?**
+
+    Both matter. The title helps describe the document in search results, while H1 helps communicate the page's main topic and structure.
+
+    ### **⭐ One-line memory trick**
+
+    **Title = Browser Tab + Search Result | H1 = Main Visible Page Heading.**
+
+
+
 8. `<div>` vs `<span>`?
 9. # new css animaions aya hai na vo bata dena
 9. # physical aur logical pixel?:
