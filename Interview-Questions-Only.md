@@ -1348,6 +1348,122 @@ Browser automatically validation kar dega.
 
 
 8. `<div>` vs `<span>`?
+
+    ## **Hinglish Explanation**
+
+    `<div>` aur `<span>` dono HTML ke **non-semantic container elements** hain. Inka use HTML elements ko group karne aur CSS/JavaScript ke through style ya manipulate karne ke liye hota hai.
+
+    Main difference inke default display behavior ka hai.
+
+    ### **1.&#x20;**`<div>`**&#x20;kya hota hai?**
+
+    `<div>` ek block-level container hai.
+
+    - Normally new line se start hota hai.
+    - Available parent width occupy karta hai.
+    - Multiple HTML elements ko group karne ke liye use hota hai.
+    - Width, height, margin aur padding set kar sakte hain.
+
+    ```
+    <div class="card">
+        <h2>Product Name</h2>
+        <p>Product Description</p>
+        <button>Buy Now</button>
+    </div>
+    ```
+
+    DIV OUTPUT
+
+    **Product Name**
+
+    Product Description
+
+    Buy Now
+
+    ### **2.&#x20;**`<span>`**&#x20;kya hota hai?**
+
+    `<span>` ek inline container hai.
+
+    - Same line mein display hota hai.
+    - Sirf required content jitni width leta hai.
+    - Text ke specific part ko style karne ke liye useful hai.
+    - Normal inline element hone ke karan width aur height directly apply nahi hote.
+
+    ```
+    <p>
+        React is a
+        <span style="color: blue; font-weight: bold;">
+            JavaScript library
+        </span>
+        for building UI.
+    </p>
+    ```
+
+    SPAN OUTPUT
+
+    React is a **JavaScript library** for building UI.
+
+    ### **3. Main Differences**
+
+    | `<div>`                             | `<span>`                                        |
+    | ----------------------------------- | ----------------------------------------------- |
+    | Block-level by default              | Inline by default                               |
+    | New line se start hota hai          | Same line mein rehta hai                        |
+    | Parent ki available width leta hai  | Content jitni width leta hai                    |
+    | Width and height set kar sakte hain | Normal inline mein width/height apply nahi hote |
+    | Large sections group karta hai      | Text ke small portions group karta hai          |
+    | Layout containers mein useful       | Text styling mein useful                        |
+
+    ### **4. Can we change their behavior?**
+
+    Yes, CSS `display` property se.
+
+    ```
+    div {
+        display: inline;
+    }
+
+    span {
+        display: block;
+    }
+    ```
+
+    Ab `div` inline aur `span` block-level behavior follow karega.
+
+    ## **🎯 English Interview Answer**
+
+    > **"Div and span are both non-semantic HTML container elements, but they have different default display behaviors.**
+    >
+    > Div is a block-level element. It starts on a new line and is commonly used to group larger sections of a webpage.
+    >
+    > Span is an inline element. It stays within the same line and is commonly used to style or target a specific part of text.
+    >
+    > We can apply CSS and JavaScript to both elements.
+    >
+    > For example, I use div for card layouts and page sections, while I use span to highlight specific words or text."
+
+    ### **Interview Follow-up**
+
+    **Q1. Can we apply CSS to both div and span?**
+
+    Yes. Both support CSS styling.
+
+    **Q2. Can we change span into a block element?**
+
+    Yes, using `display: block`.
+
+    **Q3. Is div a semantic HTML element?**
+
+    No. Div is non-semantic because it doesn't describe the meaning of its content.
+
+    **Q4. Can we put a div inside a span?**
+
+    No, not in conforming HTML. A normal span cannot contain block-level div elements.
+
+    ### **⭐ One-line memory trick**
+
+    **DIV = Block Container (Big Sections) | SPAN = Inline Container (Small Text Parts).**
+
 9. # new css animaions aya hai na vo bata dena
 9. # physical aur logical pixel?:
 9. Block vs inline elements?
