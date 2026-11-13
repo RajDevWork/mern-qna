@@ -1098,6 +1098,146 @@ Browser automatically validation kar dega.
 
 
 6. `<html>`, `<head>`, `<body>` ka role?
+
+    ## **Hinglish Explanation**
+
+    HTML document mein `<html>`, `<head>` aur `<body>` teen important structural elements hain. Teeno ka purpose different hota hai.
+
+    ### **1.&#x20;**`<html>`**&#x20;– Root Element**
+
+    `<html>` poore HTML document ka root element hota hai.
+
+    - Iske andar complete HTML page hota hai.
+    - `<head>` aur `<body>` dono isi ke children hote hain.
+    - Browser ko document ka HTML structure define karta hai.
+
+    ```
+    <html lang="en">
+        <!-- Complete HTML document -->
+    </html>
+    ```
+
+    ### **2.&#x20;**`<head>`**&#x20;– Metadata Information**
+
+    `<head>` mein webpage ki metadata aur external resources ki information hoti hai.
+
+    Iska content normally webpage par directly visible nahi hota.
+
+    **Common elements:**
+
+    - `<title>` – Browser tab ka title.
+    - `<meta>` – Charset, description, viewport.
+    - `<link>` – CSS files, favicon.
+    - `<script>` – JavaScript files.
+    - `<style>` – Internal CSS.
+
+    ```
+    <head>
+        <title>My Website</title>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    ```
+
+    ### **3.&#x20;**`<body>`**&#x20;– Visible Content**
+
+    `<body>` mein webpage ka actual visible content hota hai, jo browser window mein display hota hai.
+
+    **Examples:**
+
+    - Headings
+    - Paragraphs
+    - Images
+    - Buttons
+    - Forms
+    - Tables
+    - Navigation
+
+    ```
+    <body>
+        <h1>Welcome</h1>
+        <p>This is my website.</p>
+        <button>Click Me</button>
+    </body>
+    ```
+
+    ### **4. Complete HTML Structure**
+
+    ```
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+        <title>My Website</title>
+    </head>
+
+    <body>
+        <header>
+            <h1>My Website</h1>
+        </header>
+
+        <main>
+            <p>Welcome to my website!</p>
+        </main>
+
+        <footer>
+            Copyright 2026
+        </footer>
+    </body>
+
+    </html>
+    ```
+
+    ### **5. Main Difference**
+
+    | Element  | Role                              | Visible on webpage?   |
+    | -------- | --------------------------------- | --------------------- |
+    | `<html>` | Root container of document        | Directly visible nahi |
+    | `<head>` | Metadata and resource information | Normally nahi         |
+    | `<body>` | Actual webpage content            | Yes                   |
+
+    ## **🎯 English Interview Answer**
+
+    > **"HTML, head, and body are the three important structural elements of an HTML document.**
+    >
+    > The HTML element is the root element that contains the entire webpage.
+    >
+    > The head element contains metadata and resources such as the page title, meta tags, CSS links, and scripts.
+    >
+    > The body element contains the actual content displayed in the browser, such as headings, paragraphs, images, buttons, and forms.
+    >
+    > In simple terms, HTML defines the document structure, head provides page information, and body contains visible content."
+
+    ### **Interview Follow-up**
+
+    **Q1. Is&#x20;**`<title>`**&#x20;part of head or body?**
+
+    `<title>` is placed inside the `<head>` element. It defines the browser tab title.
+
+    **Q2. Can we write CSS inside the head?**
+
+    Yes. We can write internal CSS using `<style>` or link an external CSS file using `<link>`.
+
+    **Q3. Can we write JavaScript inside head?**
+
+    Yes. We can use `<script>` inside head. Using `defer` can ensure an external script executes after HTML parsing.
+
+    **Q4. Can an HTML document have multiple body tags?**
+
+    No. An HTML document should have one `<body>` element.
+
+    ### **⭐ One-line memory trick**
+
+    **HTML = Complete Document | HEAD = Page Information | BODY = Visible Content.**
+
+
+
 7. `<title>` vs `<h1>` difference?
 8. `<div>` vs `<span>`?
 9. # new css animaions aya hai na vo bata dena
