@@ -2030,6 +2030,131 @@ Browser automatically validation kar dega.
 
 
 12. `<header>` kya karta hai?
+
+    ## **Hinglish Explanation**
+
+    `<header>`**&#x20;HTML ka semantic tag hai, jo webpage ya kisi section ka introductory content represent karta hai.**
+
+    Simple words mein, header ka use website ke top section ya kisi particular content section ke introduction ke liye hota hai.
+
+    ### **1.&#x20;**`<header>`**&#x20;mein kya hota hai?**
+
+    Commonly header ke andar ye elements hote hain:
+
+    - Website logo
+    - Website name
+    - Navigation menu
+    - Search bar
+    - Page heading
+    - Introduction content
+
+    ### **2. Practical Example**
+
+    ```
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>My Website</title>
+    </head>
+    <body>
+
+        <header>
+            <h1>My Website</h1>
+
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Welcome to My Website</h2>
+            <p>This is the main content.</p>
+        </main>
+
+    </body>
+    </html>
+    ```
+
+    ### **3. Can we use multiple&#x20;**`<header>`**&#x20;tags?**
+
+    **Yes!** HTML document mein multiple header elements use kar sakte hain.
+
+    Example:
+
+    ```
+    <body>
+
+        <header>
+            <h1>My Website</h1>
+        </header>
+
+        <main>
+            <article>
+                <header>
+                    <h2>React Tutorial</h2>
+                    <p>Published on 15 November 2026</p>
+                </header>
+
+                <p>React is a JavaScript library.</p>
+            </article>
+        </main>
+
+    </body>
+    ```
+
+    Yahan:
+
+    - First `<header>` website ka header hai.
+    - Second `<header>` article ka introductory section hai.
+
+    ### **4.&#x20;**`<header>`**&#x20;vs&#x20;**`<head>`
+
+    | `<head>`                               | `<header>`                             |
+    | -------------------------------------- | -------------------------------------- |
+    | Metadata contain karta hai             | Introductory content contain karta hai |
+    | Browser tab title, meta tags           | Logo, heading, navigation              |
+    | Page par normally visible nahi         | Page par visible hota hai              |
+    | Document structure ka metadata section | Body ka semantic element               |
+
+    **Important:** `<header>` ko `<footer>`, `<main>` aur `<nav>` ke saath confuse nahi karna chahiye. Har tag ka apna semantic purpose hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"The header tag is a semantic HTML element used to define the introductory section of a webpage or a section.**
+    >
+    > It commonly contains a website logo, navigation links, headings, and introductory content.
+    >
+    > We can use multiple header tags on a page, for example, one for the website and another inside an article.
+    >
+    > Unlike the head tag, the header is visible on the webpage.
+    >
+    > It improves HTML structure, readability, and accessibility."
+
+    ### **Interview Follow-up**
+
+    **Q1. Can we use multiple header tags?**
+
+    Yes, we can use multiple headers for the page and individual sections or articles.
+
+    **Q2. Can we put&#x20;**`<header>`**&#x20;inside&#x20;**`<article>`**?**
+
+    Yes. It can contain the article's title, author information, and introductory content.
+
+    **Q3. Can we put&#x20;**`<header>`**&#x20;inside another&#x20;**`<header>`**?**
+
+    No. A header element cannot be nested inside another header element.
+
+    **Q4. Is&#x20;**`<header>`**&#x20;a semantic tag?**
+
+    Yes. It describes the introductory content of a page or section.
+
+    ### **⭐ One-line memory trick**
+
+    `<header>`**&#x20;= Introductory Section → Logo + Navigation + Heading.**
+
+
 13. `<footer>`?
 14. `<section>` vs `<article>`?
 15. `<nav>` ka use?
