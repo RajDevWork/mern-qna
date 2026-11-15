@@ -2156,6 +2156,73 @@ Browser automatically validation kar dega.
 
 
 13. `<footer>`?
+
+    ## **Hinglish Explanation**
+
+    HTML ka `<footer>` ek **semantic HTML tag** hai, jo kisi webpage ya section ka footer (ending information) define karta hai.
+
+    Isme generally ye information hoti hai:
+
+    - Copyright information
+    - Contact details
+    - Privacy Policy / Terms & Conditions links
+    - Social media links
+    - Related navigation links
+    - Author information
+
+    ### **Example**
+
+    ```
+    <body>
+    <header>
+        <h1>My Website</h1>
+    </header>
+
+    <main>
+        <h2>Welcome to my website</h2>
+        <p>This is the main content.</p>
+    </main>
+
+    <footer>
+        <p>© 2026 My Website. All rights reserved.</p>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/contact">Contact Us</a>
+    </footer>
+    </body>
+    ```
+
+    ### **Important Points**
+
+    1. Ek webpage mein multiple `<footer>` elements ho sakte hain.
+    2. Kisi `<article>` ya `<section>` ka bhi apna footer ho sakta hai.
+    3. `<footer>` ko `<header>` ke andar nest nahi karna chahiye.
+    4. Ye semantic tag hai, iska default display block hota hai.
+    5. `<footer>` aur `<body>` ka closing tag same nahi hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"The footer is a semantic HTML element used to define the footer section of a webpage or a section. It usually contains copyright information, contact details, privacy policy links, and related navigation. We can use multiple footer elements on a page, for example, one for the website and another for an article."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Can we use multiple footer elements on a webpage?**
+
+    Yes, we can use multiple footer elements, such as one for the entire webpage and another inside an article.
+
+    **Q2. What is the difference between&#x20;**`<header>`**&#x20;and&#x20;**`<footer>`**?**
+
+    - `<header>` contains introductory content.
+    - `<footer>` contains ending or additional information.
+
+    **Q3. Is&#x20;**`<footer>`**&#x20;a semantic element?**
+
+    Yes, it is a semantic HTML5 element that clearly describes the purpose of its content.
+
+    ### **⭐ One-line memory trick**
+
+    **Header = Starting information | Footer = Ending information**
+
+
 14. `<section>` vs `<article>`?
 15. `<nav>` ka use?
 16. `<aside>` kya hota hai?
