@@ -2319,6 +2319,75 @@ Browser automatically validation kar dega.
 
 
 15. `<nav>` ka use?
+
+    ## **Hinglish Explanation**
+
+    HTML ka `<nav>` ek **semantic HTML element** hai, jo webpage ke important navigation links ko define karta hai.
+
+    Iska use users ko website ke different pages ya sections par navigate karne mein help karta hai.
+
+    ### **Common Uses**
+
+    - Home, About, Services, Contact links
+    - Main website navigation
+    - Sidebar navigation
+    - Table of Contents
+    - Pagination links
+
+    ### **Example**
+
+    ```
+    <header>
+    <h1>My Website</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/contact">Contact</a>
+    </nav>
+    </header>
+    ```
+
+    ### **Important Points**
+
+    1. Ek webpage mein multiple `<nav>` elements ho sakte hain.
+    2. Har link ko `<nav>` ke andar rakhna compulsory nahi hai.
+    3. `<nav>` mainly important navigation links ke liye use hota hai.
+    4. Accessibility ke liye screen readers navigation landmark identify kar sakte hain.
+    5. Multiple `<nav>` elements hon, toh unhe accessible name dena useful hai.
+
+    ### `<nav>`**&#x20;vs&#x20;**`<div>`
+
+    | `<nav>`                                  | `<div>`                                    |
+    | ---------------------------------------- | ------------------------------------------ |
+    | Semantic element                         | Non-semantic element                       |
+    | Navigation links ke liye                 | General-purpose container                  |
+    | Accessibility landmark provide karta hai | Navigation meaning automatically nahi deta |
+
+    ## **🎯 English Interview Answer**
+
+    > **"The nav element is a semantic HTML element used to define a section containing important navigation links. For example, Home, About, Services, and Contact links. It improves accessibility because screen readers can identify the navigation area easily."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Can we use multiple&#x20;**`<nav>`**&#x20;elements on one page?**
+
+    Yes, we can use multiple nav elements, such as main navigation and sidebar navigation.
+
+    **Q2. Should every link be inside&#x20;**`<nav>`**?**
+
+    No, only major navigation links should be placed inside nav. Normal content links don't need it.
+
+    **Q3. Is&#x20;**`<nav>`**&#x20;a block-level element?**
+
+    Yes, by default, `<nav>` behaves like a block-level element.
+
+    ### **⭐ One-line memory trick**
+
+    `<nav>`**&#x20;= Navigation links of a website.**
+
+
 16. `<aside>` kya hota hai?
 17. Semantic HTML ke benefits?
 18. `<form>` ka use?
