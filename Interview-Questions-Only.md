@@ -2389,6 +2389,84 @@ Browser automatically validation kar dega.
 
 
 16. `<aside>` kya hota hai?
+
+    ## **Hinglish Explanation**
+
+    HTML ka `<aside>` ek **semantic HTML element** hai, jo main content se indirectly related ya supplementary content ko represent karta hai.
+
+    Iska use generally sidebar ya additional information display karne ke liye hota hai.
+
+    ### **Common Uses**
+
+    - Sidebar content
+    - Related articles
+    - Author information
+    - Advertisements
+    - Important tips or notes
+    - Related resources
+
+    ### **Example**
+
+    ```
+    <main>
+    <article>
+        <h2>What is React?</h2>
+        <p>React is a JavaScript library for building user interfaces.</p>
+    </article>
+
+    <aside>
+        <h3>Related Articles</h3>
+        <ul>
+        <li>React Hooks</li>
+        <li>React Components</li>
+        <li>React Props</li>
+        </ul>
+    </aside>
+    </main>
+    ```
+
+    Yahan `<article>` main content hai aur `<aside>` usse related additional information show karta hai.
+
+    ### **Important Points**
+
+    1. `<aside>` supplementary content ke liye use hota hai.
+    2. Ye webpage ke main content ke related hota hai, lekin main content ka essential part nahi hota.
+    3. Iska use sidebar ke liye common hai, lekin ye sirf sidebar tak limited nahi hai.
+    4. `<aside>` ko `<article>` ke andar bhi use kar sakte hain.
+    5. By default, iska display `block` hota hai.
+
+    ### `<aside>`**&#x20;vs&#x20;**`<section>`
+
+    | `<aside>`                  | `<section>`                   |
+    | -------------------------- | ----------------------------- |
+    | Additional related content | Main content ka logical group |
+    | Sidebar, related links     | About, Services, Features     |
+    | Supplementary information  | Thematic content grouping     |
+
+    ## **🎯 English Interview Answer**
+
+    > **"The aside element is a semantic HTML element used for supplementary content that is related to the main content but is not part of its primary flow. It is commonly used for sidebars, related articles, author information, and advertisements."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Can we use&#x20;**`<aside>`**&#x20;inside&#x20;**`<article>`**?**
+
+    Yes, we can use aside inside an article to display related information, such as author details or additional resources.
+
+    **Q2. Is&#x20;**`<aside>`**&#x20;only used for sidebars?**
+
+    No, it can be used for any supplementary content related to the main content.
+
+    **Q3. What is the difference between&#x20;**`<aside>`**&#x20;and&#x20;**`<nav>`**?**
+
+    - `<aside>` displays supplementary content.
+    - `<nav>` defines important navigation links.
+
+    ### **⭐ One-line memory trick**
+
+    `<aside>`**&#x20;= Main content ke side mein additional related information.**
+
+
 17. Semantic HTML ke benefits?
 18. `<form>` ka use?
 19. GET vs POST?
