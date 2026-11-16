@@ -2224,6 +2224,100 @@ Browser automatically validation kar dega.
 
 
 14. `<section>` vs `<article>`?
+
+    ## **Hinglish Explanation**
+
+    `<section>` aur `<article>` dono HTML5 ke **semantic elements** hain, lekin inka purpose different hai.
+
+    ### **1.&#x20;**`<section>`**&#x20;kya hai?**
+
+    `<section>` webpage ke related content ko ek logical group mein organize karta hai.
+
+    Example: About Us, Services, Skills, Contact sections.
+
+    ```
+    <section>
+    <h2>Our Services</h2>
+    <p>We provide web development services.</p>
+    </section>
+
+    <section>
+    <h2>About Us</h2>
+    <p>We are a software development company.</p>
+    </section>
+    ```
+
+    ### **2.&#x20;**`<article>`**&#x20;kya hai?**
+
+    `<article>` self-contained content ke liye use hota hai, jise independently understand ya distribute kiya ja sakta hai.
+
+    Example: Blog post, news article, forum post, product review.
+
+    ```
+    <article>
+    <h2>What is React?</h2>
+    <p>React is a JavaScript library for building user interfaces.</p>
+    <footer>
+        <p>Published by Admin</p>
+    </footer>
+    </article>
+    ```
+
+    ### **3. Main Difference**
+
+    | `<section>`                                 | `<article>`                             |
+    | ------------------------------------------- | --------------------------------------- |
+    | Related content ko group karta hai          | Independent content represent karta hai |
+    | Page ko logical parts mein divide karta hai | Standalone content ke liye hota hai     |
+    | Example: About, Services                    | Example: Blog, News                     |
+    | Generally heading ke saath use hota hai     | Usually apni heading ke saath hota hai  |
+
+    ### **4. Can we use section inside article?**
+
+    Yes! Dono ek dusre ke andar use ho sakte hain.
+
+    ```
+    <article>
+    <h2>Complete React Guide</h2>
+
+    <section>
+        <h3>Introduction</h3>
+        <p>React is a JavaScript library.</p>
+    </section>
+
+    <section>
+        <h3>React Hooks</h3>
+        <p>Hooks help us use React features.</p>
+    </section>
+    </article>
+    ```
+
+    Yahan `<article>` complete blog post hai aur `<section>` uske individual topics hain.
+
+    ## **🎯 English Interview Answer**
+
+    > **"Section and Article are semantic HTML5 elements. Section is used to group related content into logical parts, such as About Us or Services. Article is used for independent, self-contained content, such as blog posts, news articles, or product reviews. We can also use sections inside an article."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Can we use&#x20;**`<article>`**&#x20;inside&#x20;**`<section>`**?**
+
+    Yes, we can use multiple articles inside a section, such as a blog listing page.
+
+    **Q2. Should every section have a heading?**
+
+    Generally, yes. A heading helps explain the purpose of the section and improves document structure.
+
+    **Q3. Can we use&#x20;**`<div>`**&#x20;instead of&#x20;**`<section>`**&#x20;or&#x20;**`<article>`**?**
+
+    Yes, technically we can, but `<div>` has no semantic meaning. We should use semantic elements when they describe the content correctly.
+
+    ### **⭐ One-line memory trick**
+
+    **Section = Related content grouping | Article = Independent content**
+
+
+
 15. `<nav>` ka use?
 16. `<aside>` kya hota hai?
 17. Semantic HTML ke benefits?
