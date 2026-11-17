@@ -2658,6 +2658,134 @@ Browser automatically validation kar dega.
 
 
 19. GET vs POST?
+
+    ## **Hinglish Explanation**
+
+    GET aur POST dono **HTTP methods** hain, jinhe client (browser/frontend) server ke saath communicate karne aur data exchange karne ke liye use karta hai.
+
+    Main difference ye hai ki data server ko kaise send kiya jata hai aur request ka purpose kya hai.
+
+    ### **1. GET Method**
+
+    GET method ka use server se data **retrieve (fetch)** karne ke liye hota hai.
+
+    Example: Product listing, search, user details fetch karna.
+
+    ```
+    <form action="/users" method="GET">
+    <input type="text" name="search" placeholder="Search user">
+    <button type="submit">Search</button>
+    </form>
+    ```
+
+    Request URL:
+
+    ```
+    /users?search=Rajesh
+    ```
+
+    **Important Points:**
+
+    - Data URL query parameters mein send hota hai.
+    - Browser history aur bookmarks mein URL save ho sakta hai.
+    - Generally data retrieve karne ke liye use hota hai.
+    - GET request normally safe and idempotent hoti hai.
+    - Sensitive information URL mein send nahi karni chahiye.
+
+    ### **2. POST Method**
+
+    POST method ka use server par data **submit/create** karne ke liye hota hai.
+
+    Example: Registration, login, contact form, new user create karna.
+
+    ```
+    <form action="/users" method="POST">
+    <input type="text" name="name" placeholder="Enter name">
+    <input type="email" name="email" placeholder="Enter email">
+    <button type="submit">Register</button>
+    </form>
+    ```
+
+    Request body:
+
+    ```
+    {
+    "name": "Rajesh",
+    "email": "rajesh@example.com"
+    }
+    ```
+
+    **Important Points:**
+
+    - Data request body mein send hota hai.
+    - Data normally URL mein visible nahi hota.
+    - Large data submit karne ke liye useful hai.
+    - POST generally non-idempotent hota hai.
+    - HTTPS sensitive data ko transit mein protect karta hai.
+
+    ### **3. GET vs POST – Main Difference**
+
+    | GET                               | POST                                  |
+    | --------------------------------- | ------------------------------------- |
+    | Data retrieve karna               | Data submit karna                     |
+    | Query parameters mein data        | Request body mein data                |
+    | URL mein data visible             | URL mein body data visible nahi       |
+    | Bookmarkable URL                  | Normally bookmarkable nahi            |
+    | Safe and idempotent               | Generally non-safe and non-idempotent |
+    | Caching possible                  | Normally not cached by default        |
+    | File upload ke liye suitable nahi | File upload support karta hai         |
+
+    ### **4. Real-World Example**
+
+    Suppose hum e-commerce application bana rahe hain:
+
+    ```
+    GET  /products       → Products fetch karna
+    GET  /products/101   → Single product fetch karna
+
+    POST /products       → New product create karna
+    POST /orders         → New order create karna
+    ```
+
+    ### **5. Important Interview Concept**
+
+    **Q: Is POST more secure than GET?**
+
+    POST automatically secure nahi hota.
+
+    - GET parameters URL mein visible hote hain.
+    - POST body URL mein visible nahi hoti.
+    - Dono methods HTTPS ke bina encrypted nahi hote.
+    - Sensitive data ke liye HTTPS, authentication aur proper backend security zaroori hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"GET and POST are HTTP methods. GET is mainly used to retrieve data from the server, while POST is used to submit data to the server. In GET, data is usually sent through URL query parameters, whereas POST sends data in the request body. GET is generally safe and idempotent, while POST is generally used for operations that may create or modify data."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Is GET request idempotent?**
+
+    Yes. Repeating the same GET request should have the same intended server-side effect.
+
+    **Q2. Is POST request idempotent?**
+
+    Generally, no. Repeating a POST request may create duplicate records or perform an operation multiple times. However, APIs can implement idempotency using idempotency keys.
+
+    **Q3. Can we send large data using GET?**
+
+    GET has practical URL length limitations, which vary by browser and server. For large data, POST is generally preferred.
+
+    **Q4. Can POST be used to fetch data?**
+
+    Yes. Some APIs use POST for complex search filters or queries, but GET is normally preferred for retrieving resources.
+
+    ### **⭐ One-line memory trick**
+
+    **GET = Fetch Data | POST = Submit Data**
+
+
+
 20. Input types?
 21. `name` vs `id`?
 22. `label` ka use?
