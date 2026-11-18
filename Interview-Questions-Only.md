@@ -2787,6 +2787,143 @@ Browser automatically validation kar dega.
 
 
 20. Input types?
+
+    ## **Hinglish Explanation**
+
+    HTML mein `<input>` element ka use user se different types ka data collect karne ke liye hota hai.
+
+    `type` attribute decide karta hai ki input field kis tarah behave karegi.
+
+    ### **1. Important HTML Input Types**
+
+    | Input Type       | Use                        | Example         |
+    | ---------------- | -------------------------- | --------------- |
+    | `text`           | Normal text                | Name            |
+    | `password`       | Hidden password characters | Password        |
+    | `email`          | Email input validation     | Email           |
+    | `number`         | Numeric input              | Age             |
+    | `tel`            | Phone number               | Mobile          |
+    | `date`           | Date picker                | DOB             |
+    | `time`           | Time picker                | Appointment     |
+    | `datetime-local` | Date and time              | Meeting         |
+    | `radio`          | Single option select       | Gender          |
+    | `checkbox`       | Multiple options select    | Skills          |
+    | `file`           | File upload                | Profile photo   |
+    | `hidden`         | Hidden form value          | User ID         |
+    | `submit`         | Submit form                | Submit button   |
+    | `reset`          | Reset form                 | Clear           |
+    | `button`         | Normal clickable button    | Click Me        |
+    | `search`         | Search input               | Search products |
+    | `url`            | URL input                  | Website         |
+    | `range`          | Slider                     | Volume          |
+    | `color`          | Color picker               | Theme color     |
+    | `month`          | Month and year             | Birth month     |
+    | `week`           | Week and year              | Select week     |
+
+    ### **2. Practical Example**
+
+    ```
+    <form>
+    <!-- Text input -->
+    <input type="text" placeholder="Enter name">
+
+    <!-- Email input -->
+    <input type="email" placeholder="Enter email">
+
+    <!-- Password input -->
+    <input type="password" placeholder="Enter password">
+
+    <!-- Number input -->
+    <input type="number" placeholder="Enter age">
+
+    <!-- Date input -->
+    <input type="date">
+
+    <!-- Radio buttons -->
+    <input type="radio" name="gender" value="male"> Male
+    <input type="radio" name="gender" value="female"> Female
+
+    <!-- Checkbox -->
+    <input type="checkbox" value="react"> React
+    <input type="checkbox" value="node"> Node.js
+
+    <!-- File upload -->
+    <input type="file">
+
+    <button type="submit">Submit</button>
+    </form>
+    ```
+
+    ### **3. Important Interview Differences**
+
+    **Q1. Radio vs Checkbox?**
+
+    | Radio                                   | Checkbox                     |
+    | --------------------------------------- | ---------------------------- |
+    | Usually one option select               | Multiple options select      |
+    | Same `name` group mein single selection | Multiple selections possible |
+    | Example: Gender                         | Example: Skills              |
+
+    **Q2.&#x20;**`text`**&#x20;vs&#x20;**`password`**?**
+
+    - `text` input mein characters normally visible hote hain.
+    - `password` input mein characters masked hote hain.
+
+    **Q3.&#x20;**`email`**&#x20;vs&#x20;**`text`**?**
+
+    - `text` accepts general text.
+    - `email` provides built-in basic email format validation.
+
+    **Q4.&#x20;**`number`**&#x20;vs&#x20;**`tel`**?**
+
+    - `number` numeric value ke liye hota hai, jaise age.
+    - `tel` phone number ke liye hota hai. Isme leading zeros aur `+` preserve ho sakte hain.
+
+    ### **4. Important Attributes**
+
+    ```
+    <input
+    type="email"
+    name="email"
+    placeholder="Enter email"
+    required
+    autocomplete="email"
+    />
+    ```
+
+    - `type` – Input ka type define karta hai.
+    - `name` – Form submit hone par field ki key hoti hai.
+    - `placeholder` – Hint show karta hai.
+    - `required` – Field mandatory banata hai.
+    - `autocomplete` – Browser autofill behavior control karta hai.
+    - `min` / `max` – Minimum aur maximum value.
+    - `maxlength` – Maximum character length.
+
+    ## **🎯 English Interview Answer**
+
+    > **"HTML provides different input types to collect different kinds of user data. For example, text is used for names, email for email addresses, password for passwords, radio for single selection, checkbox for multiple selections, date for selecting dates, and file for uploading files. We use the type attribute to define the input behavior."**
+
+    ### **Interview Follow-up**
+
+    **Q1. How many input types are available in HTML5?**
+
+    HTML provides 22 standard input types, including text, email, password, number, date, checkbox, radio, file, and others.
+
+    **Q2. Does&#x20;**`type="email"`**&#x20;guarantee a valid email address?**
+
+    No. It provides basic browser-side format validation, but backend validation is also required.
+
+    **Q3. What is the purpose of&#x20;**`type="hidden"`**?**
+
+    It stores a value in a form without displaying an input field to the user. However, hidden values are not secure and can be modified by users.
+
+    ### **⭐ One-line memory trick**
+
+    **Input type = Decide what kind of data the user can enter.**
+
+
+
+
 21. `name` vs `id`?
 22. `label` ka use?
 23. Required attribute?
