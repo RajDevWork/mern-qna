@@ -2925,6 +2925,113 @@ Browser automatically validation kar dega.
 
 
 21. `name` vs `id`?
+
+    ## **Hinglish Explanation**
+
+    HTML mein `name` aur `id` dono attributes hain, lekin inka purpose different hota hai.
+
+    - `id` kisi HTML element ko uniquely identify karta hai.
+    - `name` form submit hone par server ko field ki key identify karne mein help karta hai.
+
+    ### **1. ID Attribute**
+
+    `id` ka use kisi specific HTML element ko uniquely identify karne ke liye hota hai.
+
+    Iska use:
+
+    - CSS styling
+    - JavaScript DOM selection
+    - Label ko input se connect karna
+    - Anchor navigation
+
+    ```
+    <input type="text" id="username">
+
+    <style>
+    #username {
+        border: 1px solid blue;
+    }
+    </style>
+    ```
+
+    JavaScript:
+
+    ```
+    const input = document.getElementById("username");
+    ```
+
+    ### **2. Name Attribute**
+
+    `name` ka use mainly form data submit karte waqt field ki key define karne ke liye hota hai.
+
+    ```
+    <form action="/login" method="POST">
+    <input
+        type="text"
+        id="username"
+        name="username"
+    >
+
+    <button type="submit">Login</button>
+    </form>
+    ```
+
+    Server ko form data is format mein milega:
+
+    ```
+    username=Rajesh
+    ```
+
+    ### **3. Main Difference**
+
+    | `id`                                   | `name`                                                |
+    | -------------------------------------- | ----------------------------------------------------- |
+    | Element ko uniquely identify karta hai | Form field ki key define karta hai                    |
+    | Same page par unique hona chahiye      | Multiple elements same name share kar sakte hain      |
+    | CSS aur JavaScript mein useful         | Form submission mein useful                           |
+    | Form submit ke liye required nahi      | Successful form submission ke liye generally required |
+    | Label connect karne mein useful        | Radio buttons ko group karne mein useful              |
+
+    ### **4. Real-World Example**
+
+    Radio buttons mein same `name` use karte hain, taaki user ek hi option select kar sake.
+
+    ```
+    <input type="radio" id="male" name="gender" value="male">
+    <label for="male">Male</label>
+
+    <input type="radio" id="female" name="gender" value="female">
+    <label for="female">Female</label>
+    ```
+
+    Yahan:
+
+    - `id` dono inputs ko separately identify karta hai.
+    - `name="gender"` dono radio buttons ko ek group banata hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"ID and name are HTML attributes, but they have different purposes. ID uniquely identifies an element on a webpage and is commonly used with CSS and JavaScript. Name identifies a form field when submitting data to the server. Multiple elements can share the same name, but IDs should be unique within a page."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Can multiple elements have the same ID?**
+
+    Technically browsers allow it, but it is invalid HTML and should be avoided because it can cause unexpected behavior.
+
+    **Q2. Can multiple elements have the same name?**
+
+    Yes. For example, radio buttons use the same name to create a group.
+
+    **Q3. Is the name attribute required for form submission?**
+
+    For a form control's value to be included in normal form submission, it generally needs a name attribute.
+
+    ### **⭐ One-line memory trick**
+
+    **ID = Identify an element | Name = Identify form data field.**
+
+
 22. `label` ka use?
 23. Required attribute?
 24. Validation kaise hoti hai?
