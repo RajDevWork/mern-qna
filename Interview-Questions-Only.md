@@ -3113,6 +3113,99 @@ Browser automatically validation kar dega.
 
 
 23. Required attribute?
+
+    ## **Hinglish Explanation**
+
+    HTML ka `required` attribute kisi input field ko **mandatory (compulsory)** banane ke liye use hota hai.
+
+    Agar user required field ko fill kiye bina form submit karta hai, toh browser form submit nahi hone deta aur validation message show karta hai.
+
+    ### **1. Basic Example**
+
+    ```
+    <form>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <button type="submit">Submit</button>
+    </form>
+    ```
+
+    Yahan `required` lagaya hai, isliye Email field fill karna compulsory hai.
+
+    **Browser behavior**
+
+    ✓ Email filled → Form submit ho sakta hai
+
+    ✗ Email empty → Browser form submit block karega
+
+    ### **2. Required on Different Input Types**
+
+    ```
+    <input type="text" required>
+    <input type="email" required>
+    <input type="password" required>
+
+    <select required>
+    <option value="">Select City</option>
+    <option value="delhi">Delhi</option>
+    <option value="mumbai">Mumbai</option>
+    </select>
+
+    <textarea required></textarea>
+    ```
+
+    `required` text, email, password, select, textarea, checkbox aur kuch other supported form controls par kaam karta hai.
+
+    ### **3. Required vs Validation**
+
+    `required` sirf ye check karta hai ki field empty na ho.
+
+    ```
+    <input type="text" required>
+    ```
+
+    Ye empty field ko block karega, lekin har type ki validation nahi karega.
+
+    Specific validations ke liye:
+
+    ```
+    <input type="email" required>
+    <input type="text" minlength="3" maxlength="20" required>
+    <input type="number" min="18" max="60" required>
+    ```
+
+    - `required` → Empty nahi chhod sakte.
+    - `minlength` → Minimum characters.
+    - `maxlength` → Maximum characters.
+    - `min` / `max` → Minimum/maximum allowed value.
+
+    **Important:** HTML validation ko bypass kiya ja sakta hai, isliye backend par bhi validation karna zaroori hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"The required attribute is a Boolean attribute used to make a form field mandatory. If the user tries to submit the form without filling a required field, the browser prevents submission and displays a validation message. It provides basic client-side validation, but we should also validate the data on the backend."**
+
+    ### **Interview Follow-up**
+
+    **Q1. What type of attribute is&#x20;**`required`**?**
+
+    It is a Boolean attribute. If present, it is true; if omitted, it is false.
+
+    **Q2. Does&#x20;**`required`**&#x20;work without JavaScript?**
+
+    Yes. It is a built-in HTML browser validation feature and works without JavaScript.
+
+    **Q3. Is&#x20;**`required`**&#x20;enough for form security?**
+
+    No. Client-side validation can be bypassed. Backend validation is always necessary.
+
+    ### **⭐ One-line memory trick**
+
+    `required`**&#x20;= Field empty nahi chhod sakte.**
+
+
+
 24. Validation kaise hoti hai?
 25. Placeholder vs value?
 26. Radio vs checkbox?
