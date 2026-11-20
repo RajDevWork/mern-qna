@@ -3461,6 +3461,96 @@ Browser automatically validation kar dega.
 
 
 26. Radio vs checkbox?
+
+    ## **Hinglish Explanation**
+
+    HTML mein `radio` aur `checkbox` dono user ko options select karne ke liye use hote hain, lekin inka selection behavior different hota hai.
+
+    - **Radio button** → Ek group mein generally sirf ek option select kar sakte hain.
+    - **Checkbox** → Multiple options select kar sakte hain, ya kisi option ko independently check/uncheck kar sakte hain.
+
+    ### **1. Radio Button**
+
+    Jab user ko multiple options mein se **sirf ek option select** karna ho, tab radio use karte hain.
+
+    ```
+    <p>Select your gender:</p>
+
+    <input type="radio" id="male" name="gender" value="male">
+    <label for="male">Male</label>
+
+    <input type="radio" id="female" name="gender" value="female">
+    <label for="female">Female</label>
+    ```
+
+    Yahan dono radio buttons ka `name="gender"` same hai, isliye user ek time par group mein sirf ek option select kar sakta hai.
+
+    **Gender (Single selection)**
+
+    Male
+
+    Female
+
+    ### **2. Checkbox**
+
+    Jab user ko **multiple options select** karne ki permission ho, tab checkbox use karte hain.
+
+    ```
+    <p>Select your skills:</p>
+
+    <input type="checkbox" id="php" name="skills" value="PHP">
+    <label for="php">PHP</label>
+
+    <input type="checkbox" id="react" name="skills" value="React">
+    <label for="react">React</label>
+
+    <input type="checkbox" id="node" name="skills" value="Node">
+    <label for="node">Node.js</label>
+    ```
+
+    Yahan user PHP, React aur Node.js teeno select kar sakta hai, ya sirf ek, ya koi bhi select nahi kar sakta.
+
+    **Skills (Multiple selections)**
+
+    PHP
+
+    React
+
+    Node.js
+
+    ### **3. Radio vs Checkbox**
+
+    | Radio                                                          | Checkbox                                                 |
+    | -------------------------------------------------------------- | -------------------------------------------------------- |
+    | Single option select                                           | Multiple options select                                  |
+    | Same `name` ke saath group hote hain                           | Same name use karke multiple values submit ho sakti hain |
+    | Selected option ko directly deselect nahi kar sakte (normally) | Check/uncheck dono kar sakte hain                        |
+    | Example: Payment method                                        | Example: Skills, hobbies                                 |
+    | Round button                                                   | Square checkbox by default                               |
+
+    ## **🎯 English Interview Answer**
+
+    > **"Radio buttons are used when the user needs to select only one option from a group. Checkboxes are used when the user can select multiple options independently. For example, radio buttons are used for selecting a payment method, while checkboxes are used for selecting multiple skills."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Why do radio buttons have the same name?**
+
+    The same name groups the radio buttons together and allows only one option in that group to be selected.
+
+    **Q2. Can we select multiple radio buttons?**
+
+    Not within the same radio group. If their names are different, they belong to different groups and can each have a selection.
+
+    **Q3. Can a checkbox be used for a Yes/No option?**
+
+    Yes, for example, accepting Terms & Conditions or enabling notifications.
+
+    ### **⭐ One-line memory trick**
+
+    **Radio = One choice | Checkbox = Multiple choices.**
+
+
 27. Form submit ka flow?
 28. `<img>` tag?
 29. alt attribute kyun important hai?
