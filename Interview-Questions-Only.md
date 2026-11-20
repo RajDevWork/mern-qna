@@ -3371,6 +3371,95 @@ Browser automatically validation kar dega.
 
 
 25. Placeholder vs value?
+
+    ## **Hinglish Explanation**
+
+    HTML input mein `placeholder` aur `value` dono input field ke andar text show karte hain, lekin dono ka purpose different hota hai.
+
+    - `placeholder` user ko hint deta hai ki field mein kya enter karna hai.
+    - `value` input ki actual value hoti hai, yani field ke andar entered ya predefined data.
+
+    ### **1. Placeholder**
+
+    `placeholder` ek hint hota hai jo input field empty hone par show hota hai. User typing start karta hai toh placeholder disappear ho jata hai.
+
+    ```
+    <input type="text" placeholder="Enter your name">
+    ```
+
+    Placeholder example
+
+    Enter your name
+
+    ### **2. Value**
+
+    `value` input field ki actual value set karta hai. Ye predefined bhi ho sakti hai aur user ke input se change bhi ho sakti hai.
+
+    ```
+    <input type="text" value="Rajeshwar">
+    ```
+
+    Value example
+
+    Rajeshwar
+
+    ### **3. Placeholder vs Value**
+
+    | `placeholder`                         | `value`                              |
+    | ------------------------------------- | ------------------------------------ |
+    | Hint show karta hai                   | Actual input data show karta hai     |
+    | Empty field mein show hota hai        | Field ki current value hoti hai      |
+    | User typing par disappear hota hai    | User edit kar sakta hai              |
+    | Form submit hone par submit nahi hota | `name` ke saath form submit hota hai |
+    | Example: `Enter email`                | Example: `abc@gmail.com`             |
+
+    ### **4. Practical Example**
+
+    ```
+    <form>
+    <input
+        type="email"
+        name="email"
+        placeholder="Enter your email"
+        value="user@gmail.com"
+    >
+
+    <button type="submit">Submit</button>
+    </form>
+    ```
+
+    Yahan:
+
+    - `placeholder` → `Enter your email` (hint)
+    - `value` → `user@gmail.com` (actual data)
+
+    **Important interview point:** HTML mein `value` input ki initial value set kar sakta hai. React mein agar `value` prop use karte hain, toh input controlled hota hai aur usually `onChange` ke through state update karni hoti hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"Placeholder and value have different purposes. Placeholder displays a hint inside an empty input field, while value represents the actual data of the input. Placeholder disappears when the user starts typing, but value contains the data that can be edited and submitted with the form."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Is placeholder submitted with the form?**
+
+    No. Placeholder is just a hint. Only the actual form value is submitted.
+
+    **Q2. Can placeholder replace a label?**
+
+    No. Placeholder should not replace a label because it disappears when the user starts typing and is not a reliable accessible name.
+
+    **Q3. What is the difference between&#x20;**`value`**&#x20;and&#x20;**`defaultValue`**&#x20;in React?**
+
+    - `value` is used for controlled inputs.
+    - `defaultValue` sets the initial value for an uncontrolled input.
+
+    ### **⭐ One-line memory trick**
+
+    **Placeholder = Hint | Value = Actual data.**
+
+
+
 26. Radio vs checkbox?
 27. Form submit ka flow?
 28. `<img>` tag?
