@@ -3707,6 +3707,112 @@ Browser automatically validation kar dega.
 
 
 28. `<img>` tag?
+
+
+    ## **Hinglish Explanation**
+
+    HTML ka `<img>` tag webpage par image display karne ke liye use hota hai. Ye ek **replaced element** hai, jiska content external image file se aata hai.
+
+    Iske through hum photos, icons, illustrations, banners etc. display kar sakte hain.
+
+    ### **1. Basic Syntax**
+
+    ```
+    <img src="photo.jpg" alt="My profile photo">
+    ```
+
+    - `src` → Image ka path ya URL.
+    - `alt` → Image ka textual description, jo accessibility aur image load fail hone par useful hota hai.
+
+    ### **2. Important Attributes**
+
+    | Attribute | Use                                    |
+    | --------- | -------------------------------------- |
+    | `src`     | Image location/path                    |
+    | `alt`     | Image ka alternative text              |
+    | `width`   | Image width                            |
+    | `height`  | Image height                           |
+    | `loading` | Lazy ya eager loading                  |
+    | `srcset`  | Different resolution/size images       |
+    | `sizes`   | Responsive image ke display size hints |
+    | `title`   | Optional tooltip text                  |
+
+    ### **3. Practical Example**
+
+    ```
+    <img
+    src="/images/profile.jpg"
+    alt="Developer working on a laptop"
+    width="400"
+    height="300"
+    loading="lazy"
+    />
+    ```
+
+    Yahan:
+
+    - `width` aur `height` layout mein image space reserve karte hain, jisse layout shift kam hota hai.
+    - `loading="lazy"` image ko tab load karne mein help karta hai jab wo viewport ke paas aati hai.
+    - `alt` screen reader users ko image ka meaning samajhne mein help karta hai.
+
+    ### **4. Responsive Image**
+
+    Agar different screen sizes ya resolutions par different images serve karni hain, toh `srcset` aur `sizes` use kar sakte hain.
+
+    ```
+    <img
+    src="image-800.jpg"
+    srcset="
+        image-400.jpg 400w,
+        image-800.jpg 800w,
+        image-1200.jpg 1200w
+    "
+    sizes="(max-width: 600px) 100vw, 50vw"
+    alt="Mountain landscape"
+    />
+    ```
+
+    Browser available candidates aur display conditions ke according suitable image select kar sakta hai.
+
+    ### **5. Important Interview Points**
+
+    - `<img>` ek **void element** hai; iska closing tag nahi hota.
+    - Meaningful image ke liye proper `alt` text dena chahiye.
+    - Decorative image ke liye `alt=""` use kar sakte hain.
+    - Below-the-fold images ke liye `loading="lazy"` useful hai.
+    - Above-the-fold ya hero image ko unnecessarily lazy-load nahi karna chahiye.
+    - Image dimensions dene se layout shift (CLS) reduce karne mein help milti hai.
+
+    ## **🎯 English Interview Answer**
+
+    > **"The img tag is used to display images on a webpage. It uses the src attribute to specify the image path and the alt attribute to provide alternative text for accessibility. We can also use width, height, loading, srcset, and sizes for image dimensions and performance optimization. The img tag is a void element, so it doesn't require a closing tag."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Why is the&#x20;**`alt`**&#x20;attribute important?**
+
+    It improves accessibility by describing the image to screen reader users and also provides alternative text if the image fails to load.
+
+    **Q2. What is lazy loading?**
+
+    Lazy loading delays loading off-screen images until they are closer to entering the viewport, which can improve initial page loading performance.
+
+    ```
+    <img src="product.jpg" alt="Product" loading="lazy">
+    ```
+
+    **Q3. What is&#x20;**`srcset`**?**
+
+    `srcset` allows the browser to choose from multiple image sources based on screen resolution and display requirements.
+
+    **Q4. Is&#x20;**`<img>`**&#x20;an inline or block element?**
+
+    By default, `<img>` is an inline-level replaced element. It can have width and height, and we can change its display behavior using CSS.
+
+    ### **⭐ One-line memory trick**
+
+
+
 29. alt attribute kyun important hai?
 30. `<audio>` aur `<video>`?
 31. `<source>` tag?
