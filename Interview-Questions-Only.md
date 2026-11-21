@@ -3814,6 +3814,80 @@ Browser automatically validation kar dega.
 
 
 29. alt attribute kyun important hai?
+
+    ## **Hinglish Explanation**
+
+    HTML mein `alt` (alternative text) attribute image ka **textual description** provide karta hai. Ye mainly accessibility aur image fallback ke liye important hai.
+
+    ### **1. Screen Reader Accessibility**
+
+    Visually impaired users screen reader use karte hain. Screen reader `alt` text read karke user ko batata hai ki image mein kya hai.
+
+    ```
+    <img src="developer.jpg" alt="Developer working on a laptop">
+    ```
+
+    Screen reader image ko describe karega: *Developer working on a laptop.*
+
+    ### **2. Image Load Fail Hone Par**
+
+    Agar image load nahi hoti, toh browser kuch situations mein `alt` text show kar sakta hai, jisse user ko image ka purpose samajh aa sake.
+
+    ```
+    <img src="missing-image.jpg" alt="Company logo">
+    ```
+
+    ### **3. SEO & Image Context**
+
+    `alt` text search engines ko image ka context samajhne mein help karta hai. Ye Google Images aur image understanding ke liye useful hai, lekin sirf `alt` likhne se SEO ranking guarantee nahi hoti.
+
+    ### **4. Decorative Images**
+
+    Agar image sirf decoration ke liye hai aur koi meaningful information nahi deti, toh empty alt use karte hain.
+
+    ```
+    <img src="border-decoration.png" alt="">
+    ```
+
+    Isse screen reader generally image ko ignore kar sakta hai, taaki unnecessary interruption na ho.
+
+    ### **Good vs Bad Alt Text**
+
+    ```
+    <!-- ❌ Bad -->
+    <img src="car.jpg" alt="image">
+
+    <!-- ❌ Keyword stuffing -->
+    <img src="car.jpg" alt="best car cheap car luxury car car">
+
+    <!-- ✅ Good -->
+    <img src="car.jpg" alt="Red car parked near a beach">
+    ```
+
+    ## **🎯 English Interview Answer**
+
+    > **"The alt attribute is important for accessibility because screen readers use it to describe images to visually impaired users. It also provides alternative text when an image cannot load and helps search engines understand the image context. For decorative images, we can use an empty alt attribute so screen readers can ignore them."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Is&#x20;**`alt`**&#x20;mandatory on every&#x20;**`<img>`**?**
+
+    An `alt` attribute should be present on every image. For meaningful images, it should describe the image. For decorative images, use `alt=""`.
+
+    **Q2. Should we write&#x20;**`alt="Image"`**?**
+
+    No, it doesn't provide meaningful information. Alt text should describe the image's purpose or relevant content.
+
+    **Q3. Does alt text directly improve SEO ranking?**
+
+    It helps search engines understand images and improves image-search accessibility, but it does not guarantee ranking improvement.
+
+    ### **⭐ One-line memory trick**
+
+    **Alt = Accessibility + Image fallback + Image context.**
+
+
+
 30. `<audio>` aur `<video>`?
 31. `<source>` tag?
 32. Lazy loading images?
