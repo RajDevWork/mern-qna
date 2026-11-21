@@ -3889,6 +3889,137 @@ Browser automatically validation kar dega.
 
 
 30. `<audio>` aur `<video>`?
+
+    ## **Hinglish Explanation**
+
+    HTML mein `<audio>` aur `<video>` tags ka use webpage par media play karne ke liye hota hai. Dono HTML5 ke native media elements hain, aur browser inke playback controls provide kar sakta hai.
+
+    - `<audio>` → Audio / sound play karne ke liye.
+    - `<video>` → Video play karne ke liye.
+
+    ## **1.&#x20;**`<audio>`**&#x20;Tag**
+
+    Audio tag ka use music, voice recordings, podcasts, sound effects etc. play karne ke liye hota hai.
+
+    ### **Example**
+
+    ```
+    <audio controls>
+    <source src="music.mp3" type="audio/mpeg">
+    Your browser does not support audio.
+    </audio>
+    ```
+
+    ### **Important Attributes**
+
+    | Attribute  | Use                                           |
+    | ---------- | --------------------------------------------- |
+    | `controls` | Play, pause, volume controls show karta hai   |
+    | `autoplay` | Automatically playback start karne ki request |
+    | `loop`     | Audio repeat karta hai                        |
+    | `muted`    | Audio initially muted                         |
+    | `preload`  | Loading behavior hint: none, metadata, auto   |
+
+    [HTML \<audio> Tag. Super simple to add audio files to your… | by Samantha Ming | The Startup | Medium](https://images.openai.com/static-rsc-4/gyHx42RmbUOm-K1lForbzrvUi5rsEFEQ6UhDmu8kUJ3zzOMCbSvnHlzKm8sbzB1_RBe64YuAoEDYHo5kJV3GE_P8UI-qsd8AkF1qBYzXEm2AMmE5FU52OhaP24MTWLMdHg-BAtKeqsJ5I8a2qKqs1cvTOoL-7cH_JOE41QUC5qA?purpose=inline)
+
+    [HTML audio tag explained | sebhastian](https://images.openai.com/static-rsc-4/rnMnGpUXJHL7Y1LNgL74wZaxRklzkw1J3w_SeKvPshbJPuXpivxz7OnlmIYOKO7a0CNQBToIswOk2nbJOV7N0wGUzzVJ9BfBN6u__EowoP1ntpqqPI-xg-HYxHYw9NcQsNzeLmZLKQX3Z-OUJvmaNrCOxhb-58N1DDkNhFshk9s?purpose=inline)
+
+    [Multimedia/Audio und Video – SELFHTML-Wiki](https://images.openai.com/static-rsc-4/lnYi8ib8jX4EPTPaPoV5MN0N7I9DKwwLHNtcsvod4J4nTYhE5Jwg8GP5P4Ol-6OSZUrTPOwyg1ySjeZKLCE4lN7Me_6t1H5RKrFSn8gaGoXRqF2ww3yQDAg7R_-G_HH-yaWhmji_tgLlp46uRf3KEQSHlJd5ou9h_7bTTOtlycU?purpose=inline)
+
+    4
+
+    ## **2.&#x20;**`<video>`**&#x20;Tag**
+
+    Video tag ka use videos display aur play karne ke liye hota hai.
+
+    ### **Example**
+
+    ```
+    <video controls width="600" poster="thumbnail.jpg">
+    <source src="movie.mp4" type="video/mp4">
+    Your browser does not support video.
+    </video>
+    ```
+
+    ### **Important Attributes**
+
+    | Attribute          | Use                                                |
+    | ------------------ | -------------------------------------------------- |
+    | `controls`         | Play, pause, seek, volume controls                 |
+    | `autoplay`         | Automatically playback start karne ki request      |
+    | `muted`            | Video ko sound ke bina play karta hai              |
+    | `loop`             | Video repeat karta hai                             |
+    | `poster`           | Video start hone se pehle thumbnail show karta hai |
+    | `width` / `height` | Video dimensions                                   |
+    | `preload`          | Video loading behavior hint                        |
+    | `playsinline`      | Mobile par video inline playback allow karta hai   |
+
+    [Audio and Video Elements Tutorial | Sophia Learning](https://images.openai.com/static-rsc-4/tD8QUmVaSGkoPYWiz74CWCn3i9mETFF0vk1hvdj5kAvb0n0IQYIW0ivwfMj54z8NdZpSori1g8Ss0L_y2b9--4pux4vsdWKzFPt7BPEkduG4IcSAG9HQUTJS44wnC0DcrkTAVfYynntOoZpiS4ksyi5xih5bgSMV0ExhJgxW3Og?purpose=inline)
+
+    ## **3. Multiple Formats Support**
+
+    Different browsers ya devices par media format compatibility different ho sakti hai. Isliye multiple `<source>` elements provide kar sakte hain.
+
+    ```
+    <video controls>
+    <source src="movie.mp4" type="video/mp4">
+    <source src="movie.webm" type="video/webm">
+    Your browser does not support video.
+    </video>
+    ```
+
+    Browser supported source choose karne ki koshish karta hai.
+
+    Audio mein bhi multiple sources provide kar sakte hain:
+
+    ```
+    <audio controls>
+    <source src="song.mp3" type="audio/mpeg">
+    <source src="song.ogg" type="audio/ogg">
+    </audio>
+    ```
+
+    ## **4.&#x20;**`<audio>`**&#x20;vs&#x20;**`<video>`
+
+    | `<audio>`                    | `<video>`                     |
+    | ---------------------------- | ----------------------------- |
+    | Audio play karta hai         | Video play karta hai          |
+    | Visual content nahi hota     | Visual content hota hai       |
+    | Audio controls               | Video controls                |
+    | Audio formats: MP3, WAV, OGG | Video formats: MP4, WebM, OGG |
+    | Audio player                 | Video player                  |
+
+    ## **🎯 English Interview Answer**
+
+    > **"The audio and video tags are HTML5 elements used to play media directly in the browser without requiring external plugins. The audio tag is used to play sound, while the video tag is used to play video content. Both support attributes like controls, autoplay, loop, muted, and preload. The video tag also supports attributes like poster, width, height, and playsinline."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Why do we use the&#x20;**`controls`**&#x20;attribute?**
+
+    It displays native browser media controls such as play, pause, volume, seek bar, and fullscreen (for video).
+
+    **Q2. What is the&#x20;**`poster`**&#x20;attribute in video?**
+
+    It specifies the thumbnail image displayed before the video starts playing.
+
+    **Q3. What is&#x20;**`preload`**?**
+
+    It gives the browser a hint about how much media data should be loaded before playback.
+
+    - `none` → Avoid preloading media.
+    - `metadata` → Load basic media information, such as duration.
+    - `auto` → Browser may preload the media.
+
+    **Q4. Why can autoplay sometimes fail?**
+
+    Browsers often block autoplay with sound to prevent unwanted playback. Autoplay is more likely to work when the media is muted or after user interaction, depending on browser policies.
+
+    ### **⭐ One-line memory trick**
+
+    `<audio>`**&#x20;= Sound |&#x20;**`<video>`**&#x20;= Sound + Visual.**
+
+
 31. `<source>` tag?
 32. Lazy loading images?
 33. `<a>` tag ka use?
