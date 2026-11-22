@@ -4117,6 +4117,69 @@ Browser automatically validation kar dega.
     `<source>`**&#x20;= Multiple media choices, browser selects the suitable one.**
 
 32. Lazy loading images?
+
+    ## **Hinglish Explanation**
+
+    **Lazy Loading images** ka matlab hai images ko tab load karna jab user unke paas scroll karke pahunchne wala ho, instead of page load hote hi sabhi images load karna.
+
+    Isse initial page load fast hota hai, bandwidth save hoti hai aur performance improve hoti hai.
+
+    ### **Without Lazy Loading**
+
+    Agar page par 50 images hain, toh browser page load ke time sabhi 50 images download karna start kar sakta hai, chahe user unhe dekhe ya nahi.
+
+    ### **With Lazy Loading**
+
+    Browser initially sirf visible images aur nearby images load karta hai. Baaki images user scroll karne par load hoti hain.
+
+    ### **Implementation**
+
+    ```
+    <img src="product.jpg" alt="Product" loading="lazy" />
+    ```
+
+    - `loading="lazy"` → Image ko zarurat padne par load karne ke liye browser ko hint deta hai.
+    - `loading="eager"` → Image ko immediately load karne ka hint deta hai. (Default behavior)
+
+    ### **Kab use karna chahiye?**
+
+    - Product listing pages
+    - Blog posts
+    - Long pages
+    - Gallery pages
+    - Images jo initial viewport ke neeche hain
+
+    Important: Hero image ya page ke top par visible main image ko lazy load nahi karna chahiye, kyunki isse LCP (Largest Contentful Paint) slow ho sakta hai.
+
+    ## **🎯 English Interview Answer**
+
+    > "Lazy loading is a technique where images are loaded only when they are needed, usually when the user scrolls near them. It improves initial page loading speed, reduces bandwidth usage, and improves performance. In HTML, we can use `loading='lazy'` on the image tag. However, we should avoid lazy loading images that are immediately visible above the fold."
+
+    ### **Interview Follow-up**
+
+    **Q1. Lazy loading ka main benefit kya hai?**
+
+    It reduces initial page load time and saves bandwidth by delaying unnecessary image downloads.
+
+    **Q2. Lazy loading kaise implement karte hain?**
+
+    By using the `loading="lazy"` attribute in the HTML `<img>` tag.
+
+    **Q3. Kya sabhi images ko lazy load karna chahiye?**
+
+    No. Above-the-fold and hero images should generally load eagerly to avoid delaying the main visual content.
+
+    **Q4. Lazy loading aur eager loading mein difference?**
+
+    - `lazy` → Image loading is delayed until needed.
+    - `eager` → Image loading starts immediately.
+
+    ### **⭐ One-line memory trick**
+
+    **Lazy Loading = Jo image abhi visible nahi hai, usko abhi download mat karo.**
+
+
+
 33. `<a>` tag ka use?
 34. target="_blank"?
 35. Anchor vs button?
