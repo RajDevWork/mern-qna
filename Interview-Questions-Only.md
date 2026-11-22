@@ -4267,6 +4267,69 @@ Browser automatically validation kar dega.
 
 
 34. target="_blank"?
+
+    ## **Hinglish Explanation**
+
+    `target="_blank"` ka use anchor (`<a>`) tag ke link ko **new tab (ya new browsing context)** mein open karne ke liye hota hai, instead of current tab mein.
+
+    ### **Example**
+
+    ```
+    <a href="https://google.com" target="_blank">
+    Open Google
+    </a>
+    ```
+
+    Jab user **Open Google** par click karega, Google new tab mein open hoga aur current website ka tab wahi rahega.
+
+    ### `target`**&#x20;ke common values**
+
+    | Value     | Meaning                                       |
+    | --------- | --------------------------------------------- |
+    | `_self`   | Same tab mein open (default)                  |
+    | `_blank`  | New tab/context mein open                     |
+    | `_parent` | Parent browsing context mein open             |
+    | `_top`    | Full window mein open, frames ko remove karke |
+
+    ### **Security ke liye&#x20;**`rel`**&#x20;kyun use karte hain?**
+
+    ```
+    <a href="https://google.com"
+    target="_blank"
+    rel="noopener noreferrer">
+    Open Google
+    </a>
+    ```
+
+    - `noopener` → New page ko original page ke `window.opener` ke through access karne se rokta hai.
+    - `noreferrer` → Referrer information share nahi karta aur `noopener` behavior bhi provide karta hai.
+
+    Modern browsers mein `_blank` ke saath implicit `noopener` protection hoti hai, lekin explicitly `rel="noopener noreferrer"` use karna bhi common practice hai, especially privacy/security ke liye.
+
+    ## **🎯 English Interview Answer**
+
+    > "The `target` attribute specifies where the linked page should open. When we use `target='_blank'`, the link opens in a new tab or browsing context instead of the current tab. We commonly use it for external links. For security and privacy, we can also add `rel='noopener noreferrer'`."
+
+    ### **Interview Follow-up**
+
+    **Q1.&#x20;**`_blank`**&#x20;aur&#x20;**`_self`**&#x20;mein kya difference hai?**
+
+    - `_blank` opens the link in a new tab or browsing context.
+    - `_self` opens the link in the same tab. It is the default behavior.
+
+    **Q2.&#x20;**`noopener`**&#x20;ka kya use hai?**
+
+    It prevents the newly opened page from accessing the original page through `window.opener`.
+
+    **Q3. Kya&#x20;**`_blank`**&#x20;hamesha new tab hi open karta hai?**
+
+    Usually browser new tab open karta hai, but the exact behavior can depend on the browser and its settings.
+
+    ### **⭐ One-line memory trick**
+
+    `_self`**&#x20;= Same tab,&#x20;**`_blank`**&#x20;= New tab.**
+
+
 35. Anchor vs button?
 36. Relative vs absolute URL?
 37. `<table>` structure?
