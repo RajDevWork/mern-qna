@@ -4181,6 +4181,91 @@ Browser automatically validation kar dega.
 
 
 33. `<a>` tag ka use?
+
+    ## **Hinglish Explanation**
+
+    `<a>` (Anchor) tag ka use **ek page se dusre page par navigate karne, kisi URL ko open karne, page ke kisi specific section par jump karne, ya email/phone link banane** ke liye hota hai.
+
+    Isko hyperlink banane ke liye use karte hain.
+
+    ### **Syntax**
+
+    ```
+    <a href="https://google.com">Visit Google</a>
+    ```
+
+    - `<a>` → Anchor tag
+    - `href` → Destination URL batata hai ki click karne par kahan jana hai.
+    - `Visit Google` → Clickable text (link)
+
+    ### **Common uses**
+
+    **1. Dusre website par navigate karna**
+
+    ```
+    <a href="https://google.com">Google</a>
+    ```
+
+    **2. Apni website ke dusre page par jana**
+
+    ```
+    <a href="/about">About Us</a>
+    ```
+
+    **3. New tab mein open karna**
+
+    ```
+    <a href="https://google.com" target="_blank"
+    rel="noopener noreferrer">
+    Open Google
+    </a>
+    ```
+
+    **4. Same page ke kisi section par jump karna**
+
+    ```
+    <a href="#contact">Contact Section</a>
+
+    <h2 id="contact">Contact Us</h2>
+    ```
+
+    **5. Email link**
+
+    ```
+    <a href="mailto:test@example.com">Send Email</a>
+    ```
+
+    **6. Phone call link**
+
+    ```
+    <a href="tel:+919876543210">Call Us</a>
+    ```
+
+    ## **🎯 English Interview Answer**
+
+    > "The anchor tag is used to create hyperlinks in HTML. It helps us navigate to another webpage, an external website, a specific section on the same page, or an email and phone link. The `href` attribute specifies the destination of the link. We can also use `target="_blank"` to open a link in a new tab."
+
+    ### **Interview Follow-up**
+
+    **Q1.&#x20;**`<a>`**&#x20;tag mein&#x20;**`href`**&#x20;kya hota hai?**
+
+    `href` specifies the URL or destination where the user will navigate after clicking the link.
+
+    **Q2.&#x20;**`target="_blank"`**&#x20;ka kya use hai?**
+
+    It opens the linked page in a new tab or browsing context.
+
+    **Q3.&#x20;**`<a>`**&#x20;aur&#x20;**`<button>`**&#x20;mein kya difference hai?**
+
+    - `<a>` is used for navigation, such as opening pages or URLs.
+    - `<button>` is used for actions, such as submitting a form, toggling UI, or executing JavaScript functionality.
+
+    ### **⭐ One-line memory trick**
+
+    `<a>`**&#x20;= Navigate karna,&#x20;**`<button>`**&#x20;= Action perform karna.**
+
+
+
 34. target="_blank"?
 35. Anchor vs button?
 36. Relative vs absolute URL?
