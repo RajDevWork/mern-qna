@@ -4021,6 +4021,101 @@ Browser automatically validation kar dega.
 
 
 31. `<source>` tag?
+
+    ## **Hinglish Explanation**
+
+    HTML ka `<source>` tag **multiple media sources provide karne** ke liye use hota hai. Browser available sources mein se jo compatible format support karta hai, use choose kar sakta hai.
+
+    Ye mainly `<picture>`, `<audio>` aur `<video>` elements ke andar use hota hai.
+
+    ### **1.&#x20;**`<source>`**&#x20;with Video**
+
+    Agar video ke multiple formats available hain, toh hum multiple `<source>` tags provide kar sakte hain.
+
+    ```
+    <video controls width="500">
+    <source src="movie.mp4" type="video/mp4">
+    <source src="movie.webm" type="video/webm">
+
+    Your browser does not support video.
+    </video>
+    ```
+
+    **Flow:**
+
+    - Browser first source check karta hai.
+    - Agar format supported hai, browser us source ko use kar sakta hai.
+    - Otherwise, browser next compatible source try karta hai.
+
+    ### **2.&#x20;**`<source>`**&#x20;with Audio**
+
+    ```
+    <audio controls>
+    <source src="music.mp3" type="audio/mpeg">
+    <source src="music.ogg" type="audio/ogg">
+
+    Your browser does not support audio.
+    </audio>
+    ```
+
+    Yahan browser supported audio format choose kar sakta hai.
+
+    ### **3.&#x20;**`<source>`**&#x20;with Picture (Responsive Images)**
+
+    `<source>` ka use `<picture>` ke saath different screen sizes ya image formats ke liye bhi hota hai.
+
+    ```
+    <picture>
+    <source
+        media="(max-width: 600px)"
+        srcset="mobile.jpg"
+    >
+
+    <source
+        type="image/webp"
+        srcset="desktop.webp"
+    >
+
+    <img src="desktop.jpg" alt="Mountain view">
+    </picture>
+    ```
+
+    Yahan browser conditions aur supported formats ke according appropriate source select karta hai. `<img>` fallback aur actual image rendering provide karta hai.
+
+    ### **4. Important Attributes**
+
+    | Attribute | Use                                  |
+    | --------- | ------------------------------------ |
+    | `src`     | Source file ka path                  |
+    | `type`    | File ka MIME type, jaise `video/mp4` |
+    | `media`   | Media condition, jaise screen width  |
+    | `srcset`  | Alternative image candidates         |
+
+    **Important:** `<source>` ek void element hai, isliye iska closing tag nahi hota.
+
+    ## **🎯 English Interview Answer**
+
+    > **"The source tag is used to provide multiple media sources for audio, video, or responsive images. The browser selects a suitable source based on format support or media conditions. It is commonly used inside audio, video, and picture elements to improve compatibility and responsive media handling."**
+
+    ### **Interview Follow-up**
+
+    **Q1. Why do we use multiple source tags?**
+
+    To provide different file formats so the browser can select a compatible media source.
+
+    **Q2. Where can we use the source tag?**
+
+    Inside `<audio>`, `<video>`, and `<picture>` elements.
+
+    **Q3. What is the difference between&#x20;**`<source>`**&#x20;and&#x20;**`<img>`**?**
+
+    - `<source>` specifies candidate media files.
+    - `<img>` displays the actual image and provides fallback inside `<picture>`.
+
+    ### **⭐ One-line memory trick**
+
+    `<source>`**&#x20;= Multiple media choices, browser selects the suitable one.**
+
 32. Lazy loading images?
 33. `<a>` tag ka use?
 34. target="_blank"?
