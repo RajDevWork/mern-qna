@@ -4331,6 +4331,87 @@ Browser automatically validation kar dega.
 
 
 35. Anchor vs button?
+
+    ## **Hinglish Explanation**
+
+    `<a>` (Anchor) aur `<button>` dono clickable hote hain, lekin inka **purpose alag hota hai**.
+
+    - **Anchor (**`<a>`**)** ka use navigation ke liye hota hai, yani user ko kisi dusre page, URL ya section par le jana.
+    - **Button (**`<button>`**)** ka use action perform karne ke liye hota hai, jaise form submit karna, data save karna, modal open karna, ya kisi functionality ko trigger karna.
+
+    ### **1. Anchor tag – Navigation**
+
+    ```
+    <a href="/about">About Us</a>
+    ```
+
+    Click karne par user About page par navigate karega.
+
+    ### **2. Button – Action perform karna**
+
+    ```
+    <button type="button" onclick="showMessage()">
+    Click Me
+    </button>
+
+    <script>
+    function showMessage() {
+        alert("Hello!");
+    }
+    </script>
+    ```
+
+    Click karne par action perform hoga, lekin user kisi dusre page par navigate nahi karega.
+
+    ### **Difference**
+
+    | Feature                | `<a>` Anchor      | `<button>`                      |
+    | ---------------------- | ----------------- | ------------------------------- |
+    | Purpose                | Navigation        | Action perform karna            |
+    | `href`                 | Yes               | No                              |
+    | New tab                | `target="_blank"` | Normally applicable nahi        |
+    | Form submission        | Nahi (by default) | `type="submit"` se ho sakta hai |
+    | JavaScript action      | Possible          | Common use                      |
+    | Keyboard accessibility | Built-in          | Built-in                        |
+
+    ### **Form ke andar Button types**
+
+    ```
+    <button type="submit">Submit Form</button>
+    <button type="button">Open Modal</button>
+    <button type="reset">Reset Form</button>
+    ```
+
+    - `submit` → Form submit karta hai.
+    - `button` → Default form submission nahi karta; custom action ke liye.
+    - `reset` → Form ke fields reset karta hai.
+
+    Interview tip: Agar click karne par user ko kahin navigate karna hai, toh `<a>` use karo. Agar click karne par koi action perform karwana hai, toh `<button>` use karo.
+
+    ## **🎯 English Interview Answer**
+
+    > "The main difference between an anchor and a button is their purpose. An anchor is used for navigation, such as opening another page or URL, and it uses the href attribute. A button is used to perform an action, such as submitting a form, opening a modal, or triggering JavaScript functionality. We should use an anchor for navigation and a button for actions."
+
+    ### **Interview Follow-up**
+
+    **Q1. Kya anchor tag se JavaScript action perform kar sakte hain?**
+
+    Yes, but if the purpose is to perform an action without navigation, a button is the more appropriate semantic element.
+
+    **Q2. Button ka default type kya hota hai?**
+
+    Inside a form, a button without an explicit type generally behaves as `submit`. So we should specify `type="button"` when we don't want to submit the form.
+
+    **Q3. Kya button ko page navigation ke liye use kar sakte hain?**
+
+    Technically yes, using JavaScript, but for normal navigation an anchor is better because it provides correct semantics, keyboard behavior, and browser features such as opening the link in a new tab.
+
+    ### **⭐ One-line memory trick**
+
+    **Anchor = Location change (Navigate), Button = Action change (Perform).**
+
+
+
 36. Relative vs absolute URL?
 37. `<table>` structure?
 38. `<thead>`, `<tbody>`?
