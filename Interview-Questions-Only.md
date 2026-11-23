@@ -4413,6 +4413,97 @@ Browser automatically validation kar dega.
 
 
 36. Relative vs absolute URL?
+
+    ## **Hinglish Explanation**
+
+    URL mainly 2 types ke hote hain: **Relative URL** aur **Absolute URL**.
+
+    ### **1. Absolute URL**
+
+    Absolute URL mein complete address hota hai, including protocol (`https`), domain name aur path.
+
+    ```
+    <a href="https://www.example.com/about">About Us</a>
+    ```
+
+    Isme:
+
+    - `https://` → Protocol
+    - `www.example.com` → Domain
+    - `/about` → Path
+
+    Absolute URL ka use generally kisi external website ko link karne ke liye hota hai, ya jab exact full address specify karna ho.
+
+    ### **2. Relative URL**
+
+    Relative URL mein complete domain nahi diya jata. Browser current URL ya website ke base path ke according destination resolve karta hai.
+
+    ```
+    <a href="/about">About Us</a>
+    ```
+
+    Agar current website `https://mywebsite.com` hai, toh ye resolve hoga:
+
+    `https://mywebsite.com/about`
+
+    ### **Types of Relative Paths**
+
+    Assume hamara project structure:
+
+    Project Structure
+
+    mywebsite/\
+    ├── index.html\
+    ├── about.html\
+    └── pages/\
+    &#x20;   └── contact.html
+
+    | URL                         | Meaning                    |
+    | --------------------------- | -------------------------- |
+    | `about.html`                | Current directory ke andar |
+    | `./about.html`              | Current directory se       |
+    | `../about.html`             | Ek directory piche jaakar  |
+    | `/about.html`               | Root path se               |
+    | `https://example.com/about` | Complete absolute URL      |
+
+    ### **Practical example**
+
+    Agar hum `https://mywebsite.com/pages/contact.html` par hain:
+
+    ```
+    <!-- Relative -->
+    <a href="../about.html">About</a>
+
+    <!-- Absolute -->
+    <a href="https://mywebsite.com/about.html">About</a>
+    ```
+
+    Relative path `../about.html` ek directory piche jayega, jabki absolute URL exact address specify karta hai.
+
+    ## **🎯 English Interview Answer**
+
+    > "An absolute URL contains the complete address, including the protocol and domain name, whereas a relative URL contains only the path relative to the current location or base URL. Absolute URLs are commonly used to link external websites, while relative URLs are useful for navigating within the same website. Relative URLs also make applications easier to move between different domains or environments."
+
+    ### **Interview Follow-up**
+
+    **Q1. Relative URL ka main benefit kya hai?**
+
+    It makes internal links easier to maintain because we don't need to hardcode the full domain name.
+
+    **Q2.&#x20;**`../`**&#x20;ka kya meaning hota hai?**
+
+    It means go one directory level up from the current directory.
+
+    **Q3.&#x20;**`/about`**&#x20;aur&#x20;**`about`**&#x20;mein kya difference hai?**
+
+    - `/about` → Root-relative path; starts from the website's root.
+    - `about` → Relative to the current directory or base URL.
+
+    ### **⭐ One-line memory trick**
+
+    **Absolute = Full address | Relative = Current location ke reference se address.**
+
+
 37. `<table>` structure?
 38. `<thead>`, `<tbody>`?
 39. colspan vs rowspan?
