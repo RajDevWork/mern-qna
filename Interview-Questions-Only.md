@@ -4505,6 +4505,136 @@ Browser automatically validation kar dega.
 
 
 37. `<table>` structure?
+
+    ## **Hinglish Explanation**
+
+    HTML mein `<table>` ka use **tabular data ko rows aur columns mein organize karke display karne** ke liye hota hai, jaise employee records, pricing, reports, marksheet, etc.
+
+    ### **Table ka basic structure**
+
+    ```
+    <table>
+    <thead>
+        <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>City</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+        <td>Rajesh</td>
+        <td>30</td>
+        <td>Ahmedabad</td>
+        </tr>
+
+        <tr>
+        <td>Amit</td>
+        <td>28</td>
+        <td>Delhi</td>
+        </tr>
+    </tbody>
+    </table>
+    ```
+
+    ### **Table ke important tags**
+
+    | Tag         | Use                        |
+    | ----------- | -------------------------- |
+    | `<table>`   | Complete table container   |
+    | `<thead>`   | Table ka header section    |
+    | `<tbody>`   | Main data rows             |
+    | `<tfoot>`   | Footer/summary rows        |
+    | `<tr>`      | Table row                  |
+    | `<th>`      | Header cell                |
+    | `<td>`      | Normal data cell           |
+    | `<caption>` | Table ka title/description |
+
+    ### **Table ka visual structure**
+
+    Name (th)
+
+    Age (th)
+
+    City (th)
+
+    Rajesh (td)
+
+    30 (td)
+
+    Ahmedabad (td)
+
+    Amit (td)
+
+    28 (td)
+
+    Delhi (td)
+
+    Header row + data rows = Table
+
+    ### **Table with footer**
+
+    ```
+    <table>
+    <caption>Employee Details</caption>
+
+    <thead>
+        <tr>
+        <th>Name</th>
+        <th>Salary</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+        <td>Rajesh</td>
+        <td>50000</td>
+        </tr>
+    </tbody>
+
+    <tfoot>
+        <tr>
+        <td>Total</td>
+        <td>50000</td>
+        </tr>
+    </tfoot>
+    </table>
+    ```
+
+    - `<thead>` → Column headings.
+    - `<tbody>` → Actual records.
+    - `<tfoot>` → Summary, totals, or footer information.
+
+    ## **🎯 English Interview Answer**
+
+    > "The HTML table is used to display structured data in rows and columns. The main tag is table. We use tr to define rows, th for header cells, and td for data cells. We can also organize the table using thead, tbody, and tfoot. For accessibility, we should use proper table headers and captions when needed."
+
+    ### **Interview Follow-up**
+
+    **Q1.&#x20;**`<th>`**&#x20;aur&#x20;**`<td>`**&#x20;mein kya difference hai?**
+
+    - `<th>` defines a header cell.
+    - `<td>` defines a normal data cell.
+
+    **Q2.&#x20;**`<thead>`**,&#x20;**`<tbody>`**&#x20;aur&#x20;**`<tfoot>`**&#x20;mandatory hain?**
+
+    No, they are not always mandatory for a basic table, but they help organize the table structure and improve readability and maintainability.
+
+    **Q3.&#x20;**`<caption>`**&#x20;ka kya use hai?**
+
+    It provides a title or description for the table, helping users understand what the data represents.
+
+    **Q4. Kya table ka use page layout banane ke liye karna chahiye?**
+
+    No. Tables should be used for tabular data, not for page layouts. CSS Flexbox and Grid are better for layouts.
+
+    ### **⭐ One-line memory trick**
+
+    `table`**&#x20;= Container →&#x20;**`tr`**&#x20;= Row →&#x20;**`th`**&#x20;= Heading →&#x20;**`td`**&#x20;= Data.**
+
+
+
 38. `<thead>`, `<tbody>`?
 39. colspan vs rowspan?
 40. Table vs div layout?
