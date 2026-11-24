@@ -4749,6 +4749,98 @@ Browser automatically validation kar dega.
 
 
 39. colspan vs rowspan?
+
+    ## **Hinglish Explanation**
+
+    `colspan` aur `rowspan` HTML table ke cells ko multiple columns ya multiple rows mein merge karne ke liye use hote hain.
+
+    - `colspan` → Ek cell ko multiple columns tak expand karta hai (horizontal).
+    - `rowspan` → Ek cell ko multiple rows tak expand karta hai (vertical).
+
+    ### **1.&#x20;**`colspan`**&#x20;– Columns merge karna**
+
+    Agar hume ek cell ko 2 ya usse zyada columns ki width cover karani hai, toh `colspan` use karte hain.
+
+    ```
+    <table border="1">
+    <tr>
+        <th colspan="2">Employee Details</th>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>Rajesh</td>
+    </tr>
+    </table>
+    ```
+
+    Employee Details (colspan="2")
+
+    Name
+
+    Rajesh
+
+    First cell occupies 2 columns horizontally
+
+    ### **2.&#x20;**`rowspan`**&#x20;– Rows merge karna**
+
+    Agar ek cell ko multiple rows ki height cover karani hai, toh `rowspan` use karte hain.
+
+    ```
+    <table border="1">
+    <tr>
+        <th rowspan="2">Name</th>
+        <th>Skill</th>
+    </tr>
+    <tr>
+        <td>PHP</td>
+    </tr>
+    </table>
+    ```
+
+    Name (rowspan="2")
+
+    Skill
+
+    PHP
+
+    First cell occupies 2 rows vertically
+
+    ### **Difference**
+
+    | Feature           | `colspan`       | `rowspan`       |
+    | ----------------- | --------------- | --------------- |
+    | Merge direction   | Horizontal      | Vertical        |
+    | Merges            | Columns         | Rows            |
+    | Example           | `colspan="2"`   | `rowspan="2"`   |
+    | Attribute used on | `<td>` / `<th>` | `<td>` / `<th>` |
+
+    ## **🎯 English Interview Answer**
+
+    > "Colspan and rowspan are HTML table attributes used to merge cells. Colspan merges a cell across multiple columns horizontally, while rowspan merges a cell across multiple rows vertically. They are useful for creating complex table structures like reports, schedules, and grouped headers."
+
+    ### **Interview Follow-up**
+
+    **Q1.&#x20;**`colspan="3"`**&#x20;ka kya matlab hai?**
+
+    It means the cell will span across three columns.
+
+    **Q2.&#x20;**`rowspan="2"`**&#x20;ka kya matlab hai?**
+
+    It means the cell will occupy two rows vertically.
+
+    **Q3. Kya dono ek hi cell par use ho sakte hain?**
+
+    Yes, we can use both `colspan` and `rowspan` on the same `<td>` or `<th>` when a complex table layout requires it.
+
+    ```
+    <td colspan="2" rowspan="2">Merged Cell</td>
+    ```
+
+    ### **⭐ One-line memory trick**
+
+    `colspan`**&#x20;= Side-by-side columns merge,&#x20;**`rowspan`**&#x20;= Up-down rows merge.**
+
+
 40. Table vs div layout?
 41. LocalStorage kya hai?
 42. SessionStorage kya hai?
