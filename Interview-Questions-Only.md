@@ -4636,6 +4636,118 @@ Browser automatically validation kar dega.
 
 
 38. `<thead>`, `<tbody>`?
+
+    ## **Hinglish Explanation**
+
+    `<thead>` aur `<tbody>` HTML table ke rows ko logically separate karne ke liye use hote hain.
+
+    - `<thead>` → Table ke header/column headings ko contain karta hai.
+    - `<tbody>` → Table ke main data rows ko contain karta hai.
+
+    Dono ka use table ko structured, readable aur maintainable banata hai.
+
+    ### **Example**
+
+    ```
+    <table border="1">
+    <thead>
+        <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Salary</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+        <td>Rajesh</td>
+        <td>Developer</td>
+        <td>50,000</td>
+        </tr>
+
+        <tr>
+        <td>Amit</td>
+        <td>Tester</td>
+        <td>40,000</td>
+        </tr>
+    </tbody>
+    </table>
+    ```
+
+    ### **Visual understanding**
+
+    `<thead>`**&#x20;— Header section**
+
+    Name
+
+    Role
+
+    Salary
+
+    `<tbody>`**&#x20;— Data section**
+
+    Rajesh
+
+    Developer
+
+    50,000
+
+    Amit
+
+    Tester
+
+    40,000
+
+    ### **Difference**
+
+    | `<thead>`                        | `<tbody>`                        |
+    | -------------------------------- | -------------------------------- |
+    | Header rows contain karta hai    | Main data rows contain karta hai |
+    | Usually `<th>` use hota hai      | Usually `<td>` use hota hai      |
+    | Column headings define karta hai | Actual records define karta hai  |
+    | Table ka top header section      | Table ka body section            |
+
+    ### **Kya ye mandatory hain?**
+
+    Nahi, basic table banane ke liye hamesha manually likhna mandatory nahi hai. Lekin proper table structure ke liye inka use karna recommended hai.
+
+    Browser, `<tbody>` ko omit karne par bhi DOM mein automatically insert kar sakta hai in some table structures, isliye inspect karne par unexpected `<tbody>` dikh sakta hai.
+
+    ## **🎯 English Interview Answer**
+
+    > "The `thead` and `tbody` elements are used to organize the rows of an HTML table. The `thead` contains the column headings, while the `tbody` contains the main data rows. They improve the structure and readability of the table and also help with styling and table management."
+
+    ### **Interview Follow-up**
+
+    **Q1. Kya&#x20;**`<thead>`**&#x20;aur&#x20;**`<tbody>`**&#x20;ke bina table bana sakte hain?**
+
+    Yes, a basic table can be written without explicitly using them, but using them gives the table a better structure.
+
+    **Q2. Kya&#x20;**`<thead>`**&#x20;mein&#x20;**`<td>`**&#x20;use kar sakte hain?**
+
+    Technically yes, but column headings ke liye `<th>` use karna semantically correct hai.
+
+    **Q3. CSS se dono ko alag style kar sakte hain?**
+
+    Yes.
+
+    ```
+    thead {
+    background: #222;
+    color: white;
+    }
+
+    tbody {
+    background: #f5f5f5;
+    }
+    ```
+
+    ### **⭐ One-line memory trick**
+
+    `thead`**&#x20;= Table ka heading,&#x20;**`tbody`**&#x20;= Table ka actual data.**
+
+
+
 39. colspan vs rowspan?
 40. Table vs div layout?
 41. LocalStorage kya hai?
