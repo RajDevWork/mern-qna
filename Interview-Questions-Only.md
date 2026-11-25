@@ -5079,6 +5079,107 @@ Browser automatically validation kar dega.
 
 
 42. SessionStorage kya hai?
+
+    # **SessionStorage kya hai?**
+
+    ## **Hinglish Explanation**
+
+    `sessionStorage` browser ki client-side storage facility hai, jisme hum **key-value format mein data store kar sakte hain, jo current browser tab ki session tak available rehta hai.**
+
+    Page refresh karne par data persist rehta hai, lekin tab close karne par us tab ka sessionStorage clear ho jata hai.
+
+    ### **1. Data store karna**
+
+    ```
+    sessionStorage.setItem("username", "Rajesh");
+    ```
+
+    ### **2. Data retrieve karna**
+
+    ```
+    const username = sessionStorage.getItem("username");
+
+    console.log(username); // Rajesh
+    ```
+
+    ### **3. Data delete karna**
+
+    ```
+    // Particular key delete
+    sessionStorage.removeItem("username");
+
+    // Pura session storage clear
+    sessionStorage.clear();
+    ```
+
+    ### **4. Object store karna**
+
+    SessionStorage bhi sirf string values store karta hai, isliye objects ko JSON mein convert karna padta hai.
+
+    ```
+    const user = {
+    name: "Rajesh",
+    role: "Developer"
+    };
+
+    // Store
+    sessionStorage.setItem("user", JSON.stringify(user));
+
+    // Retrieve
+    const userData = JSON.parse(sessionStorage.getItem("user"));
+
+    console.log(userData.name); // Rajesh
+    ```
+
+    ### **SessionStorage ka practical use**
+
+    - Multi-step form ka temporary data save karna.
+    - Checkout process ke temporary information ko maintain karna.
+    - Temporary filters ya UI state store karna.
+    - Page refresh hone par form progress lose na ho.
+
+    **Session lifecycle**
+
+    **Browser Tab Open**
+
+    SessionStorage data available
+
+    **Page Refresh**
+
+    Data remains
+
+    **Tab Close**
+
+    Session ends — data cleared
+
+    ## **🎯 English Interview Answer**
+
+    > "SessionStorage is a browser storage mechanism used to store key-value data for a particular tab session. The data remains available after page refresh, but it is cleared when the tab or browsing context session ends. It stores string values, so we use JSON.stringify and JSON.parse for objects. It is useful for temporary form data and session-specific UI state."
+
+    ### **Interview Follow-up**
+
+    **Q1. Page refresh karne par SessionStorage delete hota hai?**
+
+    No. Page refresh does not clear SessionStorage. The data remains available in the same tab session.
+
+    **Q2. Kya SessionStorage dusre tab mein share hota hai?**
+
+    Generally, no. Each tab has its own sessionStorage. A newly opened tab has a separate session, although a tab opened with an opener can initially receive a copy of the opener's sessionStorage.
+
+    **Q3. SessionStorage aur LocalStorage mein main difference?**
+
+    - `localStorage` → Data persists across browser sessions until removed.
+    - `sessionStorage` → Data is limited to the tab's session and is cleared when that session ends.
+
+    **Q4. SessionStorage secure hai?**
+
+    Not completely. JavaScript can access it, so sensitive information should not be stored in it.
+
+    ### **⭐ One-line memory trick**
+
+    **SessionStorage = Refresh par safe, tab/session end hone par clear.**
+
+
 43. Cookies kya hain?
 44. Web storage difference?
 45. iframe kya hai?
