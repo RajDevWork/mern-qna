@@ -5181,6 +5181,118 @@ Browser automatically validation kar dega.
 
 
 43. Cookies kya hain?
+
+    # **Cookies kya hain?**
+
+    ## **Hinglish Explanation**
+
+    **Cookies small pieces of data hoti hain jo browser mein store hoti hain aur browser HTTP requests ke saath server ko send kar sakta hai.**
+
+    Cookies ka use mainly user ko identify karne, login session maintain karne, preferences save karne aur tracking ke liye hota hai.
+
+    For example, jab aap kisi website par login karte ho, toh server aapko ek session identifier de sakta hai. Browser cookie mein us identifier ko store karta hai aur next request par server ko bhejta hai, jisse server identify kar pata hai ki aap already logged-in user ho.
+
+    ### **1. Cookie kaise kaam karti hai?**
+
+    **1. User Login**
+
+    Username & password submit karta hai
+
+    **2. Server Response**
+
+    Server session ID / cookie issue karta hai
+
+    **3. Browser Cookie Store**
+
+    Cookie browser mein save hoti hai
+
+    **4. Next HTTP Request**
+
+    Cookie automatically request ke saath send hoti hai (matching rules ke according)
+
+    **5. Server Identifies User**
+
+    Session validate karke logged-in user ko identify karta hai
+
+    ### **2. Cookie create karna (JavaScript)**
+
+    ```
+    // Cookie set
+    document.cookie = "username=Rajesh; max-age=3600; path=/";
+
+    // Cookie read
+    console.log(document.cookie);
+
+    // Cookie delete
+    document.cookie = "username=; max-age=0; path=/";
+    ```
+
+    - `username=Rajesh` → Cookie key-value
+    - `max-age=3600` → Cookie 3600 seconds (1 hour) tak valid
+    - `path=/` → Website ke root path ke liye cookie accessible
+
+    Important: JavaScript se create ki gayi cookies ko `HttpOnly` set nahi kar sakte. Authentication cookies generally server se `Set-Cookie` HTTP header ke through set karni chahiye.
+
+    ### **3. Important Cookie Attributes**
+
+    | Attribute  | Use                                                             |
+    | ---------- | --------------------------------------------------------------- |
+    | `Expires`  | Cookie ki expiry date set karta hai                             |
+    | `Max-Age`  | Cookie kitne seconds tak valid rahegi                           |
+    | `Path`     | Cookie kin URL paths par applicable hai                         |
+    | `Domain`   | Cookie kin domains/subdomains par applicable hai                |
+    | `Secure`   | Cookie HTTPS connection par send hoti hai                       |
+    | `HttpOnly` | JavaScript se cookie access block karta hai                     |
+    | `SameSite` | Cross-site requests mein cookie kab send hogi control karta hai |
+
+    ### **4. Cookies ke types**
+
+    - **Session Cookie** → Normally browser session tak rehti hai; session end par expire hoti hai.
+    - **Persistent Cookie** → Expiry (`Expires`/`Max-Age`) set hoti hai, isliye browser restart ke baad bhi reh sakti hai.
+    - **Secure / HttpOnly cookies** → Security-related attributes hain, separate storage type nahi.
+
+    ### **5. Cookies vs LocalStorage vs SessionStorage**
+
+    | Feature                      | Cookies                   | LocalStorage           | SessionStorage      |
+    | ---------------------------- | ------------------------- | ---------------------- | ------------------- |
+    | Storage                      | Browser                   | Browser                | Browser tab session |
+    | Lifetime                     | Expiry based/session      | Until deleted          | Tab session         |
+    | Automatically sent to server | Yes, matching requests    | No                     | No                  |
+    | Storage capacity             | Small (\~4 KB per cookie) | Usually \~5 MB         | Usually \~5 MB      |
+    | JavaScript access            | Unless `HttpOnly`         | Yes                    | Yes                 |
+    | Main use                     | Auth/session/preferences  | Persistent client data | Temporary tab data  |
+
+    ## **🎯 English Interview Answer**
+
+    > "Cookies are small pieces of data stored in the browser. They are commonly used to maintain user sessions, store preferences, and support authentication. Unlike LocalStorage, cookies can be automatically sent to the server with HTTP requests, depending on their settings. Cookies also support security attributes like HttpOnly, Secure, and SameSite."
+
+    ### **Interview Follow-up**
+
+    **Q1. Cookies aur LocalStorage mein main difference kya hai?**
+
+    Cookies can be automatically sent with HTTP requests to the server, whereas LocalStorage data stays on the client side and is not automatically sent.
+
+    **Q2.&#x20;**`HttpOnly`**&#x20;cookie kya hoti hai?**
+
+    An HttpOnly cookie cannot be accessed through JavaScript's `document.cookie`. It helps protect the cookie from being stolen through certain XSS attacks, but it does not eliminate XSS itself.
+
+    **Q3.&#x20;**`Secure`**&#x20;attribute ka kya use hai?**
+
+    It ensures the cookie is sent only over secure HTTPS connections, except special localhost handling by browsers.
+
+    **Q4.&#x20;**`SameSite`**&#x20;kya karta hai?**
+
+    It controls whether cookies are sent with cross-site requests. It helps reduce CSRF risks.
+
+    **Q5. Authentication ke liye cookies kyu use karte hain?**
+
+    Because the browser can automatically send the session cookie with matching requests, allowing the server to identify and authenticate the user without manually adding the session identifier to every request.
+
+    ### **⭐ One-line memory trick**
+
+    **Cookie = Browser mein chhota data, jo matching HTTP requests ke saath server tak ja sakta hai.**
+
+
 44. Web storage difference?
 45. iframe kya hai?
 46. data-* attributes?
