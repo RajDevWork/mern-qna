@@ -5294,6 +5294,108 @@ Browser automatically validation kar dega.
 
 
 44. Web storage difference?
+
+    # **Web Storage Difference (Cookies vs LocalStorage vs SessionStorage)**
+
+    ## **Hinglish Explanation**
+
+    Browser mein data store karne ke 3 common methods hote hain: **Cookies, LocalStorage aur SessionStorage.**
+
+    Teeno browser mein data store karte hain, lekin inki lifetime, storage capacity aur server ke saath data share karne ka behavior alag hota hai.
+
+    ### **1. Cookies**
+
+    Cookies ka use mostly authentication/session management, user preferences aur tracking ke liye hota hai.
+
+    - Small storage, generally around 4 KB per cookie.
+    - Expiry set kar sakte hain.
+    - Matching HTTP requests ke saath automatically server par send ho sakti hain.
+    - `HttpOnly`, `Secure`, `SameSite` jaise security attributes support karti hain.
+
+    ### **2. LocalStorage**
+
+    LocalStorage ka use browser mein data persistently save karne ke liye hota hai.
+
+    - Generally around 5 MB storage (browser dependent).
+    - Browser close ya restart karne par data normally remain karta hai.
+    - Data automatically server ko send nahi hota.
+    - JavaScript se access kar sakte hain.
+
+    ### **3. SessionStorage**
+
+    SessionStorage ka use temporary data store karne ke liye hota hai.
+
+    - Generally around 5 MB storage (browser dependent).
+    - Page refresh hone par data remain karta hai.
+    - Tab/browsing session end hone par data clear ho jata hai.
+    - Data automatically server ko send nahi hota.
+
+    ## **Visual comparison**
+
+    **Cookies**
+
+    Small data · Expiry based · Server requests ke saath send
+
+    **LocalStorage**
+
+    Persistent data · Browser close ke baad bhi rahta hai
+
+    **SessionStorage**
+
+    Temporary data · Current tab session tak
+
+    ### **Difference Table**
+
+    | Feature                      | Cookies                | LocalStorage                  | SessionStorage        |
+    | ---------------------------- | ---------------------- | ----------------------------- | --------------------- |
+    | Storage size                 | \~4 KB/cookie          | \~5 MB                        | \~5 MB                |
+    | Data lifetime                | Expiry/session         | Until deleted                 | Tab session           |
+    | Browser restart              | Depends on expiry      | Data remains                  | Session normally ends |
+    | Server ko automatically send | Yes, matching requests | No                            | No                    |
+    | JavaScript access            | Yes, unless HttpOnly   | Yes                           | Yes                   |
+    | API                          | `document.cookie`      | `setItem/getItem`             | `setItem/getItem`     |
+    | Common use                   | Auth/session           | Preferences, persistent state | Temporary form state  |
+
+    ### **Practical example – Kab kya use karenge?**
+
+    | Situation                                 | Best choice              |
+    | ----------------------------------------- | ------------------------ |
+    | Server-managed login session              | HttpOnly Cookie          |
+    | Theme preference (Dark/Light)             | LocalStorage             |
+    | Refresh ke baad cart draft preserve karna | LocalStorage             |
+    | Multi-step form temporary progress        | SessionStorage           |
+    | Temporary tab-specific filter             | SessionStorage           |
+    | Secure session identification             | Secure + HttpOnly Cookie |
+
+    Security note: LocalStorage aur SessionStorage mein sensitive information store nahi karni chahiye, kyunki JavaScript unhe access kar sakta hai. Authentication ke liye server-managed `HttpOnly`, `Secure` cookies generally safer choice hoti hain, with proper CSRF protection.
+
+    ## **🎯 English Interview Answer**
+
+    > "Cookies, LocalStorage, and SessionStorage are browser storage mechanisms, but they differ in storage capacity, lifetime, and server communication. Cookies have limited storage and can be automatically sent with HTTP requests. LocalStorage keeps data until it is removed, even after the browser is closed. SessionStorage stores data for the current tab session and survives page refreshes but normally ends when the tab session closes. LocalStorage and SessionStorage are commonly used for client-side data, while cookies are often used for session management."
+
+    ### **Interview Follow-up**
+
+    **Q1. Which storage is best for authentication?**
+
+    Server-managed HttpOnly, Secure cookies are generally preferred for session-based authentication because JavaScript cannot read HttpOnly cookies.
+
+    **Q2. Which storage survives browser restart?**
+
+    LocalStorage and persistent cookies normally survive browser restarts. SessionStorage normally does not survive the end of its tab session.
+
+    **Q3. Which storage automatically sends data to the server?**
+
+    Cookies are automatically sent with matching requests, according to their domain, path, Secure, and SameSite rules. LocalStorage and SessionStorage are not.
+
+    **Q4. Kya LocalStorage aur SessionStorage mein objects store kar sakte hain?**
+
+    Direct nahi. Values strings hoti hain. Objects store karne ke liye `JSON.stringify()` aur retrieve karne ke liye `JSON.parse()` use karte hain.
+
+    ### **⭐ One-line memory trick**
+
+    **Cookie = Server | LocalStorage = Permanent browser data | SessionStorage = Temporary tab data.**
+
+
 45. iframe kya hai?
 46. data-* attributes?
 47. ARIA roles kya hain?
