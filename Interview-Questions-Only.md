@@ -5628,6 +5628,72 @@ Browser automatically validation kar dega.
 
 
 47. ARIA roles kya hain?
+
+    # **ARIA Roles kya hain?**
+
+    ## **Hinglish Explanation**
+
+    **ARIA Roles (Accessible Rich Internet Applications)** HTML elements ko extra information provide karte hain, jisse screen readers aur assistive technologies ko samajh aata hai ki koi element kya hai, uska purpose kya hai, aur woh kis tarah behave karta hai.
+
+    Jab native HTML element ka meaning ya accessibility information sufficient nahi hoti, tab ARIA roles use kiye ja sakte hain.
+
+    ### **Example**
+
+    ```
+    <div role="button" tabindex="0">
+    Save
+    </div>
+    ```
+
+    Yahan `div` by default button nahi hota, lekin `role="button"` screen reader ko batata hai ki ye button ki tarah behave karta hai.
+
+    Kuch common ARIA roles:
+
+    | ARIA Role           | Purpose                                        |
+    | ------------------- | ---------------------------------------------- |
+    | `role="button"`     | Button identify karne ke liye                  |
+    | `role="navigation"` | Navigation section identify karne ke liye      |
+    | `role="dialog"`     | Dialog / modal identify karne ke liye          |
+    | `role="alert"`      | Important alert message announce karne ke liye |
+    | `role="tab"`        | Tab identify karne ke liye                     |
+    | `role="menu"`       | Menu identify karne ke liye                    |
+
+    ### **Native HTML vs ARIA**
+
+    ```
+    <!-- Preferred -->
+    <button>Save</button>
+
+    <!-- Custom element with ARIA -->
+    <div role="button" tabindex="0">Save</div>
+    ```
+
+    Native `<button>` use karna better hai kyunki usme keyboard support, focus behavior aur button functionality already built-in hoti hai. `role="button"` alone ye functionality automatically provide nahi karta.
+
+    ## **🎯 English Interview Answer**
+
+    > "ARIA roles are attributes used to define the purpose and behavior of HTML elements for accessibility. They help screen readers understand elements like buttons, navigation, dialogs, and alerts. We use ARIA when native HTML semantics are not sufficient, but native semantic elements are always preferred."
+
+    ### **Interview Follow-up**
+
+    **Q1. ARIA role kya native HTML functionality provide karta hai?**
+
+    No. ARIA only provides accessibility information. It does not automatically add keyboard support or functionality.
+
+    **Q2. Kya native HTML elements ki jagah ARIA use karna chahiye?**
+
+    No. We should prefer native semantic HTML elements like `button`, `nav`, and `header` whenever possible.
+
+    **Q3.&#x20;**`role="button"`**&#x20;aur&#x20;**`<button>`**&#x20;mein kya difference hai?**
+
+    A native `<button>` has built-in keyboard interaction, focus behavior and click functionality. A `div` with `role="button"` only communicates its role and requires us to implement the expected behavior ourselves.
+
+    ### **⭐ One-line memory trick**
+
+    **ARIA tells assistive technology what an element means; native HTML provides built-in semantics and behavior.**
+
+
+
 48. Accessibility kya hai?
 49. SEO basics HTML mein?
 50. HTML best practices?
