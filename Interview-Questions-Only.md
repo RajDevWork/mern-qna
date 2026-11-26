@@ -5397,6 +5397,133 @@ Browser automatically validation kar dega.
 
 
 45. iframe kya hai?
+
+    # `<iframe>`**&#x20;kya hai?**
+
+    ## **Hinglish Explanation**
+
+    `<iframe>` (Inline Frame) ka use **ek HTML page ke andar dusri webpage ya external content ko embed/display karne** ke liye hota hai.
+
+    Matlab, hum apni website ke andar kisi dusri website, YouTube video, Google Map ya kisi external page ko ek separate frame ke andar show kar sakte hain.
+
+    ### **1. Basic Syntax**
+
+    ```
+    <iframe
+    src="https://example.com"
+    width="600"
+    height="400"
+    title="Example Website">
+    </iframe>
+    ```
+
+    - `src` → Kaunsa page/content load karna hai.
+    - `width` → Frame ki width.
+    - `height` → Frame ki height.
+    - `title` → Screen readers ke liye frame ka description.
+
+    ### **2. YouTube video embed example**
+
+    [What is the use of HTML Iframe? – MindStick](https://images.openai.com/static-rsc-4/wwOC41QBa6y18ghQOlOERQR2B80j2wN_lr-XLgYHz6gj1_hTC7ZiImE27nyYtAD0s_TUdKO_j624h32Uup4-FzMo5n7adIJ2jM7i7WyCc95ibaAEVAQWFBAq7OsCLRmsS5DnvJxCo78Ubx95TJVEmRXfkPVf_WeDSk4xwM5UVcw?purpose=inline)
+
+    [How To Embed Google Maps On Your Website](https://images.openai.com/static-rsc-4/NjK9Ww14gMYFHQftPeYqyw3EEXfI6BIsQ6ifOGxTr_YScNT7pU7UCQ1_1Ucb2Fy5TIN4KQZQH3kvOLzOlKb4y96-RpVL9q_SLjF2P8hLSjGBNJLSTJ219TTAEUkklER7AlzyobGCXhKSriclyjwet7hDY7R6pXMlQivfYJXODJA?purpose=inline)
+
+    [Embed a YouTube video with 16:9 aspect ratio and full-width](https://images.openai.com/static-rsc-4/LfiH6MHn2deTs4ZtGPIeS1rog3rtIvwIdQs-txBCZZ7Xoh47Q9WSVtDT9gMP1jY45q8PR_EOaphbqxhvJ0bfddV1GNkD2R9EECeZyvFR1k4J7qk65_YqRJR4WBEbFoLQ35_7h8L1Ore_KvBCTsAFOxrFxbanQixyTc7hiZn5qqk?purpose=inline)
+
+    6
+
+    ```
+    <iframe
+    src="https://www.youtube.com/embed/VIDEO_ID"
+    title="YouTube video"
+    width="560"
+    height="315"
+    allowfullscreen>
+    </iframe>
+    ```
+
+    Isse YouTube video directly hamari website ke andar play ho sakta hai.
+
+    ### **3. Important iframe attributes**
+
+    | Attribute          | Use                                                          |
+    | ------------------ | ------------------------------------------------------------ |
+    | `src`              | Embedded page ka URL                                         |
+    | `width` / `height` | Frame ka size                                                |
+    | `title`            | Accessibility description                                    |
+    | `loading="lazy"`   | Frame ko lazily load karna                                   |
+    | `allow`            | Camera, microphone, fullscreen jaise features ki permissions |
+    | `sandbox`          | Embedded content par security restrictions lagana            |
+    | `allowfullscreen`  | Fullscreen allow karna                                       |
+
+    ### **4. Responsive iframe**
+
+    ```
+    <div class="iframe-container">
+    <iframe
+        src="https://www.youtube.com/embed/VIDEO_ID"
+        title="Video Player"
+        loading="lazy">
+    </iframe>
+    </div>
+    ```
+
+    ```
+    .iframe-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    }
+
+    .iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    }
+    ```
+
+    Isse iframe screen size ke according responsive rahega.
+
+    ### **5. Security –&#x20;**`sandbox`
+
+    Iframe ke content ko restrict karne ke liye `sandbox` attribute use hota hai.
+
+    ```
+    <iframe
+    src="https://example.com"
+    sandbox
+    title="Restricted content">
+    </iframe>
+    ```
+
+    Sandbox bina extra permissions ke embedded content par restrictions apply karta hai. Zarurat padne par specific permissions jaise `allow-scripts` etc. add ki ja sakti hain, but carefully because permissions restrictions ko weaken kar sakti hain.
+
+    ## **🎯 English Interview Answer**
+
+    > "An iframe, or inline frame, is an HTML element used to embed another webpage or external content inside the current webpage. We commonly use it for embedding YouTube videos, Google Maps, or third-party content. We can control its size, enable lazy loading, and use the sandbox attribute to restrict its capabilities for security."
+
+    ### **Interview Follow-up**
+
+    **Q1. Iframe ka real-world use kya hai?**
+
+    Embedding YouTube videos, Google Maps, payment widgets, third-party dashboards, or other external content.
+
+    **Q2.&#x20;**`sandbox`**&#x20;attribute kya karta hai?**
+
+    It applies restrictions to the embedded content, such as limiting scripts, forms, or other capabilities, depending on the permissions granted.
+
+    **Q3. Kya iframe responsive ho sakta hai?**
+
+    Yes. We can use CSS width, height, and `aspect-ratio` to make it responsive.
+
+    **Q4. Kya iframe se parent page ka data access kar sakte hain?**
+
+    Generally, same-origin policy prevents an iframe from accessing the parent page's DOM when they are from different origins. For controlled cross-origin communication, we can use `window.postMessage()`.
+
+    ### **⭐ One-line memory trick**
+
+    `iframe`**&#x20;= Ek webpage ke andar doosra webpage embed karna.**
+
+
 46. data-* attributes?
 47. ARIA roles kya hain?
 48. Accessibility kya hai?
