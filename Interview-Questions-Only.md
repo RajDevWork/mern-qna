@@ -5525,6 +5525,108 @@ Browser automatically validation kar dega.
 
 
 46. data-* attributes?
+
+    # `data-*`**&#x20;Attributes kya hote hain?**
+
+    ## **Hinglish Explanation**
+
+    HTML ke `data-*` attributes ka use **HTML elements ke andar custom data store karne ke liye** hota hai, jise hum JavaScript ke through access kar sakte hain.
+
+    Jab hume kisi element ke saath extra information attach karni ho, jo standard HTML attribute nahi hai, tab `data-*` use karte hain.
+
+    ### **1. HTML mein use**
+
+    ```
+    <button
+    data-user-id="101"
+    data-role="admin"
+    onclick="showUser(this)">
+    View User
+    </button>
+    ```
+
+    Yahan:
+
+    - `data-user-id="101"` → Custom user ID store ki hai.
+    - `data-role="admin"` → Custom role store kiya hai.
+    - `this` → Current clicked button ko refer karta hai.
+
+    ### **2. JavaScript se data access karna**
+
+    ```
+    function showUser(button) {
+    console.log(button.dataset.userId); // 101
+    console.log(button.dataset.role);   // admin
+    }
+    ```
+
+    HTML mein `data-user-id` JavaScript mein `dataset.userId` ban jata hai.
+
+    **Data conversion**
+
+    HTML
+
+    data-user-id
+
+    JavaScript
+
+    dataset.userId
+
+    ### **3. Practical example – Multiple product buttons**
+
+    ```
+    <button data-product-id="501">Add Laptop</button>
+    <button data-product-id="502">Add Mouse</button>
+    ```
+
+    ```
+    document.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+        const productId = button.dataset.productId;
+        console.log("Selected product:", productId);
+    });
+    });
+    ```
+
+    Har button se uska product ID access kar sakte hain bina alag JavaScript logic likhe.
+
+    ### **Important points**
+
+    - `data-*` attributes custom information store karte hain.
+    - `dataset` ke through JavaScript se access karte hain.
+    - Attribute values strings hoti hain, chahe value number jaisi ho.
+    - `data-user-id` → `dataset.userId` (camelCase conversion).
+    - Ye styling ya behavior ke liye useful hain, lekin sensitive data store nahi karna chahiye, kyunki HTML user inspect kar sakta hai.
+
+    ## **🎯 English Interview Answer**
+
+    > "The data attributes are custom HTML attributes used to store extra information on an element. They start with `data-` and can be accessed in JavaScript using the element's dataset property. They are useful for storing things like product IDs, user IDs, or other information needed for frontend interactions without using non-standard HTML attributes."
+
+    ### **Interview Follow-up**
+
+    **Q1.&#x20;**`data-user-id`**&#x20;ko JavaScript mein kaise access karte hain?**
+
+    ```
+    element.dataset.userId;
+    ```
+
+    **Q2. Kya data attributes mein numbers store kar sakte hain?**
+
+    Yes, but the value is stored as a string. If we need a number, we can convert it using `Number()`.
+
+    ```
+    const id = Number(element.dataset.userId);
+    ```
+
+    **Q3.&#x20;**`data-*`**&#x20;attributes aur normal attributes mein kya difference hai?**
+
+    Normal attributes have predefined HTML meaning, while `data-*` attributes are meant for custom application data and don't have built-in browser behavior.
+
+    ### **⭐ One-line memory trick**
+
+    `data-*`**&#x20;= HTML mein custom data store karo, JavaScript mein&#x20;**`dataset`**&#x20;se access karo.**
+
+
 47. ARIA roles kya hain?
 48. Accessibility kya hai?
 49. SEO basics HTML mein?
