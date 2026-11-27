@@ -5695,6 +5695,71 @@ Browser automatically validation kar dega.
 
 
 48. Accessibility kya hai?
+
+    ## **Hinglish Explanation**
+
+    **Accessibility ka matlab hai website ya application ko aisa design karna ki har user use kar sake, including people with disabilities.**
+
+    Jaise visually impaired users screen reader use karte hain, hearing-impaired users captions use karte hain, aur kuch users keyboard se hi website navigate karte hain.
+
+    Hum website ko accessible banate hain taaki users bina mouse, bina dekh paaye, ya kisi doosri physical limitation ke saath bhi application use kar sakein.
+
+    ### **Accessibility improve kaise karte hain?**
+
+    - **Semantic HTML:** `<button>`, `<nav>`, `<main>` jaise correct tags use karna.
+    - **Alt text:** Images ka description provide karna.
+    - **Keyboard navigation:** Website keyboard se operate ho sake (`Tab`, `Enter`, `Space`).
+    - **ARIA attributes:** Screen readers ko additional information dena.
+    - **Color contrast:** Text aur background ke beech sufficient contrast rakhna.
+    - **Form labels:** Input fields ko proper labels dena.
+    - **Captions:** Videos mein subtitles/captions provide karna.
+
+    ### **Example**
+
+    ```
+    <button aria-label="Close dialog">
+    ×
+    </button>
+    ```
+
+    Visually user ko `×` dikhega, lekin screen reader user ko button ka purpose **"Close dialog"** samajh aayega.
+
+    [“A11Y? Oh Yeah, I’ve Heard of It…” — Why Most Frontend DEVs Still Don’t Get Accessibility | by Rakesh Kumar | Web Tech Journals | Medium](https://images.openai.com/static-rsc-4/pre48p-IqPWeDFkPcQ0j5s8kQhXKlksVEUlfUuWZi6m62bbshhB5YMzQ13tRgAyZxj_sC-Bx7GZVcsR55h3AN0l9dwK4X5NVuSQLJnTPPVVEHM-FkwscR2Z6xyph61EfxqQJ40LNYe2JUYD6N6waOyChW8gXNcBnzeD8tJI9TJE?purpose=inline)
+
+    [Web Accessibility Checklist: 5 Steps to Design for Everyone](https://images.openai.com/static-rsc-4/jLIBYNF6HIv2txU35_Ne36Y-JxZ6ymM0fAX-Xc13uVSm4mJPi69aMdDfZV01gdv8ZbQVRkhq_pEdvArBDYFv_bilzqIbLsWU6in-dNAUxd5n_-vRl3TULFPK98DRzoevrP00KNzNVcc_5j7sjbT3mw2uT8-vLBFlf6dhZmznnw0?purpose=inline)
+
+    [Visual Design Playbook: Improve UX and Conversions on Your Site - Instant Gradient Blog](https://images.openai.com/static-rsc-4/kCLIEDCgl7-521pLUERbW4Uw9Xbf1V7bnOV4j4JIIN78HlqQYTJswD4pVcT6Q0h0W9h7IfD4OhtFBcbGs6o_mXG-6Xp4CXnIdlF99aWZNCjGJXpZ7TCHBUjg1SxVn2j4BdFv0gK3ym0gXV78k9YzuMXs_02gsJA-TagXRWpRIkA?purpose=inline)
+
+    9
+
+    ## **🎯 English Interview Answer**
+
+    > "Accessibility means designing websites and applications so that everyone can use them, including people with disabilities. We improve accessibility using semantic HTML, keyboard navigation, proper labels, alt text, sufficient color contrast, and ARIA attributes. It makes applications more inclusive and easier to use."
+
+    ### **Interview Follow-up**
+
+    **Q1. Accessibility mainly kin users ke liye hoti hai?**
+
+    It's mainly designed to support people with visual, hearing, motor, or cognitive disabilities, but it benefits all users.
+
+    **Q2. Screen reader kya hota hai?**
+
+    A screen reader is assistive software that reads website content aloud and helps visually impaired users navigate and interact with a website.
+
+    **Q3. Accessibility aur ARIA mein kya difference hai?**
+
+    Accessibility is the overall practice of making an application usable for everyone. ARIA is a set of attributes that helps assistive technologies understand UI elements.
+
+    **Q4. Keyboard accessibility kaise ensure karte hain?**
+
+    We use keyboard-accessible native HTML elements, maintain logical focus order, provide visible focus indicators, and ensure users can operate interactive elements without a mouse.
+
+    ### **⭐ One-line memory trick**
+
+    **Accessibility = Website ko har tarah ke users ke liye usable banana, chahe user mouse, screen, ya keyboard kaise bhi use kare.**
+
+
+
 49. SEO basics HTML mein?
 50. HTML best practices?
 
