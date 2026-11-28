@@ -6000,6 +6000,93 @@ Browser automatically validation kar dega.
 ## 🎨 CSS (51-100)
 
 51. CSS kya hai?
+   
+    ## **Hinglish Explanation**
+
+    **CSS (Cascading Style Sheets)** ek styling language hai jo HTML elements ko style aur design karne ke liye use hoti hai. CSS ki help se hum website ka color, font, spacing, layout, animation, responsiveness aur overall appearance control karte hain.
+
+    HTML website ka structure banata hai, CSS us structure ko visually attractive banata hai.
+
+    ### **Example**
+
+    HTML (Structure)
+
+    Hello World!
+
+    Ye ek simple HTML heading hai.
+
+    CSS (Styling)
+
+    # **Hello World!**
+
+    Styled with CSS
+
+    ### **Example code**
+
+    ```
+    <h1>Hello World!</h1>
+    ```
+
+    ```
+    h1 {
+    color: blue;
+    font-size: 32px;
+    text-align: center;
+    }
+    ```
+
+    Yahan CSS:
+
+    - `color` text ka color change karta hai.
+    - `font-size` text ka size change karta hai.
+    - `text-align` text ki alignment set karta hai.
+
+    ### **CSS ke 3 ways**
+
+    **1. Inline CSS** — HTML tag ke andar directly.
+
+    ```
+    <h1 style="color: red;">Hello</h1>
+    ```
+
+    **2. Internal CSS** — HTML file ke `<style>` tag ke andar.
+
+    ```
+    <style>
+    h1 {
+        color: red;
+    }
+    </style>
+    ```
+
+    **3. External CSS** — Separate `.css` file mein. Ye generally preferred approach hai.
+
+    ```
+    <link rel="stylesheet" href="style.css">
+    ```
+
+    ## **🎯 English Interview Answer**
+
+    > "CSS stands for Cascading Style Sheets. It is used to style and design HTML elements. With CSS, we can control colors, fonts, spacing, layouts, animations, and responsive designs. It separates the presentation from the structure of a web page, making the application easier to maintain."
+
+    ### **Interview Follow-up**
+
+    **Q1. HTML aur CSS mein kya difference hai?**
+
+    HTML defines the structure and content of a webpage, whereas CSS controls its visual appearance and layout.
+
+    **Q2. CSS ke kitne types hote hain?**
+
+    There are three types: Inline CSS, Internal CSS, and External CSS.
+
+    **Q3. CSS use karne ke benefits kya hain?**
+
+    It improves design consistency, code reusability, maintainability, responsive layouts, and user experience.
+
+    ### **⭐ One-line memory trick**
+
+    **HTML builds the structure, CSS makes it beautiful.**
+
 52. CSS types?
 53. Specificity kya hai?
 54. !important kya karta hai?
